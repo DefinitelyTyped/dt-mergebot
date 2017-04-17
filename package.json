@@ -1,0 +1,25 @@
+{
+  "name": "dt-mergebot",
+  "version": "1.0.0",
+  "description": "0.1.0",
+  "main": "index.js",
+  "dependencies": {
+    "idembot": "0.0.3",
+    "typescript": "^2.3.0-dev.20170411"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build": "node node_modules/typescript/lib/tsc.js -p .",
+    "dry": "node node_modules/idembot/bin/run.js --dry --file bin/rules.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RyanCavanaugh/dt-mergebot.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RyanCavanaugh/dt-mergebot/issues"
+  },
+  "homepage": "https://github.com/RyanCavanaugh/dt-mergebot#readme"
+}
