@@ -6,7 +6,7 @@
         "outDir": "bin",
         "strict": true,
         "module": "commonjs",
-        "target": "es5",
+        "target": "es6",
         "types": ["node"]
     }
 }

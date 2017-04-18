@@ -10,7 +10,8 @@
   "devDependencies": {},
   "scripts": {
     "build": "node node_modules/typescript/lib/tsc.js -p .",
-    "dry": "node node_modules/idembot/bin/run.js --dry --file bin/rules.js"
+    "dry": "npm run build && node node_modules/idembot/bin/run.js --dry --file bin/rules.js",
+    "wet": "npm run build && node node_modules/idembot/bin/run.js       --file bin/rules.js"
   },
   "repository": {
     "type": "git",
