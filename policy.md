@@ -9,30 +9,31 @@ A PR is *unmergeable* if any of the following are true:
  * It contains merge conflicts (the `Has Merge Conflict` label will be applied)
  * It is failing the CI build (the `The Travs CI build failed` label will be applied)
  * It has unaddressed comments from code reviewers (the `Revision needed`) will be applied
- 
-### Passing Review
 
- A user has submitted a *passing review* if they:
+### Mergeable
+
+A PR is *mergeable* if all of the following are true:
+ * It is not *unmergeable*
+ * The CI build has passed
+
+### Passing Code Review
+
+ A user has submitted a *passing code review* if they:
   * :+1: `dt-bot`'s comment
   * Post a comment containing :+1:
   * Use GitHub's "review" feature and Approve
 
 ### Definition Author
 
-A *definition author* is a user listed in the index.d.ts file authors list. These users are assumed to have appropriate knowledge of the file and are considered trustworthy reviewers.
+A *definition author* is a user listed in the index.d.ts file authors list.
+These users are assumed to have appropriate knowledge of the file and are considered trustworthy reviewers.
 
-DT maintainers may treat themselves as definition authors at their discretion, depending on their comfort with the file at hand.
-
-### Ready to Merge
-
- A PR is *ready to merge* if all of the following are true:
-  * The PR is not *unmergeable*
-  * The PR has at least one *passing review*
+DT maintainers may treat themselves as definition authors at their discretion.
 
 ### Express Merge
 
 A PR is available to *express merge* if:
- * The PR is not *unmergeable*
+ * The PR is *mergeable*
  * The PR has a *passing review* from a *definition author*
 
 An *express merge* may occur immediately and automatically.
@@ -40,16 +41,16 @@ An *express merge* may occur immediately and automatically.
 ### LGTM Merge
 
 A PR is available to *LGTM merge* if:
- * The PR is not *unmergeable*
+ * The PR is *mergeable*
  * The PR has a *passing review* from anyone
  * Three days have elapsed since the PR code was last changed
 
 *LGTM merges* will occur manually at DT maintainers' discretion.
 
-### YSYL Merge
+### YSYL (You Snooze You Lose) Merge
 
 A PR is available to *YSYL merge* if:
- * The PR is not *unmergeable*
+ * The PR is *mergeable*
  * No one has left a review with concrete next steps
  * Seven days have elapsed since the PR code was last changed
 
@@ -58,7 +59,7 @@ A PR is available to *YSYL merge* if:
 ### Abandoned
 
  A PR is *abandoned* if:
-  * It has been *unmergeable* for seven days
+  * It is *unmergeable*
   * The author has not commented on the PR in seven days
   * The author has not pushed commits to the PR in seven days
 
