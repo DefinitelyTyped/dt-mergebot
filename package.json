@@ -4,7 +4,9 @@
   "description": "0.1.0",
   "main": "index.js",
   "dependencies": {
+    "@types/node": "^8.0.10",
     "idembot": "0.0.3",
+    "moment": "^2.18.1",
     "typescript": "^2.3.0-dev.20170411"
   },
   "devDependencies": {},

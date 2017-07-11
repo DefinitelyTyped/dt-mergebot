@@ -1,137 +1,217 @@
 import * as bot from 'idembot';
+import moment = require('moment');
 
 const Labels = {
     MergeConflict: "Has Merge Conflict",
     TravisFailed: "The Travis CI build failed",
     AuthorApproved: "Author Approved",
     OtherApproved: "Other Approved",
-    NeedsRevision: "Revision needed"
+    NeedsRevision: "Revision needed",
+    Abandoned: "Abandoned",
+    YSYL: "YSYL",
+
+    Merge_Express: "Merge:Express",
+    Merge_YSYL: "Merge:YSYL",
+    Merge_LGTM: "Merge:LGTM"
 };
 
-async function markTravisStatus(issue: bot.PullRequest) {
-    if (!issue.isPullRequest) return;
-    if (issue.state !== "open") return;
+const ApprovalTokens = ['👍', ':+1:', 'lgtm', 'LGTM', ':shipit:'];
 
-    const status = await issue.getStatusSummary();
-    console.log(`Issue ${issue.number} has status = ${status}`);
-    issue.setHasLabels({
-        [Labels.TravisFailed]: status === "failure"
-    });
-}
+namespace info {
+    export namespace Travis {
+        export enum Result {
+            Unknown,
+            NotApplicable,
+            Pass,
+            Fail,
+            Pending
+        }
 
-async function markApprovalState(issue: bot.PullRequest) {
-    if (!issue.isPullRequest) return;
-    if (issue.state !== "open") return;
+        export async function getTravisStatus(issue: bot.PullRequest): Promise<Result> {
+            if (!issue.isPullRequest) return Result.NotApplicable;
+            if (issue.state !== "open") return Result.NotApplicable;
 
-    let authorApproved = false;
-    let otherApproved = false;
-    let needsRevision: true | null = null;
+            const status = await issue.getStatusSummary();
+            console.log(`Issue ${issue.number} has status = ${status}`);
+            if (status === "failure" || status === "error") {
+                return Result.Fail;
+            } else if (status === "success") {
+                return Result.Pass
+            } else if (status === "pending") {
+                return Result.Pending;
+            }
+            return Result.Unknown;
+        }
+    }
 
-    // Parse comments
-    let reviewers: string[] = [];
-    const comments = await issue.getComments();
-    for (const cm of comments) {
-        if (cm.user.login === 'dt-bot') {
-            reviewers = parseUsernames(cm.body);
+    export namespace CodeReview {
+        export enum Opinion {
+            // Bit flag
+            None = 0,
+            LGTM = 1,
+            NeedsRevision = 2,
+        }
+        export interface Result {
+            author: Opinion;
+            other: Opinion;
+        }
+        export async function getCodeReview(issue: bot.PullRequest): Promise<Result> {
+            let author = Opinion.None;
+            let other = Opinion.None;
 
-            // Parse reactions
-            const reactions = await cm.getReactions();
-            for (const r of reactions) {
-                if (r.content === "+1") {
-                    console.log(`${r.user.login} approved ${issue.number} via reaction`);
-                    markApproval(r.user.login);
-                } else if (r.content === "-1") {
-                    console.log(`${r.user.login} needs revision ${issue.number} via reaction`);
-                    if (reviewers.indexOf(r.user.login) >= 0) {
-                        needsRevision = true;
+            // Parse comments
+            let reviewers: string[] = [];
+            const comments = await issue.getComments();
+            for (const cm of comments) {
+                if (cm.user.login === 'dt-bot') {
+                    reviewers = parseUsernames(cm.body);
+
+                    // Parse reactions to the dt-bot comment
+                    const reactions = await cm.getReactions();
+                    for (const r of reactions) {
+                        if (r.content === "+1") {
+                            // Approved via reaction
+                            setResult(r.user.login, Opinion.LGTM);
+                        } else if (r.content === "-1") {
+                            // Revision requested via reaction
+                            setResult(cm.user.login, Opinion.NeedsRevision);
+                        }
+                    }
+                } else {
+                    // Found a possible review comment
+                    if (includesAnyOf(cm.body, ApprovalTokens)) {
+                        // Approval via comment
+                        setResult(cm.user.login, Opinion.LGTM);
                     }
                 }
             }
-        } else {
-            // Found a possible review comment
-            if (includesAnyOf(cm.body, '👍', ':+1:', 'lgtm', 'LGTM', ':shipit:')) {
-                console.log(`${cm.user.login} approved ${issue.number} via comment`);
-                markApproval(cm.user.login);
+
+            // Parse reviews
+            const reviews = await issue.getReviews();
+            for (const r of reviews) {
+                if (r.state === "APPROVED") {
+                    // Approved via code review
+                    setResult(r.user.login, Opinion.LGTM);
+                } else {
+                    // Revision requested via code review
+                    setResult(r.user.login, Opinion.NeedsRevision);
+                }
             }
+
+            return ({ author, other });
+
+            function setResult(login: string, result: Opinion) {
+                // dt-bot doesn't approve by *asking* for :+1:s
+                // and users don't approve themselves by liking that post!
+                if ((login === 'dt-bot') || (login === issue.user.login)) return;
+
+                if (reviewers.indexOf(login) >= 0) {
+                    author |= result;
+                } else {
+                    other |= result;
+                }
+            }
+        }
+
+        function parseUsernames(body: string): string[] {
+            const result: string[] = [];
+            const matchRef = /@(\w+)/g;
+            let match: RegExpExecArray | null;
+            while (match = matchRef.exec(body)) {
+                result.push(match[1]);
+            }
+            return result;
+        }
+
+        function includesAnyOf(haystack: string, needles: string[]) {
+            for (const n of needles) {
+                if (haystack.includes(n)) return true;
+            }
+            return false;
         }
     }
 
-    // Parse reviews
-    const reviews = await issue.getReviews();
-    for (const r of reviews) {
-        if (r.state === "APPROVED") {
-            console.log(`${r.user.login} approved ${issue.number} via code review`);
-            markApproval(r.user.login);
-        } else {
-            console.log(`${r.user.login} needs revision ${issue.number} via code review - ${r.state}`);
-            if (reviewers.indexOf(r.user.login) >= 0) {
-                needsRevision = true;
+    export namespace Activity {
+        export async function getLastAuthorActivity(issue: bot.IssueOrPullRequest) {
+            const pr = issue as bot.PullRequest;
+            let lastActivity = pr.created_at;
+            const comments = await issue.getComments();
+            for (const c of comments) {
+                if (c.user.login === pr.user.login) {
+                    console.log('comment at ' + c.created_at);
+                    lastActivity = moment.max(lastActivity, c.created_at);
+                }
             }
-        }
-    }
-
-    // Apply labels
-    issue.setHasLabels({
-        [Labels.AuthorApproved]: authorApproved && !needsRevision,
-        [Labels.OtherApproved]: otherApproved && !needsRevision,
-        [Labels.NeedsRevision]: needsRevision
-    });
-
-    function markApproval(login: string) {
-        // dt-bot doesn't approve by *asking* for :+1:s
-        // and users don't approve themselves by liking that post!
-        if ((login === 'dt-bot') || (login === issue.user.login)) return;
-
-        if (reviewers.indexOf(login) >= 0) {
-            authorApproved = true;
-        } else {
-            otherApproved = true;
+            const commits = await pr.getCommitsRaw();
+            for (const c of commits) {
+                console.log('commit at at ' + c.commit.committer.date);
+                lastActivity = moment.max(lastActivity, moment(c.commit.committer.date));
+            }
+            return lastActivity;
         }
     }
 }
 
-async function markMergeState(issue: bot.PullRequest) {
+async function setLabels(issue: bot.PullRequest) {
+    if (!issue.isPullRequest) return;
     if (issue.state !== "open") return;
 
-    console.log(`Mergeable? ${await issue.getMergeableState()}`);
-    issue.setHasLabels({
-        [Labels.MergeConflict]: issue.mergeable === null ? null : !issue.mergeable
-    });
+    const mergeableState = await issue.getMergeableState();
+    const hasMergeConflict = (mergeableState === false);
+
+    const travis = await info.Travis.getTravisStatus(issue);
+    const travisFailed = (travis === info.Travis.Result.Fail);
+
+    const codeReview = await info.CodeReview.getCodeReview(issue);
+    const needsToAddressCodeReview = !!((codeReview.author | codeReview.other) & info.CodeReview.Opinion.NeedsRevision);
+
+    const unmergeable =
+        hasMergeConflict ||
+        travisFailed ||
+        needsToAddressCodeReview;
+
+    const mergeable = !unmergeable &&
+        (travis === info.Travis.Result.Pass);
+
+    const isAuthorApproved = codeReview.author === info.CodeReview.Opinion.LGTM;
+    const isOtherApproved = codeReview.other === info.CodeReview.Opinion.LGTM;
+    const needsRevision = unmergeable;
+
+    const lgtmCutoff = moment().subtract(3, 'days');
+    const ysylCutoff = moment().subtract(7, 'days');
+    const abandonedCutoff = moment().subtract(7, 'days');
+
+    const lastActivity = await info.Activity.getLastAuthorActivity(issue);
+    console.log('last activity: ' + lastActivity.toString());
+    console.log('ysyl cutoff: ' + ysylCutoff.toString());
+    console.log('mergeable: ' + mergeable);
+    const isMergeExpress = mergeable && isAuthorApproved;
+    const isMergeLGTM = !isMergeExpress && (lastActivity < lgtmCutoff) && mergeable && isOtherApproved;
+    const isMergeYSYL = !isMergeLGTM && (lastActivity < ysylCutoff) && mergeable;
+    const isAbandoned = unmergeable && (lastActivity < abandonedCutoff);
+
+    // Apply labels
+    const labels = {
+        [Labels.TravisFailed]: travisFailed,
+        [Labels.MergeConflict]: hasMergeConflict,
+        [Labels.AuthorApproved]: isAuthorApproved,
+        [Labels.OtherApproved]: isOtherApproved,
+        [Labels.NeedsRevision]: needsRevision,
+        [Labels.Abandoned]: isAbandoned,
+        [Labels.Merge_Express]: isMergeExpress,
+        [Labels.Merge_LGTM]: isMergeLGTM,
+        [Labels.Merge_YSYL]: isMergeYSYL
+    };
+    console.log(labels);
+    issue.setHasLabels(labels);
 }
 
 const setup: bot.SetupOptions = {
-    repos: [
-        {
-            name: "DefinitelyTyped",
-            owner: "DefinitelyTyped",
-            prFilter: {
-                openOnly: true
-            }
-        }],
     rules: {
         pullRequests: {
-            markTravisStatus,
-            markMergeState,
-            markApprovalState
+            setLabels
         }
     }
 };
-
-function parseUsernames(body: string): string[] {
-    const result: string[] = [];
-    const matchRef = /@(\w+)/g;
-    let match: RegExpExecArray | null;
-    while (match = matchRef.exec(body)) {
-        result.push(match[1]);
-    }
-    return result;
-}
-
-function includesAnyOf(haystack: string, ...needles: string[]) {
-    for (const n of needles) {
-        if (haystack.includes(n)) return true;
-    }
-    return false;
-}
 
 export = setup;
