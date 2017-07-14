@@ -1,16 +1,18 @@
-# dt-mergebot
+# Setup
 
-# Building
-
- > `npm run build`
+  > `git clone https://github.com/RyanCavanaugh/dt-mergebot.git`
+  > `npm install`
 
 # Running
 
- > `npm run dry`
+Ask Ryan for the bot's auth token.
+Don't run the bot under your own auth token as this will generate a bunch of spam from duplicate comments.
 
-or
+ > set AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ > npm run wet
 
- > `npm run wet`
+# Development
 
-These will automatically run the `build` task
+Changing the rules? Run this command to compile.
 
+ > `npm run build`

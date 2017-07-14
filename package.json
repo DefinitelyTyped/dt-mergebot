@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@types/node": "^8.0.10",
-    "idembot": "0.0.6",
+    "idembot": "0.x.x",
     "moment": "^2.18.1",
     "typescript": "^2.3.0-dev.20170411"
   },
