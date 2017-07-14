@@ -52,7 +52,7 @@ A PR is available to *LGTM merge* if:
 A PR is available to *YSYL merge* if:
  * The PR is *mergeable*
  * No one has left a review with concrete next steps
- * Seven days have elapsed since the PR code was last changed
+ * Five days have elapsed since the PR code was last changed
 
 *YSYL merges* will occur manually at DT maintainers' discretion.
 
