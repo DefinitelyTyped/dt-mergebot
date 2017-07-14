@@ -5,15 +5,15 @@
   "main": "index.js",
   "dependencies": {
     "@types/node": "^8.0.10",
-    "idembot": "0.0.3",
+    "idembot": "0.0.6",
     "moment": "^2.18.1",
     "typescript": "^2.3.0-dev.20170411"
   },
   "devDependencies": {},
   "scripts": {
     "build": "node node_modules/typescript/lib/tsc.js -p .",
-    "dry": "npm run build && node node_modules/idembot/bin/run.js --dry --file bin/rules.js",
-    "wet": "npm run build && node node_modules/idembot/bin/run.js       --file bin/rules.js"
+    "dry": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json --dry",
+    "wet": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json"
   },
   "repository": {
     "type": "git",

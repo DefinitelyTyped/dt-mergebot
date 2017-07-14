@@ -176,9 +176,14 @@ async function getCodeReviews(issue: bot.PullRequest): Promise<CodeReviews> {
 // assumes reviews are already in sorted order (oldest first)
 function getLatestReviews(reviews: Review[]): Review[] {
     return reviews.filter((r, i) => {
-        // Latest if no other review by the same login has a higher index
+        // Latest if no other review by the same login has a higher index.
+        // A "comment" review cannot override a disapproval review
         return !reviews.some((r2, i2) => {
-            return r.reviewer === r2.reviewer && i2 > i;
+            return (
+                r.reviewer === r2.reviewer &&
+                i2 > i &&
+                r2.verdict !== Opinion.Comment
+            );
         });
     });
 }
@@ -190,7 +195,7 @@ function hasApprovalAndNoRejection(reviews: Review[]): boolean {
 
 function parseUsernames(body: string): string[] {
     const result: string[] = [];
-    const matchRef = /@(\w+)/g;
+    const matchRef = /@([\w\d-_]+)/g;
     let match: RegExpExecArray | null;
     while (match = matchRef.exec(body)) {
         result.push(match[1]);
@@ -256,6 +261,7 @@ async function setLabels(issue: bot.PullRequest) {
     const freshReviews = latestReviews.filter(r => r.date > lastCommit.date);
 
     // If a fresh review is a rejection, mark needs CR
+    console.log('Fresh reviews: ' + JSON.stringify(freshReviews, undefined, 2));
     const needsToAddressCodeReview = freshReviews.some(r => r.verdict === Opinion.Reject);
 
     // Ping people whose non-approval needs a refresh based on new code changes
