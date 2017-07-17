@@ -4,10 +4,11 @@
   "description": "0.1.0",
   "main": "index.js",
   "dependencies": {
-    "@types/node": "^8.0.10",
+    "@types/node": "^8.0.14",
     "idembot": "0.x.x",
     "moment": "^2.18.1",
-    "typescript": "^2.3.0-dev.20170411"
+    "request": "^2.81.0",
+    "typescript": "^2.4.1"
   },
   "devDependencies": {},
   "scripts": {

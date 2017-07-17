@@ -19,6 +19,34 @@ const Labels = {
     Merge_LGTM: "Merge:LGTM"
 };
 
+let Project: bot.Project = <any>null;
+let ProjectColumns: {
+    MergeExpress: bot.ProjectColumn;
+    MergeLGTM: bot.ProjectColumn;
+    MergeYSYL: bot.ProjectColumn;
+    NewDefinitions: bot.ProjectColumn;
+    Unowned: bot.ProjectColumn;
+} = <any>null;
+
+async function getProject() {
+    if (Project === null) {
+        Project = await bot.Project.create(762086);
+        ProjectColumns = {
+            MergeExpress: findColumn("Merge: Express"),
+            MergeLGTM: findColumn("Merge: LGTM"),
+            MergeYSYL: findColumn("Merge: YSYL"),
+            NewDefinitions: findColumn("New Definitions"),
+            Unowned: findColumn("Unowned")
+        };
+    }
+}
+
+function findColumn(name: string) {
+    const col = Project.findColumnByName(name);
+    if (col === undefined) throw new Error('Cannot find project column named ' + name);
+    return col;
+}
+
 const ApprovalTokens = ['👍', ':+1:', 'lgtm', 'LGTM', ':shipit:'];
 
 enum EventKind {
@@ -232,6 +260,8 @@ async function setLabels(issue: bot.PullRequest) {
     if (!issue.isPullRequest) return;
     if (issue.state !== "open") return;
 
+    await getProject();
+
     // See if there's a merge conflict
     const mergeableState = await issue.getMergeableState();
     const hasMergeConflict = (mergeableState === false);
@@ -239,7 +269,7 @@ async function setLabels(issue: bot.PullRequest) {
     // Get Travis status
     const travis = await getTravisStatus(issue);
     const travisFailed = (travis === TravisResult.Fail);
-    const travisMissing = (travis === TravisResult.Missing);
+    const travisMissing = !hasMergeConflict && (travis === TravisResult.Missing);
 
     const commits = await getCommits(issue);
     const lastCommit = commits[commits.length - 1];
@@ -305,6 +335,16 @@ async function setLabels(issue: bot.PullRequest) {
 
     let coreStatus: string = 'Waiting for reviewers to give feedback.';
     let commentTag: string = 'waiting';
+    let targetColumn: bot.ProjectColumn | undefined = undefined;
+
+    if (!travisFailed && !hasMergeConflict && !needsRevision) {
+        if (isNewDefinition) {
+            targetColumn = ProjectColumns.NewDefinitions;
+        } else if (isUnowned) {
+            targetColumn = ProjectColumns.Unowned;
+        }
+    }
+
     if (travisFailed) {
         commentTag = 'complaint';
         coreStatus = `@${issue.user.login} Please fix the failures indicated in the Travis CI log.`;
@@ -317,17 +357,24 @@ async function setLabels(issue: bot.PullRequest) {
     } else if (isMergeExpress) {
         commentTag = 'merge';
         coreStatus = `Approved by a listed owner. PR appears ready to merge pending express review by a maintainer.`;
+        targetColumn = ProjectColumns.MergeExpress;
     } else if (isMergeLGTM) {
         commentTag = 'merge';
         coreStatus = `Approved by third party. PR appears ready to merge pending review by a maintainer.`;
+        targetColumn = ProjectColumns.MergeLGTM;
     } else if (isMergeYSYL) {
         commentTag = 'merge';
         coreStatus = `This PR has been open and unchanged 5 days without signoff or complaint. This will be merged by a maintainer soon if there are no objections.`;
+        targetColumn = ProjectColumns.MergeYSYL;
     } else if (isAbandoned) {
         commentTag = 'abandon';
         coreStatus = `@${issue.user.login} This PR appears to be abandoned and will be closed shortly if there is no other activity from you.`;
+        targetColumn = ProjectColumns.Abandoned;
     }
 
+    // Move to appropriate project
+    await Project.setIssueColumn(issue, targetColumn);
+  
     // Apply labels
     const labels = {
         [Labels.TravisFailed]: travisFailed,
@@ -343,6 +390,7 @@ async function setLabels(issue: bot.PullRequest) {
         [Labels.Unowned]: isUnowned,
         [Labels.NewDefinition]: isNewDefinition
     };
+    
     issue.setHasLabels(labels);
     if (commentTag !== 'waiting') {
         issue.addComment(commentTag, `${coreStatus}`);
@@ -355,8 +403,8 @@ async function setLabels(issue: bot.PullRequest) {
     // Ping people if they reviewed in the past but now there's a passing CI build
     if (reviewPingList.length > 0 && (travis === TravisResult.Pass)) {
         const tag = hash(reviewPingList.join(','));
-        issue.addComment(`reviewPing-${tag}`, 
-            `${reviewPingList.map(s => '@'+ s).join(' ')} - Thanks for your review of this PR! Can you please look at the new code and update your review status if appropriate?`);
+        issue.addComment(`reviewPing-${tag}`,
+            `${reviewPingList.map(s => '@' + s).join(' ')} - Thanks for your review of this PR! Can you please look at the new code and update your review status if appropriate?`);
     }
 }
 
