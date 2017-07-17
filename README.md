@@ -1,6 +1,7 @@
 # Setup
 
   > `git clone https://github.com/RyanCavanaugh/dt-mergebot.git`
+  
   > `npm install`
 
 # Running

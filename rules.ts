@@ -177,12 +177,10 @@ async function getCodeReviews(issue: bot.PullRequest): Promise<CodeReviews> {
 function getLatestReviews(reviews: Review[]): Review[] {
     return reviews.filter((r, i) => {
         // Latest if no other review by the same login has a higher index.
-        // A "comment" review cannot override a disapproval review
         return !reviews.some((r2, i2) => {
             return (
                 r.reviewer === r2.reviewer &&
-                i2 > i &&
-                r2.verdict !== Opinion.Comment
+                i2 > i
             );
         });
     });
