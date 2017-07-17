@@ -369,7 +369,6 @@ async function setLabels(issue: bot.PullRequest) {
     } else if (isAbandoned) {
         commentTag = 'abandon';
         coreStatus = `@${issue.user.login} This PR appears to be abandoned and will be closed shortly if there is no other activity from you.`;
-        targetColumn = ProjectColumns.Abandoned;
     }
 
     // Move to appropriate project
