@@ -1,12 +1,15 @@
 {
-    "files": [
-        "rules.ts"
-    ],
+    "include": ["src"],
     "compilerOptions": {
         "outDir": "bin",
         "strict": true,
         "module": "commonjs",
-        "target": "es6",
-        "types": ["node"]
+        "target": "esnext",
+        "lib": ["es2017"],
+        "types": ["node"],
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true
     }
 }

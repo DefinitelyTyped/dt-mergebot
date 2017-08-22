@@ -1,11 +1,15 @@
 const r = require('request');
 
+const authToken = process.env['AUTH_TOKEN'];
+if (authToken === undefined) {
+    throw new Error("Must set AUTH_TOKEN environment variable");
+}
+
 const headers = {
-    "Authorization": `TOKEN ${process.env['AUTH_TOKEN']}`,
+    "Authorization": `TOKEN ${authToken}`,
     "user-agent": "@RyanCavanaugh/dt-mergebot Projects Lister",
     "accept": "application/vnd.github.inertia-preview+json"
 };
-
 
 const projects = r('https://api.github.com/repos/DefinitelyTyped/DefinitelyTyped/projects', { headers }, (err, data) => {
     const body = JSON.parse(data.body);
