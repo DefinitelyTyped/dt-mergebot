@@ -26,7 +26,7 @@ export async function getCodeReviews(pr: bot.PullRequest): Promise<ReviewsInfo> 
     let reviews: Review[] = [];
     const mergeRequesters: string[] = [];
     const prUser = pr.user.login;
-    getCommentReviews(await pr.getComments(), prUser, reviews, mergeRequesters);
+    await getCommentReviews(await pr.getComments(), prUser, reviews, mergeRequesters);
     getProperReviews(await pr.getReviews(), prUser, reviews, mergeRequesters);
 
     // Sort by date, oldest first
@@ -43,12 +43,12 @@ interface Push<T> {
     push(value: T): void;
 }
 
-function getCommentReviews(
+async function getCommentReviews(
     comments: ReadonlyArray<bot.IssueComment>,
     prUser: string,
     reviews: Push<Review>,
     mergeRequesters: Push<string>,
-    ): void {
+    ): Promise<void> {
     // Parse comments
     for (const comment of comments) {
         const commenter = comment.user.login;
@@ -56,8 +56,19 @@ function getCommentReviews(
         if (commenter === prUser)
             continue;
 
-        // Found a possible review comment
-        if (commentApprovalTokens.some(at => comment.body.includes(at))) {
+        if (commenter === "dt-bot") {
+            // TODO: delete once dt-bot is gone
+            const reactions = await comment.getReactions();
+            for (const reaction of reactions) {
+                const reviewer = reaction.user.login;
+                if (reviewer === prUser)
+                    continue;
+
+                const verdict = getReactionVerdict(reaction.content);
+                if (verdict !== undefined)
+                    reviews.push({ date: new Date(reaction.created_at), reviewer, verdict });
+            }
+        } else if (commentApprovalTokens.some(at => comment.body.includes(at))) {
             // Approval via comment
             reviews.push({
                 date: comment.created_at.toDate(),
@@ -65,10 +76,20 @@ function getCommentReviews(
                 verdict: Opinion.Approve,
             });
 
-            if (comment.body.includes(mergeplzMarker)) {
+            if (comment.body.includes(mergeplzMarker))
                 mergeRequesters.push(commenter);
-            }
         }
+    }
+}
+
+function getReactionVerdict(reaction: string): Opinion | undefined {
+    switch (reaction) {
+        case "+1":
+            return Opinion.Approve;
+        case "-1":
+            return Opinion.Reject;
+        default:
+            return undefined;
     }
 }
 
