@@ -4,9 +4,9 @@ export class Project {
     private projectCache: bot.Project | undefined;
     private columnsCache = new Map<string, bot.ProjectColumn>();
 
-    async setColumn(pr: bot.PullRequest, column: ProjectColumn): Promise<void> {
+    async setColumn(pr: bot.PullRequest, column: ProjectColumn | undefined): Promise<void> {
         const project = await this.getProject();
-        project.setIssueColumn(pr, this.getColumn(project, column));
+        project.setIssueColumn(pr, column === undefined ? undefined : this.getColumn(project, column));
     }
 
     private async getProject(): Promise<bot.Project> {

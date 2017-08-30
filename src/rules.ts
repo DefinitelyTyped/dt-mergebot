@@ -15,8 +15,7 @@ function makeSetLabels(): (pr: bot.PullRequest) => Promise<void> {
 
         // Move to appropriate project
         const column = getProjectColumn(info);
-        if (column !== undefined)
-            await project.setColumn(pr, column);
+        await project.setColumn(pr, column);
 
         // Apply labels
         const labels = getLabels(info);
