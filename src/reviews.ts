@@ -2,7 +2,7 @@ import * as bot from "idembot";
 
 import { commentApprovalTokens, mergeplzMarker } from "./pr-info";
 
-export const enum Opinion { Comment, Approve, Reject }
+export const enum Opinion { Approve, Reject }
 
 export interface Review {
     // The login of the person who performed the review
@@ -105,7 +105,8 @@ function getProperReviews(
             continue;
 
         const verdict = commentToOpinion(r.state);
-        reviews.push({ date: new Date(r.submitted_at), reviewer, verdict });
+        if (verdict !== undefined)
+            reviews.push({ date: new Date(r.submitted_at), reviewer, verdict });
 
         if (verdict === Opinion.Approve && r.body.includes(mergeplzMarker)) {
             mergeRequesters.push(reviewer);
@@ -113,7 +114,7 @@ function getProperReviews(
     }
 }
 
-function commentToOpinion(state: bot.PullRequestReview["state"]): Opinion {
+function commentToOpinion(state: bot.PullRequestReview["state"]): Opinion | undefined {
     switch (state) {
         case "APPROVED":
             // Approved via code review
@@ -121,7 +122,7 @@ function commentToOpinion(state: bot.PullRequestReview["state"]): Opinion {
         case "CHANGES_REQUESTED":
             return Opinion.Reject;
         case "COMMENTED":
-            return Opinion.Comment;
+            return undefined;
         default:
             throw new Error(`Unexpected review state: ${state}`);
     }

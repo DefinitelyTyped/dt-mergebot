@@ -132,8 +132,6 @@ function hasApprovalAndNoRejection(reviews: ReadonlyArray<Review>, filter: (r: R
                 break;
             case Opinion.Reject:
                 return false;
-            case Opinion.Comment:
-                // ignore
         }
     }
     return approve;
