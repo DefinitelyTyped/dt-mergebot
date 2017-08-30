@@ -21,6 +21,7 @@
     "watch": "tsc --watch",
     "dry": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json --dry",
     "wet": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json",
+    "single": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --single",
     "lint": "tslint --project tsconfig.json --format stylish"
   },
   "repository": {
