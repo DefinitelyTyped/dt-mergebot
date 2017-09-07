@@ -4,7 +4,7 @@
         "outDir": "bin",
         "strict": true,
         "module": "commonjs",
-        "target": "esnext",
+        "target": "es6",
         "lib": ["es2017"],
         "types": ["node"],
         "noUnusedLocals": true,
