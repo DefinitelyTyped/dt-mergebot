@@ -8,9 +8,7 @@
     "idembot": "0.0.10",
     "moment": "^2.18.1",
     "node-fetch": "^1.7.3",
-    "request": "^2.81.0"
-  },
-  "devDependencies": {
+    "request": "^2.81.0",
     "@types/node": "^8.0.28",
     "@types/node-fetch": "^1.6.7",
     "tslint": "latest",
