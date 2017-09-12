@@ -1,6 +1,6 @@
 {
   "name": "dt-mergebot",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "dt-mergebot",
   "main": "index.js",
   "dependencies": {
