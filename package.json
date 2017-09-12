@@ -4,17 +4,17 @@
   "description": "dt-mergebot",
   "main": "index.js",
   "dependencies": {
-    "definitelytyped-header-parser": "Microsoft/definitelytyped-header-parser#production",
-    "idembot": "0.x.x",
+    "definitelytyped-header-parser": "github:Microsoft/definitelytyped-header-parser#production",
+    "idembot": "0.0.10",
     "moment": "^2.18.1",
-    "node-fetch": "^1.7.2",
+    "node-fetch": "^1.7.3",
     "request": "^2.81.0"
   },
   "devDependencies": {
-    "@types/node": "^8.0.14",
+    "@types/node": "^8.0.28",
     "@types/node-fetch": "^1.6.7",
     "tslint": "latest",
-    "typescript": "next"
+    "typescript": "^2.6.0-dev.20170912"
   },
   "scripts": {
     "build": "tsc",
