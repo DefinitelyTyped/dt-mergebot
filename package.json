@@ -1,7 +1,7 @@
 {
   "name": "dt-mergebot",
   "version": "1.0.0",
-  "description": "0.1.0",
+  "description": "dt-mergebot",
   "main": "index.js",
   "dependencies": {
     "definitelytyped-header-parser": "Microsoft/definitelytyped-header-parser#production",
