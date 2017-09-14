@@ -38,11 +38,9 @@ export function getLabels(info: PrInfo): { readonly [label: string]: boolean } {
 function getKindLabels(labels: { [key: string]: boolean }, kind: InfoKind): void {
     for (const key in InfoKind) { // tslint:disable-line forin
         const value = InfoKind[key];
-        if (typeof value === "number") { // tslint:disable-line strict-type-predicates
-            const label = kindToLabel(value);
-            if (label !== undefined) {
-                labels[label] = value === kind;
-            }
+        const label = kindToLabel(value as InfoKind);
+        if (label !== undefined) {
+            labels[label] = value === kind;
         }
     }
 }
