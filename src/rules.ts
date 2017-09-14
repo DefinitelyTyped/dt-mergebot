@@ -19,6 +19,8 @@ function makeSetLabels(): (pr: bot.PullRequest) => Promise<void> {
 
         // Apply labels
         const labels = getLabels(info);
+        console.log(`Issue status: ${info.kind}`);
+        console.log(`Adding labels: ${JSON.stringify(labels)}`);
         pr.setHasLabels(labels);
 
         for (const { tag, status } of getComments(info, pr.user.login))
