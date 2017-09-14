@@ -22,5 +22,6 @@ call npm link idembot
 call npm link definitelytyped-header-parser
 call npm run build
 call npm run wet
+call npm run cleanproject
 timeout 3600
 loop

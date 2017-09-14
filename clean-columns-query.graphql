@@ -1,0 +1,27 @@
+query { 
+  repository(owner:"DefinitelyTyped", name:"DefinitelyTyped") {
+    project(number: 3) {
+      name,
+      columns(first: 100) {
+        edges {
+          node {
+            cards(first: 100) {
+              edges {
+                node {
+                  databaseId
+                  content {
+                    ... on PullRequest {
+                      state
+                      id
+                      number
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
