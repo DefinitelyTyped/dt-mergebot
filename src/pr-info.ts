@@ -42,7 +42,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
 
     const lastCommitDate = await getLastCommitDate(pr);
 
-    const { owners, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages } = await getPackagesInfo(
+    const { ownersAsLower, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages } = await getPackagesInfo(
         pr.repository.reference,
         (await pr.getFilesRaw()).map(f => f.filename),
         // tslint:disable-next-line align
@@ -50,8 +50,8 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
 
     const { reviews, mergeRequesters } = await getCodeReviews(pr);
     // Check for approval (which may apply to a prior commit; assume PRs do not regress in this fashion)
-    const isOwnerApproved = hasApprovalAndNoRejection(reviews, r => owners.has(r.reviewer));
-    const isOtherApproved = hasApprovalAndNoRejection(reviews, r => !owners.has(r.reviewer));
+    const isOwnerApproved = hasApprovalAndNoRejection(reviews, r => ownersAsLower.has(r.reviewer.toLowerCase()));
+    const isOtherApproved = hasApprovalAndNoRejection(reviews, r => !ownersAsLower.has(r.reviewer.toLowerCase()));
 
     // If a fresh review is a rejection, mark needs CR
     const firstBadReview = reviews.find(r => r.date >= lastCommitDate && r.verdict === Opinion.Reject);
@@ -62,7 +62,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
 
     const files = await pr.getFilesRaw();
     const isNewDefinition = files.some(file => file.status === "added" && file.filename.endsWith("/tsconfig.json"));
-    const isUnowned = !isNewDefinition && owners.size === 0;
+    const isUnowned = !isNewDefinition && ownersAsLower.size === 0;
 
     const kind = (() => { // tslint:disable-line cyclomatic-complexity
         if (travisFailed) {
@@ -83,7 +83,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
 
         if (!unmergeable && travisResult === TravisResult.Pass) {
             if (isOwnerApproved) {
-                if (mergeRequesters.some(u => owners.has(u))
+                if (mergeRequesters.some(u => ownersAsLower.has(u.toLowerCase()))
                     && !touchesNonPackage
                     && !touchesPopularPackage
                     && !touchesMultiplePackages

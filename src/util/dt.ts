@@ -8,6 +8,7 @@ import { mapDefined, someAsync } from "./util";
 
 export interface PackageInfo {
     readonly owners: ReadonlySet<string>;
+    readonly ownersAsLower: ReadonlySet<string>;
     // Manual review is required for changes to popular packages like `types/node`,
     // or changes to files outside of packages (such as `/.github/CODEOWNERS`).
     readonly touchesNonPackage: boolean;
@@ -21,15 +22,17 @@ export async function getPackagesInfo(
     maxMonthlyDownloads: number): Promise<PackageInfo> {
     const { packageNames, touchesNonPackage } = getChangedPackages(changedFiles);
     const owners = new Set<string>();
+    const ownersAsLower = new Set<string>();
     for (const packageName of packageNames) {
         for (const owner of await getPackageOwners(repository, packageName)) {
             owners.add(owner);
+            ownersAsLower.add(owner.toLowerCase());
         }
     }
     const touchesPopularPackage = await someAsync(packageNames, async packageName =>
         await getMonthlyDownloadCount(packageName) > maxMonthlyDownloads);
     const touchesMultiplePackages = packageNames.length > 2;
-    return { owners, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages };
+    return { owners, ownersAsLower, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages };
 }
 
 async function getPackageOwners({ owner, name }: RepoReference, packageName: string): Promise<ReadonlyArray<string>> {
