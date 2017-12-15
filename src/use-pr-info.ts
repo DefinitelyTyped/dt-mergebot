@@ -86,32 +86,30 @@ export function getComments({ kind, reviewPingList, travisResult }: PrInfo, user
 function getMainComment(kind: InfoKind, user: string): Comment | undefined {
     switch (kind) {
         case InfoKind.TravisFailed:
-            return { tag: "complaint", status: `@${user} Please fix the failures indicated in the Travis CI log.` };
+            return { tag: "complaint", status: `@${user} The Travis CI build failed! Please review the logs for more information. Once you've pushed the fixes, the build will automatically re-run. Thanks!` };
         case InfoKind.HasMergeConflict:
-            return { tag: "complaint", status: `@${user} Please address the merge conflict.` };
+            return { tag: "complaint", status: `@${user} Unfortunately, this pull request currently has a merge conflict 😥. Please update your PR branch to be up-to-date with respect to master. Have a nice day!` };
         case InfoKind.NeedsRevision:
-            return { tag: "complaint", status: `@${user} Please address comments from the code reviewers.` };
+            return { tag: "complaint", status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!` };
         case InfoKind.MergeExpress:
             return {
                 tag: "merge",
-                status: "Approved by a listed owner. PR ready to merge pending express review by a maintainer.",
+                status: "A definition author has approved this PR 👍. A maintainer will merge this PR shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!",
             };
         case InfoKind.MergeLgtm:
             return {
                 tag: "merge",
-                status: "Approved by third party. PR appears ready to merge pending review by a maintainer.",
+                status: "We've gotten sign-off from a reviewer 👏. A maintainer will soon review this PR and merge it if there are no issues. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for contributing to DefinitelyTyped!",
             };
         case InfoKind.MergeYsyl:
             return {
                 tag: "merge",
-                status: "This PR has been open and unchanged 5 days without signoff or complaint. " +
-                    "This will be merged by a maintainer soon if there are no objections.",
+                status: "After 5 days, no one has reviewed the PR 😞. A maintainer will be reviewing the PR in the next few days and will either merge it or request revisions. Thank you for your patience!",
             };
         case InfoKind.Abandoned:
             return {
                 tag: "abandon",
-                status: `@${user} This PR appears abandoned and will be closed soon ` +
-                    "if there is no other activity from you.",
+                status: `@${user} This PR doesn't seem to be mergeable, but we haven't seen you in a while. We'll close this for housekeeping reasons, but will always accept a new PR. Thank you for helping DefinitelyTyped!`,
             };
         case InfoKind.MergeAuto: // No need to comment, just merge
         case InfoKind.Waiting:
