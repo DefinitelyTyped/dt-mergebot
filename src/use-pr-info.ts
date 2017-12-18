@@ -94,7 +94,7 @@ function getMainComment(kind: InfoKind, user: string): Comment | undefined {
         case InfoKind.MergeExpress:
             return {
                 tag: "merge",
-                status: "A definition author has approved this PR 👍. A maintainer will merge this PR shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!",
+                status: "A definition author has approved this PR ⭐️. A maintainer will merge this PR shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!",
             };
         case InfoKind.MergeLgtm:
             return {
@@ -135,7 +135,7 @@ function getTravisComment(
             return {
                 tag: `reviewPing-${tag}`,
                 // tslint:disable-next-line prefer-template
-                status: `${reviewPingList.map(s => "@" + s).join(" ")} - Thanks for your review of this PR! ` +
+                status: `🔔 ${reviewPingList.map(s => "@" + s).join(" ")} - Thanks for your review of this PR! ` +
                     "Can you please look at the new code and update your review status if appropriate?",
             };
 
