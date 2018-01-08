@@ -3,6 +3,7 @@ import { getMonthlyDownloadCount } from "./npm";
 import { someAsync } from "./util";
 
 export interface PackageInfo {
+    readonly authorIsOwner: boolean;
     readonly owners: ReadonlySet<string>;
     readonly ownersAsLower: ReadonlySet<string>;
     // Manual review is required for changes to popular packages like `types/node`,
@@ -40,14 +41,19 @@ export async function getPackagesInfo(
     const { packageNames, touchesNonPackage } = getChangedPackages(changedFiles);
     const owners = new Set<string>();
     const ownersAsLower = new Set<string>();
+    let authorIsOwner = false;
 
     await fetchCodeOwnersIfNeeded();
     for (const codeOwnerLine of codeOwners) {
         for (const fileName of changedFiles) {
             // Reported filename doesn't start with / but the CODEOWNERS filename does
             if (('/' + fileName).startsWith(codeOwnerLine[0])) {
+                console.log('file: ' + fileName);
                 for (const owner of codeOwnerLine[1]) {
-                    if (author.toLowerCase() !== owner.toLowerCase()) {
+                    console.log('owner: ' + owner);
+                    if (author.toLowerCase() === owner.toLowerCase()) {
+                        authorIsOwner = true;
+                    } else {
                         owners.add(owner);
                         ownersAsLower.add(owner.toLowerCase());
                     }
@@ -59,7 +65,7 @@ export async function getPackagesInfo(
     const touchesPopularPackage = await someAsync(packageNames, async packageName =>
         await getMonthlyDownloadCount(packageName) > maxMonthlyDownloads);
     const touchesMultiplePackages = packageNames.length > 2;
-    return { owners, ownersAsLower, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages };
+    return { owners, ownersAsLower, authorIsOwner, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages };
 }
 
 interface ChangedPackages {

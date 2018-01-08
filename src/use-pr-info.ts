@@ -31,7 +31,8 @@ export function getLabels(info: PrInfo): { readonly [label: string]: boolean } {
         "Unowned": info.isUnowned,
         "New Definition": info.isNewDefinition,
         "Popular package": info.touchesPopularPackage,
-        "Awaiting reviewer feedback": !info.isUnowned && !info.isOwnerApproved
+        "Awaiting reviewer feedback": !info.isUnowned && !info.isOwnerApproved,
+        "Author is Owner": info.authorIsOwner
     };
     getKindLabels(labels, info.kind);
     return labels;
@@ -100,14 +101,14 @@ function getGreetingComment(info: PrInfo): Comment {
         
 Because this is a new definition, a DefinitelyTyped maintainer will be reviewing this PR in the next few days once the Travis CI build passes.
         
-In the meantime, if Travis fails or a merge conflict occurs, I'll let you know. Have a nice day!`;
+In the meantime, if the build fails or a merge conflict occurs, I'll let you know. Have a nice day!`;
     }
     else if (info.isUnowned) {
         comment = `@${info.author} Thank you for submitting this PR!
         
 Because this PR doesn't have any code reveiwers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the Travis CI build passes.
         
-In the meantime, if Travis fails or a merge conflict occurs, I'll let you know. Have a nice day!`;
+In the meantime, if the build fails or a merge conflict occurs, I'll let you know. Have a nice day!`;
     }
     else {
         const ownerList = Array.from(info.owners.values()).map(o => `@${o}`).join(' ');

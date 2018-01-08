@@ -11,6 +11,7 @@ export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
 export const mergeplzMarker = "mergeplz";
 
 export interface PrInfo {
+    readonly authorIsOwner: boolean;
     readonly author: string;
     readonly owners: ReadonlySet<string>;
     readonly kind: InfoKind;
@@ -46,7 +47,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
 
     const lastCommitDate = await getLastCommitDate(pr);
 
-    const { owners, ownersAsLower, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages } = await getPackagesInfo(
+    const { owners, ownersAsLower, authorIsOwner, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages } = await getPackagesInfo(
         pr.user.login,
         (await pr.getFilesRaw()).map(f => f.filename),
         // tslint:disable-next-line align
@@ -120,6 +121,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
 
     const reviewLink = `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${pr.number}/files`;
     return {
+        authorIsOwner,
         author: pr.user.login,
         owners,
         reviewLink,
