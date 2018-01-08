@@ -31,10 +31,12 @@ export function getLabels(info: PrInfo): { readonly [label: string]: boolean } {
         "Unowned": info.isUnowned,
         "New Definition": info.isNewDefinition,
         "Popular package": info.touchesPopularPackage,
+        "Awaiting reviewer feedback": !info.isUnowned && !info.isOwnerApproved
     };
     getKindLabels(labels, info.kind);
     return labels;
 }
+
 function getKindLabels(labels: { [key: string]: boolean }, kind: InfoKind): void {
     for (const key in InfoKind) { // tslint:disable-line forin
         const value = InfoKind[key];
@@ -44,6 +46,7 @@ function getKindLabels(labels: { [key: string]: boolean }, kind: InfoKind): void
         }
     }
 }
+
 function kindToLabel(kind: InfoKind): string | undefined {
     switch (kind) {
         case InfoKind.TravisFailed:
@@ -71,8 +74,13 @@ export interface Comment {
     readonly tag: string;
     readonly status: string;
 }
-export function getComments({ kind, reviewPingList, travisResult }: PrInfo, user: string): ReadonlyArray<Comment> {
+export function getComments(info: PrInfo, user: string): ReadonlyArray<Comment> {
+    const { kind, reviewPingList, travisResult } = info;
+
     const comments: Comment[] = [];
+    const greetingComment = getGreetingComment(info);
+    comments.push(greetingComment);
+
     const mainComment = getMainComment(kind, user);
     if (mainComment !== undefined) {
         comments.push(mainComment);
@@ -83,6 +91,39 @@ export function getComments({ kind, reviewPingList, travisResult }: PrInfo, user
     }
     return comments;
 }
+
+function getGreetingComment(info: PrInfo): Comment {
+    let comment: string;
+    
+    if (info.isNewDefinition) {
+        comment = `@${info.author} Thank you for submitting this PR!
+        
+Because this is a new definition, a DefinitelyTyped maintainer will be reviewing this PR in the next few days once the Travis CI build passes.
+        
+In the meantime, if Travis fails or a merge conflict occurs, I'll let you know. Have a nice day!`;
+    }
+    else if (info.isUnowned) {
+        comment = `@${info.author} Thank you for submitting this PR!
+        
+Because this PR doesn't have any code reveiwers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the Travis CI build passes.
+        
+In the meantime, if Travis fails or a merge conflict occurs, I'll let you know. Have a nice day!`;
+    }
+    else {
+        const ownerList = Array.from(info.owners.values()).map(o => `@${o}`).join(' ');
+        comment = `@${info.author} Thank you for submitting this PR!
+
+🔔 ${ownerList} - please [review this PR](${info.reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.
+
+If no reviewer appears after a week, a DefinitelyTyped maintainer will review the PR instead.`;
+    }
+
+    return ({
+        tag: "welcome",
+        status: comment
+    });
+}
+
 function getMainComment(kind: InfoKind, user: string): Comment | undefined {
     switch (kind) {
         case InfoKind.TravisFailed:

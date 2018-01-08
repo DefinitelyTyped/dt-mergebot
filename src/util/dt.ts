@@ -1,10 +1,6 @@
-import { RepoReference } from "idembot";
-
-import { Header, parseHeaderOrFail } from "definitelytyped-header-parser";
-
 import { fetchText } from "./io";
 import { getMonthlyDownloadCount } from "./npm";
-import { mapDefined, someAsync } from "./util";
+import { someAsync } from "./util";
 
 export interface PackageInfo {
     readonly owners: ReadonlySet<string>;
@@ -16,36 +12,54 @@ export interface PackageInfo {
     readonly touchesMultiplePackages: boolean;
 }
 
+let codeOwners: [string, string[]][] = [];
+async function fetchCodeOwnersIfNeeded() {
+    if (codeOwners.length > 0) return;
+
+    // https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/master/.github/CODEOWNERS
+    const raw = await fetchText("https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/master/.github/CODEOWNERS");
+    for (const line of raw.split(/\r?\n/g)) {
+        if (line.trim().length === 0) continue;
+        const match = /^(\S+)\s+(.*)$/.exec(line);
+        if (!match) throw new Error(`Expected the line from CODEOWNERS to match the regexp - ${line}`);
+        
+        codeOwners.push([match[1], match[2].split(" ").map(removeLeadingAt)]);
+    }
+
+    function removeLeadingAt(s: string) {
+        if (s[0] === '@') return s.substr(1);
+        return s;
+    }
+}
+
 export async function getPackagesInfo(
-    repository: RepoReference,
+    author: string,
     changedFiles: ReadonlyArray<string>,
     maxMonthlyDownloads: number): Promise<PackageInfo> {
+
     const { packageNames, touchesNonPackage } = getChangedPackages(changedFiles);
     const owners = new Set<string>();
     const ownersAsLower = new Set<string>();
-    for (const packageName of packageNames) {
-        for (const owner of await getPackageOwners(repository, packageName)) {
-            owners.add(owner);
-            ownersAsLower.add(owner.toLowerCase());
+
+    await fetchCodeOwnersIfNeeded();
+    for (const codeOwnerLine of codeOwners) {
+        for (const fileName of changedFiles) {
+            // Reported filename doesn't start with / but the CODEOWNERS filename does
+            if (('/' + fileName).startsWith(codeOwnerLine[0])) {
+                for (const owner of codeOwnerLine[1]) {
+                    if (author.toLowerCase() !== owner.toLowerCase()) {
+                        owners.add(owner);
+                        ownersAsLower.add(owner.toLowerCase());
+                    }
+                }
+            }
         }
     }
+
     const touchesPopularPackage = await someAsync(packageNames, async packageName =>
         await getMonthlyDownloadCount(packageName) > maxMonthlyDownloads);
     const touchesMultiplePackages = packageNames.length > 2;
     return { owners, ownersAsLower, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages };
-}
-
-async function getPackageOwners({ owner, name }: RepoReference, packageName: string): Promise<ReadonlyArray<string>> {
-    // Query DefinitelyTyped master for the owners
-    const url = `https://raw.githubusercontent.com/${owner}/${name}/master/types/${packageName}/index.d.ts`;
-    const text = await fetchText(url);
-    let header: Header;
-    try {
-        header = parseHeaderOrFail(text);
-    } catch {
-        return [];
-    }
-    return mapDefined(header.contributors, c => c.githubUsername);
 }
 
 interface ChangedPackages {

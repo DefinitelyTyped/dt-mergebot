@@ -1,8 +1,8 @@
 import * as bot from "idembot";
 
-import { commentApprovalTokens, mergeplzMarker } from "./pr-info";
+import { commentApprovalTokens, commentDisapprovalTokens, mergeplzMarker } from "./pr-info";
 
-export const enum Opinion { Approve, Reject }
+export const enum Opinion { Unknown, Approve, Reject }
 
 export interface Review {
     // The login of the person who performed the review
@@ -22,6 +22,7 @@ interface ReviewsInfo {
     readonly reviews: ReadonlyArray<Review>;
     readonly mergeRequesters: ReadonlyArray<string>;
 }
+
 export async function getCodeReviews(pr: bot.PullRequest): Promise<ReviewsInfo> {
     let reviews: Review[] = [];
     const mergeRequesters: string[] = [];
@@ -56,19 +57,7 @@ async function getCommentReviews(
         if (commenter === prUser)
             continue;
 
-        if (commenter === "dt-bot") {
-            // TODO: delete once dt-bot is gone
-            const reactions = await comment.getReactions();
-            for (const reaction of reactions) {
-                const reviewer = reaction.user.login;
-                if (reviewer === prUser)
-                    continue;
-
-                const verdict = getReactionVerdict(reaction.content);
-                if (verdict !== undefined)
-                    reviews.push({ date: new Date(reaction.created_at), reviewer, verdict });
-            }
-        } else if (commentApprovalTokens.some(at => comment.body.includes(at))) {
+        if (commentApprovalTokens.some(at => comment.body.includes(at)) && commentDisapprovalTokens.every(dt => !comment.body.includes(dt))) {
             // Approval via comment
             reviews.push({
                 date: comment.created_at.toDate(),
@@ -76,20 +65,10 @@ async function getCommentReviews(
                 verdict: Opinion.Approve,
             });
 
-            if (comment.body.includes(mergeplzMarker))
+            if (comment.body.includes(mergeplzMarker)) {
                 mergeRequesters.push(commenter);
+            }
         }
-    }
-}
-
-function getReactionVerdict(reaction: string): Opinion | undefined {
-    switch (reaction) {
-        case "+1":
-            return Opinion.Approve;
-        case "-1":
-            return Opinion.Reject;
-        default:
-            return undefined;
     }
 }
 

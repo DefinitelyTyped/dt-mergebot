@@ -11,7 +11,6 @@ function makeSetLabels(): (pr: bot.PullRequest) => Promise<void> {
             return;
 
         const info = await getPRInfo(pr);
-        console.log(pr.fullName, info);
 
         // Move to appropriate project
         const column = getProjectColumn(info);
@@ -19,8 +18,6 @@ function makeSetLabels(): (pr: bot.PullRequest) => Promise<void> {
 
         // Apply labels
         const labels = getLabels(info);
-        console.log(`Issue status: ${info.kind}`);
-        console.log(`Adding labels: ${JSON.stringify(labels)}`);
         pr.setHasLabels(labels);
 
         for (const { tag, status } of getComments(info, pr.user.login))

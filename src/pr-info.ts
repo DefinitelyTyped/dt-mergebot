@@ -7,12 +7,16 @@ import { getTravisStatus, TravisResult } from "./util/travis";
 import { mapDefined } from "./util/util";
 
 export const commentApprovalTokens: ReadonlyArray<string> = ["👍", ":+1:", "lgtm", "LGTM", ":shipit:"];
+export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
 export const mergeplzMarker = "mergeplz";
 
 export interface PrInfo {
+    readonly author: string;
+    readonly owners: ReadonlySet<string>;
     readonly kind: InfoKind;
     readonly travisResult: TravisResult;
     readonly reviewPingList: ReadonlyArray<string>;
+    readonly reviewLink: string;
     readonly isOwnerApproved: boolean;
     readonly isOtherApproved: boolean;
     readonly isUnowned: boolean;
@@ -42,12 +46,12 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
 
     const lastCommitDate = await getLastCommitDate(pr);
 
-    const { ownersAsLower, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages } = await getPackagesInfo(
-        pr.repository.reference,
+    const { owners, ownersAsLower, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages } = await getPackagesInfo(
+        pr.user.login,
         (await pr.getFilesRaw()).map(f => f.filename),
         // tslint:disable-next-line align
         /*maxMonthlyDownloads*/ 200000);
-
+    
     const { reviews, mergeRequesters } = await getCodeReviews(pr);
     // Check for approval (which may apply to a prior commit; assume PRs do not regress in this fashion)
     const isOwnerApproved = hasApprovalAndNoRejection(reviews, r => ownersAsLower.has(r.reviewer.toLowerCase()));
@@ -114,7 +118,11 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
         return InfoKind.Waiting;
     })();
 
+    const reviewLink = `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${pr.number}/files`;
     return {
+        author: pr.user.login,
+        owners,
+        reviewLink,
         kind, travisResult, reviewPingList,
         isOwnerApproved, isOtherApproved, isUnowned, isNewDefinition, touchesPopularPackage,
     };
