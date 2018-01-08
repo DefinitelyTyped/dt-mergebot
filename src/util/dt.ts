@@ -41,19 +41,19 @@ export async function getPackagesInfo(
     const { packageNames, touchesNonPackage } = getChangedPackages(changedFiles);
     const owners = new Set<string>();
     const ownersAsLower = new Set<string>();
-    let authorIsOwner = false;
+    let authorIsOwner: boolean | undefined = undefined;
 
     await fetchCodeOwnersIfNeeded();
     for (const codeOwnerLine of codeOwners) {
         for (const fileName of changedFiles) {
             // Reported filename doesn't start with / but the CODEOWNERS filename does
             if (('/' + fileName).startsWith(codeOwnerLine[0])) {
-                console.log('file: ' + fileName);
-                for (const owner of codeOwnerLine[1]) {
-                    console.log('owner: ' + owner);
-                    if (author.toLowerCase() === owner.toLowerCase()) {
-                        authorIsOwner = true;
-                    } else {
+                const isOwner = isInOwnerList(author, codeOwnerLine[1]);
+                if (isOwner) {
+                    authorIsOwner = (authorIsOwner === undefined) ? true : authorIsOwner;
+                } else {
+                    authorIsOwner = false;
+                    for (const owner of codeOwnerLine[1]) {
                         owners.add(owner);
                         ownersAsLower.add(owner.toLowerCase());
                     }
@@ -62,10 +62,19 @@ export async function getPackagesInfo(
         }
     }
 
+    authorIsOwner = (authorIsOwner === undefined) ? false : authorIsOwner;
     const touchesPopularPackage = await someAsync(packageNames, async packageName =>
         await getMonthlyDownloadCount(packageName) > maxMonthlyDownloads);
     const touchesMultiplePackages = packageNames.length > 2;
     return { owners, ownersAsLower, authorIsOwner, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages };
+}
+
+function isInOwnerList(user: string, ownerList: string[]): boolean {
+    user = user.toLowerCase();
+    for (const owner of ownerList) {
+        if (owner.toLowerCase() === user) return true;
+    }
+    return false;
 }
 
 interface ChangedPackages {

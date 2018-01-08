@@ -18,6 +18,7 @@ export interface PrInfo {
     readonly travisResult: TravisResult;
     readonly reviewPingList: ReadonlyArray<string>;
     readonly reviewLink: string;
+    readonly isChangesRequested: boolean;
     readonly isOwnerApproved: boolean;
     readonly isOtherApproved: boolean;
     readonly isUnowned: boolean;
@@ -57,6 +58,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
     // Check for approval (which may apply to a prior commit; assume PRs do not regress in this fashion)
     const isOwnerApproved = hasApprovalAndNoRejection(reviews, r => ownersAsLower.has(r.reviewer.toLowerCase()));
     const isOtherApproved = hasApprovalAndNoRejection(reviews, r => !ownersAsLower.has(r.reviewer.toLowerCase()));
+    const isChangesRequested = reviews.some(r => r.verdict === Opinion.Reject);
 
     // If a fresh review is a rejection, mark needs CR
     const firstBadReview = reviews.find(r => r.date >= lastCommitDate && r.verdict === Opinion.Reject);
@@ -87,7 +89,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
         }
 
         if (!unmergeable && travisResult === TravisResult.Pass) {
-            if (isOwnerApproved) {
+            if (isOwnerApproved || authorIsOwner) {
                 if (mergeRequesters.some(u => ownersAsLower.has(u.toLowerCase()))
                     && !touchesNonPackage
                     && !touchesPopularPackage
@@ -126,7 +128,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
         owners,
         reviewLink,
         kind, travisResult, reviewPingList,
-        isOwnerApproved, isOtherApproved, isUnowned, isNewDefinition, touchesPopularPackage,
+        isChangesRequested, isOwnerApproved, isOtherApproved, isUnowned, isNewDefinition, touchesPopularPackage,
     };
 }
 

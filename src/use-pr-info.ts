@@ -28,10 +28,10 @@ export function getLabels(info: PrInfo): { readonly [label: string]: boolean } {
         "Author Approved": info.isOwnerApproved,
         "Other Approved": info.isOtherApproved,
         "Where is Travis?": info.travisResult === TravisResult.Missing,
-        "Unowned": info.isUnowned,
+        "Unowned": info.isUnowned && !info.authorIsOwner,
         "New Definition": info.isNewDefinition,
         "Popular package": info.touchesPopularPackage,
-        "Awaiting reviewer feedback": !info.isUnowned && !info.isOwnerApproved,
+        "Awaiting reviewer feedback": !info.isUnowned && !info.isOwnerApproved && info.travisResult !== TravisResult.Fail,
         "Author is Owner": info.authorIsOwner
     };
     getKindLabels(labels, info.kind);
@@ -76,13 +76,13 @@ export interface Comment {
     readonly status: string;
 }
 export function getComments(info: PrInfo, user: string): ReadonlyArray<Comment> {
-    const { kind, reviewPingList, travisResult } = info;
+    const { reviewPingList, travisResult } = info;
 
     const comments: Comment[] = [];
     const greetingComment = getGreetingComment(info);
     comments.push(greetingComment);
 
-    const mainComment = getMainComment(kind, user);
+    const mainComment = getMainComment(info, user);
     if (mainComment !== undefined) {
         comments.push(mainComment);
     }
@@ -104,11 +104,19 @@ Because this is a new definition, a DefinitelyTyped maintainer will be reviewing
 In the meantime, if the build fails or a merge conflict occurs, I'll let you know. Have a nice day!`;
     }
     else if (info.isUnowned) {
-        comment = `@${info.author} Thank you for submitting this PR!
+        if (info.authorIsOwner) {
+            comment = `@${info.author} Thank you for submitting this PR!
         
+Pull requests from definition owners are typically merged after quick review from a DefinitelyTyped maintainer once the CI passes.
+                    
+In the meantime, if the build fails or a merge conflict occurs, I'll let you know. Have a nice day!`;
+        } else {
+            comment = `@${info.author} Thank you for submitting this PR!
+
 Because this PR doesn't have any code reveiwers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the Travis CI build passes.
         
 In the meantime, if the build fails or a merge conflict occurs, I'll let you know. Have a nice day!`;
+        }
     }
     else {
         const ownerList = Array.from(info.owners.values()).map(o => `@${o}`).join(' ');
@@ -125,8 +133,8 @@ If no reviewer appears after a week, a DefinitelyTyped maintainer will review th
     });
 }
 
-function getMainComment(kind: InfoKind, user: string): Comment | undefined {
-    switch (kind) {
+function getMainComment(info: PrInfo, user: string): Comment | undefined {
+    switch (info.kind) {
         case InfoKind.TravisFailed:
             return { tag: "complaint", status: `@${user} The Travis CI build failed! Please review the logs for more information. Once you've pushed the fixes, the build will automatically re-run. Thanks!` };
         case InfoKind.HasMergeConflict:
@@ -134,10 +142,22 @@ function getMainComment(kind: InfoKind, user: string): Comment | undefined {
         case InfoKind.NeedsRevision:
             return { tag: "complaint", status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!` };
         case InfoKind.MergeExpress:
-            return {
-                tag: "merge",
-                status: "A definition author has approved this PR ⭐️. A maintainer will merge this PR shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!",
-            };
+            if (info.isOwnerApproved) {
+                return {
+                    tag: "merge",
+                    status: "A definition author has approved this PR ⭐️. A maintainer will merge this PR shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!",
+                };
+            } else if (info.authorIsOwner) {
+                return {
+                    tag: "merge",
+                    status: "Since you're a listed author and the build passed, this PR is fast-tracked. A maintainer will merge shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!",
+                };
+            } else {
+                return {
+                    tag: "merge",
+                    status: "I don't quite know why, but my programming is telling me to merge this ASAP. But be wary because I'm apparently very confused right now.",
+                };
+            }
         case InfoKind.MergeLgtm:
             return {
                 tag: "merge",
