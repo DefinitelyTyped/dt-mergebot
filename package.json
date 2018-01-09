@@ -18,6 +18,7 @@
     "typescript": "^2.6.2"
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
     "build": "tsc",
     "watch": "tsc --watch",
     "dry": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json --dry",

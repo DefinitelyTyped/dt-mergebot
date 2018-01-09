@@ -23,7 +23,7 @@ async function fetchCodeOwnersIfNeeded() {
         if (line.trim().length === 0) continue;
         const match = /^(\S+)\s+(.*)$/.exec(line);
         if (!match) throw new Error(`Expected the line from CODEOWNERS to match the regexp - ${line}`);
-        
+
         codeOwners.push([match[1], match[2].split(" ").map(removeLeadingAt)]);
     }
 
@@ -53,7 +53,10 @@ export async function getPackagesInfo(
                     authorIsOwner = (authorIsOwner === undefined) ? true : authorIsOwner;
                 } else {
                     authorIsOwner = false;
-                    for (const owner of codeOwnerLine[1]) {
+                }
+                
+                for (const owner of codeOwnerLine[1]) {
+                    if (owner.toLowerCase() !== author.toLowerCase()) {
                         owners.add(owner);
                         ownersAsLower.add(owner.toLowerCase());
                     }

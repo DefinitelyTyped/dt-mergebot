@@ -31,7 +31,7 @@ export function getLabels(info: PrInfo): { readonly [label: string]: boolean } {
         "Unowned": info.isUnowned && !info.authorIsOwner,
         "New Definition": info.isNewDefinition,
         "Popular package": info.touchesPopularPackage,
-        "Awaiting reviewer feedback": !info.isUnowned && !info.isOwnerApproved && info.travisResult !== TravisResult.Fail,
+        "Awaiting reviewer feedback": !info.isUnowned && !info.isOwnerApproved && info.travisResult !== TravisResult.Fail && !info.isChangesRequested,
         "Author is Owner": info.authorIsOwner
     };
     getKindLabels(labels, info.kind);
