@@ -113,7 +113,7 @@ In the meantime, if the build fails or a merge conflict occurs, I'll let you kno
         } else {
             comment = `@${info.author} Thank you for submitting this PR!
 
-Because this PR doesn't have any code reveiwers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the Travis CI build passes.
+Because this PR doesn't have any code reviewers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the Travis CI build passes.
         
 In the meantime, if the build fails or a merge conflict occurs, I'll let you know. Have a nice day!`;
         }
