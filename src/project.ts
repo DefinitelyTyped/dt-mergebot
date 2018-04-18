@@ -12,7 +12,9 @@ export class Project {
     private async getProject(): Promise<bot.Project> {
         let project = this.projectCache;
         if (project === undefined) {
-            project = await bot.Project.create(762086); // TODO: magic number
+            // Magic number 1444956 comes from the internal id of the
+            // project board - run list-project-columns.js to see this information
+            project = await bot.Project.create(1444956); // TODO: magic number
             this.projectCache = project;
         }
         return project;
@@ -28,11 +30,11 @@ export class Project {
         return column;
     }
 }
-// Keep this in sync with https://github.com/DefinitelyTyped/DefinitelyTyped/projects/3
+// Keep this in sync with https://github.com/DefinitelyTyped/DefinitelyTyped/projects/4
 export const enum ProjectColumn {
-    NewDefinitions = "New Definitions",
-    Unowned = "Unowned",
-    MergeExpress = "Merge: Express",
-    MergeLGTM = "Merge: LGTM",
-    MergeYSYL = "Merge: YSYL",
+    CheckAndMerge = "Check and Merge",
+    Review = "Review",
+    WaitingForReviewers = "Waiting for Reviewers",
+    NeedsAuthorAttention = "Needs Author Attention",
+    Other = "Other"
 }

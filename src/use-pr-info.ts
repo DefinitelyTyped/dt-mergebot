@@ -1,80 +1,65 @@
 import crypto = require("crypto");
 
-import { InfoKind, PrInfo } from "./pr-info";
+import { PrInfo } from "./pr-info";
 import { ProjectColumn } from "./project";
 import { TravisResult } from "./util/travis";
 
-export function getProjectColumn({ kind, isNewDefinition, isUnowned }: PrInfo): ProjectColumn | undefined {
-    switch (kind) {
-        case InfoKind.TravisFailed:
-        case InfoKind.HasMergeConflict:
-        case InfoKind.NeedsRevision:
-        case InfoKind.MergeAuto:
-            return undefined;
-        case InfoKind.MergeExpress:
-            return ProjectColumn.MergeExpress;
-        case InfoKind.MergeLgtm:
-            return ProjectColumn.MergeLGTM;
-        case InfoKind.MergeYsyl:
-            return ProjectColumn.MergeYSYL;
-        case InfoKind.Abandoned:
-        case InfoKind.Waiting:
-            return isNewDefinition ? ProjectColumn.NewDefinitions : isUnowned ? ProjectColumn.Unowned : undefined;
+export function getProjectColumn(info: PrInfo): ProjectColumn | undefined {
+    if (info.hasMergeConflict ||
+        info.travisResult === TravisResult.Fail ||
+        info.isChangesRequested) {
+        return ProjectColumn.NeedsAuthorAttention;
     }
+
+    if (info.isAbandoned || info.travisResult === TravisResult.Missing) {
+        return ProjectColumn.Other;
+    }
+
+    if (info.isApprovedByOwner || info.authorIsOwner) {
+        return ProjectColumn.CheckAndMerge;
+    }
+
+    if (info.isUnowned || info.isNewDefinition || info.isYSYL) {
+        return ProjectColumn.Review;
+    }
+
+    if (info.isWaitingForReviews) {
+        return ProjectColumn.WaitingForReviewers;
+    }
+
+    return ProjectColumn.Other;
 }
 
 export function getLabels(info: PrInfo): { readonly [label: string]: boolean } {
+    const unmergeable = (info.travisResult === TravisResult.Fail) || info.hasMergeConflict || info.isChangesRequested;
+    const mergeExpress = !unmergeable && (info.isApprovedByOwner || info.authorIsOwner);
+    const mergeLgtm = !mergeExpress && info.isLGTM && !unmergeable;
+    const mergeYsyl = !mergeExpress && !mergeLgtm && info.isYSYL && !unmergeable;
     const labels = {
-        "Author Approved": info.isOwnerApproved,
-        "Other Approved": info.isOtherApproved,
+        "Owner Approved": info.isApprovedByOwner,
+        "Other Approved": info.isApprovedByOther,
         "Where is Travis?": info.travisResult === TravisResult.Missing,
         "Unowned": info.isUnowned && !info.authorIsOwner,
         "New Definition": info.isNewDefinition,
         "Popular package": info.touchesPopularPackage,
-        "Awaiting reviewer feedback": !info.isUnowned && !info.isOwnerApproved && info.travisResult !== TravisResult.Fail && !info.isChangesRequested,
-        "Author is Owner": info.authorIsOwner
+        "Awaiting reviewer feedback": !info.isUnowned && !info.isApprovedByOwner && info.travisResult !== TravisResult.Fail && !info.isChangesRequested,
+        "Author is Owner": info.authorIsOwner,
+        "The Travis CI build failed": info.travisResult === TravisResult.Fail,
+        "Has Merge Conflict": info.hasMergeConflict,
+        "Abandoned": info.isAbandoned,
+        "Merge:Express": mergeExpress,
+        "Merge:LGTM": mergeLgtm,
+        "Merge:YSYL": mergeYsyl,
+        "Revision Needed": info.isChangesRequested
     };
-    getKindLabels(labels, info.kind);
     return labels;
-}
-
-function getKindLabels(labels: { [key: string]: boolean }, kind: InfoKind): void {
-    for (const key in InfoKind) { // tslint:disable-line forin
-        const value = InfoKind[key];
-        const label = kindToLabel(value as InfoKind);
-        if (label !== undefined) {
-            labels[label] = value === kind;
-        }
-    }
-}
-
-function kindToLabel(kind: InfoKind): string | undefined {
-    switch (kind) {
-        case InfoKind.TravisFailed:
-            return "The Travis CI build failed";
-        case InfoKind.HasMergeConflict:
-            return "Has Merge Conflict";
-        case InfoKind.NeedsRevision:
-            return "Revision needed";
-        case InfoKind.Abandoned:
-            return "Abandoned";
-        case InfoKind.MergeAuto:
-            return "Merge:Auto";
-        case InfoKind.MergeExpress:
-            return "Merge:Express";
-        case InfoKind.MergeLgtm:
-            return "Merge:LGTM";
-        case InfoKind.MergeYsyl:
-            return "Merge:YSYL";
-        case InfoKind.Waiting:
-            return undefined;
-    }
 }
 
 export interface Comment {
     readonly tag: string;
     readonly status: string;
 }
+
 export function getComments(info: PrInfo, user: string): ReadonlyArray<Comment> {
     const { reviewPingList, travisResult } = info;
 
@@ -86,10 +71,12 @@ export function getComments(info: PrInfo, user: string): ReadonlyArray<Comment> 
     if (mainComment !== undefined) {
         comments.push(mainComment);
     }
+
     const travisComment = getTravisComment(travisResult, reviewPingList, user);
     if (travisComment !== undefined) {
         comments.push(travisComment);
     }
+
     return comments;
 }
 
@@ -134,50 +121,61 @@ If no reviewer appears after a week, a DefinitelyTyped maintainer will review th
 }
 
 function getMainComment(info: PrInfo, user: string): Comment | undefined {
-    switch (info.kind) {
-        case InfoKind.TravisFailed:
-            return { tag: "complaint", status: `@${user} The Travis CI build failed! Please review the logs for more information. Once you've pushed the fixes, the build will automatically re-run. Thanks!` };
-        case InfoKind.HasMergeConflict:
-            return { tag: "complaint", status: `@${user} Unfortunately, this pull request currently has a merge conflict 😥. Please update your PR branch to be up-to-date with respect to master. Have a nice day!` };
-        case InfoKind.NeedsRevision:
-            return { tag: "complaint", status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!` };
-        case InfoKind.MergeExpress:
-            if (info.isOwnerApproved) {
-                return {
-                    tag: "merge",
-                    status: "A definition author has approved this PR ⭐️. A maintainer will merge this PR shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!",
-                };
-            } else if (info.authorIsOwner) {
-                return {
-                    tag: "merge",
-                    status: "Since you're a listed author and the build passed, this PR is fast-tracked. A maintainer will merge shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!",
-                };
-            } else {
-                return {
-                    tag: "merge",
-                    status: "I don't quite know why, but my programming is telling me to merge this ASAP. But be wary because I'm apparently very confused right now.",
-                };
-            }
-        case InfoKind.MergeLgtm:
-            return {
-                tag: "merge",
-                status: "We've gotten sign-off from a reviewer 👏. A maintainer will soon review this PR and merge it if there are no issues. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for contributing to DefinitelyTyped!",
-            };
-        case InfoKind.MergeYsyl:
-            return {
-                tag: "merge",
-                status: "After 5 days, no one has reviewed the PR 😞. A maintainer will be reviewing the PR in the next few days and will either merge it or request revisions. Thank you for your patience!",
-            };
-        case InfoKind.Abandoned:
-            return {
-                tag: "abandon",
-                status: `@${user} This PR doesn't seem to be mergeable, but we haven't seen you in a while. We'll close this for housekeeping reasons, but will always accept a new PR. Thank you for helping DefinitelyTyped!`,
-            };
-        case InfoKind.MergeAuto: // No need to comment, just merge
-        case InfoKind.Waiting:
-            return undefined;
+    if (info.isAbandoned) {
+        return {
+            tag: "abandon-sorry",
+            status: `@${user} To keep things tidy, we have to close PRs that aren't mergeable but don't have activity from their author. No worries, though - please open a new PR if you'd like to continue with this change. Thank you!`
+        };
     }
+    if (info.isNearlyAbandoned) {
+        return {
+            tag: "abandon-warn",
+            status: `@${user} I haven't seen anything from you in a while and this PR currently has problems that prevent it from being merged. The PR will be closed tomorrow if there aren't new commits to fix the issues.`
+        };
+    }
+    if (info.travisResult === TravisResult.Fail) {
+        return {
+            tag: `complaint-${+info.lastCommitDate}`,
+            status: `@${user} The Travis CI build failed! Please [review the logs for more information](${info.travisUrl}).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!`
+        };
+    }
+    if (info.hasMergeConflict) {
+        return {
+            tag: "complaint",
+            status: `@${user} Unfortunately, this pull request currently has a merge conflict 😥. Please update your PR branch to be up-to-date with respect to master. Have a nice day!`
+        };
+    }
+    if (info.isChangesRequested) {
+        return { tag: "complaint", status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. Thank you!` };
+    }
+    if (info.isApprovedByOwner) {
+        return {
+            tag: "merge",
+            status: "A definition owner has approved this PR ⭐️. A maintainer will merge this PR shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!",
+        };
+    }
+    if (info.authorIsOwner) {
+        return {
+            tag: "merge",
+            status: "Since you're a listed owner and the build passed, this PR is fast-tracked. A maintainer will merge shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!",
+        };
+    }
+    if (info.isLGTM) {
+        return {
+            tag: "merge",
+            status: "We've gotten sign-off from a reviewer 👏. A maintainer will soon review this PR and merge it if there are no issues. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for contributing to DefinitelyTyped!",
+        };
+    }
+    if (info.isYSYL) {
+        return {
+            tag: "merge",
+            status: "After 5 days, no one has reviewed the PR 😞. A maintainer will be reviewing the PR in the next few days and will either merge it or request revisions. Thank you for your patience!",
+        };
+    }
+
+    return undefined;
 }
+
 function getTravisComment(
     travisResult: TravisResult, reviewPingList: ReadonlyArray<string>, user: string): Comment | undefined {
     switch (travisResult) {
