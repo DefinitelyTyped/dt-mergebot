@@ -14,36 +14,41 @@ export interface PrInfo {
     readonly authorIsOwner: boolean;
     readonly author: string;
     readonly owners: ReadonlySet<string>;
-    readonly kind: InfoKind;
+    readonly mergeRequesters: ReadonlyArray<string>;
+    readonly mergeAuto: boolean;
+
     readonly travisResult: TravisResult;
+    readonly travisUrl: string | undefined;
+    readonly hasMergeConflict: boolean;
+    readonly lastCommitDate: Date;
+
     readonly reviewPingList: ReadonlyArray<string>;
     readonly reviewLink: string;
+
     readonly isChangesRequested: boolean;
-    readonly isOwnerApproved: boolean;
-    readonly isOtherApproved: boolean;
+    readonly isApprovedByOwner: boolean;
+    readonly isApprovedByOther: boolean;
+    readonly isLGTM: boolean;
+    readonly isYSYL: boolean;
     readonly isUnowned: boolean;
     readonly isNewDefinition: boolean;
+    readonly isWaitingForReviews: boolean;
+    readonly isAbandoned: boolean;
+    readonly isNearlyAbandoned: boolean;
+
     readonly touchesPopularPackage: boolean;
 }
 
-export enum InfoKind {
-    TravisFailed = "travis failed",
-    HasMergeConflict = "has merge conflict",
-    NeedsRevision = "needs revision",
-    MergeAuto = "merge auto",
-    MergeExpress = "merge express",
-    MergeLgtm = "merge LGTM",
-    MergeYsyl = "merge YSYL",
-    Abandoned = "abandoned",
-    Waiting = "waiting",
-}
-
 export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
-    // See if there's a merge conflict
-    const hasMergeConflict = await pr.getMergeableState() === false;
+    const now = new Date();
+    function isPast(cutoff: Date): boolean {
+        return +now > +cutoff;
+    }
 
-    // Get Travis status
-    const travisResult = await getTravisStatus(pr);
+    const hasMergeConflict = await pr.getMergeableState() === false;
+    const travisStatus = await getTravisStatus(pr);
+    const travisResult = travisStatus.result;
+    const travisUrl = travisStatus.url;
     const travisFailed = travisResult === TravisResult.Fail;
 
     const lastCommitDate = await getLastCommitDate(pr);
@@ -53,11 +58,13 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
         (await pr.getFilesRaw()).map(f => f.filename),
         // tslint:disable-next-line align
         /*maxMonthlyDownloads*/ 200000);
-    
+
+    void touchesMultiplePackages, touchesNonPackage;
+
     const { reviews, mergeRequesters } = await getCodeReviews(pr);
     // Check for approval (which may apply to a prior commit; assume PRs do not regress in this fashion)
-    const isOwnerApproved = hasApprovalAndNoRejection(reviews, r => ownersAsLower.has(r.reviewer.toLowerCase()));
-    const isOtherApproved = hasApprovalAndNoRejection(reviews, r => !ownersAsLower.has(r.reviewer.toLowerCase()));
+    const isApprovedByOwner = hasApprovalAndNoRejection(reviews, r => ownersAsLower.has(r.reviewer.toLowerCase()));
+    const isApprovedByOther = hasApprovalAndNoRejection(reviews, r => !ownersAsLower.has(r.reviewer.toLowerCase()));
     const isChangesRequested = reviews.some(r => r.verdict === Opinion.Reject);
 
     // If a fresh review is a rejection, mark needs CR
@@ -71,64 +78,32 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
     const isNewDefinition = files.some(file => file.status === "added" && file.filename.endsWith("/tsconfig.json"));
     const isUnowned = !isNewDefinition && ownersAsLower.size === 0;
 
-    const kind = (() => { // tslint:disable-line cyclomatic-complexity
-        if (travisFailed) {
-            return InfoKind.TravisFailed;
-        }
-        if (hasMergeConflict) {
-            return InfoKind.HasMergeConflict;
-        }
-        const unmergeable = hasMergeConflict || travisFailed || firstBadReview !== undefined;
-        if (unmergeable) {
-            return InfoKind.NeedsRevision;
-        }
+    const unmergeable = hasMergeConflict || travisFailed || firstBadReview !== undefined;
 
-        const now = new Date();
-        function isPast(cutoff: Date): boolean {
-            return +now > +cutoff;
-        }
+    const isLGTM = isApprovedByOther && isPast(addDays(lastCommitDate, 3)) && !unmergeable;
+    const isYSYL = !(isApprovedByOther || isApprovedByOwner) && isPast(addDays(lastCommitDate, 5)) && !unmergeable;
 
-        if (!unmergeable && travisResult === TravisResult.Pass) {
-            if (isOwnerApproved || authorIsOwner) {
-                if (mergeRequesters.some(u => ownersAsLower.has(u.toLowerCase()))
-                    && !touchesNonPackage
-                    && !touchesPopularPackage
-                    && !touchesMultiplePackages
-                    && isPast(addDays(pr.created_at.toDate(), 2))) {
-                    return InfoKind.MergeAuto;
-                }
-                return InfoKind.MergeExpress;
-            }
+    const isWaitingForReviews = !(unmergeable || isChangesRequested || isApprovedByOwner || isLGTM);
 
-            if (isOtherApproved && isPast(addDays(lastCommitDate, 3))) {
-                return InfoKind.MergeLgtm;
-            }
-
-            if (isPast(addDays(lastCommitDate, 5))) {
-                return InfoKind.MergeYsyl;
-            }
-        } else if (unmergeable) {
-            // The abandoned cutoff is 7 days after a failing Travis build,
-            // or 7 days after the last negative review if Travis is passing
-            const lastBadEvent: Date | undefined = travisFailed
-                ? lastCommitDate
-                : firstBadReview === undefined ? undefined : firstBadReview.date;
-            if (lastBadEvent !== undefined && isPast(addDays(lastBadEvent, 7))) {
-                return InfoKind.Abandoned;
-            }
-        }
-
-        return InfoKind.Waiting;
-    })();
-
+    // The abandoned cutoff is 7 days after a failing Travis build,
+    // or 7 days after the last negative review if Travis is passing
+    const lastBadEvent: Date | undefined = travisFailed
+        ? lastCommitDate
+        : firstBadReview === undefined ? undefined : firstBadReview.date;
+    const isAbandoned = lastBadEvent !== undefined && isPast(addDays(lastBadEvent, 7));
+    const isNearlyAbandoned = lastBadEvent !== undefined && isPast(addDays(lastBadEvent, 6));
     const reviewLink = `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${pr.number}/files`;
+
+    const author = pr.user.login, mergeAuto = false;
     return {
+        author, owners,
+        lastCommitDate,
+        mergeRequesters, mergeAuto,
+        reviewLink, reviewPingList,
+        travisResult, travisUrl, hasMergeConflict,
         authorIsOwner,
-        author: pr.user.login,
-        owners,
-        reviewLink,
-        kind, travisResult, reviewPingList,
-        isChangesRequested, isOwnerApproved, isOtherApproved, isUnowned, isNewDefinition, touchesPopularPackage,
+        isChangesRequested, isApprovedByOwner, isApprovedByOther, isLGTM, isYSYL, isUnowned, isNewDefinition, touchesPopularPackage,
+        isWaitingForReviews, isAbandoned, isNearlyAbandoned
     };
 }
 

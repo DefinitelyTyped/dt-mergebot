@@ -1,5 +1,5 @@
 import * as bot from "idembot";
-import { getPRInfo, InfoKind } from "./pr-info";
+import { getPRInfo } from "./pr-info";
 import { Project } from "./project";
 import { getComments, getLabels, getProjectColumn } from "./use-pr-info";
 
@@ -20,12 +20,18 @@ function makeSetLabels(): (pr: bot.PullRequest) => Promise<void> {
         const labels = getLabels(info);
         pr.setHasLabels(labels);
 
-        for (const { tag, status } of getComments(info, pr.user.login))
+        for (const { tag, status } of getComments(info, pr.user.login)) {
             pr.addComment(tag, status);
+        }
+
+        if (info.isAbandoned) {
+            pr.close();
+        }
 
         // merge
-        if (info.kind === InfoKind.MergeAuto)
+        if (info.mergeAuto) {
             pr.merge();
+        }
     };
 }
 

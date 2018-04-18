@@ -14,7 +14,7 @@ const headers = {
 const projects = r('https://api.github.com/repos/DefinitelyTyped/DefinitelyTyped/projects', { headers }, (err, data) => {
     const body = JSON.parse(data.body);
 
-        console.log(JSON.stringify(JSON.parse(data.body), undefined, 2));
+    console.log(JSON.stringify(JSON.parse(data.body), undefined, 2));
 
     const names = body.map(p => p.name);
     const ids = body.map(p => p.id);
@@ -32,7 +32,7 @@ const projects = r('https://api.github.com/repos/DefinitelyTyped/DefinitelyTyped
             if (err) throw err;
             const cols = JSON.parse(data.body);
 
-                console.log(JSON.stringify(JSON.parse(data.body), undefined, 2));
+            console.log(JSON.stringify(JSON.parse(data.body), undefined, 2));
 
             console.log(`== Project ${name} (${id}) ==`);
             console.log("{");
