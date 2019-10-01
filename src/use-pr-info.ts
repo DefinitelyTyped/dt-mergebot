@@ -141,7 +141,7 @@ function getMainComment(info: PrInfo, user: string): Comment | undefined {
     }
     if (info.hasMergeConflict) {
         return {
-            tag: "complaint",
+            tag: `merge-complaint-${+info.lastCommitDate}`,
             status: `@${user} Unfortunately, this pull request currently has a merge conflict 😥. Please update your PR branch to be up-to-date with respect to master. Have a nice day!`
         };
     }
