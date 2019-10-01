@@ -4,12 +4,15 @@
   "description": "dt-mergebot",
   "main": "index.js",
   "dependencies": {
+    "@octokit/graphql-schema": "^6.45.0",
     "@types/node": "^8.5.8",
     "@types/node-fetch": "^1.6.7",
     "@types/request": "^2.0.9",
+    "apollo-boost": "^0.4.4",
     "definitelytyped-header-parser": "github:Microsoft/definitelytyped-header-parser#production",
     "fs-extra": "^4.0.3",
     "graceful-fs": "^4.1.11",
+    "graphql": "^14.5.8",
     "idembot": "0.0.12",
     "moment": "^2.20.1",
     "node-fetch": "^1.7.3",
@@ -25,7 +28,8 @@
     "wet": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json",
     "single": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --single",
     "cleanproject": "npm run build && node bin/clean-columns.js",
-    "lint": "tslint --project tsconfig.json --format stylish"
+    "lint": "tslint --project tsconfig.json --format stylish",
+    "graphql-schema": "npx apollo client:codegen src/schema --target typescript --mergeInFieldsFromFragmentSpreads"
   },
   "repository": {
     "type": "git",
@@ -36,5 +40,8 @@
   "bugs": {
     "url": "https://github.com/RyanCavanaugh/dt-mergebot/issues"
   },
-  "homepage": "https://github.com/RyanCavanaugh/dt-mergebot#readme"
+  "homepage": "https://github.com/RyanCavanaugh/dt-mergebot#readme",
+  "devDependencies": {
+    "apollo": "^2.18.3"
+  }
 }
