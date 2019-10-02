@@ -17,6 +17,7 @@
     "moment": "^2.20.1",
     "node-fetch": "^1.7.3",
     "request": "^2.83.0",
+    "tslib": "^1.10.0",
     "tslint": "^5.8.0",
     "typescript": "^2.6.2"
   },
@@ -29,7 +30,7 @@
     "single": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --single",
     "cleanproject": "npm run build && node bin/clean-columns.js",
     "lint": "tslint --project tsconfig.json --format stylish",
-    "graphql-schema": "npx apollo client:codegen src/schema --target typescript --mergeInFieldsFromFragmentSpreads"
+    "graphql-schema": "npx apollo client:codegen schema --target typescript --mergeInFieldsFromFragmentSpreads"
   },
   "repository": {
     "type": "git",

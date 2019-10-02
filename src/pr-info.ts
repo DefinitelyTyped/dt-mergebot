@@ -1,4 +1,10 @@
 import * as bot from "idembot";
+import { GetPRInfo } from "./pr-query";
+import { PR as PRQueryResult } from "./schema/PR";
+import { ApolloClient } from "apollo-boost"
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
+
 import moment = require("moment");
 
 import { getCodeReviews, Opinion, Review } from "./reviews";
@@ -39,19 +45,33 @@ export interface PrInfo {
     readonly touchesPopularPackage: boolean;
 }
 
+const cache = new InMemoryCache();
+const link = new HttpLink({ uri: "https://api.github.com/graphql" });
 export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
+    const client = new ApolloClient({ cache, link });
+    const info = await client.query<PRQueryResult>({
+        query: GetPRInfo,
+        variables: {
+            pr_number: pr.number
+        }
+    });
+    
+    const prInfo = info.data.repository!.pullRequest!;
+
+    void prInfo;
+
     const now = new Date();
     function isPast(cutoff: Date): boolean {
         return +now > +cutoff;
     }
 
-    const hasMergeConflict = await pr.getMergeableState() === false;
-    const travisStatus = await getTravisStatus(pr);
-    const travisResult = travisStatus.result;
-    const travisUrl = travisStatus.url;
-    const travisFailed = travisResult === TravisResult.Fail;
+    const lastCommit = prInfo.commits.nodes![prInfo.commits.nodes!.length - 1]!.commit;
+    const hasMergeConflict = prInfo.mergeable === "CONFLICTING";
+    const travisStatus = lastCommit.status!;
+    const travisFailed = travisStatus.state === "FAILURE";
+    const lastCommitDate =  new Date(lastCommit.pushedDate);
 
-    const lastCommitDate = await getLastCommitDate(pr);
+    const fileList = prInfo.files!.nodes!;
 
     const { owners, ownersAsLower, authorIsOwner, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages } = await getPackagesInfo(
         pr.user.login,
@@ -122,11 +142,6 @@ function hasApprovalAndNoRejection(reviews: ReadonlyArray<Review>, filter: (r: R
         }
     }
     return approve;
-}
-
-async function getLastCommitDate(pr: bot.PullRequest): Promise<Date> {
-    const commits = await pr.getCommitsRaw();
-    return new Date(commits[commits.length - 1].commit.committer.date);
 }
 
 function addDays(date: Date, days: number): Date {
