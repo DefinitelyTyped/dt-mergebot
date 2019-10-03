@@ -200,7 +200,7 @@ function getTravisComment(
             };
 
         case TravisResult.Fail:
-        case TravisResult.Unknown:
+        case TravisResult.Pending:
             return undefined;
     }
 }

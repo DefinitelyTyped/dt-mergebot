@@ -11,32 +11,101 @@ import { getCodeReviews, Opinion, Review } from "./reviews";
 import { getPackagesInfo } from "./util/dt";
 import { getTravisStatus, TravisResult } from "./util/travis";
 import { mapDefined } from "./util/util";
+import { StatusState, PullRequestReviewState } from "../schema/globalTypes";
 
 export const commentApprovalTokens: ReadonlyArray<string> = ["👍", ":+1:", "lgtm", "LGTM", ":shipit:"];
 export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
 export const mergeplzMarker = "mergeplz";
 
-export interface PrInfo {
-    readonly authorIsOwner: boolean;
-    readonly author: string;
-    readonly owners: ReadonlySet<string>;
-    readonly mergeRequesters: ReadonlyArray<string>;
-    readonly mergeAuto: boolean;
+const MyName = "typescript-bot";
 
+export interface BotFail {
+    readonly type: "fail";
+    readonly message: string;
+}
+
+export interface PrInfo {
+    readonly type: "info";
+
+    /**
+     * The head commit of this PR (full format)
+     */
+    readonly headCommitOid: string;
+    /**
+     * The head commit of this PR (abbreviated format)
+     */
+    readonly headCommitAbbrOid: string;
+
+    /**
+     * True if the author of the PR is already a listed owner
+     */
+    readonly authorIsOwner: boolean;
+    /**
+     * The GitHub login of the PR author
+     */
+    readonly author: string;
+    /**
+     * The current list of owners of packages affected by this PR
+     */
+    readonly owners: ReadonlySet<string>;
+
+    /**
+     * True if this PR can be merged by the bot (i.e. all checks are green,
+     * review status is good, author is trusted, etc.).
+     */
+    readonly eligibleForAutoMerge: boolean;
+
+    /**
+     * True if the author wants us to merge the PR
+     */
+    readonly mergeIsRequested: boolean;
+
+    /**
+     * The CI status of the head commit
+     */
     readonly travisResult: TravisResult;
+    /**
+     * A link to the log for the failing CI if it exists
+     */
     readonly travisUrl: string | undefined;
+    /**
+     * True if the PR has a merge conflict
+     */
     readonly hasMergeConflict: boolean;
+
     readonly lastCommitDate: Date;
 
-    readonly reviewPingList: ReadonlyArray<string>;
+    /**
+     * A list of people who have reviewed this PR in the past, but for
+     * a prior commit.
+     */
+    readonly reviewersWithStaleReviews: ReadonlyArray<string>;
+    /**
+     * A link to the Review tab to provide reviewers with
+     */
     readonly reviewLink: string;
 
+    /**
+     * True if the head commit has any failing reviews
+     */
     readonly isChangesRequested: boolean;
+    /**
+     * True if the head commit is approved by a listed owner
+     */
     readonly isApprovedByOwner: boolean;
+    /**
+     * True if the head commit is approved by someone else
+     */
     readonly isApprovedByOther: boolean;
+    /**
+     * True if the head commit is approved by someone else and enough time has passed
+     */
     readonly isLGTM: boolean;
+    /**
+     * True if no one has reviewed it in a long time
+     */
     readonly isYSYL: boolean;
-    readonly isUnowned: boolean;
+
     readonly isNewDefinition: boolean;
     readonly isWaitingForReviews: boolean;
     readonly isAbandoned: boolean;
@@ -47,7 +116,8 @@ export interface PrInfo {
 
 const cache = new InMemoryCache();
 const link = new HttpLink({ uri: "https://api.github.com/graphql" });
-export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
+export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> {
+    const now = new Date();
     const client = new ApolloClient({ cache, link });
     const info = await client.query<PRQueryResult>({
         query: GetPRInfo,
@@ -55,21 +125,42 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
             pr_number: pr.number
         }
     });
-    
-    const prInfo = info.data.repository!.pullRequest!;
 
-    void prInfo;
+    const prInfo = info.data.repository?.pullRequest;
+    if (!prInfo) return botFail("No PR with this number exists");
+    if (prInfo.author == null) return botFail("PR author does not exist");
 
-    const now = new Date();
-    function isPast(cutoff: Date): boolean {
-        return +now > +cutoff;
+    const headCommit = prInfo.commits.nodes?.filter(c => c?.commit.oid === prInfo.headRefOid) ?.[0]?.commit;
+    if (!headCommit) {
+        return botFail("Could not find the head commit");
     }
 
-    const lastCommit = prInfo.commits.nodes![prInfo.commits.nodes!.length - 1]!.commit;
     const hasMergeConflict = prInfo.mergeable === "CONFLICTING";
-    const travisStatus = lastCommit.status!;
-    const travisFailed = travisStatus.state === "FAILURE";
-    const lastCommitDate =  new Date(lastCommit.pushedDate);
+    let travisStatus: TravisResult;
+    let travisUrl: string | undefined = undefined;
+
+    if (headCommit.status) {
+        switch (headCommit.status.state) {
+            case StatusState.ERROR:
+            case StatusState.FAILURE:
+                travisStatus = TravisResult.Fail;
+                travisUrl = headCommit.status.contexts[0].targetUrl;
+                break;
+            case StatusState.EXPECTED:
+            case StatusState.PENDING:
+                travisStatus = TravisResult.Pending;
+                break;
+            case StatusState.SUCCESS:
+                travisStatus = TravisResult.Pass;
+                break;
+            default:
+                return botFail("Unknown bot status");
+        }
+    } else {
+        travisStatus = TravisResult.Missing;
+    }
+    const travisFailed = travisStatus === TravisResult.Fail;
+    const lastCommitDate = new Date(headCommit.pushedDate);
 
     const fileList = prInfo.files!.nodes!;
 
@@ -80,6 +171,41 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
         /*maxMonthlyDownloads*/ 200000);
 
     void touchesMultiplePackages, touchesNonPackage;
+
+    const reviewsOfLatestCommit = prInfo.reviews?.nodes?.filter(r => r?.commit?.oid === headCommit.oid) || [];
+
+    const rejections = noNulls(reviewsOfLatestCommit.filter(review => review?.state === PullRequestReviewState.CHANGES_REQUESTED));
+    const approvals = noNulls(reviewsOfLatestCommit.filter(review => review?.state === PullRequestReviewState.APPROVED));
+
+    const approvalsByRole = partition(approvals, review => {
+        if (review?.author?.login === prInfo.author?.login) {
+            return "self";
+        }
+        if (review?.authorAssociation === "OWNER") {
+            // DefinitelyTyped maintainer
+            return "maintainer";
+        }
+        if (owners.has(review?.author?.login || "")) {
+            // Known package owner
+            return "owner";
+        }
+        return "other";        
+    });
+
+    const isMergeRequested = noNulls(prInfo.comments?.nodes).filter(comment => {
+        // Skip comments that aren't the bot
+        if (comment.author?.login !== MyName) return false;
+
+        const tag = getCommentTagFromBody(comment.body);
+        if (tag === getMergeOfferTag(headCommit.oid)) {
+            for (const reaction of noNulls(comment.reactions.nodes)) {
+                if (reaction.user?.login === prInfo.author?.login) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    });
 
     const { reviews, mergeRequesters } = await getCodeReviews(pr);
     // Check for approval (which may apply to a prior commit; assume PRs do not regress in this fashion)
@@ -116,6 +242,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
 
     const author = pr.user.login, mergeAuto = false;
     return {
+        type: "info",
         author, owners,
         lastCommitDate,
         mergeRequesters, mergeAuto,
@@ -125,6 +252,31 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo> {
         isChangesRequested, isApprovedByOwner, isApprovedByOther, isLGTM, isYSYL, isUnowned, isNewDefinition, touchesPopularPackage,
         isWaitingForReviews, isAbandoned, isNearlyAbandoned
     };
+
+    function botFail(message: string): BotFail {
+        debugger;
+        return { type: "fail", message };
+    }
+
+    function isPast(cutoff: Date): boolean {
+        return +now > +cutoff;
+    }
+}
+
+function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) => U) {
+    const res: { [K in U]?: T[] } = { };
+    for (const el of arr) {
+        const key = sorter(el);
+        const target: T[] = res[key] ?? (res[key] = []);
+        target.push(el);
+    }
+    return res;
+}
+
+function noNulls<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined): T[] {
+    if (arr == null) return [];
+
+    return arr.filter(arr => arr != null) as T[];
 }
 
 function hasApprovalAndNoRejection(reviews: ReadonlyArray<Review>, filter: (r: Review) => boolean): boolean {
@@ -146,4 +298,12 @@ function hasApprovalAndNoRejection(reviews: ReadonlyArray<Review>, filter: (r: R
 
 function addDays(date: Date, days: number): Date {
     return moment(date).add(days, "days").toDate();
+}
+
+function getMergeOfferTag(oid: string) {
+    return `merge-offer-${oid}`;
+}
+
+function getCommentTagFromBody(body: string): string | undefined {
+    
 }

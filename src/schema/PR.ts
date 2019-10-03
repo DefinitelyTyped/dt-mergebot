@@ -2,7 +2,7 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { MergeableState, PullRequestState, PullRequestReviewState, StatusState } from "./../../schema/globalTypes";
+import { MergeableState, PullRequestState, PullRequestReviewState, CommentAuthorAssociation, StatusState } from "./../../schema/globalTypes";
 
 // ====================================================
 // GraphQL query operation: PR
@@ -98,12 +98,32 @@ export interface PR_repository_pullRequest_reviews_nodes_author {
   login: string;
 }
 
+export interface PR_repository_pullRequest_reviews_nodes_commit {
+  __typename: "Commit";
+  /**
+   * The Git object ID
+   */
+  oid: any;
+  /**
+   * An abbreviated version of the Git object ID
+   */
+  abbreviatedOid: string;
+}
+
 export interface PR_repository_pullRequest_reviews_nodes {
   __typename: "PullRequestReview";
   /**
    * The actor who authored the comment.
    */
   author: PR_repository_pullRequest_reviews_nodes_author | null;
+  /**
+   * Identifies the commit associated with this pull request review.
+   */
+  commit: PR_repository_pullRequest_reviews_nodes_commit | null;
+  /**
+   * Author's association with the subject of the comment.
+   */
+  authorAssociation: CommentAuthorAssociation;
   /**
    * Identifies the current state of the pull request review.
    */
@@ -222,6 +242,30 @@ export interface PR_repository_pullRequest_comments_nodes_author {
   login: string;
 }
 
+export interface PR_repository_pullRequest_comments_nodes_reactions_nodes_user {
+  __typename: "User";
+  /**
+   * The username used to login.
+   */
+  login: string;
+}
+
+export interface PR_repository_pullRequest_comments_nodes_reactions_nodes {
+  __typename: "Reaction";
+  /**
+   * Identifies the user who created this reaction.
+   */
+  user: PR_repository_pullRequest_comments_nodes_reactions_nodes_user | null;
+}
+
+export interface PR_repository_pullRequest_comments_nodes_reactions {
+  __typename: "ReactionConnection";
+  /**
+   * A list of nodes.
+   */
+  nodes: (PR_repository_pullRequest_comments_nodes_reactions_nodes | null)[] | null;
+}
+
 export interface PR_repository_pullRequest_comments_nodes {
   __typename: "IssueComment";
   /**
@@ -236,6 +280,10 @@ export interface PR_repository_pullRequest_comments_nodes {
    * Identifies the date and time when the object was created.
    */
   createdAt: any;
+  /**
+   * A list of Reactions left on the Issue.
+   */
+  reactions: PR_repository_pullRequest_comments_nodes_reactions;
 }
 
 export interface PR_repository_pullRequest_comments {

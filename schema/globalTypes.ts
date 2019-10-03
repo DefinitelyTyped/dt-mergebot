@@ -7,6 +7,19 @@
 //==============================================================
 
 /**
+ * A comment author association with repository.
+ */
+export enum CommentAuthorAssociation {
+  COLLABORATOR = "COLLABORATOR",
+  CONTRIBUTOR = "CONTRIBUTOR",
+  FIRST_TIMER = "FIRST_TIMER",
+  FIRST_TIME_CONTRIBUTOR = "FIRST_TIME_CONTRIBUTOR",
+  MEMBER = "MEMBER",
+  NONE = "NONE",
+  OWNER = "OWNER",
+}
+
+/**
  * Whether or not a PullRequest can be merged.
  */
 export enum MergeableState {

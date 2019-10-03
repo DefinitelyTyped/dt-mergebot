@@ -40,12 +40,17 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
             author {
               login
             }
+            commit {
+              oid
+              abbreviatedOid
+            }
+            authorAssociation
             state
             submittedAt
             url
           }
         }
-        commits(first: 100) {
+        commits(last: 100) {
           totalCount
           nodes {
             commit {
@@ -74,6 +79,11 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
             }
             body
             createdAt
+            reactions(content: THUMBS_UP) {
+              nodes {
+                user { login }
+              }
+            }
           }
         }
         files(first: 100) {

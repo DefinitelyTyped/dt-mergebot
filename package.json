@@ -19,7 +19,7 @@
     "request": "^2.83.0",
     "tslib": "^1.10.0",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.2"
+    "typescript": "^3.7.0-dev.20191003"
   },
   "scripts": {
     "prepublishOnly": "npm run build",
@@ -28,6 +28,7 @@
     "dry": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json --dry",
     "wet": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json",
     "single": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --single",
+    "single-debug": "npm run build && node --inspect-brk node_modules/idembot/bin/run.js --file bin/rules.js --single",
     "cleanproject": "npm run build && node bin/clean-columns.js",
     "lint": "tslint --project tsconfig.json --format stylish",
     "graphql-schema": "npx apollo client:codegen schema --target typescript --mergeInFieldsFromFragmentSpreads"
