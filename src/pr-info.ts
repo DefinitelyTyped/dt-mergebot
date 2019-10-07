@@ -31,6 +31,7 @@ export interface PrInfo {
      * The head commit of this PR (full format)
      */
     readonly headCommitOid: string;
+
     /**
      * The head commit of this PR (abbreviated format)
      */
@@ -40,20 +41,16 @@ export interface PrInfo {
      * True if the author of the PR is already a listed owner
      */
     readonly authorIsOwner: boolean;
+
     /**
      * The GitHub login of the PR author
      */
     readonly author: string;
+
     /**
      * The current list of owners of packages affected by this PR
      */
     readonly owners: ReadonlySet<string>;
-
-    /**
-     * True if this PR can be merged by the bot (i.e. all checks are green,
-     * review status is good, author is trusted, etc.).
-     */
-    readonly eligibleForAutoMerge: boolean;
 
     /**
      * True if the author wants us to merge the PR
@@ -64,15 +61,20 @@ export interface PrInfo {
      * The CI status of the head commit
      */
     readonly travisResult: TravisResult;
+
     /**
      * A link to the log for the failing CI if it exists
      */
     readonly travisUrl: string | undefined;
+
     /**
      * True if the PR has a merge conflict
      */
     readonly hasMergeConflict: boolean;
 
+    /**
+     * The date the latest commit was pushed to GitHub
+     */
     readonly lastCommitDate: Date;
 
     /**
@@ -80,6 +82,7 @@ export interface PrInfo {
      * a prior commit.
      */
     readonly reviewersWithStaleReviews: ReadonlyArray<string>;
+
     /**
      * A link to the Review tab to provide reviewers with
      */
@@ -89,28 +92,25 @@ export interface PrInfo {
      * True if the head commit has any failing reviews
      */
     readonly isChangesRequested: boolean;
+
     /**
      * True if the head commit is approved by a listed owner
      */
     readonly isApprovedByOwner: boolean;
+
     /**
      * True if the head commit is approved by someone else
      */
     readonly isApprovedByOther: boolean;
+
     /**
-     * True if the head commit is approved by someone else and enough time has passed
+     * Integer count of days of inactivity
      */
-    readonly isLGTM: boolean;
-    /**
-     * True if no one has reviewed it in a long time
-     */
-    readonly isYSYL: boolean;
+    readonly stalenessInDays: number;
+
 
     readonly isNewDefinition: boolean;
     readonly isWaitingForReviews: boolean;
-    readonly isAbandoned: boolean;
-    readonly isNearlyAbandoned: boolean;
-
     readonly touchesPopularPackage: boolean;
 }
 
