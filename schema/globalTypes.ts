@@ -7,6 +7,28 @@
 //==============================================================
 
 /**
+ * The possible states for a check suite or run conclusion.
+ */
+export enum CheckConclusionState {
+  ACTION_REQUIRED = "ACTION_REQUIRED",
+  CANCELLED = "CANCELLED",
+  FAILURE = "FAILURE",
+  NEUTRAL = "NEUTRAL",
+  SUCCESS = "SUCCESS",
+  TIMED_OUT = "TIMED_OUT",
+}
+
+/**
+ * The possible states for a check suite or run status.
+ */
+export enum CheckStatusState {
+  COMPLETED = "COMPLETED",
+  IN_PROGRESS = "IN_PROGRESS",
+  QUEUED = "QUEUED",
+  REQUESTED = "REQUESTED",
+}
+
+/**
  * A comment author association with repository.
  */
 export enum CommentAuthorAssociation {

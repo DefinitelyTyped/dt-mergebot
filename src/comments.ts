@@ -1,3 +1,5 @@
+import crypto = require("crypto");
+
 export type Comment = { tag: string, status: string };
 
 export const SorryAbandoned = (user: string) => ({
@@ -20,8 +22,8 @@ export const MergeConflicted = (slug: string, user: string) => ({
     status: `@${user} Unfortunately, this pull request currently has a merge conflict 😥. Please update your PR branch to be up-to-date with respect to master. Have a nice day!`
 });
 
-export const ChangesRequest = (user: string) => ({
-    tag: "complaint",
+export const ChangesRequest = (headOid: string, user: string) => ({
+    tag: `complaint-${headOid}`,
     status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. Thank you!`
 });
 
@@ -50,7 +52,31 @@ export const PingReviewers = (names: readonly string[], reviewLink: string) => `
 export const NewDefinition = `Because this is a new definition, a DefinitelyTyped maintainer will be reviewing this PR in the next few days once the Travis CI build passes.`;
 export const NoOtherReviewers = `Because this PR doesn't have any code reviewers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the Travis CI build passes.`;
 
-export const AutoMergeChecklist = (travisGreen: boolean, noMergeConflict: boolean, approved: boolean) => {
-    
+export const PingStaleReviewer = (reviewedAbbrOid: string, reviewer: string) => ({
+    tag: `stale-ping-${tinyHash(reviewer)}-${reviewedAbbrOid}`,
+    status: `@${reviewer} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
+});
+
+export const MergeChecklist = (travisGreen: boolean, noMergeConflict: boolean, approved: boolean) => {
+
+    return ({
+        tag: `merge-checklist`,
+        status: ``
+    });
 };
 
+export const AskForAutoMergePermission = (offeredCommit: string, author: string) => ({
+    tag: `merge-offer-${offeredCommit}`,
+    status: `@${author} Everything looks good here. Great job! I am ready to merge this PR on your behalf.
+If you'd like that to happen, please post a comment with the exact text
+
+> Ready to merge
+
+and I'll merge it the next time I look at this PR.
+
+This offer is only valid for commit ${'`' + offeredCommit + '`'} - if there are more changes needed, you'll need to get a fresh review from a listed owner. Thank you!`
+});
+
+function tinyHash(s: string): string {
+    return crypto.createHash("sha256").update(s).digest("hex").substr(0, 6);
+}

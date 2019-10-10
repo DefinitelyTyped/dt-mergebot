@@ -1,6 +1,6 @@
 import * as bot from "idembot";
 import { GetPRInfo } from "./pr-query";
-import { PR as PRQueryResult } from "./schema/PR";
+import { PR as PRQueryResult, PR_repository_pullRequest } from "./schema/PR";
 import { ApolloClient } from "apollo-boost"
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
@@ -11,13 +11,28 @@ import { getCodeReviews, Opinion, Review } from "./reviews";
 import { getPackagesInfo } from "./util/dt";
 import { getTravisStatus, TravisResult } from "./util/travis";
 import { mapDefined } from "./util/util";
-import { StatusState, PullRequestReviewState } from "../schema/globalTypes";
+import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "../schema/globalTypes";
 
 export const commentApprovalTokens: ReadonlyArray<string> = ["👍", ":+1:", "lgtm", "LGTM", ":shipit:"];
 export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
 export const mergeplzMarker = "mergeplz";
 
 const MyName = "typescript-bot";
+
+export enum ApprovalFlags {
+    None = 0,
+    Other = 1 << 0,
+    Owner = 1 << 1,
+    Maintainer = 1 << 2
+}
+
+export type DangerLevel =
+    | "ScopedAndTested"
+    | "ScopedAndUntested"
+    | "ScopedAndConfiguration"
+    | "NewDefinition"
+    | "MultiplePackagesEdited"
+    | "Infrastructure";
 
 export interface BotFail {
     readonly type: "fail";
@@ -81,7 +96,7 @@ export interface PrInfo {
      * A list of people who have reviewed this PR in the past, but for
      * a prior commit.
      */
-    readonly reviewersWithStaleReviews: ReadonlyArray<string>;
+    readonly reviewersWithStaleReviews: ReadonlyArray<{ reviewer: string, reviewedAbbrOid: string }>;
 
     /**
      * A link to the Review tab to provide reviewers with
@@ -93,29 +108,29 @@ export interface PrInfo {
      */
     readonly isChangesRequested: boolean;
 
-    /**
-     * True if the head commit is approved by a listed owner
-     */
-    readonly isApprovedByOwner: boolean;
+    readonly approvals: ApprovalFlags;
 
-    /**
-     * True if the head commit is approved by someone else
-     */
-    readonly isApprovedByOther: boolean;
+    readonly dangerLevel: DangerLevel;
 
     /**
      * Integer count of days of inactivity
      */
     readonly stalenessInDays: number;
 
+    readonly isFirstContribution: boolean;
 
     readonly isNewDefinition: boolean;
-    readonly isWaitingForReviews: boolean;
     readonly touchesPopularPackage: boolean;
 }
 
 const cache = new InMemoryCache();
-const link = new HttpLink({ uri: "https://api.github.com/graphql" });
+const link = new HttpLink({
+    uri: "https://api.github.com/graphql", headers: {
+        authorization: `Bearer ${process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"]}`,
+        accept: "application/vnd.github.antiope-preview+json"
+    }
+});
+
 export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> {
     const now = new Date();
     const client = new ApolloClient({ cache, link });
@@ -135,122 +150,66 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         return botFail("Could not find the head commit");
     }
 
-    const hasMergeConflict = prInfo.mergeable === "CONFLICTING";
-    let travisStatus: TravisResult;
     let travisUrl: string | undefined = undefined;
-
-    if (headCommit.status) {
-        switch (headCommit.status.state) {
-            case StatusState.ERROR:
-            case StatusState.FAILURE:
-                travisStatus = TravisResult.Fail;
-                travisUrl = headCommit.status.contexts[0].targetUrl;
+    let travisResult: TravisResult;
+    const checkSuite = headCommit?.checkSuites?.nodes?.[0];
+    if (checkSuite) {
+        switch (checkSuite.conclusion) {
+            case CheckConclusionState.SUCCESS:
+                travisResult = TravisResult.Pass;
                 break;
-            case StatusState.EXPECTED:
-            case StatusState.PENDING:
-                travisStatus = TravisResult.Pending;
+            case CheckConclusionState.TIMED_OUT:
+            case CheckConclusionState.CANCELLED:
+            case CheckConclusionState.ACTION_REQUIRED:
+            case CheckConclusionState.FAILURE:
+                travisResult = TravisResult.Fail;
+                travisUrl = checkSuite.url;
                 break;
-            case StatusState.SUCCESS:
-                travisStatus = TravisResult.Pass;
-                break;
+            case CheckConclusionState.NEUTRAL:
             default:
-                return botFail("Unknown bot status");
+                travisResult = TravisResult.Pending;
+                break;
         }
     } else {
-        travisStatus = TravisResult.Missing;
+        travisResult = TravisResult.Missing;
     }
-    const travisFailed = travisStatus === TravisResult.Fail;
+
     const lastCommitDate = new Date(headCommit.pushedDate);
 
-    const fileList = prInfo.files!.nodes!;
+    const fileList = noNulls(prInfo.files?.nodes);
+    const categorizedFiles = fileList.map(f => categorizeFile(f.path));
+    
+    let dangerLevel: DangerLevel = "Infrastructure";
+    
 
-    const { owners, ownersAsLower, authorIsOwner, touchesNonPackage, touchesPopularPackage, touchesMultiplePackages } = await getPackagesInfo(
+    const { owners, ownersAsLower, authorIsOwner, touchesPopularPackage } = await getPackagesInfo(
         pr.user.login,
         (await pr.getFilesRaw()).map(f => f.filename),
         // tslint:disable-next-line align
         /*maxMonthlyDownloads*/ 200000);
 
-    void touchesMultiplePackages, touchesNonPackage;
+    const { approvals, reviewersWithStaleReviews, isChangesRequested } = analyzeReviews(prInfo, n => ownersAsLower.has(n.toLowerCase()));
 
-    const reviewsOfLatestCommit = prInfo.reviews?.nodes?.filter(r => r?.commit?.oid === headCommit.oid) || [];
-
-    const rejections = noNulls(reviewsOfLatestCommit.filter(review => review?.state === PullRequestReviewState.CHANGES_REQUESTED));
-    const approvals = noNulls(reviewsOfLatestCommit.filter(review => review?.state === PullRequestReviewState.APPROVED));
-
-    const approvalsByRole = partition(approvals, review => {
-        if (review?.author?.login === prInfo.author?.login) {
-            return "self";
-        }
-        if (review?.authorAssociation === "OWNER") {
-            // DefinitelyTyped maintainer
-            return "maintainer";
-        }
-        if (owners.has(review?.author?.login || "")) {
-            // Known package owner
-            return "owner";
-        }
-        return "other";        
-    });
-
-    const isMergeRequested = noNulls(prInfo.comments?.nodes).filter(comment => {
-        // Skip comments that aren't the bot
-        if (comment.author?.login !== MyName) return false;
-
-        const tag = getCommentTagFromBody(comment.body);
-        if (tag === getMergeOfferTag(headCommit.oid)) {
-            for (const reaction of noNulls(comment.reactions.nodes)) {
-                if (reaction.user?.login === prInfo.author?.login) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    });
-
-    const { reviews, mergeRequesters } = await getCodeReviews(pr);
-    // Check for approval (which may apply to a prior commit; assume PRs do not regress in this fashion)
-    const isApprovedByOwner = hasApprovalAndNoRejection(reviews, r => ownersAsLower.has(r.reviewer.toLowerCase()));
-    const isApprovedByOther = hasApprovalAndNoRejection(reviews, r => !ownersAsLower.has(r.reviewer.toLowerCase()));
-    const isChangesRequested = reviews.some(r => r.verdict === Opinion.Reject);
-
-    // If a fresh review is a rejection, mark needs CR
-    const firstBadReview = reviews.find(r => r.date >= lastCommitDate && r.verdict === Opinion.Reject);
-
-    // Ping people whose non-approval needs a refresh based on new code changes
-    const reviewPingList: ReadonlyArray<string> = mapDefined(reviews, r =>
-        r.date >= lastCommitDate || r.verdict === Opinion.Approve ? undefined : r.reviewer);
-
-    const files = await pr.getFilesRaw();
-    const isNewDefinition = files.some(file => file.status === "added" && file.filename.endsWith("/tsconfig.json"));
-    const isUnowned = !isNewDefinition && ownersAsLower.size === 0;
-
-    const unmergeable = hasMergeConflict || travisFailed || firstBadReview !== undefined;
-
-    const isLGTM = isApprovedByOther && isPast(addDays(lastCommitDate, 3)) && !unmergeable;
-    const isYSYL = !(isApprovedByOther || isApprovedByOwner) && isPast(addDays(lastCommitDate, 5)) && !unmergeable;
-
-    const isWaitingForReviews = !(unmergeable || isChangesRequested || isApprovedByOwner || isLGTM);
-
-    // The abandoned cutoff is 7 days after a failing Travis build,
-    // or 7 days after the last negative review if Travis is passing
-    const lastBadEvent: Date | undefined = travisFailed
-        ? lastCommitDate
-        : firstBadReview === undefined ? undefined : firstBadReview.date;
-    const isAbandoned = lastBadEvent !== undefined && isPast(addDays(lastBadEvent, 7));
-    const isNearlyAbandoned = lastBadEvent !== undefined && isPast(addDays(lastBadEvent, 6));
     const reviewLink = `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${pr.number}/files`;
-
-    const author = pr.user.login, mergeAuto = false;
+    const author = pr.user.login;
+    const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
+    const hasMergeConflict = prInfo.mergeable === "CONFLICTING";
     return {
         type: "info",
+        dangerLevel,
+        headCommitAbbrOid: headCommit.abbreviatedOid,
+        headCommitOid: headCommit.oid,
+        mergeIsRequested: authorSaysReadyToMerge(prInfo),
+        stalenessInDays,
+        travisResult,
         author, owners,
         lastCommitDate,
-        mergeRequesters, mergeAuto,
-        reviewLink, reviewPingList,
-        travisResult, travisUrl, hasMergeConflict,
-        authorIsOwner,
-        isChangesRequested, isApprovedByOwner, isApprovedByOther, isLGTM, isYSYL, isUnowned, isNewDefinition, touchesPopularPackage,
-        isWaitingForReviews, isAbandoned, isNearlyAbandoned
+        approvals,
+        reviewersWithStaleReviews,
+        reviewLink,
+        travisUrl, hasMergeConflict,
+        authorIsOwner, isFirstContribution,
+        isChangesRequested, isNewDefinition, touchesPopularPackage
     };
 
     function botFail(message: string): BotFail {
@@ -261,10 +220,44 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
     function isPast(cutoff: Date): boolean {
         return +now > +cutoff;
     }
+
+    function isOwner(login: string) {
+        return ownersAsLower.has(login.toLowerCase());
+    }
+}
+
+type FileLocation = ({
+    kind: "test",
+    package: string
+} | {
+    kind: "definition",
+    package: string
+} | {
+    kind: "package-meta",
+    package: string
+} | {
+    kind: "infrastructure"
+}) & { filePath: string };
+
+
+function categorizeFile(filePath: string): FileLocation {
+    const typeDefinitionFile = /^types\/([^\/]+)\/(.*)\.d\.ts$/i;
+    const typeTestFile = /^types\/([^\/]+)\/(.*)-tests\.ts$/i;
+    const typeOtherFile = /^types\/([^\/]+)\/(.*)$/i;
+    let match;
+    if (match = typeDefinitionFile.exec(filePath)) {
+        return { filePath, kind: "definition", package: match.groups?.[1]! };
+    } else if (match = typeTestFile.exec(filePath)) {
+        return { filePath, kind: "test", package: match.groups?.[1]! };
+    } else if (match = typeOtherFile.exec(filePath)) {
+        return { filePath, kind: "package-meta", package: match.groups?.[1]! };
+    } else {
+        return { filePath, kind: "infrastructure" };
+    }
 }
 
 function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) => U) {
-    const res: { [K in U]?: T[] } = { };
+    const res: { [K in U]?: T[] } = {};
     for (const el of arr) {
         const key = sorter(el);
         const target: T[] = res[key] ?? (res[key] = []);
@@ -300,10 +293,50 @@ function addDays(date: Date, days: number): Date {
     return moment(date).add(days, "days").toDate();
 }
 
-function getMergeOfferTag(oid: string) {
-    return `merge-offer-${oid}`;
+function authorSaysReadyToMerge(info: PR_repository_pullRequest) {
+    return info.comments.nodes?.some(comment => {
+        if (comment?.author?.login === info.author?.login) {
+            if (comment?.body.trim().toLowerCase() === "ready to merge") {
+                return true;
+            }
+        }
+        return false;
+    }) ?? false;
 }
 
-function getCommentTagFromBody(body: string): string | undefined {
-    
+function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: string) => boolean) {
+    const headCommitOid: string = prInfo.headRefOid;
+    const reviewersWithStaleReviews: { reviewer: string, reviewedAbbrOid: string }[] = [];
+    let isChangesRequested = false;
+    let approvals = ApprovalFlags.None;
+    for (const r of prInfo.reviews?.nodes || []) {
+        // Skip nulls
+        if (!r?.commit || !r?.author?.login) continue;
+        // Skip self-reviews
+        if (r.author.login === prInfo.author!.login) continue;
+
+        if (r.commit.oid === headCommitOid) {
+            // Review of head commit
+            if (r.state === PullRequestReviewState.CHANGES_REQUESTED) {
+                isChangesRequested = true;
+            } else if (r.state === PullRequestReviewState.APPROVED) {
+                if ((r.authorAssociation === CommentAuthorAssociation.MEMBER) || (r.authorAssociation === CommentAuthorAssociation.OWNER)) {
+                    approvals |= ApprovalFlags.Maintainer;
+                } else if (isOwner(r.author.login)) {
+                    approvals |= ApprovalFlags.Owner;
+                } else {
+                    approvals |= ApprovalFlags.Other;
+                }
+            }
+        } else {
+            // Stale review
+            reviewersWithStaleReviews.push({ reviewedAbbrOid: r.commit.abbreviatedOid, reviewer: r.author.login });
+        }
+    }
+
+    return ({
+        reviewersWithStaleReviews,
+        approvals,
+        isChangesRequested
+    });
 }
