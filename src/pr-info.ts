@@ -1,6 +1,6 @@
 import * as bot from "idembot";
 import { GetPRInfo } from "./pr-query";
-import { PR as PRQueryResult, PR_repository_pullRequest } from "./schema/PR";
+import { PR as PRQueryResult, PR_repository_pullRequest, PR_repository_pullRequest_commits_nodes_commit } from "./schema/PR";
 import { ApolloClient } from "apollo-boost"
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
@@ -12,6 +12,7 @@ import { getPackagesInfo } from "./util/dt";
 import { getTravisStatus, TravisResult } from "./util/travis";
 import { mapDefined } from "./util/util";
 import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "../schema/globalTypes";
+import { getMonthlyDownloadCount } from "./util/npm";
 
 export const commentApprovalTokens: ReadonlyArray<string> = ["👍", ":+1:", "lgtm", "LGTM", ":shipit:"];
 export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
@@ -26,6 +27,9 @@ export enum ApprovalFlags {
     Maintainer = 1 << 2
 }
 
+const CriticalPopularityThreshold = 5_000_000;
+const NormalPopularityThreshold = 200_000;
+
 export type DangerLevel =
     | "ScopedAndTested"
     | "ScopedAndUntested"
@@ -33,6 +37,11 @@ export type DangerLevel =
     | "NewDefinition"
     | "MultiplePackagesEdited"
     | "Infrastructure";
+
+export type PopularityLevel = 
+    | "Well-liked by everyone"
+    | "Popular"
+    | "Critical";
 
 export interface BotFail {
     readonly type: "fail";
@@ -107,20 +116,16 @@ export interface PrInfo {
      * True if the head commit has any failing reviews
      */
     readonly isChangesRequested: boolean;
-
     readonly approvals: ApprovalFlags;
-
     readonly dangerLevel: DangerLevel;
 
     /**
      * Integer count of days of inactivity
      */
     readonly stalenessInDays: number;
-
     readonly isFirstContribution: boolean;
 
-    readonly isNewDefinition: boolean;
-    readonly touchesPopularPackage: boolean;
+    readonly popularityLevel: PopularityLevel;
 }
 
 const cache = new InMemoryCache();
@@ -130,10 +135,10 @@ const link = new HttpLink({
         accept: "application/vnd.github.antiope-preview+json"
     }
 });
+const client = new ApolloClient({ cache, link });
 
 export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> {
     const now = new Date();
-    const client = new ApolloClient({ cache, link });
     const info = await client.query<PRQueryResult>({
         query: GetPRInfo,
         variables: {
@@ -150,66 +155,33 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         return botFail("Could not find the head commit");
     }
 
-    let travisUrl: string | undefined = undefined;
-    let travisResult: TravisResult;
-    const checkSuite = headCommit?.checkSuites?.nodes?.[0];
-    if (checkSuite) {
-        switch (checkSuite.conclusion) {
-            case CheckConclusionState.SUCCESS:
-                travisResult = TravisResult.Pass;
-                break;
-            case CheckConclusionState.TIMED_OUT:
-            case CheckConclusionState.CANCELLED:
-            case CheckConclusionState.ACTION_REQUIRED:
-            case CheckConclusionState.FAILURE:
-                travisResult = TravisResult.Fail;
-                travisUrl = checkSuite.url;
-                break;
-            case CheckConclusionState.NEUTRAL:
-            default:
-                travisResult = TravisResult.Pending;
-                break;
-        }
-    } else {
-        travisResult = TravisResult.Missing;
-    }
-
-    const lastCommitDate = new Date(headCommit.pushedDate);
-
-    const fileList = noNulls(prInfo.files?.nodes);
-    const categorizedFiles = fileList.map(f => categorizeFile(f.path));
+    const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
+    const packages = getPackagesTouched(categorizedFiles);
     
-    let dangerLevel: DangerLevel = "Infrastructure";
-    
-
     const { owners, ownersAsLower, authorIsOwner, touchesPopularPackage } = await getPackagesInfo(
         pr.user.login,
         (await pr.getFilesRaw()).map(f => f.filename),
         // tslint:disable-next-line align
         /*maxMonthlyDownloads*/ 200000);
 
-    const { approvals, reviewersWithStaleReviews, isChangesRequested } = analyzeReviews(prInfo, n => ownersAsLower.has(n.toLowerCase()));
-
-    const reviewLink = `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${pr.number}/files`;
-    const author = pr.user.login;
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
-    const hasMergeConflict = prInfo.mergeable === "CONFLICTING";
+
     return {
         type: "info",
-        dangerLevel,
+        author: prInfo.author.login,
+        owners,
+        dangerLevel: getDangerLevel(categorizedFiles),
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
         mergeIsRequested: authorSaysReadyToMerge(prInfo),
-        stalenessInDays,
-        travisResult,
-        author, owners,
-        lastCommitDate,
-        approvals,
-        reviewersWithStaleReviews,
-        reviewLink,
-        travisUrl, hasMergeConflict,
+        stalenessInDays: Math.floor(moment().diff(moment(headCommit.pushedDate), "days")),
+        lastCommitDate: headCommit.pushedDate,
+        reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${pr.number}/files`,
+        hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         authorIsOwner, isFirstContribution,
-        isChangesRequested, isNewDefinition, touchesPopularPackage
+        popularityLevel: await getPopularityLevel(packages),
+        ...getTravisResult(headCommit),
+        ...analyzeReviews(prInfo, isOwner)
     };
 
     function botFail(message: string): BotFail {
@@ -254,6 +226,18 @@ function categorizeFile(filePath: string): FileLocation {
     } else {
         return { filePath, kind: "infrastructure" };
     }
+}
+
+function getPackagesTouched(files: readonly FileLocation[]) {
+    const list: string[] = [];
+    for (const f of files) {
+        if ("package" in f) {
+            if (list.indexOf(f.package) < 0) {
+                list.push(f.package);
+            }
+        }
+    }
+    return list;
 }
 
 function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) => U) {
@@ -339,4 +323,91 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
         approvals,
         isChangesRequested
     });
+}
+
+function getDangerLevel(categorizedFiles: readonly FileLocation[]) {
+    if (categorizedFiles.some(f => f.kind === "infrastructure")) {
+        return "Infrastructure";
+    } else {
+        const packagesTouched = getPackagesTouched(categorizedFiles);
+        if (packagesTouched.length === 0) {
+            // ????
+            return "Infrastructure";
+        } else if (packagesTouched.length === 1) {
+            const packageName = packagesTouched[0];
+            let tested = false;
+            let meta = false;
+            for (const f of categorizedFiles) {
+                switch (f.kind) {
+                    case "infrastructure":
+                        throw new Error("impossible");
+                    case "definition":
+                        // Expected
+                        break;
+                    case "test":
+                        tested = true;
+                        break;
+                    case "package-meta":
+                        meta = true;
+                        break;
+                    default:
+                        assertNever(f);
+                }
+            }
+            if (meta) {
+                return "ScopedAndConfiguration";
+            } else if (tested) {
+                return "ScopedAndTested";
+            } else {
+                return "ScopedAndUntested";
+            }
+        } else {
+            return "MultiplePackagesEdited";
+        }
+    }
+}
+
+function assertNever(n: never) {
+    throw new Error("impossible");
+}
+
+function getTravisResult(headCommit: PR_repository_pullRequest_commits_nodes_commit) {
+    let travisUrl: string | undefined = undefined;
+    let travisResult: TravisResult;
+    const checkSuite = headCommit.checkSuites?.nodes?.[0];
+    if (checkSuite) {
+        switch (checkSuite.conclusion) {
+            case CheckConclusionState.SUCCESS:
+                travisResult = TravisResult.Pass;
+                break;
+            case CheckConclusionState.TIMED_OUT:
+            case CheckConclusionState.CANCELLED:
+            case CheckConclusionState.ACTION_REQUIRED:
+            case CheckConclusionState.FAILURE:
+                travisResult = TravisResult.Fail;
+                travisUrl = checkSuite.url;
+                break;
+            case CheckConclusionState.NEUTRAL:
+            default:
+                travisResult = TravisResult.Pending;
+                break;
+        }
+    } else {
+        travisResult = TravisResult.Missing;
+    }
+    return { travisResult, travisUrl };
+}
+
+async function getPopularityLevel(packagesTouched: string[]): Promise<PopularityLevel> {
+    let popularityLevel: PopularityLevel = "Well-liked by everyone";
+    for (const p of packagesTouched) {
+        const downloads = await getMonthlyDownloadCount(p);
+        if (downloads > CriticalPopularityThreshold) {
+            // Can short-circuit
+            return "Critical";
+        } else if (downloads > NormalPopularityThreshold) {
+            popularityLevel = "Popular";
+        }
+    }
+    return popularityLevel;
 }

@@ -19,6 +19,7 @@ export const DefaultContext = {
         "Merge:LGTM": false,
         "Merge:YSYL": false,
         "Popular Package": false,
+        "Critical Package": false,
         "Edits Infrastructure": false,
         "Edits multiple packages": false,
         "Author is Owner": false
@@ -32,7 +33,8 @@ export function defineGraph(context: Context) {
 
     // General labelling and housekeeping
     root.addAlwaysAction(info => {
-        context.labels["Popular Package"] = info.touchesPopularPackage;
+        context.labels["Critical Package"] = info.popularityLevel === "Critical";
+        context.labels["Popular Package"] = info.popularityLevel === "Popular";
         context.labels["Other Approved"] = !!(info.approvals & ApprovalFlags.Other);
         context.labels["Owner Approved"] = !!(info.approvals & ApprovalFlags.Owner);
         context.labels["Maintainer Approved"] = !!(info.approvals & ApprovalFlags.Maintainer);
