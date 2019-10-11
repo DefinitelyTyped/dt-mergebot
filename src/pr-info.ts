@@ -15,7 +15,7 @@ import { getCodeReviews, Opinion, Review } from "./reviews";
 import { getPackagesInfo } from "./util/dt";
 import { getTravisStatus, TravisResult } from "./util/travis";
 import { mapDefined } from "./util/util";
-import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "../schema/globalTypes";
+import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./schema/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 
 export const commentApprovalTokens: ReadonlyArray<string> = ["👍", ":+1:", "lgtm", "LGTM", ":shipit:"];
