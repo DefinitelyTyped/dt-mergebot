@@ -1,11 +1,12 @@
 import * as bot from "idembot";
+import fetch from "node-fetch";
 import { GetPRInfo } from "./pr-query";
 import { PR as PRQueryResult, PR_repository_pullRequest, PR_repository_pullRequest_commits_nodes_commit } from "./schema/PR";
 import { GetFileContent, GetFileExists } from "./file-query";
 import { GetFileExists  as GetFileExistsResult } from "./schema/GetFileExists";
 import { GetFileContent as GetFileContentResult } from "./schema/GetFileContent";
 import { ApolloClient } from "apollo-boost";
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import * as HeaderPaser from "definitelytyped-header-parser";
 
@@ -17,10 +18,12 @@ import { getTravisStatus, TravisResult } from "./util/travis";
 import { mapDefined } from "./util/util";
 import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./schema/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
+import { readFileSync } from "fs";
 
 export const commentApprovalTokens: ReadonlyArray<string> = ["👍", ":+1:", "lgtm", "LGTM", ":shipit:"];
 export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
 export const mergeplzMarker = "mergeplz";
+
 
 const MyName = "typescript-bot";
 
@@ -78,7 +81,7 @@ export interface PrInfo {
     /**
      * The current list of owners of packages affected by this PR
      */
-    readonly owners: ReadonlySet<string>;
+    readonly owners: readonly string[];
 
     /**
      * True if the author wants us to merge the PR
@@ -120,7 +123,7 @@ export interface PrInfo {
      * True if the head commit has any failing reviews
      */
     readonly isChangesRequested: boolean;
-    readonly approvals: ApprovalFlags;
+    readonly approvalFlags: ApprovalFlags;
     readonly dangerLevel: DangerLevel;
 
     readonly anyPackageIsNew: boolean;
@@ -132,25 +135,44 @@ export interface PrInfo {
     readonly isFirstContribution: boolean;
 
     readonly popularityLevel: PopularityLevel;
+
+    readonly packages: readonly string[];
+    readonly files: readonly FileLocation[];
 }
 
-const cache = new InMemoryCache();
-const link = new HttpLink({
-    uri: "https://api.github.com/graphql", headers: {
-        authorization: `Bearer ${process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"]}`,
-        accept: "application/vnd.github.antiope-preview+json"
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+    introspectionQueryResultData: {
+        __schema: {
+            types: []
+        }
     }
 });
-const client = new ApolloClient({ cache, link });
+const cache = new InMemoryCache({ fragmentMatcher });
+const link = new HttpLink({
+    uri: "https://api.github.com/graphql",
+    headers: {
+        authorization: `Bearer ${process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"]}`,
+        accept: "application/vnd.github.antiope-preview+json"
+    },
+    fetch
+});
+const client = new ApolloClient({ cache, link, defaultOptions: {
+    query: {
+      errorPolicy: "all"
+    }
+  }
+});
 
 export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
-    const now = new Date();
     const info = await client.query<PRQueryResult>({
         query: GetPRInfo,
         variables: {
             pr_number: prNumber
-        }
+        },
+        fetchPolicy: "network-only",
+        fetchResults: true
     });
+    console.log(JSON.stringify(info, undefined, 2));
 
     const prInfo = info.data.repository?.pullRequest;
     if (!prInfo) return botFail("No PR with this number exists");
@@ -165,7 +187,7 @@ export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
     const packages = getPackagesTouched(categorizedFiles);
 
     const { anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages);
-    const owners = allOwners;
+    const owners = Array.from(allOwners.keys());
     const authorIsOwner = isOwner(prInfo.author.login);
 
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
@@ -185,6 +207,8 @@ export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
         authorIsOwner, isFirstContribution,
         popularityLevel: await getPopularityLevel(packages),
         anyPackageIsNew,
+        packages,
+        files: categorizedFiles,
         ...getTravisResult(headCommit),
         ...analyzeReviews(prInfo, isOwner)
     };
@@ -195,7 +219,7 @@ export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
     }
 
     function isOwner(login: string) {
-        return Array.from(owners.keys()).some(k => k.toLowerCase() === login.toLowerCase());
+        return owners.some(k => k.toLowerCase() === login.toLowerCase());
     }
 }
 
@@ -229,6 +253,7 @@ async function getOwnersOfPackages(packages: readonly string[]) {
 }
 
 async function getOwnersForPackage(packageName: string): Promise<string[] | undefined> {
+    debugger;
     const indexDts = `master:types/${packageName}/index.d.ts`;
     const indexDtsContent = await fetchFile(indexDts);
     if (indexDtsContent === undefined) return undefined;
@@ -257,13 +282,13 @@ async function fileExists(filename: string): Promise<boolean> {
     return false;
 }
 
-async function fetchFile(filename: string): Promise<string | undefined> {
+async function fetchFile(expr: string): Promise<string | undefined> {
     const info = await client.query<GetFileContentResult>({
         query: GetFileContent,
         variables: {
             name: "DefinitelyTyped",
             owner: "DefinitelyTyped",
-            expr: `master:${filename}`
+            expr: `${expr}`
         }
     });
 
@@ -279,11 +304,11 @@ function categorizeFile(filePath: string): FileLocation {
     const typeOtherFile = /^types\/([^\/]+)\/(.*)$/i;
     let match;
     if (match = typeDefinitionFile.exec(filePath)) {
-        return { filePath, kind: "definition", package: match.groups?.[1]! };
+        return { filePath, kind: "definition", package: match[1] };
     } else if (match = typeTestFile.exec(filePath)) {
-        return { filePath, kind: "test", package: match.groups?.[1]! };
+        return { filePath, kind: "test", package: match[1] };
     } else if (match = typeOtherFile.exec(filePath)) {
-        return { filePath, kind: "package-meta", package: match.groups?.[1]! };
+        return { filePath, kind: "package-meta", package: match[1] };
     } else {
         return { filePath, kind: "infrastructure" };
     }
@@ -350,10 +375,11 @@ function authorSaysReadyToMerge(info: PR_repository_pullRequest) {
 }
 
 function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: string) => boolean) {
+    const hasUpToDateReview: Set<string> = new Set();
     const headCommitOid: string = prInfo.headRefOid;
     const reviewersWithStaleReviews: { reviewer: string, reviewedAbbrOid: string }[] = [];
     let isChangesRequested = false;
-    let approvals = ApprovalFlags.None;
+    let approvalFlags = ApprovalFlags.None;
     for (const r of prInfo.reviews?.nodes || []) {
         // Skip nulls
         if (!r?.commit || !r?.author?.login) continue;
@@ -362,26 +388,30 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
 
         if (r.commit.oid === headCommitOid) {
             // Review of head commit
+            hasUpToDateReview.add(r.author.login);
             if (r.state === PullRequestReviewState.CHANGES_REQUESTED) {
                 isChangesRequested = true;
             } else if (r.state === PullRequestReviewState.APPROVED) {
                 if ((r.authorAssociation === CommentAuthorAssociation.MEMBER) || (r.authorAssociation === CommentAuthorAssociation.OWNER)) {
-                    approvals |= ApprovalFlags.Maintainer;
+                    approvalFlags |= ApprovalFlags.Maintainer;
                 } else if (isOwner(r.author.login)) {
-                    approvals |= ApprovalFlags.Owner;
+                    approvalFlags |= ApprovalFlags.Owner;
                 } else {
-                    approvals |= ApprovalFlags.Other;
+                    approvalFlags |= ApprovalFlags.Other;
                 }
             }
         } else {
             // Stale review
-            reviewersWithStaleReviews.push({ reviewedAbbrOid: r.commit.abbreviatedOid, reviewer: r.author.login });
+            // Reviewers with reviews of the current commit are not stale
+            if (!hasUpToDateReview.has(r.author.login)) {
+                reviewersWithStaleReviews.push({ reviewedAbbrOid: r.commit.abbreviatedOid, reviewer: r.author.login });
+            }
         }
     }
 
     return ({
         reviewersWithStaleReviews,
-        approvals,
+        approvalFlags,
         isChangesRequested
     });
 }

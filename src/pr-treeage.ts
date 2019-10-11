@@ -35,9 +35,9 @@ export function defineGraph(context: Context) {
     root.addAlwaysAction(info => {
         context.labels["Critical Package"] = info.popularityLevel === "Critical";
         context.labels["Popular Package"] = info.popularityLevel === "Popular";
-        context.labels["Other Approved"] = !!(info.approvals & ApprovalFlags.Other);
-        context.labels["Owner Approved"] = !!(info.approvals & ApprovalFlags.Owner);
-        context.labels["Maintainer Approved"] = !!(info.approvals & ApprovalFlags.Maintainer);
+        context.labels["Other Approved"] = !!(info.approvalFlags & ApprovalFlags.Other);
+        context.labels["Owner Approved"] = !!(info.approvalFlags & ApprovalFlags.Owner);
+        context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
         context.labels["New Definition"] = info.anyPackageIsNew;
         context.labels["Author is Owner"] = info.authorIsOwner;
     });
@@ -104,8 +104,8 @@ export function defineGraph(context: Context) {
         {
             // Approved
             const { group, map } = ciGreen.addGroup({
-                approvedByOwner: info => !!(info.approvals & ApprovalFlags.Owner),
-                approvedByOther: info => !!(info.approvals & ApprovalFlags.Other)
+                approvedByOwner: info => !!(info.approvalFlags & ApprovalFlags.Owner),
+                approvedByOther: info => !!(info.approvalFlags & ApprovalFlags.Other)
             });
         }
 
@@ -146,7 +146,7 @@ function daysStaleBetween(lowerBoundInclusive: number, upperBoundExclusive: numb
 
 function createWelcomeComment(info: PrInfo) {
     const signoff = needsMaintainerApproval(info) ? "a maintainer" : "an owner or maintainer";
-    const owners = Array.from(info.owners.keys()).filter(a => a !== info.author);
+    const owners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
 
     const introCommentLines: string[] = [];
     introCommentLines.push(`@${info.author} Thank you for submitting this PR!`)

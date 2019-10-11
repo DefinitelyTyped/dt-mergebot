@@ -3,6 +3,7 @@
     "exclude": ["src/use-pr-info.ts", "src/rules.ts"],
     "compilerOptions": {
         "outDir": "bin",
+        "rootDir": "src",
         "strict": true,
         "module": "commonjs",
         "target": "es6",

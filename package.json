@@ -4,6 +4,7 @@
   "description": "dt-mergebot",
   "main": "index.js",
   "dependencies": {
+    "@graphql-codegen/fragment-matcher": "^1.8.1",
     "@octokit/graphql-schema": "^6.45.0",
     "@types/node": "latest",
     "@types/node-fetch": "^1.6.7",
@@ -30,7 +31,7 @@
     "single-info": "npm run build && node bin/show-info.js",
     "single-debug": "npm run build && node --inspect-brk node_modules/idembot/bin/run.js --file bin/rules.js --single",
     "cleanproject": "npm run build && node bin/clean-columns.js",
-    "graphql-schema": "npx apollo client:codegen schema --target typescript --mergeInFieldsFromFragmentSpreads --globalTypesFile=src/schema/graphql-global-types.ts"
+    "graphql-schema": "npx apollo client:codegen schema --target typescript --globalTypesFile=src/schema/graphql-global-types.ts"
   },
   "repository": {
     "type": "git",
