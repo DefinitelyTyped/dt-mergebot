@@ -1,9 +1,13 @@
 import * as bot from "idembot";
 import { GetPRInfo } from "./pr-query";
 import { PR as PRQueryResult, PR_repository_pullRequest, PR_repository_pullRequest_commits_nodes_commit } from "./schema/PR";
-import { ApolloClient } from "apollo-boost"
+import { GetFileContent, GetFileExists } from "./file-query";
+import { GetFileExists  as GetFileExistsResult } from "./schema/GetFileExists";
+import { GetFileContent as GetFileContentResult } from "./schema/GetFileContent";
+import { ApolloClient } from "apollo-boost";
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
+import * as HeaderPaser from "definitelytyped-header-parser";
 
 import moment = require("moment");
 
@@ -119,6 +123,8 @@ export interface PrInfo {
     readonly approvals: ApprovalFlags;
     readonly dangerLevel: DangerLevel;
 
+    readonly anyPackageIsNew: boolean;
+
     /**
      * Integer count of days of inactivity
      */
@@ -137,12 +143,12 @@ const link = new HttpLink({
 });
 const client = new ApolloClient({ cache, link });
 
-export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> {
+export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
     const now = new Date();
     const info = await client.query<PRQueryResult>({
         query: GetPRInfo,
         variables: {
-            pr_number: pr.number
+            pr_number: prNumber
         }
     });
 
@@ -157,12 +163,10 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
 
     const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
     const packages = getPackagesTouched(categorizedFiles);
-    
-    const { owners, ownersAsLower, authorIsOwner, touchesPopularPackage } = await getPackagesInfo(
-        pr.user.login,
-        (await pr.getFilesRaw()).map(f => f.filename),
-        // tslint:disable-next-line align
-        /*maxMonthlyDownloads*/ 200000);
+
+    const { anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages);
+    const owners = allOwners;
+    const authorIsOwner = isOwner(prInfo.author.login);
 
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
 
@@ -176,10 +180,11 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         mergeIsRequested: authorSaysReadyToMerge(prInfo),
         stalenessInDays: Math.floor(moment().diff(moment(headCommit.pushedDate), "days")),
         lastCommitDate: headCommit.pushedDate,
-        reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${pr.number}/files`,
+        reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         authorIsOwner, isFirstContribution,
         popularityLevel: await getPopularityLevel(packages),
+        anyPackageIsNew,
         ...getTravisResult(headCommit),
         ...analyzeReviews(prInfo, isOwner)
     };
@@ -189,12 +194,8 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         return { type: "fail", message };
     }
 
-    function isPast(cutoff: Date): boolean {
-        return +now > +cutoff;
-    }
-
     function isOwner(login: string) {
-        return ownersAsLower.has(login.toLowerCase());
+        return Array.from(owners.keys()).some(k => k.toLowerCase() === login.toLowerCase());
     }
 }
 
@@ -211,6 +212,66 @@ type FileLocation = ({
     kind: "infrastructure"
 }) & { filePath: string };
 
+async function getOwnersOfPackages(packages: readonly string[]) {
+    const allOwners = new Set<string>();
+    let anyPackageIsNew = false;
+    for (const p of packages) {
+        const owners = await getOwnersForPackage(p);
+        if (owners === undefined) {
+            anyPackageIsNew = true;
+        } else {
+            for (const o of owners) {
+                allOwners.add(o);
+            }
+        }
+    }
+    return { allOwners, anyPackageIsNew };
+}
+
+async function getOwnersForPackage(packageName: string): Promise<string[] | undefined> {
+    const indexDts = `master:types/${packageName}/index.d.ts`;
+    const indexDtsContent = await fetchFile(indexDts);
+    if (indexDtsContent === undefined) return undefined;
+
+    try {
+        const parsed = HeaderPaser.parseHeaderOrFail(indexDtsContent);
+        return parsed.contributors.map(c => c.githubUsername).filter(notUndefined);
+    } catch(e) {
+        console.error(e);
+        return undefined;
+    }
+}
+
+async function fileExists(filename: string): Promise<boolean> {
+    const info = await client.query<GetFileExistsResult>({
+        query: GetFileExists,
+        variables: {
+            name: "DefinitelyTyped",
+            owner: "DefinitelyTyped",
+            expr: `master:${filename}`
+        }
+    });
+    if (info.data.repository?.object?.__typename === "Blob") {
+        return !!(info.data.repository?.object?.id);
+    }
+    return false;
+}
+
+async function fetchFile(filename: string): Promise<string | undefined> {
+    const info = await client.query<GetFileContentResult>({
+        query: GetFileContent,
+        variables: {
+            name: "DefinitelyTyped",
+            owner: "DefinitelyTyped",
+            expr: `master:${filename}`
+        }
+    });
+
+    if (info.data.repository?.object?.__typename === "Blob") {
+        return info.data.repository.object.text ?? undefined;
+    }
+    return undefined;
+}
 
 function categorizeFile(filePath: string): FileLocation {
     const typeDefinitionFile = /^types\/([^\/]+)\/(.*)\.d\.ts$/i;
@@ -411,3 +472,5 @@ async function getPopularityLevel(packagesTouched: string[]): Promise<Popularity
     }
     return popularityLevel;
 }
+
+function notUndefined<T>(arg: T | undefined): arg is T { return arg !== undefined; }

@@ -38,7 +38,7 @@ export function defineGraph(context: Context) {
         context.labels["Other Approved"] = !!(info.approvals & ApprovalFlags.Other);
         context.labels["Owner Approved"] = !!(info.approvals & ApprovalFlags.Owner);
         context.labels["Maintainer Approved"] = !!(info.approvals & ApprovalFlags.Maintainer);
-        context.labels["New Definition"] = info.isNewDefinition;
+        context.labels["New Definition"] = info.anyPackageIsNew;
         context.labels["Author is Owner"] = info.authorIsOwner;
     });
 
@@ -159,7 +159,7 @@ function createWelcomeComment(info: PrInfo) {
     introCommentLines.push(`## Code Reviews`)
     introCommentLines.push(``);
     if (owners.length === 0) {
-        if (info.isNewDefinition) {
+        if (info.anyPackageIsNew) {
             introCommentLines.push(`This is a new package, so I don't have anyone specific to ask for code reviews.`);
         } else {
             introCommentLines.push(`I didn't see any other owners to ask for code reviews.`);

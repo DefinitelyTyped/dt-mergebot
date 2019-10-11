@@ -18,7 +18,6 @@
     "request": "^2.83.0",
     "treeage": "latest",
     "tslib": "^1.10.0",
-    "tslint": "^5.8.0",
     "typescript": "^3.7.0-dev.20191003"
   },
   "scripts": {
@@ -28,10 +27,10 @@
     "dry": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json --dry",
     "wet": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json",
     "single": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --single",
+    "single-info": "npm run build && node bin/show-info.js",
     "single-debug": "npm run build && node --inspect-brk node_modules/idembot/bin/run.js --file bin/rules.js --single",
     "cleanproject": "npm run build && node bin/clean-columns.js",
-    "lint": "tslint --project tsconfig.json --format stylish",
-    "graphql-schema": "npx apollo client:codegen schema --target typescript --mergeInFieldsFromFragmentSpreads"
+    "graphql-schema": "npx apollo client:codegen schema --target typescript --mergeInFieldsFromFragmentSpreads --globalTypesFile=src/schema/graphql-global-types.ts"
   },
   "repository": {
     "type": "git",

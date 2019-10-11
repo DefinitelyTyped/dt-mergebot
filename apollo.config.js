@@ -7,7 +7,7 @@ module.exports = {
                 authorization: `Bearer ${process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"]}`,
                 accept: "application/vnd.github.antiope-preview+json"
             },
-            includes: ["./src/pr-query.ts"],
+            includes: ["./src/pr-query.ts", "./src/file-query.ts"],
         }
     }
 };
