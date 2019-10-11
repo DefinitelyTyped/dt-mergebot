@@ -65,17 +65,14 @@ export const MergeChecklist = (travisGreen: boolean, noMergeConflict: boolean, a
     });
 };
 
-export const AskForAutoMergePermission = (offeredCommit: string, author: string) => ({
-    tag: `merge-offer-${offeredCommit}`,
+export const AskForAutoMergePermission = (author: string) => ({
+    tag: `merge-offer`,
     status: `@${author} Everything looks good here. Great job! I am ready to merge this PR on your behalf.
 If you'd like that to happen, please post a comment with the exact text
 
 > Ready to merge
 
-and I'll merge it the next time I look at this PR.
-
-This offer is only valid for commit ${'`' + offeredCommit + '`'} - if there are more changes needed, you'll need to get a fresh review from a listed owner. Thank you!`
-});
+and I'll merge it the next time I look at this PR.`});
 
 function tinyHash(s: string): string {
     return crypto.createHash("sha256").update(s).digest("hex").substr(0, 6);

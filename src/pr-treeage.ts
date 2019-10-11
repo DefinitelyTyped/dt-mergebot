@@ -6,7 +6,7 @@ import { TravisResult } from "./util/travis";
 export type Context = typeof DefaultContext;
 export const DefaultContext = {
     doNothing: false,
-    targetColumn: undefined as string | undefined,
+    targetColumn: "Other",
     labels: {
         "Has Merge Conflict": false,
         "The Travis CI build failed": false,
@@ -28,7 +28,7 @@ export const DefaultContext = {
     shouldClose: false
 };
 
-export function defineGraph(context: Context) {
+export function createProcessor(context: Context) {
     const root = Treeage.create<PrInfo>({ pathMode: "first" });
 
     // General labelling and housekeeping
@@ -95,7 +95,6 @@ export function defineGraph(context: Context) {
     // CI is missing
     root.addPath(info => info.travisResult === TravisResult.Missing).addAlwaysAction(() => {
         context.labels["Where is Travis?"] = true;
-        context.targetColumn = "Other";
     });
 
     // CI is green
@@ -106,6 +105,18 @@ export function defineGraph(context: Context) {
             const { group, map } = ciGreen.addGroup({
                 approvedByOwner: info => !!(info.approvalFlags & ApprovalFlags.Owner),
                 approvedByOther: info => !!(info.approvalFlags & ApprovalFlags.Other)
+            });
+
+            const autoMergeable = map.approvedByOwner.addPath(info =>
+                 (info.popularityLevel === "Well-liked by everyone") &&
+                (info.dangerLevel === "ScopedAndTested"));
+            
+            autoMergeable.addAlwaysAction(() => {
+                context.targetColumn = "Ready to Merge";
+            });
+            const doMerge = autoMergeable.addPath(info => info.mergeIsRequested);
+            autoMergeable.otherwise().addAlwaysAction((info) => {
+                context.responseComments.push(Comments.AskForAutoMergePermission(info.author))
             });
         }
 
@@ -125,6 +136,8 @@ export function defineGraph(context: Context) {
     root.otherwise().addAlwaysAction(() => {
         context.targetColumn = "Other";
     });
+
+    return (info: PrInfo) => root.process(info);
 }
 
 function hasFinalApproval(info: PrInfo) {
