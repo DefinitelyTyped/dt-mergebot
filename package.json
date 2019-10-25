@@ -4,6 +4,7 @@
   "description": "dt-mergebot",
   "main": "index.js",
   "dependencies": {
+    "@graphql-codegen/fragment-matcher": "^1.8.1",
     "@octokit/graphql-schema": "^6.45.0",
     "@types/node": "latest",
     "@types/node-fetch": "^1.6.7",
@@ -13,13 +14,11 @@
     "fs-extra": "^4.0.3",
     "graceful-fs": "^4.1.11",
     "graphql": "^14.5.8",
-    "idembot": "0.0.12",
     "moment": "^2.20.1",
     "node-fetch": "^1.7.3",
     "request": "^2.83.0",
-    "tslib": "^1.10.0",
     "treeage": "latest",
-    "tslint": "^5.8.0",
+    "tslib": "^1.10.0",
     "typescript": "^3.7.0-dev.20191003"
   },
   "scripts": {
@@ -29,10 +28,10 @@
     "dry": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json --dry",
     "wet": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json",
     "single": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --single",
+    "single-info": "npm run build && node bin/show-info.js",
     "single-debug": "npm run build && node --inspect-brk node_modules/idembot/bin/run.js --file bin/rules.js --single",
     "cleanproject": "npm run build && node bin/clean-columns.js",
-    "lint": "tslint --project tsconfig.json --format stylish",
-    "graphql-schema": "npx apollo client:codegen schema --target typescript --mergeInFieldsFromFragmentSpreads"
+    "graphql-schema": "npx apollo client:codegen schema --target typescript --globalTypesFile=src/schema/graphql-global-types.ts"
   },
   "repository": {
     "type": "git",

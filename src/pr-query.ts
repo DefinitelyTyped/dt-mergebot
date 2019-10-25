@@ -8,6 +8,7 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
         author {
           login
         }
+        authorAssociation
         baseRef {
           name
         }
@@ -35,7 +36,8 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
             }
           }
         }
-        reviews(first: 100) {
+
+        reviews(last: 100) {
           nodes {
             author {
               login
@@ -50,10 +52,22 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
             url
           }
         }
+
         commits(last: 100) {
           totalCount
           nodes {
             commit {
+              checkSuites(first: 100) {
+                nodes {
+                  app {
+                    name
+                  }
+                  conclusion
+                  resourcePath
+                  status
+                  url
+                }
+              }
               status {
                 state
                 contexts {
@@ -71,6 +85,7 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
             }
           }
         }
+
         comments(first: 100) {
           totalCount
           nodes {
@@ -79,13 +94,14 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
             }
             body
             createdAt
-            reactions(content: THUMBS_UP) {
+            reactions(first: 100, content: THUMBS_UP) {
               nodes {
                 user { login }
               }
             }
           }
         }
+
         files(first: 100) {
           nodes {
             path
