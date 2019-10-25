@@ -1,5 +1,8 @@
 export type Comment = { tag: string, status: string };
 
+export const commentApprovalTokens: ReadonlyArray<string> = ["👍", ":+1:", "lgtm", "LGTM", ":shipit:"];
+export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
+
 export const SorryAbandoned = (user: string) => ({
     tag: "abandon-sorry",
     status: `@${user} To keep things tidy, we have to close PRs that aren't mergeable but don't have activity from their author. No worries, though - please open a new PR if you'd like to continue with this change. Thank you!`

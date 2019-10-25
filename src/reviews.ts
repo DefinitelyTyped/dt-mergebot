@@ -1,6 +1,6 @@
 import * as bot from "idembot";
 
-import { commentApprovalTokens, commentDisapprovalTokens, mergeplzMarker } from "./pr-info";
+import { commentApprovalTokens, commentDisapprovalTokens } from "./comments";
 
 export const enum Opinion { Unknown, Approve, Reject }
 
@@ -20,15 +20,13 @@ export interface CodeReviews {
 
 interface ReviewsInfo {
     readonly reviews: ReadonlyArray<Review>;
-    readonly mergeRequesters: ReadonlyArray<string>;
 }
 
 export async function getCodeReviews(pr: bot.PullRequest): Promise<ReviewsInfo> {
     let reviews: Review[] = [];
-    const mergeRequesters: string[] = [];
     const prUser = pr.user.login;
-    await getCommentReviews(await pr.getComments(), prUser, reviews, mergeRequesters);
-    getProperReviews(await pr.getReviews(), prUser, reviews, mergeRequesters);
+    await getCommentReviews(await pr.getComments(), prUser, reviews);
+    getProperReviews(await pr.getReviews(), prUser, reviews);
 
     // Sort by date, oldest first
     reviews.sort((a, b) => +a.date - +b.date);
@@ -37,7 +35,7 @@ export async function getCodeReviews(pr: bot.PullRequest): Promise<ReviewsInfo> 
         // Latest if no other review by the same login has a higher index.
         !reviews.some((r2, i2) => r.reviewer === r2.reviewer && i2 > i));
 
-    return { reviews, mergeRequesters };
+    return { reviews };
 }
 
 interface Push<T> {
@@ -47,8 +45,7 @@ interface Push<T> {
 async function getCommentReviews(
     comments: ReadonlyArray<bot.IssueComment>,
     prUser: string,
-    reviews: Push<Review>,
-    mergeRequesters: Push<string>,
+    reviews: Push<Review>
     ): Promise<void> {
     // Parse comments
     for (const comment of comments) {
@@ -64,10 +61,6 @@ async function getCommentReviews(
                 reviewer: commenter,
                 verdict: Opinion.Approve,
             });
-
-            if (comment.body.includes(mergeplzMarker)) {
-                mergeRequesters.push(commenter);
-            }
         }
     }
 }
@@ -75,8 +68,7 @@ async function getCommentReviews(
 function getProperReviews(
     reviewsFromApi: ReadonlyArray<bot.PullRequestReview>,
     prUser: string,
-    reviews: Push<Review>,
-    mergeRequesters: Push<string>): void {
+    reviews: Push<Review>): void {
     for (const r of reviewsFromApi) {
         const reviewer = r.user.login;
         // No self-reviews
@@ -84,11 +76,8 @@ function getProperReviews(
             continue;
 
         const verdict = commentToOpinion(r.state);
-        if (verdict !== undefined)
+        if (verdict !== undefined) {
             reviews.push({ date: new Date(r.submitted_at), reviewer, verdict });
-
-        if (verdict === Opinion.Approve && r.body.includes(mergeplzMarker)) {
-            mergeRequesters.push(reviewer);
         }
     }
 }

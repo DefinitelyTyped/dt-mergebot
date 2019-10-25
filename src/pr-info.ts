@@ -1,6 +1,6 @@
 import * as bot from "idembot";
 import { GetPRInfo } from "./pr-query";
-import { PR as PRQueryResult } from "./schema/PR";
+import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest } from "./schema/PR";
 import { ApolloClient } from "apollo-boost"
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
@@ -12,10 +12,6 @@ import { getPackagesInfo } from "./util/dt";
 import { getTravisStatus, TravisResult } from "./util/travis";
 import { mapDefined } from "./util/util";
 import { StatusState, PullRequestReviewState } from "../schema/globalTypes";
-
-export const commentApprovalTokens: ReadonlyArray<string> = ["👍", ":+1:", "lgtm", "LGTM", ":shipit:"];
-export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
-export const mergeplzMarker = "mergeplz";
 
 const MyName = "typescript-bot";
 
@@ -93,21 +89,19 @@ export interface PrInfo {
      */
     readonly isChangesRequested: boolean;
 
-    /**
-     * True if the head commit is approved by a listed owner
-     */
-    readonly isApprovedByOwner: boolean;
+    readonly ownerApprovalCount: number;
+    readonly otherApprovalCount: number;
+    readonly maintainerApprovalCount: number;
 
     /**
-     * True if the head commit is approved by someone else
-     */
-    readonly isApprovedByOther: boolean;
-
-    /**
-     * Integer count of days of inactivity
+     * Integer count of days of inactivity from the author
      */
     readonly stalenessInDays: number;
 
+    /**
+     * True if the author has dismissed any reviews against the head commit
+     */
+    readonly hasDismissedReview: boolean;
 
     readonly isNewDefinition: boolean;
     readonly isWaitingForReviews: boolean;
@@ -116,9 +110,43 @@ export interface PrInfo {
 
 const cache = new InMemoryCache();
 const link = new HttpLink({ uri: "https://api.github.com/graphql" });
+const client = new ApolloClient({ cache, link });
+
+function getTravisStatus(pr: GraphqlPullRequest) {
+    let travisStatus: TravisResult = TravisResult.Pending;
+    let travisUrl: string | undefined = undefined;
+
+    const headCommit = getHeadCommit(pr);
+    if (headCommit !== undefined) {
+        if (headCommit.status) {
+            switch (headCommit.status.state) {
+                case StatusState.ERROR:
+                case StatusState.FAILURE:
+                    travisStatus = TravisResult.Fail;
+                    travisUrl = headCommit.status.contexts[0].targetUrl;
+                    break;
+                case StatusState.EXPECTED:
+                case StatusState.PENDING:
+                    travisStatus = TravisResult.Pending;
+                    break;
+                case StatusState.SUCCESS:
+                    travisStatus = TravisResult.Pass;
+                    break;
+            }
+        } else {
+            travisStatus = TravisResult.Missing;
+        }
+    }
+    return { travisStatus, travisUrl };
+}
+
+function getHeadCommit(pr: GraphqlPullRequest) {
+    const headCommit = pr.commits.nodes?.filter(c => c?.commit.oid === pr.headRefOid) ?.[0]?.commit;
+    return headCommit;
+}
+
 export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> {
     const now = new Date();
-    const client = new ApolloClient({ cache, link });
     const info = await client.query<PRQueryResult>({
         query: GetPRInfo,
         variables: {
@@ -129,36 +157,11 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
     const prInfo = info.data.repository?.pullRequest;
     if (!prInfo) return botFail("No PR with this number exists");
     if (prInfo.author == null) return botFail("PR author does not exist");
-
-    const headCommit = prInfo.commits.nodes?.filter(c => c?.commit.oid === prInfo.headRefOid) ?.[0]?.commit;
-    if (!headCommit) {
-        return botFail("Could not find the head commit");
-    }
-
+    const headCommit = getHeadCommit(prInfo);
+    if (headCommit == null) return botFail("No head commit");
+    
     const hasMergeConflict = prInfo.mergeable === "CONFLICTING";
-    let travisStatus: TravisResult;
-    let travisUrl: string | undefined = undefined;
-
-    if (headCommit.status) {
-        switch (headCommit.status.state) {
-            case StatusState.ERROR:
-            case StatusState.FAILURE:
-                travisStatus = TravisResult.Fail;
-                travisUrl = headCommit.status.contexts[0].targetUrl;
-                break;
-            case StatusState.EXPECTED:
-            case StatusState.PENDING:
-                travisStatus = TravisResult.Pending;
-                break;
-            case StatusState.SUCCESS:
-                travisStatus = TravisResult.Pass;
-                break;
-            default:
-                return botFail("Unknown bot status");
-        }
-    } else {
-        travisStatus = TravisResult.Missing;
-    }
+    const { travisStatus, travisUrl } = getTravisStatus(prInfo);
     const travisFailed = travisStatus === TravisResult.Fail;
     const lastCommitDate = new Date(headCommit.pushedDate);
 
@@ -170,13 +173,12 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         // tslint:disable-next-line align
         /*maxMonthlyDownloads*/ 200000);
 
-    void touchesMultiplePackages, touchesNonPackage;
 
-    const reviewsOfLatestCommit = prInfo.reviews?.nodes?.filter(r => r?.commit?.oid === headCommit.oid) || [];
-
-    const rejections = noNulls(reviewsOfLatestCommit.filter(review => review?.state === PullRequestReviewState.CHANGES_REQUESTED));
-    const approvals = noNulls(reviewsOfLatestCommit.filter(review => review?.state === PullRequestReviewState.APPROVED));
-
+    const reviews = partition(prInfo.reviews?.nodes ?? [], e => e?.commit?.oid === headCommit.oid ? "fresh" : "stale");
+    const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
+    const rejections = noNulls(freshReviewsByState.CHANGES_REQUESTED);
+    const approvals = noNulls(freshReviewsByState.APPROVED);
+    const hasDismissedReview = !!freshReviewsByState.DISMISSED?.length;
     const approvalsByRole = partition(approvals, review => {
         if (review?.author?.login === prInfo.author?.login) {
             return "self";
@@ -192,39 +194,19 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         return "other";        
     });
 
-    const isMergeRequested = noNulls(prInfo.comments?.nodes).filter(comment => {
-        // Skip comments that aren't the bot
-        if (comment.author?.login !== MyName) return false;
+    const ownerApprovalCount = approvalsByRole.owner?.length ?? 0;
+    const otherApprovalCount = approvalsByRole.other?.length ?? 0;
+    const maintainerApprovalCount = approvalsByRole.maintainer?.length ?? 0;
 
-        const tag = getCommentTagFromBody(comment.body);
-        if (tag === getMergeOfferTag(headCommit.oid)) {
-            for (const reaction of noNulls(comment.reactions.nodes)) {
-                if (reaction.user?.login === prInfo.author?.login) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    });
-
-    const { reviews, mergeRequesters } = await getCodeReviews(pr);
-    // Check for approval (which may apply to a prior commit; assume PRs do not regress in this fashion)
-    const isApprovedByOwner = hasApprovalAndNoRejection(reviews, r => ownersAsLower.has(r.reviewer.toLowerCase()));
-    const isApprovedByOther = hasApprovalAndNoRejection(reviews, r => !ownersAsLower.has(r.reviewer.toLowerCase()));
-    const isChangesRequested = reviews.some(r => r.verdict === Opinion.Reject);
-
-    // If a fresh review is a rejection, mark needs CR
-    const firstBadReview = reviews.find(r => r.date >= lastCommitDate && r.verdict === Opinion.Reject);
-
-    // Ping people whose non-approval needs a refresh based on new code changes
-    const reviewPingList: ReadonlyArray<string> = mapDefined(reviews, r =>
-        r.date >= lastCommitDate || r.verdict === Opinion.Approve ? undefined : r.reviewer);
+    // People who reviewed a commit that isn't the latest and also didn't review the latest commit
+    const staleReviewersWithNoUpdate = reviews.stale?.filter(r => !reviews.fresh?.some(fr => fr?.author?.login === r?.author?.login)).map(r => r?.author?.login as string | undefined);
+    const reviewPingList: ReadonlyArray<string> = noNulls(staleReviewersWithNoUpdate);
 
     const files = await pr.getFilesRaw();
     const isNewDefinition = files.some(file => file.status === "added" && file.filename.endsWith("/tsconfig.json"));
     const isUnowned = !isNewDefinition && ownersAsLower.size === 0;
 
-    const unmergeable = hasMergeConflict || travisFailed || firstBadReview !== undefined;
+    const unmergeable = hasMergeConflict || travisFailed || (rejections.length > 0);
 
     const isLGTM = isApprovedByOther && isPast(addDays(lastCommitDate, 3)) && !unmergeable;
     const isYSYL = !(isApprovedByOther || isApprovedByOwner) && isPast(addDays(lastCommitDate, 5)) && !unmergeable;
@@ -245,10 +227,14 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         type: "info",
         author, owners,
         lastCommitDate,
-        mergeRequesters, mergeAuto,
+        mergeIsRequested, mergeAuto,
         reviewLink, reviewPingList,
         travisResult, travisUrl, hasMergeConflict,
         authorIsOwner,
+        hasDismissedReview,
+        ownerApprovalCount,
+        otherApprovalCount,
+        maintainerApprovalCount,
         isChangesRequested, isApprovedByOwner, isApprovedByOther, isLGTM, isYSYL, isUnowned, isNewDefinition, touchesPopularPackage,
         isWaitingForReviews, isAbandoned, isNearlyAbandoned
     };
@@ -300,10 +286,10 @@ function addDays(date: Date, days: number): Date {
     return moment(date).add(days, "days").toDate();
 }
 
-function getMergeOfferTag(oid: string) {
-    return `merge-offer-${oid}`;
-}
-
 function getCommentTagFromBody(body: string): string | undefined {
     
+}
+
+function maybe<T>(x: T): T | undefined {
+    return x;
 }
