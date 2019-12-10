@@ -1,4 +1,4 @@
-import * as Treeage from "treeage";
+import * as Treeage from "./vendored/tmp_treeage";
 import * as Comments from "./comments";
 import { PrInfo, ApprovalFlags } from "./pr-info";
 import { TravisResult } from "./util/travis";
@@ -141,7 +141,6 @@ export function createProcessor(context: Context) {
 }
 
 function hasFinalApproval(info: PrInfo) {
-
     return false;
 }
 

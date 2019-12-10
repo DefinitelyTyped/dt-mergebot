@@ -9,7 +9,7 @@ import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequest
 // ====================================================
 
 export interface PR_repository_pullRequest_author {
-  __typename: "User" | "Organization" | "Bot" | "Mannequin" | "EnterpriseUserAccount";
+  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
   /**
    * The username of the actor.
    */
@@ -40,8 +40,8 @@ export interface PR_repository_pullRequest_labels {
   nodes: (PR_repository_pullRequest_labels_nodes | null)[] | null;
 }
 
-export interface PR_repository_pullRequest_timelineItems_nodes_PullRequestCommitCommentThread {
-  __typename: "PullRequestCommitCommentThread" | "PullRequestReviewThread" | "PullRequestRevisionMarker" | "BaseRefChangedEvent" | "BaseRefForcePushedEvent" | "DeployedEvent" | "DeploymentEnvironmentChangedEvent" | "HeadRefDeletedEvent" | "HeadRefForcePushedEvent" | "HeadRefRestoredEvent" | "MergedEvent" | "ReviewDismissedEvent" | "ReviewRequestedEvent" | "ReviewRequestRemovedEvent" | "ReadyForReviewEvent" | "IssueComment" | "CrossReferencedEvent" | "AddedToProjectEvent" | "AssignedEvent" | "ClosedEvent" | "CommentDeletedEvent" | "ConvertedNoteToIssueEvent" | "DemilestonedEvent" | "LabeledEvent" | "LockedEvent" | "MarkedAsDuplicateEvent" | "MentionedEvent" | "MilestonedEvent" | "MovedColumnsInProjectEvent" | "PinnedEvent" | "ReferencedEvent" | "RemovedFromProjectEvent" | "RenamedTitleEvent" | "ReopenedEvent" | "SubscribedEvent" | "TransferredEvent" | "UnassignedEvent" | "UnlabeledEvent" | "UnlockedEvent" | "UserBlockedEvent" | "UnpinnedEvent" | "UnsubscribedEvent";
+export interface PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent {
+  __typename: "AddedToProjectEvent" | "AssignedEvent" | "BaseRefChangedEvent" | "BaseRefForcePushedEvent" | "ClosedEvent" | "CommentDeletedEvent" | "ConvertedNoteToIssueEvent" | "CrossReferencedEvent" | "DemilestonedEvent" | "DeployedEvent" | "DeploymentEnvironmentChangedEvent" | "HeadRefDeletedEvent" | "HeadRefForcePushedEvent" | "HeadRefRestoredEvent" | "IssueComment" | "LabeledEvent" | "LockedEvent" | "MarkedAsDuplicateEvent" | "MentionedEvent" | "MergedEvent" | "MilestonedEvent" | "MovedColumnsInProjectEvent" | "PinnedEvent" | "PullRequestCommitCommentThread" | "PullRequestReviewThread" | "PullRequestRevisionMarker" | "ReadyForReviewEvent" | "ReferencedEvent" | "RemovedFromProjectEvent" | "RenamedTitleEvent" | "ReopenedEvent" | "ReviewDismissedEvent" | "ReviewRequestRemovedEvent" | "ReviewRequestedEvent" | "SubscribedEvent" | "TransferredEvent" | "UnassignedEvent" | "UnlabeledEvent" | "UnlockedEvent" | "UnpinnedEvent" | "UnsubscribedEvent" | "UserBlockedEvent";
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_PullRequestCommit_commit {
@@ -61,7 +61,7 @@ export interface PR_repository_pullRequest_timelineItems_nodes_PullRequestCommit
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_PullRequestReview_author {
-  __typename: "User" | "Organization" | "Bot" | "Mannequin" | "EnterpriseUserAccount";
+  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
   /**
    * The username of the actor.
    */
@@ -80,7 +80,7 @@ export interface PR_repository_pullRequest_timelineItems_nodes_PullRequestReview
   state: PullRequestReviewState;
 }
 
-export type PR_repository_pullRequest_timelineItems_nodes = PR_repository_pullRequest_timelineItems_nodes_PullRequestCommitCommentThread | PR_repository_pullRequest_timelineItems_nodes_PullRequestCommit | PR_repository_pullRequest_timelineItems_nodes_PullRequestReview;
+export type PR_repository_pullRequest_timelineItems_nodes = PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent | PR_repository_pullRequest_timelineItems_nodes_PullRequestCommit | PR_repository_pullRequest_timelineItems_nodes_PullRequestReview;
 
 export interface PR_repository_pullRequest_timelineItems {
   __typename: "PullRequestTimelineItemsConnection";
@@ -91,7 +91,7 @@ export interface PR_repository_pullRequest_timelineItems {
 }
 
 export interface PR_repository_pullRequest_reviews_nodes_author {
-  __typename: "User" | "Organization" | "Bot" | "Mannequin" | "EnterpriseUserAccount";
+  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
   /**
    * The username of the actor.
    */
@@ -187,7 +187,7 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites {
 }
 
 export interface PR_repository_pullRequest_commits_nodes_commit_status_contexts_creator {
-  __typename: "User" | "Organization" | "Bot" | "Mannequin" | "EnterpriseUserAccount";
+  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
   /**
    * The username of the actor.
    */
@@ -279,7 +279,7 @@ export interface PR_repository_pullRequest_commits {
 }
 
 export interface PR_repository_pullRequest_comments_nodes_author {
-  __typename: "User" | "Organization" | "Bot" | "Mannequin" | "EnterpriseUserAccount";
+  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
   /**
    * The username of the actor.
    */

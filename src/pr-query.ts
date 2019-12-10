@@ -1,6 +1,7 @@
 import { gql } from "apollo-boost";
 
-export const GetPRInfo = gql`query PR($pr_number: Int!) {
+/** This is a GraphQL AST tree */
+export const GetPRInfo: any = gql`query PR($pr_number: Int!) {
     repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
       pullRequest(number: $pr_number) {
         title

@@ -19,7 +19,9 @@
     "request": "^2.83.0",
     "treeage": "latest",
     "tslib": "^1.10.0",
-    "typescript": "^3.7.0-dev.20191003"
+    "typescript": "^3.7.0-dev.20191003",
+    "idembot": "^0.0.12",
+    "chalk": "^3.0.0"
   },
   "scripts": {
     "prepublishOnly": "npm run build",

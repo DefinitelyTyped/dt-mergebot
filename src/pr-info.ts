@@ -1,7 +1,7 @@
 import * as bot from "idembot";
 import fetch from "node-fetch";
 import { GetPRInfo } from "./pr-query";
-import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest } from "./schema/PR";
+import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest, PR_repository_pullRequest_commits_nodes_commit, } from "./schema/PR";
 import { GetFileContent, GetFileExists } from "./file-query";
 import { GetFileExists  as GetFileExistsResult } from "./schema/GetFileExists";
 import { GetFileContent as GetFileContentResult } from "./schema/GetFileContent";
@@ -159,7 +159,7 @@ const cache = new InMemoryCache({ fragmentMatcher });
 const link = new HttpLink({
     uri: "https://api.github.com/graphql",
     headers: {
-        authorization: `Bearer ${process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"]}`,
+        authorization: `Bearer ${process.env["DT_BOT_AUTH_TOKEN"] || process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"]}`,
         accept: "application/vnd.github.antiope-preview+json"
     },
     fetch
@@ -200,8 +200,8 @@ function getTravisStatus(pr: GraphqlPullRequest) {
 }
 
 
-export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> {
-    const now = new Date();
+export async function getPRInfo(pr: { number: number}): Promise<PrInfo | BotFail> {
+    // const now = new Date();
     const info = await client.query<PRQueryResult>({
         query: GetPRInfo,
         variables: {
@@ -210,7 +210,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         fetchPolicy: "network-only",
         fetchResults: true
     });
-    console.log(JSON.stringify(info, undefined, 2));
+    // console.log(JSON.stringify(info, undefined, 2));
 
     const prInfo = info.data.repository?.pullRequest;
     if (!prInfo) return botFail("No PR with this number exists");
@@ -224,17 +224,17 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
     const { anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages);
     const owners = Array.from(allOwners.keys());
     const authorIsOwner = isOwner(prInfo.author.login);
-    const hasMergeConflict = prInfo.mergeable === "CONFLICTING";
+
     const { travisStatus, travisUrl } = getTravisStatus(prInfo);
-    const travisFailed = travisStatus === TravisResult.Fail;
-    const lastCommitDate = new Date(headCommit.pushedDate);
+    // const travisFailed = travisStatus === TravisResult.Fail;
+    // const lastCommitDate = new Date(headCommit.pushedDate);
 
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
 
 
-    const reviews = partition(prInfo.reviews?.nodes ?? [], e => e?.commit?.oid === headCommit.oid ? "fresh" : "stale");
+    // const reviews = partition(prInfo.reviews?.nodes ?? [], e => e?.commit?.oid === headCommit.oid ? "fresh" : "stale");
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
-    const rejections = noNulls(freshReviewsByState.CHANGES_REQUESTED);
+    // const rejections = noNulls(freshReviewsByState.CHANGES_REQUESTED);
     const approvals = noNulls(freshReviewsByState.APPROVED);
     const hasDismissedReview = !!freshReviewsByState.DISMISSED?.length;
     const approvalsByRole = partition(approvals, review => {
@@ -249,7 +249,14 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
             // Known package owner
             return "owner";
         }
+        
+        // They have no correlation to the types
+        return "rando"
     });
+
+    const maintainerApprovalCount = approvalsByRole.maintainer?.length || 0
+    const ownerApprovalCount = approvalsByRole.owner?.length || 0
+    const otherApprovalCount = approvalsByRole.rando?.length || 0
 
     return {
         type: "info",
@@ -267,6 +274,10 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         popularityLevel: await getPopularityLevel(packages),
         anyPackageIsNew,
         packages,
+        hasDismissedReview,
+        ownerApprovalCount,
+        maintainerApprovalCount,
+        otherApprovalCount,
         files: categorizedFiles,
         ...getTravisResult(headCommit),
         ...analyzeReviews(prInfo, isOwner)
@@ -470,6 +481,7 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     }
 
     return ({
+
         reviewersWithStaleReviews,
         approvalFlags,
         isChangesRequested
