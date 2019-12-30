@@ -1,11 +1,9 @@
-import * as Treeage from "treeage";
 import * as Comments from "./comments";
 import { PrInfo, ApprovalFlags } from "./pr-info";
 import { TravisResult } from "./util/travis";
 
 export type Context = typeof DefaultContext;
 export const DefaultContext = {
-    doNothing: false,
     targetColumn: "Other",
     labels: {
         "Has Merge Conflict": false,
@@ -25,128 +23,119 @@ export const DefaultContext = {
         "Author is Owner": false
     },
     responseComments: [] as Comments.Comment[],
-    shouldClose: false
+    shouldClose: false,
+    shouldMerge: false
 };
 
-export function createProcessor(context: Context) {
-    const root = Treeage.create<PrInfo>({ pathMode: "first" });
+export function process(info: PrInfo): Context {
+    const context = { ...DefaultContext };
+
+    // Some step should override this
+    context.targetColumn = "Other";
 
     // General labelling and housekeeping
-    root.addAlwaysAction(info => {
-        context.labels["Critical Package"] = info.popularityLevel === "Critical";
-        context.labels["Popular Package"] = info.popularityLevel === "Popular";
-        context.labels["Other Approved"] = !!(info.approvalFlags & ApprovalFlags.Other);
-        context.labels["Owner Approved"] = !!(info.approvalFlags & ApprovalFlags.Owner);
-        context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
-        context.labels["New Definition"] = info.anyPackageIsNew;
-        context.labels["Author is Owner"] = info.authorIsOwner;
-    });
+    context.labels["Critical Package"] = info.popularityLevel === "Critical";
+    context.labels["Popular Package"] = info.popularityLevel === "Popular";
+    context.labels["Other Approved"] = !!(info.approvalFlags & ApprovalFlags.Other);
+    context.labels["Owner Approved"] = !!(info.approvalFlags & ApprovalFlags.Owner);
+    context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
+    context.labels["New Definition"] = info.anyPackageIsNew;
+    context.labels["Author is Owner"] = info.authorIsOwner;
 
     // Update intro comment
-    root.addAlwaysAction(info => {
-        context.responseComments.push({
-            tag: "welcome",
-            status: createWelcomeComment(info)
-        });
+    context.responseComments.push({
+        tag: "welcome",
+        status: createWelcomeComment(info)
     });
 
     // Needs author attention (bad CI, merge conflicts)
-    {
-        const { group, map } = root.addGroup({
-            failedCI: info => info.travisResult === TravisResult.Fail,
-            mergeConflicted: info => info.hasMergeConflict,
-            changesRequested: info => info.isChangesRequested
-        });
+    const failedCI = info.travisResult === TravisResult.Fail;
+    if (failedCI || info.hasMergeConflict || info.isChangesRequested) {
+        context.targetColumn = "Needs Author Attention";
 
-        map.mergeConflicted.addAlwaysAction(info => {
+        if (info.hasMergeConflict) {
             context.labels["Has Merge Conflict"] = true;
             context.responseComments.push(Comments.MergeConflicted(info.headCommitOid, info.author));
-        });
-
-        map.failedCI.addAlwaysAction(info => {
+        }
+        if (failedCI) {
             context.labels["The Travis CI build failed"] = true;
             context.responseComments.push(Comments.TravisFailed(info.headCommitOid, info.author, info.travisUrl!));
-        });
-
-        map.changesRequested.addAlwaysAction(info => {
+        }
+        if (info.isChangesRequested) {
             context.labels["Revision needed"] = true;
             context.responseComments.push(Comments.ChangesRequest(info.headCommitOid, info.author));
-        });
+        }
 
-        group.addPath(daysStaleBetween(5, 7)).addAlwaysAction(info => {
+        // Could be abandoned
+        if (daysStaleBetween(5, 7)(info)) {
             context.responseComments.push(Comments.NearlyAbandoned(info.headCommitAbbrOid));
-        });
-
-        group.addPath(daysStaleAtLeast(7)).addAlwaysAction(info => {
+        }
+        if (daysStaleAtLeast(7)(info)) {
             context.responseComments.push(Comments.SorryAbandoned(info.headCommitAbbrOid));
             context.shouldClose = true;
-        });
-
-        group.addAlwaysAction(() => {
-            context.targetColumn = "Needs Author Attention";
-        });
+        }
     }
 
-    // CI is running, just skip
-    root.addPath(info => info.travisResult === TravisResult.Pending).addAlwaysAction(() => {
-        context.doNothing = true;
-    });
+    // CI is running; default column is Waiting for Reviewers
+    if (info.travisResult === TravisResult.Pending) {
+        context.targetColumn = "Waiting for Reviewers";
+    }
 
     // CI is missing
-    root.addPath(info => info.travisResult === TravisResult.Missing).addAlwaysAction(() => {
+    if (info.travisResult === TravisResult.Missing) {
         context.labels["Where is Travis?"] = true;
-    });
+    }
 
     // CI is green
-    const ciGreen = root.addPath(info => info.travisResult === TravisResult.Pass);
-    {
-        {
-            // Approved
-            const { group, map } = ciGreen.addGroup({
-                approvedByOwner: info => !!(info.approvalFlags & ApprovalFlags.Owner),
-                approvedByOther: info => !!(info.approvalFlags & ApprovalFlags.Other)
-            });
+    if (info.travisResult === TravisResult.Pass) {
+        const isAutoMergeable = canBeMergedNow(info);
 
-            const autoMergeable = map.approvedByOwner.addPath(info =>
-                 (info.popularityLevel === "Well-liked by everyone") &&
-                (info.dangerLevel === "ScopedAndTested"));
-            
-            autoMergeable.addAlwaysAction(() => {
-                context.targetColumn = "Ready to Merge";
-            });
-            const doMerge = autoMergeable.addPath(info => info.mergeIsRequested);
-            autoMergeable.otherwise().addAlwaysAction((info) => {
+        if (isAutoMergeable) {
+            if (info.mergeIsRequested) {
+                context.shouldMerge = true;
+            } else {
                 context.responseComments.push(Comments.AskForAutoMergePermission(info.author))
-            });
+            }
         }
 
-        {
-            // Not approved
-            const unapproved = ciGreen.otherwise();
-            // Ping stale reviewers if any
-            unapproved.addAlwaysAction(info => {
-                for (const staleReviewer of info.reviewersWithStaleReviews) {
-                    context.responseComments.push(Comments.PingStaleReviewer(staleReviewer.reviewedAbbrOid, staleReviewer.reviewer))
-                }
-            });
+        // Ping stale reviewers if any
+        for (const staleReviewer of info.reviewersWithStaleReviews) {
+            context.responseComments.push(Comments.PingStaleReviewer(staleReviewer.reviewedAbbrOid, staleReviewer.reviewer))
         }
     }
 
-    // Should be unreachable; put in "Other"
-    root.otherwise().addAlwaysAction(() => {
-        context.targetColumn = "Other";
-    });
-
-    return (info: PrInfo) => root.process(info);
+    return context;
 }
 
-function hasFinalApproval(info: PrInfo) {
+function canBeMergedNow(info: PrInfo): boolean {
+    if (info.travisResult !== TravisResult.Pass) {
+        return false;
+    }
+    if (info.hasMergeConflict) {
+        return false;
+    }
 
-    return false;
+    return hasFinalApproval(info);
+}
+
+function hasFinalApproval(info: PrInfo): boolean {
+    if (info.dangerLevel === "ScopedAndTested") {
+        if (info.popularityLevel === "Well-liked by everyone") {
+            return !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other));
+        } else if (info.popularityLevel === "Popular") {
+            return !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner));
+        } else if (info.popularityLevel === "Critical") {
+            return !!(info.approvalFlags & (ApprovalFlags.Maintainer));
+        } else {
+            throw new Error("Unknown popularity level " + info.popularityLevel);
+        }
+    } else {
+        return !!(info.approvalFlags & (ApprovalFlags.Maintainer));
+    }
 }
 
 function needsMaintainerApproval(info: PrInfo) {
-    return true;
+    return info.dangerLevel !== "ScopedAndTested";
 }
 
 function daysStaleAtLeast(days: number) {
@@ -167,19 +156,32 @@ function createWelcomeComment(info: PrInfo) {
         introCommentLines.push(`I see this is your first time submitting to DefinitelyTyped - keep an eye on this comment as I'll be updating it with information as things progress.`);
     }
     introCommentLines.push(``);
+
+    const dangerComments = {
+        "ScopedAndTested": "This PR edits exactly one package and also made updates to the test file, so it's one of my favorites 🌟. We'll try to merge it as quickly as possible.",
+        "ScopedAndUntested": "This PR doesn't update any tests, so it may not be clear what's being fixed. Please consider adding some test code that verifies your change. Thanks!",
+        "ScopedAndConfiguration": "This PR edits the config file of a package, so a maintainer will need to review it.",
+        "NewDefinition": "This PR adds a new definition, so a maintainer will need to review it.",
+        "MultiplePackagesEdited": "This PR updates multiple packages, so a maintainer will need to review it.",
+        "Infrastructure": "This PR touches some part of DefinitelyTyped infrastructure, so a maintainer will need to review it. This is rare - did you mean to do this?"
+    } as const;
+    introCommentLines.push(dangerComments[info.dangerLevel]);
+
+    introCommentLines.push(``);
     introCommentLines.push(`----------------------`);
     introCommentLines.push(``);
     introCommentLines.push(`## Code Reviews`)
     introCommentLines.push(``);
     if (owners.length === 0) {
         if (info.anyPackageIsNew) {
-            introCommentLines.push(`This is a new package, so I don't have anyone specific to ask for code reviews.`);
+            introCommentLines.push(`This is a new package, so I don't have anyone specific to ask for code reviews. I always like seeing reviews from community members, though!`);
         } else {
-            introCommentLines.push(`I didn't see any other owners to ask for code reviews.`);
+            introCommentLines.push(`I didn't see any other owners to ask for code reviews. A maintainer will review your PR when possible.`);
         }
     } else {
         introCommentLines.push(`🔔 ${owners.map(n => `@${n}`).join(" ")} - please [review this PR](${info.reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`);
     }
+
     introCommentLines.push(``);
     introCommentLines.push(`----------------------`);
     introCommentLines.push(``)

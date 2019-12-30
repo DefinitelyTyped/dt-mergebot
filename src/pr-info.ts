@@ -1,7 +1,7 @@
 import * as bot from "idembot";
 import fetch from "node-fetch";
 import { GetPRInfo } from "./pr-query";
-import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest } from "./schema/PR";
+import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest } from "./schema/PR";
 import { GetFileContent, GetFileExists } from "./file-query";
 import { GetFileExists  as GetFileExistsResult } from "./schema/GetFileExists";
 import { GetFileContent as GetFileContentResult } from "./schema/GetFileContent";
@@ -159,7 +159,7 @@ const cache = new InMemoryCache({ fragmentMatcher });
 const link = new HttpLink({
     uri: "https://api.github.com/graphql",
     headers: {
-        authorization: `Bearer ${process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"]}`,
+        authorization: `Bearer ${getAuthToken()}`,
         accept: "application/vnd.github.antiope-preview+json"
     },
     fetch
@@ -170,6 +170,14 @@ const client = new ApolloClient({ cache, link, defaultOptions: {
     }
   }
 });
+
+function getAuthToken() {
+    const result = process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"];
+    if (typeof result !== 'string') {
+        throw new Error("Set either BOTH_AUTH_TOKEN or AUTH_TOKEN to a valid auth token");
+    }
+    return result.trim();
+}
 
 function getTravisStatus(pr: GraphqlPullRequest) {
     let travisStatus: TravisResult = TravisResult.Pending;
@@ -200,19 +208,18 @@ function getTravisStatus(pr: GraphqlPullRequest) {
 }
 
 
-export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> {
-    const now = new Date();
+export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
     const info = await client.query<PRQueryResult>({
         query: GetPRInfo,
         variables: {
-            pr_number: pr.number
+            pr_number: prNumber
         },
         fetchPolicy: "network-only",
         fetchResults: true
     });
-    console.log(JSON.stringify(info, undefined, 2));
-
+    
     const prInfo = info.data.repository?.pullRequest;
+    console.log(JSON.stringify(prInfo, undefined, 2));
     if (!prInfo) return botFail("No PR with this number exists");
     if (prInfo.author == null) return botFail("PR author does not exist");
     const headCommit = getHeadCommit(prInfo);
@@ -224,13 +231,9 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
     const { anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages);
     const owners = Array.from(allOwners.keys());
     const authorIsOwner = isOwner(prInfo.author.login);
-    const hasMergeConflict = prInfo.mergeable === "CONFLICTING";
     const { travisStatus, travisUrl } = getTravisStatus(prInfo);
-    const travisFailed = travisStatus === TravisResult.Fail;
-    const lastCommitDate = new Date(headCommit.pushedDate);
 
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
-
 
     const reviews = partition(prInfo.reviews?.nodes ?? [], e => e?.commit?.oid === headCommit.oid ? "fresh" : "stale");
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
@@ -241,7 +244,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         if (review?.author?.login === prInfo.author?.login) {
             return "self";
         }
-        if (review?.authorAssociation === "OWNER") {
+        if (review?.authorAssociation === "OWNER" || review?.authorAssociation === "MEMBER") {
             // DefinitelyTyped maintainer
             return "maintainer";
         }
@@ -249,6 +252,7 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
             // Known package owner
             return "owner";
         }
+        return "other";
     });
 
     return {
@@ -268,6 +272,10 @@ export async function getPRInfo(pr: bot.PullRequest): Promise<PrInfo | BotFail> 
         anyPackageIsNew,
         packages,
         files: categorizedFiles,
+        otherApprovalCount: approvalsByRole.other?.length ?? 0,
+        ownerApprovalCount: approvalsByRole.owner?.length ?? 0,
+        maintainerApprovalCount: approvalsByRole.maintainer?.length ?? 0,
+        hasDismissedReview,
         ...getTravisResult(headCommit),
         ...analyzeReviews(prInfo, isOwner)
     };
@@ -440,7 +448,11 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     const reviewersWithStaleReviews: { reviewer: string, reviewedAbbrOid: string }[] = [];
     let isChangesRequested = false;
     let approvalFlags = ApprovalFlags.None;
-    for (const r of prInfo.reviews?.nodes || []) {
+    
+    // Do this in reverse order so we can detect up-to-date-reviews correctly
+    const reviews = [...prInfo.reviews?.nodes ?? []].reverse();
+
+    for (const r of reviews) {
         // Skip nulls
         if (!r?.commit || !r?.author?.login) continue;
         // Skip self-reviews
