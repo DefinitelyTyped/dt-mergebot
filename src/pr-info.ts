@@ -1,24 +1,17 @@
-import * as bot from "idembot";
-import fetch from "node-fetch";
 import { GetPRInfo } from "./pr-query";
 import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest } from "./schema/PR";
 import { GetFileContent, GetFileExists } from "./file-query";
 import { GetFileExists  as GetFileExistsResult } from "./schema/GetFileExists";
 import { GetFileContent as GetFileContentResult } from "./schema/GetFileContent";
-import { ApolloClient } from "apollo-boost";
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
 import * as HeaderPaser from "definitelytyped-header-parser";
 
 import moment = require("moment");
 
-import { getCodeReviews, Opinion, Review } from "./reviews";
-import { getPackagesInfo } from "./util/dt";
+import { Opinion, Review } from "./reviews";
 import { TravisResult } from "./util/travis";
-import { mapDefined } from "./util/util";
 import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./schema/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
-import { readFileSync } from "fs";
+import { client } from "./graphql-client";
 
 const MyName = "typescript-bot";
 
@@ -52,6 +45,8 @@ export interface BotFail {
 
 export interface PrInfo {
     readonly type: "info";
+
+    readonly pr_number: number;
 
     /**
      * The head commit of this PR (full format)
@@ -148,37 +143,6 @@ function getHeadCommit(pr: GraphqlPullRequest) {
     return headCommit;
 }
 
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-    introspectionQueryResultData: {
-        __schema: {
-            types: []
-        }
-    }
-});
-const cache = new InMemoryCache({ fragmentMatcher });
-const link = new HttpLink({
-    uri: "https://api.github.com/graphql",
-    headers: {
-        authorization: `Bearer ${getAuthToken()}`,
-        accept: "application/vnd.github.antiope-preview+json"
-    },
-    fetch
-});
-const client = new ApolloClient({ cache, link, defaultOptions: {
-    query: {
-      errorPolicy: "all"
-    }
-  }
-});
-
-function getAuthToken() {
-    const result = process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"];
-    if (typeof result !== 'string') {
-        throw new Error("Set either BOTH_AUTH_TOKEN or AUTH_TOKEN to a valid auth token");
-    }
-    return result.trim();
-}
-
 function getTravisStatus(pr: GraphqlPullRequest) {
     let travisStatus: TravisResult = TravisResult.Pending;
     let travisUrl: string | undefined = undefined;
@@ -257,6 +221,7 @@ export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
 
     return {
         type: "info",
+        pr_number: prInfo.number,
         author: prInfo.author.login,
         owners,
         dangerLevel: getDangerLevel(categorizedFiles),
@@ -264,7 +229,7 @@ export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
         headCommitOid: headCommit.oid,
         mergeIsRequested: authorSaysReadyToMerge(prInfo),
         stalenessInDays: Math.floor(moment().diff(moment(headCommit.pushedDate), "days")),
-        lastCommitDate: headCommit.pushedDate,
+        lastCommitDate: new Date(headCommit.pushedDate),
         reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         authorIsOwner, isFirstContribution,
@@ -517,6 +482,7 @@ function getDangerLevel(categorizedFiles: readonly FileLocation[]) {
                         assertNever(f);
                 }
             }
+
             if (meta) {
                 return "ScopedAndConfiguration";
             } else if (tested) {

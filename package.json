@@ -17,19 +17,16 @@
     "moment": "^2.20.1",
     "node-fetch": "^1.7.3",
     "request": "^2.83.0",
-    "treeage": "latest",
     "tslib": "^1.10.0",
-    "typescript": "^3.7.0-dev.20191003"
+    "typescript": "^3.7.4"
   },
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "tsc",
     "watch": "tsc --watch",
-    "dry": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json --dry",
-    "wet": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --query all-open-prs.json",
-    "single": "npm run build && node node_modules/idembot/bin/run.js --file bin/rules.js --single",
+    "single": "npm run build && node bin/process-single.js",
     "single-info": "npm run build && node bin/show-info.js",
-    "single-debug": "npm run build && node --inspect-brk node_modules/idembot/bin/run.js --file bin/rules.js --single",
+    "single-info-debug": "npm run build && node --inspect-brk bin/show-info.js",
     "cleanproject": "npm run build && node bin/clean-columns.js",
     "graphql-schema": "npx apollo client:codegen schema --target typescript --globalTypesFile=src/schema/graphql-global-types.ts"
   },

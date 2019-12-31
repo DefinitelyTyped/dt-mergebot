@@ -27,7 +27,7 @@ export const MergeConflicted = (slug: string, user: string) => ({
 
 export const ChangesRequest = (headOid: string, user: string) => ({
     tag: `complaint-${headOid}`,
-    status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. Thank you!`
+    status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can "dismiss" the review using GitHub's review UI. Thank you!`
 });
 
 export const ApprovedByOwner = () => ({

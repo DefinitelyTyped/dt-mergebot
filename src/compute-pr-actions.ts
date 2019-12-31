@@ -2,9 +2,16 @@ import * as Comments from "./comments";
 import { PrInfo, ApprovalFlags } from "./pr-info";
 import { TravisResult } from "./util/travis";
 
-export type Context = typeof DefaultContext;
-export const DefaultContext = {
-    targetColumn: "Other",
+export type Actions = typeof DefaultActions;
+export const DefaultActions = {
+    pr_number: 0,
+    targetColumn: "Other" as
+        "Other" |
+        "Needs Maintainer Review" |
+        "Waiting for Author to Merge" |
+        "Needs Author Action" |
+        "Recently Merged" |
+        "Waiting for Code Reviews",
     labels: {
         "Has Merge Conflict": false,
         "The Travis CI build failed": false,
@@ -16,8 +23,8 @@ export const DefaultContext = {
         "Maintainer Approved": false,
         "Merge:LGTM": false,
         "Merge:YSYL": false,
-        "Popular Package": false,
-        "Critical Package": false,
+        "Popular package": false,
+        "Critical package": false,
         "Edits Infrastructure": false,
         "Edits multiple packages": false,
         "Author is Owner": false
@@ -27,15 +34,18 @@ export const DefaultContext = {
     shouldMerge: false
 };
 
-export function process(info: PrInfo): Context {
-    const context = { ...DefaultContext };
+export function process(info: PrInfo): Actions {
+    const context = {
+        ...DefaultActions,
+        pr_number: info.pr_number
+     };
 
     // Some step should override this
     context.targetColumn = "Other";
 
     // General labelling and housekeeping
-    context.labels["Critical Package"] = info.popularityLevel === "Critical";
-    context.labels["Popular Package"] = info.popularityLevel === "Popular";
+    context.labels["Critical package"] = info.popularityLevel === "Critical";
+    context.labels["Popular package"] = info.popularityLevel === "Popular";
     context.labels["Other Approved"] = !!(info.approvalFlags & ApprovalFlags.Other);
     context.labels["Owner Approved"] = !!(info.approvalFlags & ApprovalFlags.Owner);
     context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
@@ -51,34 +61,34 @@ export function process(info: PrInfo): Context {
     // Needs author attention (bad CI, merge conflicts)
     const failedCI = info.travisResult === TravisResult.Fail;
     if (failedCI || info.hasMergeConflict || info.isChangesRequested) {
-        context.targetColumn = "Needs Author Attention";
+        context.targetColumn = "Needs Author Action";
 
         if (info.hasMergeConflict) {
             context.labels["Has Merge Conflict"] = true;
-            context.responseComments.push(Comments.MergeConflicted(info.headCommitOid, info.author));
+            context.responseComments.push(Comments.MergeConflicted(info.headCommitAbbrOid, info.author));
         }
         if (failedCI) {
             context.labels["The Travis CI build failed"] = true;
-            context.responseComments.push(Comments.TravisFailed(info.headCommitOid, info.author, info.travisUrl!));
+            context.responseComments.push(Comments.TravisFailed(info.headCommitAbbrOid, info.author, info.travisUrl!));
         }
         if (info.isChangesRequested) {
             context.labels["Revision needed"] = true;
-            context.responseComments.push(Comments.ChangesRequest(info.headCommitOid, info.author));
+            context.responseComments.push(Comments.ChangesRequest(info.headCommitAbbrOid, info.author));
         }
 
         // Could be abandoned
         if (daysStaleBetween(5, 7)(info)) {
-            context.responseComments.push(Comments.NearlyAbandoned(info.headCommitAbbrOid));
+            context.responseComments.push(Comments.NearlyAbandoned(info.author));
         }
         if (daysStaleAtLeast(7)(info)) {
-            context.responseComments.push(Comments.SorryAbandoned(info.headCommitAbbrOid));
+            context.responseComments.push(Comments.SorryAbandoned(info.author));
             context.shouldClose = true;
         }
     }
 
     // CI is running; default column is Waiting for Reviewers
     if (info.travisResult === TravisResult.Pending) {
-        context.targetColumn = "Waiting for Reviewers";
+        context.targetColumn = "Waiting for Code Reviews";
     }
 
     // CI is missing
@@ -88,13 +98,23 @@ export function process(info: PrInfo): Context {
 
     // CI is green
     if (info.travisResult === TravisResult.Pass) {
+        debugger;
         const isAutoMergeable = canBeMergedNow(info);
 
         if (isAutoMergeable) {
             if (info.mergeIsRequested) {
                 context.shouldMerge = true;
+                context.targetColumn = "Recently Merged";
             } else {
                 context.responseComments.push(Comments.AskForAutoMergePermission(info.author))
+                context.targetColumn = "Waiting for Author to Merge";
+            }
+        } else {
+            // Give 4 days for PRs with other owners
+            if (info.lastCommitDate.valueOf() + 4 * 24 * 60 * 60 * 1000 > Date.now()) {
+                context.targetColumn = "Waiting for Code Reviews";
+            } else {
+                context.targetColumn = "Needs Maintainer Review";
             }
         }
 
@@ -135,7 +155,8 @@ function hasFinalApproval(info: PrInfo): boolean {
 }
 
 function needsMaintainerApproval(info: PrInfo) {
-    return info.dangerLevel !== "ScopedAndTested";
+    return (info.dangerLevel !== "ScopedAndTested") ||
+        (info.popularityLevel !== "Well-liked by everyone");
 }
 
 function daysStaleAtLeast(days: number) {
@@ -147,52 +168,61 @@ function daysStaleBetween(lowerBoundInclusive: number, upperBoundExclusive: numb
 }
 
 function createWelcomeComment(info: PrInfo) {
-    const signoff = needsMaintainerApproval(info) ? "a maintainer" : "an owner or maintainer";
-    const owners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
+    const otherOwners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
+    const signoffParty = (needsMaintainerApproval(info) || otherOwners.length === 0) ? "a maintainer" : "an owner or maintainer";
 
+    const specialWelcome = info.isFirstContribution ? ` I see this is your first time submitting to DefinitelyTyped 👋 - keep an eye on this comment as I'll be updating it with information as things progress.` : ""
     const introCommentLines: string[] = [];
-    introCommentLines.push(`@${info.author} Thank you for submitting this PR!`)
-    if (info.isFirstContribution) {
-        introCommentLines.push(`I see this is your first time submitting to DefinitelyTyped - keep an eye on this comment as I'll be updating it with information as things progress.`);
+    introCommentLines.push(`@${info.author} Thank you for submitting this PR! ${specialWelcome}`)
+    introCommentLines.push(``);
+
+    // Lets the author know who needs to review this
+    let reviewerAdvisory: string | undefined;
+    // Some kind of extra warning
+    let dangerComment: string | undefined;
+    if (info.anyPackageIsNew) {
+        reviewerAdvisory = "This PR adds a new definition, so it needs to be reviewed by a maintainer before it can be merged.";
+    } else if (info.popularityLevel !== "Well-liked by everyone") {
+        reviewerAdvisory = "Because this is a widely-used package, a maintainer will need to review it before it can be merged.";
+    } else if (info.dangerLevel === "ScopedAndTested") {
+        reviewerAdvisory = "Because you edited one package and updated the tests (👏), I can merge this once someone else signs off on it.";
+    } else if (otherOwners.length === 0) {
+        reviewerAdvisory = "There aren't any other owners of this package, so a maintainer will review it.";
+    } else if (info.dangerLevel === "MultiplePackagesEdited") {
+        reviewerAdvisory = "Because this PR edits multiple packages, it can be merged once it's reviewed by a maintainer."
+    } else if (info.dangerLevel === "ScopedAndConfiguration") {
+        reviewerAdvisory = "Because this PR edits the configuration file, it can be merged once it's reviewed by a maintainer."
+    } else {
+        reviewerAdvisory = "This PR can be merged once it's reviewed by a maintainer."
     }
-    introCommentLines.push(``);
+    
+    if (info.dangerLevel === "ScopedAndUntested") {
+        dangerComment = "This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered adding tests to cover the change you're making?";
+    } else if (info.dangerLevel === "Infrastructure") {
+        dangerComment = "This PR touches some part of DefinitelyTyped infrastructure, so a maintainer will need to review it. This is rare - did you mean to do this?";
+    }
 
-    const dangerComments = {
-        "ScopedAndTested": "This PR edits exactly one package and also made updates to the test file, so it's one of my favorites 🌟. We'll try to merge it as quickly as possible.",
-        "ScopedAndUntested": "This PR doesn't update any tests, so it may not be clear what's being fixed. Please consider adding some test code that verifies your change. Thanks!",
-        "ScopedAndConfiguration": "This PR edits the config file of a package, so a maintainer will need to review it.",
-        "NewDefinition": "This PR adds a new definition, so a maintainer will need to review it.",
-        "MultiplePackagesEdited": "This PR updates multiple packages, so a maintainer will need to review it.",
-        "Infrastructure": "This PR touches some part of DefinitelyTyped infrastructure, so a maintainer will need to review it. This is rare - did you mean to do this?"
-    } as const;
-    introCommentLines.push(dangerComments[info.dangerLevel]);
+    if (dangerComment !== undefined) {
+        introCommentLines.push(" " + dangerComment);
+    }
 
-    introCommentLines.push(``);
-    introCommentLines.push(`----------------------`);
     introCommentLines.push(``);
     introCommentLines.push(`## Code Reviews`)
     introCommentLines.push(``);
-    if (owners.length === 0) {
-        if (info.anyPackageIsNew) {
-            introCommentLines.push(`This is a new package, so I don't have anyone specific to ask for code reviews. I always like seeing reviews from community members, though!`);
-        } else {
-            introCommentLines.push(`I didn't see any other owners to ask for code reviews. A maintainer will review your PR when possible.`);
-        }
-    } else {
-        introCommentLines.push(`🔔 ${owners.map(n => `@${n}`).join(" ")} - please [review this PR](${info.reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`);
+    introCommentLines.push(reviewerAdvisory);
+    introCommentLines.push(``);
+    if (otherOwners.length !== 0) {
+        introCommentLines.push(`🔔 ${otherOwners.map(n => `@${n}`).join(" ")} - please [review this PR](${info.reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`);
     }
 
     introCommentLines.push(``);
-    introCommentLines.push(`----------------------`);
-    introCommentLines.push(``)
     introCommentLines.push(`## Status`)
     introCommentLines.push(``);
-    introCommentLines.push(` * ${emoji(info.travisResult === TravisResult.Pass)} Continuous integration tests have passed`);
-    introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Most recent commit is approved by ${signoff}`);
     introCommentLines.push(` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
-    introCommentLines.push(` * ${emoji(info.mergeIsRequested)} You've commented "Ready to merge"`);
+    introCommentLines.push(` * ${emoji(info.travisResult === TravisResult.Pass)} Continuous integration tests have passed`);
+    introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Most recent commit is approved by ${signoffParty}`);
     introCommentLines.push(``);
-    introCommentLines.push(`Once every item on this list is checked, I'll merge this PR automatically!`)
+    introCommentLines.push(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`)
     introCommentLines.push(``);
     introCommentLines.push(`----------------------`);
     introCommentLines.push(`<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n${'```\n' + JSON.stringify(info, undefined, 2) + '\n```'}\n\n</details>`);

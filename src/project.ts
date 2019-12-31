@@ -1,3 +1,4 @@
+/*
 import * as bot from "idembot";
 
 export class Project {
@@ -38,3 +39,4 @@ export const enum ProjectColumn {
     NeedsAuthorAttention = "Needs Author Attention",
     Other = "Other"
 }
+*/
