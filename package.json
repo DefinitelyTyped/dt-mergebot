@@ -9,6 +9,7 @@
     "@types/node-fetch": "^1.6.7",
     "@types/request": "^2.0.9",
     "@types/prettyjson": "^0.0.29",
+    "@types/jest": "25.1.4",
     "apollo-boost": "^0.4.4",
     "definitelytyped-header-parser": "github:Microsoft/definitelytyped-header-parser#production",
     "fs-extra": "^4.0.3",
@@ -31,6 +32,7 @@
     "single-info": "npm run build && node bin/commands/show-info.js",
     "single-info-debug": "npm run build && node --inspect-brk bin/commands/show-info.js",
     "cleanproject": "npm run build && node bin/commands/clean-columns.js",
+    "create-fixture": "npm run build && node bin/commands/create-fixture.js",
     "graphql-schema": "npx apollo client:codegen schema --target typescript --globalTypesFile=src/schema/graphql-global-types.ts"
   },
   "repository": {
@@ -44,6 +46,14 @@
   },
   "homepage": "https://github.com/RyanCavanaugh/dt-mergebot#readme",
   "devDependencies": {
-    "apollo": "^2.18.3"
+    "apollo": "^2.18.3",
+    "jest": "25.1.0",
+    "ts-jest": "25.2.1",
+    "jest-file-snapshot": "^0.3.8"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": ["/node_modules/", "/bin"]
   }
 }

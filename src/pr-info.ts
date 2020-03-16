@@ -14,6 +14,8 @@ import { TravisResult } from "./util/travis";
 import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./schema/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
+import { ApolloQueryResult } from "apollo-boost";
+import { getOwnersOfPackages } from "./util/getOwnersOfPackages";
 
 const MyName = "typescript-bot";
 
@@ -145,8 +147,16 @@ function getHeadCommit(pr: GraphqlPullRequest) {
     return headCommit;
 }
 
+
 export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
-    const info = await client.query<PRQueryResult>({
+    const info = await queryPRInfo(prNumber);
+    const result =  await deriveStateForPR(info);
+    return result;
+}
+
+// Just the networking
+export async function queryPRInfo(prNumber: number) {
+    return await client.query<PRQueryResult>({
         query: GetPRInfo,
         variables: {
             pr_number: prNumber
@@ -154,23 +164,28 @@ export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
         fetchPolicy: "network-only",
         fetchResults: true
     });
+}
+
+// The GQL response -> Useful data for us
+export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): Promise<PrInfo | BotFail>  {
+const prInfo = info.data.repository?.pullRequest;
+    // console.log(JSON.stringify(prInfo, undefined, 2));
     
-    const prInfo = info.data.repository?.pullRequest;
-    console.log(JSON.stringify(prInfo, undefined, 2));
     if (!prInfo) return botFail("No PR with this number exists");
     if (prInfo.author == null) return botFail("PR author does not exist");
+    
     const headCommit = getHeadCommit(prInfo);
     if (headCommit == null) return botFail("No head commit");
     
     const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
     const packages = getPackagesTouched(categorizedFiles);
-
+    
     const { anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages);
     const owners = Array.from(allOwners.keys());
     const authorIsOwner = isOwner(prInfo.author.login);
-
+    
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
-
+    
     const reviews = partition(prInfo.reviews?.nodes ?? [], e => e?.commit?.oid === headCommit.oid ? "fresh" : "stale");
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
     // const rejections = noNulls(freshReviewsByState.CHANGES_REQUESTED);
@@ -190,8 +205,8 @@ export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
         }
         return "other";
     });
-
-
+    
+    
     return {
         type: "info",
         pr_number: prInfo.number,
@@ -217,15 +232,16 @@ export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
         ...getTravisResult(headCommit),
         ...analyzeReviews(prInfo, isOwner)
     };
-
+    
     function botFail(message: string): BotFail {
         debugger;
         return { type: "fail", message };
     }
-
+    
     function isOwner(login: string) {
         return owners.some(k => k.toLowerCase() === login.toLowerCase());
     }
+
 }
 
 type FileLocation = ({
@@ -241,37 +257,6 @@ type FileLocation = ({
     kind: "infrastructure"
 }) & { filePath: string };
 
-async function getOwnersOfPackages(packages: readonly string[]) {
-    const allOwners = new Set<string>();
-    let anyPackageIsNew = false;
-    for (const p of packages) {
-        const owners = await getOwnersForPackage(p);
-        if (owners === undefined) {
-            anyPackageIsNew = true;
-        } else {
-            for (const o of owners) {
-                allOwners.add(o);
-            }
-        }
-    }
-    return { allOwners, anyPackageIsNew };
-}
-
-
-async function getOwnersForPackage(packageName: string): Promise<string[] | undefined> {
-    debugger;
-    const indexDts = `master:types/${packageName}/index.d.ts`;
-    const indexDtsContent = await fetchFile(indexDts);
-    if (indexDtsContent === undefined) return undefined;
-
-    try {
-        const parsed = HeaderPaser.parseHeaderOrFail(indexDtsContent);
-        return parsed.contributors.map(c => c.githubUsername).filter(notUndefined);
-    } catch(e) {
-        console.error(e);
-        return undefined;
-    }
-}
 
 async function fileExists(filename: string): Promise<boolean> {
     const info = await client.query<GetFileExistsResult>({
@@ -320,7 +305,7 @@ function categorizeFile(filePath: string): FileLocation {
     }
 }
 
-function getPackagesTouched(files: readonly FileLocation[]) {
+export function getPackagesTouched(files: readonly FileLocation[]) {
     const list: string[] = [];
     for (const f of files) {
         if ("package" in f) {

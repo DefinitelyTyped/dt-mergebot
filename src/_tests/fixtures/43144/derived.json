@@ -1,0 +1,43 @@
+{
+  "type": "info",
+  "pr_number": 43144,
+  "author": "jeffreymeng",
+  "owners": [
+    "pocesar"
+  ],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "f1f5c4b",
+  "headCommitOid": "f1f5c4bb0ae553f56766882f6458d2e22baa87c7",
+  "mergeIsRequested": false,
+  "stalenessInDays": 1,
+  "lastCommitDate": "2020-03-15T00:11:48.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43144/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "mailcheck"
+  ],
+  "files": [
+    {
+      "filePath": "types/mailcheck/index.d.ts",
+      "kind": "definition",
+      "package": "mailcheck"
+    },
+    {
+      "filePath": "types/mailcheck/mailcheck-tests.ts",
+      "kind": "test",
+      "package": "mailcheck"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 1,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 2,
+  "isChangesRequested": false
+}
