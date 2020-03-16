@@ -484,6 +484,7 @@ function getTravisResult(headCommit: PR_repository_pullRequest_commits_nodes_com
     } 
     
     // TODO: This actually isn't acceptable (because it is a PR wide 'green' not a specific commit like above )
+    //
     // if (!travisResult) {
     //     const totalStatusChecks = headCommit.status?.contexts.find(check => check.description?.includes("Travis CI"))
     //     if (totalStatusChecks) {
