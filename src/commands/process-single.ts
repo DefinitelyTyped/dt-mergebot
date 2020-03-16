@@ -1,6 +1,6 @@
-import { getPRInfo } from "./pr-info";
-import * as computeActions from "./compute-pr-actions";
-import * as exec from "./execute-pr-actions";
+import { getPRInfo } from "../pr-info";
+import * as computeActions from "../compute-pr-actions";
+import * as exec from "../execute-pr-actions";
 
 async function main() {
     const num = +process.argv[2];
