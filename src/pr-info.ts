@@ -483,27 +483,28 @@ function getTravisResult(headCommit: PR_repository_pullRequest_commits_nodes_com
         }
     } 
     
-    if (!travisResult) {
-        const totalStatusChecks = headCommit.status?.contexts.find(check => check.description?.includes("Travis CI"))
-        if (totalStatusChecks) {
-            switch (totalStatusChecks.state) {
-                case StatusState.SUCCESS:
-                    travisResult = TravisResult.Pass;
-                    break;
-                case StatusState.PENDING:
-                case StatusState.FAILURE:
-                    travisResult = TravisResult.Fail;
-                    travisUrl = totalStatusChecks.targetUrl;
-                    break;
+    // TODO: This actually isn't acceptable (because it is a PR wide 'green' not a specific commit like above )
+    // if (!travisResult) {
+    //     const totalStatusChecks = headCommit.status?.contexts.find(check => check.description?.includes("Travis CI"))
+    //     if (totalStatusChecks) {
+    //         switch (totalStatusChecks.state) {
+    //             case StatusState.SUCCESS:
+    //                 travisResult = TravisResult.Pass;
+    //                 break;
+    //             case StatusState.PENDING:
+    //             case StatusState.FAILURE:
+    //                 travisResult = TravisResult.Fail;
+    //                 travisUrl = totalStatusChecks.targetUrl;
+    //                 break;
                 
-                    case StatusState.EXPECTED:
-                case StatusState.PENDING:
-                default:
-                    travisResult = TravisResult.Pending;
-                    break;
-            }
-        }
-    }
+    //                 case StatusState.EXPECTED:
+    //             case StatusState.PENDING:
+    //             default:
+    //                 travisResult = TravisResult.Pending;
+    //                 break;
+    //         }
+    //     }
+    // }
 
     if (!travisResult) {
         return { travisResult: TravisResult.Missing, travisUrl: undefined };

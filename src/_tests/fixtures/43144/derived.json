@@ -36,7 +36,7 @@
   "ownerApprovalCount": 1,
   "maintainerApprovalCount": 0,
   "hasDismissedReview": false,
-  "travisResult": "pass",
+  "travisResult": "missing",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 2,
   "isChangesRequested": false

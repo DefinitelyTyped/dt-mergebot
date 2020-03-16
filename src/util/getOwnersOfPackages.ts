@@ -1,3 +1,6 @@
+// These functions were moved out into their own
+// file so that it's easy to isolate the async networking 
+// in tests
 
 import * as HeaderPaser from "definitelytyped-header-parser";
 import { client } from "../graphql-client";
