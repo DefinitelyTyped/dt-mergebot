@@ -145,35 +145,6 @@ function getHeadCommit(pr: GraphqlPullRequest) {
     return headCommit;
 }
 
-function getTravisStatus(pr: GraphqlPullRequest) {
-    let travisStatus: TravisResult = TravisResult.Pending;
-    let travisUrl: string | undefined = undefined;
-
-    const headCommit = getHeadCommit(pr);
-    if (headCommit !== undefined) {
-        if (headCommit.status) {
-            switch (headCommit.status.state) {
-                case StatusState.ERROR:
-                case StatusState.FAILURE:
-                    travisStatus = TravisResult.Fail;
-                    travisUrl = headCommit.status.contexts[0].targetUrl;
-                    break;
-                case StatusState.EXPECTED:
-                case StatusState.PENDING:
-                    travisStatus = TravisResult.Pending;
-                    break;
-                case StatusState.SUCCESS:
-                    travisStatus = TravisResult.Pass;
-                    break;
-            }
-        } else {
-            travisStatus = TravisResult.Missing;
-        }
-    }
-    return { travisStatus, travisUrl };
-}
-
-
 export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
     const info = await client.query<PRQueryResult>({
         query: GetPRInfo,
@@ -197,7 +168,6 @@ export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
     const { anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages);
     const owners = Array.from(allOwners.keys());
     const authorIsOwner = isOwner(prInfo.author.login);
-    const { travisStatus, travisUrl } = getTravisStatus(prInfo);
 
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
 
@@ -221,9 +191,6 @@ export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
         return "other";
     });
 
-    const maintainerApprovalCount = approvalsByRole.maintainer?.length || 0
-    const ownerApprovalCount = approvalsByRole.owner?.length || 0
-    const otherApprovalCount = approvalsByRole.other?.length || 0
 
     return {
         type: "info",
@@ -509,7 +476,8 @@ function assertNever(n: never) {
 
 function getTravisResult(headCommit: PR_repository_pullRequest_commits_nodes_commit) {
     let travisUrl: string | undefined = undefined;
-    let travisResult: TravisResult;
+    let travisResult: TravisResult = undefined!;
+
     const checkSuite = headCommit.checkSuites?.nodes?.[0];
     if (checkSuite) {
         switch (checkSuite.conclusion) {
@@ -528,9 +496,34 @@ function getTravisResult(headCommit: PR_repository_pullRequest_commits_nodes_com
                 travisResult = TravisResult.Pending;
                 break;
         }
-    } else {
-        travisResult = TravisResult.Missing;
+    } 
+    
+    if (!travisResult) {
+        const totalStatusChecks = headCommit.status?.contexts.find(check => check.description?.includes("Travis CI"))
+        if (totalStatusChecks) {
+            switch (totalStatusChecks.state) {
+                case StatusState.SUCCESS:
+                    travisResult = TravisResult.Pass;
+                    break;
+                case StatusState.PENDING:
+                case StatusState.FAILURE:
+                    travisResult = TravisResult.Fail;
+                    travisUrl = totalStatusChecks.targetUrl;
+                    break;
+                
+                    case StatusState.EXPECTED:
+                case StatusState.PENDING:
+                default:
+                    travisResult = TravisResult.Pending;
+                    break;
+            }
+        }
     }
+
+    if (!travisResult) {
+        return { travisResult: TravisResult.Missing, travisUrl: undefined };
+    }
+
     return { travisResult, travisUrl };
 }
 
