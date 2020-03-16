@@ -33,28 +33,3 @@ npm run build
 # Run the CLI to see what would happen to an existing PR
 npm run single-info -- [PR_NUM]
 ```
-
-### Getting Webhooks locally from GitHub
-
-1. Install [ngrok](https://ngrok.com/) and start it with `ngrok http 5000`. It will give you an address like
-   `https://9cbc94d15.ngrok.io/`.
-
-2. Create a [new webhook on the DT repo](https://github.com/DefinitelyTyped/DefinitelyTyped/settings/hooks/new)
-
-- Set your **webhook url** to be: https://9cbc94d15.ngrok.io/
-
-- You will need your a copy of your private key, it will be used inside your `.env` later.
-
-3. Start your server, this will go on port 5000 - and be active over the web on your ngrok address.
-
-4. Set up your own `.env` based on the example one with your org's settings.
-
-5. OK, you're good to go.
-
-6. Go the the integration page, and hit the "Install" button in the top left, then add it to a repo. This should start
-   sending data to your server. You should see a `POST /webhook 200 OK` to indicate that it's set up in ngrok. You
-   should see
-
-Your tools for working with this data are those webhook notifications on the GitHub App's "advanced" page, re-send
-events to iterate on your code. You can also re-send them [from ngrok local](http://localhost:4040/inspect/http).
-
