@@ -1,5 +1,4 @@
 import assert = require("assert");
-import * as bot from "idembot";
 
 export enum TravisResult {
     Pending = "unknown",
@@ -8,6 +7,7 @@ export enum TravisResult {
     Missing = "missing",
 }
 
+/*
 export async function getTravisStatus(pr: bot.PullRequest): Promise<{ result: TravisResult, url: string | undefined }> {
     assert(pr.state === "open");
 
@@ -28,3 +28,4 @@ export async function getTravisStatus(pr: bot.PullRequest): Promise<{ result: Tr
             return { result: TravisResult.Pending, url: undefined };
     }
 }
+*/

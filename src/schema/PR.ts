@@ -312,6 +312,7 @@ export interface PR_repository_pullRequest_comments_nodes_reactions {
 
 export interface PR_repository_pullRequest_comments_nodes {
   __typename: "IssueComment";
+  id: string;
   /**
    * The actor who authored the comment.
    */
@@ -366,8 +367,55 @@ export interface PR_repository_pullRequest_files {
   nodes: (PR_repository_pullRequest_files_nodes | null)[] | null;
 }
 
+export interface PR_repository_pullRequest_projectCards_nodes_project {
+  __typename: "Project";
+  id: string;
+  /**
+   * The project's number.
+   */
+  number: number;
+  /**
+   * The project's name.
+   */
+  name: string;
+}
+
+export interface PR_repository_pullRequest_projectCards_nodes_column {
+  __typename: "ProjectColumn";
+  id: string;
+  /**
+   * The project column's name.
+   */
+  name: string;
+}
+
+export interface PR_repository_pullRequest_projectCards_nodes {
+  __typename: "ProjectCard";
+  id: string;
+  /**
+   * The project that contains this card.
+   */
+  project: PR_repository_pullRequest_projectCards_nodes_project;
+  /**
+   * The project column this card is associated under. A card may only belong to one
+   * project column at a time. The column field will be null if the card is created
+   * in a pending state and has yet to be associated with a column. Once cards are
+   * associated with a column, they will not become pending in the future.
+   */
+  column: PR_repository_pullRequest_projectCards_nodes_column | null;
+}
+
+export interface PR_repository_pullRequest_projectCards {
+  __typename: "ProjectCardConnection";
+  /**
+   * A list of nodes.
+   */
+  nodes: (PR_repository_pullRequest_projectCards_nodes | null)[] | null;
+}
+
 export interface PR_repository_pullRequest {
   __typename: "PullRequest";
+  id: string;
   /**
    * Identifies the pull request title.
    */
@@ -436,6 +484,10 @@ export interface PR_repository_pullRequest {
    * Lists the files changed within this pull request.
    */
   files: PR_repository_pullRequest_files | null;
+  /**
+   * List of project cards associated with this pull request.
+   */
+  projectCards: PR_repository_pullRequest_projectCards;
 }
 
 export interface PR_repository {

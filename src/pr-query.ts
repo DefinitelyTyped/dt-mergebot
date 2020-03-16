@@ -4,6 +4,7 @@ import { gql } from "apollo-boost";
 export const GetPRInfo: any = gql`query PR($pr_number: Int!) {
     repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
       pullRequest(number: $pr_number) {
+        id
         title
         lastEditedAt
         author {
@@ -90,6 +91,7 @@ export const GetPRInfo: any = gql`query PR($pr_number: Int!) {
         comments(first: 100) {
           totalCount
           nodes {
+            id
             author {
               login
             }
@@ -110,6 +112,22 @@ export const GetPRInfo: any = gql`query PR($pr_number: Int!) {
             deletions
           }
         }
+
+        projectCards(first: 10) {
+          nodes {
+            id
+            project {
+              id
+              number
+              name
+            }
+            column {
+              id
+              name
+            }
+          }
+        }
+
       }
     }
   }

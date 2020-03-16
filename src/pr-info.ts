@@ -1,24 +1,19 @@
-import * as bot from "idembot";
-import fetch from "node-fetch";
 import { GetPRInfo } from "./pr-query";
-import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest, PR_repository_pullRequest_commits_nodes_commit, } from "./schema/PR";
+
+import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest } from "./schema/PR";
+
 import { GetFileContent, GetFileExists } from "./file-query";
 import { GetFileExists  as GetFileExistsResult } from "./schema/GetFileExists";
 import { GetFileContent as GetFileContentResult } from "./schema/GetFileContent";
-import { ApolloClient } from "apollo-boost";
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
 import * as HeaderPaser from "definitelytyped-header-parser";
 
 import moment = require("moment");
 
-import { getCodeReviews, Opinion, Review } from "./reviews";
-import { getPackagesInfo } from "./util/dt";
+import { Opinion, Review } from "./reviews";
 import { TravisResult } from "./util/travis";
-import { mapDefined } from "./util/util";
 import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./schema/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
-import { readFileSync } from "fs";
+import { client } from "./graphql-client";
 
 const MyName = "typescript-bot";
 
@@ -52,6 +47,8 @@ export interface BotFail {
 
 export interface PrInfo {
     readonly type: "info";
+
+    readonly pr_number: number;
 
     /**
      * The head commit of this PR (full format)
@@ -148,29 +145,6 @@ function getHeadCommit(pr: GraphqlPullRequest) {
     return headCommit;
 }
 
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-    introspectionQueryResultData: {
-        __schema: {
-            types: []
-        }
-    }
-});
-const cache = new InMemoryCache({ fragmentMatcher });
-const link = new HttpLink({
-    uri: "https://api.github.com/graphql",
-    headers: {
-        authorization: `Bearer ${process.env["DT_BOT_AUTH_TOKEN"] || process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"]}`,
-        accept: "application/vnd.github.antiope-preview+json"
-    },
-    fetch
-});
-const client = new ApolloClient({ cache, link, defaultOptions: {
-    query: {
-      errorPolicy: "all"
-    }
-  }
-});
-
 function getTravisStatus(pr: GraphqlPullRequest) {
     let travisStatus: TravisResult = TravisResult.Pending;
     let travisUrl: string | undefined = undefined;
@@ -200,19 +174,18 @@ function getTravisStatus(pr: GraphqlPullRequest) {
 }
 
 
-export async function getPRInfo(pr: { number: number}): Promise<PrInfo | BotFail> {
-    // const now = new Date();
+export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
     const info = await client.query<PRQueryResult>({
         query: GetPRInfo,
         variables: {
-            pr_number: pr.number
+            pr_number: prNumber
         },
         fetchPolicy: "network-only",
         fetchResults: true
     });
-    // console.log(JSON.stringify(info, undefined, 2));
-
+    
     const prInfo = info.data.repository?.pullRequest;
+    console.log(JSON.stringify(prInfo, undefined, 2));
     if (!prInfo) return botFail("No PR with this number exists");
     if (prInfo.author == null) return botFail("PR author does not exist");
     const headCommit = getHeadCommit(prInfo);
@@ -224,15 +197,11 @@ export async function getPRInfo(pr: { number: number}): Promise<PrInfo | BotFail
     const { anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages);
     const owners = Array.from(allOwners.keys());
     const authorIsOwner = isOwner(prInfo.author.login);
-
     const { travisStatus, travisUrl } = getTravisStatus(prInfo);
-    // const travisFailed = travisStatus === TravisResult.Fail;
-    // const lastCommitDate = new Date(headCommit.pushedDate);
 
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
 
-
-    // const reviews = partition(prInfo.reviews?.nodes ?? [], e => e?.commit?.oid === headCommit.oid ? "fresh" : "stale");
+    const reviews = partition(prInfo.reviews?.nodes ?? [], e => e?.commit?.oid === headCommit.oid ? "fresh" : "stale");
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
     // const rejections = noNulls(freshReviewsByState.CHANGES_REQUESTED);
     const approvals = noNulls(freshReviewsByState.APPROVED);
@@ -241,7 +210,7 @@ export async function getPRInfo(pr: { number: number}): Promise<PrInfo | BotFail
         if (review?.author?.login === prInfo.author?.login) {
             return "self";
         }
-        if (review?.authorAssociation === "OWNER") {
+        if (review?.authorAssociation === "OWNER" || review?.authorAssociation === "MEMBER") {
             // DefinitelyTyped maintainer
             return "maintainer";
         }
@@ -249,17 +218,16 @@ export async function getPRInfo(pr: { number: number}): Promise<PrInfo | BotFail
             // Known package owner
             return "owner";
         }
-        
-        // They have no correlation to the types
-        return "rando"
+        return "other";
     });
 
     const maintainerApprovalCount = approvalsByRole.maintainer?.length || 0
     const ownerApprovalCount = approvalsByRole.owner?.length || 0
-    const otherApprovalCount = approvalsByRole.rando?.length || 0
+    const otherApprovalCount = approvalsByRole.other?.length || 0
 
     return {
         type: "info",
+        pr_number: prInfo.number,
         author: prInfo.author.login,
         owners,
         dangerLevel: getDangerLevel(categorizedFiles),
@@ -267,18 +235,18 @@ export async function getPRInfo(pr: { number: number}): Promise<PrInfo | BotFail
         headCommitOid: headCommit.oid,
         mergeIsRequested: authorSaysReadyToMerge(prInfo),
         stalenessInDays: Math.floor(moment().diff(moment(headCommit.pushedDate), "days")),
-        lastCommitDate: headCommit.pushedDate,
+        lastCommitDate: new Date(headCommit.pushedDate),
         reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         authorIsOwner, isFirstContribution,
         popularityLevel: await getPopularityLevel(packages),
         anyPackageIsNew,
         packages,
-        hasDismissedReview,
-        ownerApprovalCount,
-        maintainerApprovalCount,
-        otherApprovalCount,
         files: categorizedFiles,
+        otherApprovalCount: approvalsByRole.other?.length ?? 0,
+        ownerApprovalCount: approvalsByRole.owner?.length ?? 0,
+        maintainerApprovalCount: approvalsByRole.maintainer?.length ?? 0,
+        hasDismissedReview,
         ...getTravisResult(headCommit),
         ...analyzeReviews(prInfo, isOwner)
     };
@@ -451,7 +419,11 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     const reviewersWithStaleReviews: { reviewer: string, reviewedAbbrOid: string }[] = [];
     let isChangesRequested = false;
     let approvalFlags = ApprovalFlags.None;
-    for (const r of prInfo.reviews?.nodes || []) {
+    
+    // Do this in reverse order so we can detect up-to-date-reviews correctly
+    const reviews = [...prInfo.reviews?.nodes ?? []].reverse();
+
+    for (const r of reviews) {
         // Skip nulls
         if (!r?.commit || !r?.author?.login) continue;
         // Skip self-reviews
@@ -517,6 +489,7 @@ function getDangerLevel(categorizedFiles: readonly FileLocation[]) {
                         assertNever(f);
                 }
             }
+
             if (meta) {
                 return "ScopedAndConfiguration";
             } else if (tested) {
