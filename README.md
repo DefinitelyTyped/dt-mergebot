@@ -15,10 +15,10 @@ Don't run the bot under your own auth token as this will generate a bunch of spa
 
 ```sh
 # Windows
-set AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+set BOT_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # *nix
-export DT_BOT_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+export BOT_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx 
 
 # Code-gen the schema
 npm run graphql-schema
@@ -32,4 +32,24 @@ npm run build
 
 # Run the CLI to see what would happen to an existing PR
 npm run single-info -- [PR_NUM]
+```
+
+# Tests
+
+```sh
+# Run tests
+npm test
+```
+
+To create fixtures of a current PR:
+
+```sh
+# To create a fixture for PR 43161
+npm run create-fixture -- 43161
+```
+
+Then you can work against these fixtures offline with:
+
+```sh
+npm test -- --watch
 ```

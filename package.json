@@ -33,7 +33,8 @@
     "single-info-debug": "npm run build && node --inspect-brk bin/commands/show-info.js",
     "cleanproject": "npm run build && node bin/commands/clean-columns.js",
     "create-fixture": "npm run build && node bin/commands/create-fixture.js",
-    "graphql-schema": "npx apollo client:codegen schema --target typescript --globalTypesFile=src/schema/graphql-global-types.ts"
+    "graphql-schema": "npx apollo client:codegen schema --target typescript --globalTypesFile=src/schema/graphql-global-types.ts",
+    "test":" jest"
   },
   "repository": {
     "type": "git",
