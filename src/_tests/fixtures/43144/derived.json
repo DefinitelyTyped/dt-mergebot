@@ -9,7 +9,7 @@
   "headCommitAbbrOid": "f1f5c4b",
   "headCommitOid": "f1f5c4bb0ae553f56766882f6458d2e22baa87c7",
   "mergeIsRequested": false,
-  "stalenessInDays": 1,
+  "stalenessInDays": 2,
   "lastCommitDate": "2020-03-15T00:11:48.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43144/files",
   "hasMergeConflict": false,
@@ -36,7 +36,7 @@
   "ownerApprovalCount": 1,
   "maintainerApprovalCount": 0,
   "hasDismissedReview": false,
-  "travisResult": "missing",
+  "travisResult": "pass",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 2,
   "isChangesRequested": false
