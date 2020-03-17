@@ -1,0 +1,51 @@
+{
+  "type": "info",
+  "pr_number": 43151,
+  "author": "adamzerella",
+  "owners": [],
+  "dangerLevel": "ScopedAndConfiguration",
+  "headCommitAbbrOid": "bb6d315",
+  "headCommitOid": "bb6d3150b485cd203d265e06ca910262256e523e",
+  "mergeIsRequested": false,
+  "stalenessInDays": 2,
+  "lastCommitDate": "2020-03-15T12:50:20.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43151/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": true,
+  "packages": [
+    "gaze"
+  ],
+  "files": [
+    {
+      "filePath": "types/gaze/gaze-tests.ts",
+      "kind": "test",
+      "package": "gaze"
+    },
+    {
+      "filePath": "types/gaze/index.d.ts",
+      "kind": "definition",
+      "package": "gaze"
+    },
+    {
+      "filePath": "types/gaze/tsconfig.json",
+      "kind": "package-meta",
+      "package": "gaze"
+    },
+    {
+      "filePath": "types/gaze/tslint.json",
+      "kind": "package-meta",
+      "package": "gaze"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 0,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}

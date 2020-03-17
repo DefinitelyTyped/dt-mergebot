@@ -1,0 +1,52 @@
+{
+  "type": "info",
+  "pr_number": 43175,
+  "author": "ankhler",
+  "owners": [
+    "matthewkimber",
+    "otiai10",
+    "couven92",
+    "rreverser",
+    "sreimer15",
+    "MatCarlson",
+    "ekinsol",
+    "tregagnon",
+    "echoabstract",
+    "spasma"
+  ],
+  "dangerLevel": "ScopedAndUntested",
+  "headCommitAbbrOid": "b4b3bc8",
+  "headCommitOid": "b4b3bc8a617e2e0810d60e389415818d903e6362",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastCommitDate": "2020-03-17T13:51:37.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43175/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": true,
+  "popularityLevel": "Popular",
+  "anyPackageIsNew": false,
+  "packages": [
+    "chrome"
+  ],
+  "files": [
+    {
+      "filePath": "types/chrome/index.d.ts",
+      "kind": "definition",
+      "package": "chrome"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 0,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [
+    {
+      "reviewedAbbrOid": "767a750",
+      "reviewer": "couven92"
+    }
+  ],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}

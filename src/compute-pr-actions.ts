@@ -181,17 +181,20 @@ function createWelcomeComment(info: PrInfo) {
     // Some kind of extra warning
     let dangerComment: string | undefined;
     if (info.anyPackageIsNew) {
-        reviewerAdvisory = "This PR adds a new definition, so it needs to be reviewed by a maintainer before it can be merged.";
+        const links = info.packages.map(p => `- [${p}](https://www.npmjs.com/package/${p})`).join("\n")
+
+        reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n${links}`;
+         
     } else if (info.popularityLevel !== "Well-liked by everyone") {
-        reviewerAdvisory = "Because this is a widely-used package, a maintainer will need to review it before it can be merged.";
+        reviewerAdvisory = "Because this is a widely-used package, a DT maintainer will need to review it before it can be merged.";
     } else if (info.dangerLevel === "ScopedAndTested") {
         reviewerAdvisory = "Because you edited one package and updated the tests (👏), I can merge this once someone else signs off on it.";
     } else if (otherOwners.length === 0) {
-        reviewerAdvisory = "There aren't any other owners of this package, so a maintainer will review it.";
+        reviewerAdvisory = "There aren't any other owners of this package, so a DT maintainer will review it.";
     } else if (info.dangerLevel === "MultiplePackagesEdited") {
-        reviewerAdvisory = "Because this PR edits multiple packages, it can be merged once it's reviewed by a maintainer."
+        reviewerAdvisory = "Because this PR edits multiple packages, it can be merged once it's reviewed by a DT maintainer."
     } else if (info.dangerLevel === "ScopedAndConfiguration") {
-        reviewerAdvisory = "Because this PR edits the configuration file, it can be merged once it's reviewed by a maintainer."
+        reviewerAdvisory = "Because this PR edits the configuration file, it can be merged once it's reviewed by a DT maintainer."
     } else {
         reviewerAdvisory = "This PR can be merged once it's reviewed by a maintainer."
     }
@@ -225,7 +228,7 @@ function createWelcomeComment(info: PrInfo) {
     introCommentLines.push(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`)
     introCommentLines.push(``);
     introCommentLines.push(`----------------------`);
-    introCommentLines.push(`<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n${'```\n' + JSON.stringify(info, undefined, 2) + '\n```'}\n\n</details>`);
+    introCommentLines.push(`<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n${'```json\n' + JSON.stringify(info, undefined, 2) + '\n```'}\n\n</details>`);
 
     return introCommentLines.join("\n");
 
