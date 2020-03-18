@@ -1,0 +1,52 @@
+{
+  "type": "info",
+  "pr_number": 43136,
+  "author": "larsrh",
+  "owners": [
+    "RReverser"
+  ],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "e686353",
+  "headCommitOid": "e6863537248bbfee8f0ef8c636bb00c25cf40b96",
+  "mergeIsRequested": false,
+  "stalenessInDays": 2,
+  "lastCommitDate": "2020-03-16T14:26:42.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43136/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": true,
+  "popularityLevel": "Critical",
+  "anyPackageIsNew": false,
+  "packages": [
+    "estree"
+  ],
+  "files": [
+    {
+      "filePath": "types/estree/estree-tests.ts",
+      "kind": "test",
+      "package": "estree"
+    },
+    {
+      "filePath": "types/estree/index.d.ts",
+      "kind": "definition",
+      "package": "estree"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 1,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [
+    {
+      "reviewedAbbrOid": "37d784d",
+      "reviewer": "RReverser"
+    },
+    {
+      "reviewedAbbrOid": "37d784d",
+      "reviewer": "RReverser"
+    }
+  ],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}
