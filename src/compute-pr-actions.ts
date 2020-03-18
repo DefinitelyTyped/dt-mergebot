@@ -200,7 +200,7 @@ function createWelcomeComment(info: PrInfo) {
     }
     
     if (info.dangerLevel === "ScopedAndUntested") {
-        dangerComment = "This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered adding tests to cover the change you're making?";
+        dangerComment = "This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered adding tests to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module.";
     } else if (info.dangerLevel === "Infrastructure") {
         dangerComment = "This PR touches some part of DefinitelyTyped infrastructure, so a maintainer will need to review it. This is rare - did you mean to do this?";
     }
