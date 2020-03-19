@@ -22,11 +22,12 @@ const httpTrigger = async function (context, _req) {
 
     // Bail if not a PR
     if (action !== "pull_request") {
-        context.log.info("Skipped webhook, do not know how to handle the event: ", action)
+        context.log.info(`Skipped webhook, do not know how to handle the event: `)
         context.res = {
             status: 204,
             body: "NOOPing due to DT_PR_START & DT_PR_END"
         }
+        body: "Unknown webhook type"
         return
     }
     
@@ -38,8 +39,8 @@ const httpTrigger = async function (context, _req) {
     if(!shouldRunOnPR(prNumber)) {
         context.log.info(`Skipped PR ${prNumber} because it did not fall in the PR range from process.env`)
         context.res = {
-            status: 417,
-            body: "Unknown webhook type"
+            status: 204,
+            body: `NOOPing due to ${prNumber} not being between DT_PR_START (${process.env.DT_PR_START}) & DT_PR_END (${process.env.DT_PR_END})`
         }
         return
     }
