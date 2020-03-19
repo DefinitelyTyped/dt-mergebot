@@ -1,6 +1,11 @@
 This is the bot which controls the workflow of Definitely Typed PRs.
 
+## Meta
 
+* __State:__ Close to Production
+* __Dashboard:__ [Azure](https://ms.portal.azure.com/#@72f988bf-86f1-41af-91ab-2d7cd011db47/resource/subscriptions/57bfeeed-c34a-4ffd-a06b-ccff27ac91b8/resourceGroups/dtmergebot/providers/Microsoft.Web/sites/DTMergeBot)
+
+It is both a series of command line scripts which you can use to test different states, and an Azure Function App which handles incoming webhooks from the DefinitelyTyped repo.
 
 # Setup
 
