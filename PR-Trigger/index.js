@@ -24,19 +24,30 @@ const httpTrigger = async function (context, _req) {
     if (action !== "pull_request") {
         context.log.info("Skipped webhook, do not know how to handle the event: ", action)
         context.res = {
-            status: 417,
-            body: "Unknown webhook type"
+            status: 204,
+            body: "NOOPing due to DT_PR_START & DT_PR_END"
         }
         return
     }
     
     /** @type {import("@octokit/webhooks").WebhookPayloadPullRequest} */
     const prWebhook = req.body
-    
-    context.log.info(`Getting info for PR ${prWebhook.pull_request.number} - ${prWebhook.pull_request.title}`)
+    const prNumber = prWebhook.pull_request.number
+
+    // Allow running at the same time as the current dt bot
+    if(!shouldRunOnPR(prNumber)) {
+        context.log.info(`Skipped PR ${prNumber} because it did not fall in the PR range from process.env`)
+        context.res = {
+            status: 417,
+            body: "Unknown webhook type"
+        }
+        return
+    }
+
+    context.log.info(`Getting info for PR ${prNumber} - ${prWebhook.pull_request.title}`)
 
     // Generate the info for the PR from scratch
-    const info = await getPRInfo(prWebhook.pull_request.number);
+    const info = await getPRInfo(prNumber);
     
     // If it didn't work, bail early
     if (info.type === "fail") {
@@ -62,6 +73,14 @@ const httpTrigger = async function (context, _req) {
         status: 200,
         body: actions 
     };
+
+    function shouldRunOnPR(number) {
+        if (!process.env.DT_PR_START) return true
+
+        const lower = Number(process.env.DT_PR_START)
+        const higher = Number(process.env.DT_PR_END)
+        return lower < number && number < higher
+    }
 };
 
 module.exports = httpTrigger;
