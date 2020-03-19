@@ -12,10 +12,9 @@ async function main() {
   const fixturePath = join("src", "_tests", "fixtures", num + "")
 
   const response = await queryPRInfo(num);
-
   const derivedInfo = await getPRInfo(num);
 
-  if(!existsSync(fixturePath)) mkdirSync(fixturePath)
+  if (!existsSync(fixturePath)) mkdirSync(fixturePath)
 
   const jsonFixturePath = join(fixturePath, "_response.json")
   writeFileSync(jsonFixturePath, JSON.stringify(response, null, "  ")) 

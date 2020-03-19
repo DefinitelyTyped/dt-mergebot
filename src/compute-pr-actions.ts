@@ -37,6 +37,7 @@ export const DefaultActions = {
 export function process(info: PrInfo): Actions {
     const context = {
         ...DefaultActions,
+        responseComments: [] as Comments.Comment[],
         pr_number: info.pr_number
      };
 
@@ -169,7 +170,7 @@ function daysStaleBetween(lowerBoundInclusive: number, upperBoundExclusive: numb
 
 function createWelcomeComment(info: PrInfo) {
     const otherOwners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
-    const signoffParty = (needsMaintainerApproval(info) || otherOwners.length === 0) ? "a maintainer" : "an owner or maintainer";
+    const signoffParty = (needsMaintainerApproval(info) || otherOwners.length === 0) ? "a DT maintainer" : "an owner or DT maintainer";
 
     const specialWelcome = info.isFirstContribution ? ` I see this is your first time submitting to DefinitelyTyped 👋 - keep an eye on this comment as I'll be updating it with information as things progress.` : ""
     const introCommentLines: string[] = [];
@@ -196,7 +197,7 @@ function createWelcomeComment(info: PrInfo) {
     } else if (info.dangerLevel === "ScopedAndConfiguration") {
         reviewerAdvisory = "Because this PR edits the configuration file, it can be merged once it's reviewed by a DT maintainer."
     } else {
-        reviewerAdvisory = "This PR can be merged once it's reviewed by a maintainer."
+        reviewerAdvisory = "This PR can be merged once it's reviewed by a DT maintainer."
     }
     
     if (info.dangerLevel === "ScopedAndUntested") {
@@ -223,7 +224,11 @@ function createWelcomeComment(info: PrInfo) {
     introCommentLines.push(``);
     introCommentLines.push(` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
     introCommentLines.push(` * ${emoji(info.travisResult === TravisResult.Pass)} Continuous integration tests have passed`);
-    introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Most recent commit is approved by ${signoffParty}`);
+    if (info.dangerLevel === "ScopedAndTested") {
+        introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Most recent commit is approved by ${signoffParty}`);
+    } else {
+        introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Only a DT maintainer can merge changes without tests`);
+    }
     introCommentLines.push(``);
     introCommentLines.push(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`)
     introCommentLines.push(``);

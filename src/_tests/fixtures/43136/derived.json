@@ -9,13 +9,13 @@
   "headCommitAbbrOid": "e686353",
   "headCommitOid": "e6863537248bbfee8f0ef8c636bb00c25cf40b96",
   "mergeIsRequested": false,
-  "stalenessInDays": 2,
+  "stalenessInDays": 3,
   "lastCommitDate": "2020-03-16T14:26:42.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43136/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,
   "isFirstContribution": true,
-  "popularityLevel": "Critical",
+  "popularityLevel": "Well-liked by everyone",
   "anyPackageIsNew": false,
   "packages": [
     "estree"

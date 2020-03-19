@@ -7,7 +7,7 @@
   "headCommitAbbrOid": "bb6d315",
   "headCommitOid": "bb6d3150b485cd203d265e06ca910262256e523e",
   "mergeIsRequested": false,
-  "stalenessInDays": 2,
+  "stalenessInDays": 4,
   "lastCommitDate": "2020-03-15T12:50:20.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43151/files",
   "hasMergeConflict": false,

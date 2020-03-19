@@ -168,7 +168,7 @@ export async function queryPRInfo(prNumber: number) {
 
 // The GQL response -> Useful data for us
 export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): Promise<PrInfo | BotFail>  {
-const prInfo = info.data.repository?.pullRequest;
+    const prInfo = info.data.repository?.pullRequest;
     // console.log(JSON.stringify(prInfo, undefined, 2));
     
     if (!prInfo) return botFail("No PR with this number exists");

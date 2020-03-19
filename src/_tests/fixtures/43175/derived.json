@@ -18,13 +18,13 @@
   "headCommitAbbrOid": "b4b3bc8",
   "headCommitOid": "b4b3bc8a617e2e0810d60e389415818d903e6362",
   "mergeIsRequested": false,
-  "stalenessInDays": 0,
+  "stalenessInDays": 2,
   "lastCommitDate": "2020-03-17T13:51:37.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43175/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,
   "isFirstContribution": true,
-  "popularityLevel": "Popular",
+  "popularityLevel": "Well-liked by everyone",
   "anyPackageIsNew": false,
   "packages": [
     "chrome"

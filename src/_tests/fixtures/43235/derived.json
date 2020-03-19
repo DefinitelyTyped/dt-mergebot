@@ -1,0 +1,44 @@
+{
+  "type": "info",
+  "pr_number": 43235,
+  "author": "Favna",
+  "owners": [
+    "Esri",
+    "bsvensson"
+  ],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "933d8d8",
+  "headCommitOid": "933d8d81859cea3cb2df640bd099ef80bee3d691",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastCommitDate": "2020-03-19T14:37:52.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43235/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "arcgis-js-api"
+  ],
+  "files": [
+    {
+      "filePath": "types/arcgis-js-api/arcgis-js-api-tests.ts",
+      "kind": "test",
+      "package": "arcgis-js-api"
+    },
+    {
+      "filePath": "types/arcgis-js-api/index.d.ts",
+      "kind": "definition",
+      "package": "arcgis-js-api"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 0,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}

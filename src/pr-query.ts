@@ -9,7 +9,7 @@ import { gql } from "apollo-boost";
 // - Now you're good to C&P the query below
 
 /** This is a GraphQL AST tree */
-export const GetPRInfo: any = gql`query PR($pr_number: Int!) {
+export const GetPRInfo = gql`query PR($pr_number: Int!) {
     repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
       pullRequest(number: $pr_number) {
         id
