@@ -1,13 +1,14 @@
 import { getPRInfo } from "../pr-info";
 import * as computeActions from "../compute-pr-actions";
 import * as exec from "../execute-pr-actions";
+import { render } from "prettyjson";
 
 async function main() {
     const num = +process.argv[2];
     const info = await getPRInfo(num);
     console.log(``);
     console.log(`=== Raw PR Info ===`);
-    console.log(JSON.stringify(info, undefined, 2));
+    console.log(render(info));
 
     if (info.type === "fail") {
         return;
@@ -16,7 +17,7 @@ async function main() {
     const actions = computeActions.process(info);
     console.log(``);
     console.log(`=== Actions ===`);
-    console.log(JSON.stringify(actions, undefined, 2));
+    console.log(render(actions));
 
     console.log(``);
     console.log(`Executing...`);

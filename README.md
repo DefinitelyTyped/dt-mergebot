@@ -1,5 +1,7 @@
 This is the bot which controls the workflow of Definitely Typed PRs.
 
+
+
 # Setup
 
 ```sh
@@ -7,7 +9,7 @@ git clone https://github.com/RyanCavanaugh/dt-mergebot.git
 npm install
 ```
 
-# Running
+# Running Locally
 
 To compile this repo, you need to have a GitHub API access key in either: `DT_BOT_AUTH_TOKEN`, `BOT_AUTH_TOKEN` or `AUTH_TOKEN`.
 Ask Ryan for the bot's auth token (TypeScript team members: Look in the team OneNote).

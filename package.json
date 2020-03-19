@@ -3,8 +3,10 @@
   "version": "1.0.9",
   "description": "dt-mergebot",
   "dependencies": {
+    "@azure/functions": "^1.0.2-beta2",
     "@graphql-codegen/fragment-matcher": "^1.8.1",
     "@octokit/graphql-schema": "^6.45.0",
+    "@octokit/webhooks": "^6.3.2",
     "@types/node": "latest",
     "@types/node-fetch": "^1.6.7",
     "@types/request": "^2.0.9",
@@ -31,10 +33,12 @@
     "single": "npm run build && node bin/commands/process-single.js",
     "single-info": "npm run build && node bin/commands/show-info.js",
     "single-info-debug": "npm run build && node --inspect-brk bin/commands/show-info.js",
+    "start": "func start",
+    "deploy": "func azure functionapp publish TypeScriptReposAutomation",
     "cleanproject": "npm run build && node bin/commands/clean-columns.js",
     "create-fixture": "npm run build && node bin/commands/create-fixture.js",
     "graphql-schema": "npx apollo client:codegen schema --target typescript --globalTypesFile=src/schema/graphql-global-types.ts",
-    "test":" jest"
+    "test": " jest"
   },
   "repository": {
     "type": "git",
@@ -55,6 +59,9 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "testPathIgnorePatterns": ["/node_modules/", "/bin"]
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/bin"
+    ]
   }
 }
