@@ -226,6 +226,8 @@ function createWelcomeComment(info: PrInfo) {
     introCommentLines.push(` * ${emoji(info.travisResult === TravisResult.Pass)} Continuous integration tests have passed`);
     if (info.dangerLevel === "ScopedAndTested") {
         introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Most recent commit is approved by ${signoffParty}`);
+    } else if(info.anyPackageIsNew) { 
+        introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Only a DT maintainer can merge changes when there are new packages added`);
     } else {
         introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Only a DT maintainer can merge changes without tests`);
     }

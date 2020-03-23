@@ -20,6 +20,8 @@ expect.extend({ toMatchFile })
 
 .*/
 
+// TODO: The process function uses date.now and we will need to mock that per test
+
 describe('with fixtures', () => {
   const fixturesFolder = join(__dirname, 'fixtures')
 

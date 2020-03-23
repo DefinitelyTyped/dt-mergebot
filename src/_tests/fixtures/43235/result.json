@@ -1,6 +1,6 @@
 {
   "pr_number": 43235,
-  "targetColumn": "Waiting for Code Reviews",
+  "targetColumn": "Needs Maintainer Review",
   "labels": {
     "Has Merge Conflict": false,
     "The Travis CI build failed": true,

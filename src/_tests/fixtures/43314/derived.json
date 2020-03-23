@@ -1,0 +1,51 @@
+{
+  "type": "info",
+  "pr_number": 43314,
+  "author": "metonym",
+  "owners": [],
+  "dangerLevel": "ScopedAndConfiguration",
+  "headCommitAbbrOid": "432f23f",
+  "headCommitOid": "432f23fe1b87b12fe58bb1a8958f77ee3242741e",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastCommitDate": "2020-03-22T16:48:44.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43314/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": true,
+  "packages": [
+    "carbon__icon-helpers"
+  ],
+  "files": [
+    {
+      "filePath": "types/carbon__icon-helpers/carbon__icon-helpers-tests.ts",
+      "kind": "test",
+      "package": "carbon__icon-helpers"
+    },
+    {
+      "filePath": "types/carbon__icon-helpers/index.d.ts",
+      "kind": "definition",
+      "package": "carbon__icon-helpers"
+    },
+    {
+      "filePath": "types/carbon__icon-helpers/tsconfig.json",
+      "kind": "package-meta",
+      "package": "carbon__icon-helpers"
+    },
+    {
+      "filePath": "types/carbon__icon-helpers/tslint.json",
+      "kind": "package-meta",
+      "package": "carbon__icon-helpers"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 0,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}
