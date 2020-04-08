@@ -15,24 +15,36 @@ const httpTrigger = async function (context, _req) {
     }
 
     context.log('HTTP trigger function processed a request.');
-    const action = req.headers["x-github-event"]
+    const event = req.headers["x-github-event"]
 
     // TODO: Verify GH signature
     // https://github.com/microsoft/TypeScript-repos-automation/blob/40ae8b3db63fd0150938e82e47dcb63ce65f7a2d/TypeScriptRepoPullRequestWebhook/index.ts#L19
 
     // Bail if not a PR
-    if (action !== "pull_request") {
-        context.log.info(`Skipped webhook, do not know how to handle the event: `)
+    if (event !== "pull_request") {
+        context.log.info(`Skipped webhook, do not know how to handle the event: ${event}`)
         context.res = {
             status: 204,
-            body: "NOOPing due to DT_PR_START & DT_PR_END"
+            body: "NOOPing due to not a PR"
         }
-        body: "Unknown webhook type"
         return
     }
     
     /** @type {import("@octokit/webhooks").WebhookPayloadPullRequest} */
     const prWebhook = req.body
+    const action = prWebhook.action
+
+    const allowListedActions = ["opened", "closed", "reopened", "edited", "synchronized"]
+    if(!allowListedActions.includes(action)) {
+        context.log.info(`Skipped webhook, do not know how to handle the action: ${action} on ${event}`)
+        context.res = {
+            status: 204,
+            body: `NOOPing due to not supporting ${action} on ${event}`
+        }
+        return
+    }
+
+
     const prNumber = prWebhook.pull_request.number
 
     // Allow running at the same time as the current dt bot
