@@ -136,28 +136,40 @@ function canBeMergedNow(info: PrInfo): boolean {
         return false;
     }
 
-    return hasFinalApproval(info);
+    return hasFinalApproval(info).approved;
 }
 
-function hasFinalApproval(info: PrInfo): boolean {
+function hasFinalApproval(info: PrInfo) {
+    let approved = false
+    let requiredApprovalBy = "DT Maintainers"
+
     if (info.dangerLevel === "ScopedAndTested") {
         if (info.popularityLevel === "Well-liked by everyone") {
-            return !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other));
+            approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other));
+            requiredApprovalBy = "type definition owners, DT maintainers or others"
         } else if (info.popularityLevel === "Popular") {
-            return !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner));
+            approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner));
+            requiredApprovalBy = "type definition owners or DT maintainers"
         } else if (info.popularityLevel === "Critical") {
-            return !!(info.approvalFlags & (ApprovalFlags.Maintainer));
+            approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer));
+            requiredApprovalBy = "DT maintainers"
         } else {
             throw new Error("Unknown popularity level " + info.popularityLevel);
         }
     } else {
-        return !!(info.approvalFlags & (ApprovalFlags.Maintainer));
+        approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer));
+        requiredApprovalBy = "DT maintainers"
+    }
+
+    return {
+        approved,
+        requiredApprovalBy
     }
 }
 
+
 function needsMaintainerApproval(info: PrInfo) {
-    return (info.dangerLevel !== "ScopedAndTested") ||
-        (info.popularityLevel !== "Well-liked by everyone");
+    return (info.dangerLevel !== "ScopedAndTested") || (info.popularityLevel !== "Well-liked by everyone");
 }
 
 function daysStaleAtLeast(days: number) {
@@ -170,7 +182,6 @@ function daysStaleBetween(lowerBoundInclusive: number, upperBoundExclusive: numb
 
 function createWelcomeComment(info: PrInfo) {
     const otherOwners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
-    const signoffParty = (needsMaintainerApproval(info) || otherOwners.length === 0) ? "a DT maintainer" : "an owner or DT maintainer";
 
     const specialWelcome = info.isFirstContribution ? ` I see this is your first time submitting to DefinitelyTyped 👋 - keep an eye on this comment as I'll be updating it with information as things progress.` : ""
     const introCommentLines: string[] = [];
@@ -210,6 +221,8 @@ function createWelcomeComment(info: PrInfo) {
         introCommentLines.push(" " + dangerComment);
     }
 
+    const waitingOnThePRAuthorToMerge = !info.hasMergeConflict && info.travisResult === TravisResult.Pass && info.dangerLevel === "ScopedAndTested" && hasFinalApproval(info)
+
     introCommentLines.push(``);
     introCommentLines.push(`## Code Reviews`)
     introCommentLines.push(``);
@@ -224,15 +237,23 @@ function createWelcomeComment(info: PrInfo) {
     introCommentLines.push(``);
     introCommentLines.push(` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
     introCommentLines.push(` * ${emoji(info.travisResult === TravisResult.Pass)} Continuous integration tests have passed`);
+    const approval = hasFinalApproval(info)
     if (info.dangerLevel === "ScopedAndTested") {
-        introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Most recent commit is approved by ${signoffParty}`);
+        introCommentLines.push(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
     } else if(info.anyPackageIsNew) { 
-        introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Only a DT maintainer can merge changes when there are new packages added`);
+        introCommentLines.push(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes when there are new packages added`);
     } else {
-        introCommentLines.push(` * ${emoji(hasFinalApproval(info))} Only a DT maintainer can merge changes without tests`);
+        introCommentLines.push(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes without tests`);
     }
+    
     introCommentLines.push(``);
-    introCommentLines.push(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`)
+
+    if (!waitingOnThePRAuthorToMerge) {
+        introCommentLines.push(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`)
+    } else {
+        introCommentLines.push(`All of the items on the list are green. **To merge, you need to post a comment including the string "Ready to merge"** to bring in your changes.`)
+    }
+
     introCommentLines.push(``);
     introCommentLines.push(`----------------------`);
     introCommentLines.push(`<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n${'```json\n' + JSON.stringify(info, undefined, 2) + '\n```'}\n\n</details>`);
