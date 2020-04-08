@@ -237,11 +237,12 @@ function createWelcomeComment(info: PrInfo) {
     introCommentLines.push(``);
     introCommentLines.push(` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
     introCommentLines.push(` * ${emoji(info.travisResult === TravisResult.Pass)} Continuous integration tests have passed`);
+        
     const approval = hasFinalApproval(info)
-    if (info.dangerLevel === "ScopedAndTested") {
-        introCommentLines.push(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
-    } else if(info.anyPackageIsNew) { 
+    if (info.anyPackageIsNew) {
         introCommentLines.push(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes when there are new packages added`);
+    } else if(info.dangerLevel === "ScopedAndTested") { 
+        introCommentLines.push(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
     } else {
         introCommentLines.push(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes without tests`);
     }

@@ -1,0 +1,51 @@
+{
+  "type": "info",
+  "pr_number": 43695,
+  "author": "alexandercerutti",
+  "owners": [],
+  "dangerLevel": "ScopedAndConfiguration",
+  "headCommitAbbrOid": "a5285cd",
+  "headCommitOid": "a5285cda2722912a390770722a334e6d6e43d1ab",
+  "mergeIsRequested": false,
+  "stalenessInDays": 1,
+  "lastCommitDate": "2020-04-07T07:41:37.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43695/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": true,
+  "packages": [
+    "accedo__accedo-one"
+  ],
+  "files": [
+    {
+      "filePath": "types/accedo__accedo-one/accedo__accedo-one-tests.ts",
+      "kind": "test",
+      "package": "accedo__accedo-one"
+    },
+    {
+      "filePath": "types/accedo__accedo-one/index.d.ts",
+      "kind": "definition",
+      "package": "accedo__accedo-one"
+    },
+    {
+      "filePath": "types/accedo__accedo-one/tsconfig.json",
+      "kind": "package-meta",
+      "package": "accedo__accedo-one"
+    },
+    {
+      "filePath": "types/accedo__accedo-one/tslint.json",
+      "kind": "package-meta",
+      "package": "accedo__accedo-one"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 0,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": true
+}
