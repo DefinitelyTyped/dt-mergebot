@@ -86,10 +86,13 @@ export async function executePrActions(actions: Actions) {
                         // Comment is up-to-date; skip
                     } else {
                         // Edit it
+                        const body = makeComment(wantedComment.status, wantedComment.tag)
+                        if (body === actualComment.body) break
+                        
                         waiting.push(mutate(editComment, {
                             input: {
                                 id: actualComment.id,
-                                body: makeComment(wantedComment.status, wantedComment.tag)
+                                body
                             }
                         }));
                     }
