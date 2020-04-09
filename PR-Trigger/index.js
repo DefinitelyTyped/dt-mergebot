@@ -3,6 +3,8 @@
 const {getPRInfo} = require("../bin/pr-info")
 const compute = require("../bin/compute-pr-actions")
 const {executePrActions} = require("../bin/execute-pr-actions")
+const verify = require("@octokit/webhooks/verify");
+const sign = require("@octokit/webhooks/sign");
 
 /** @type {import("@azure/functions").AzureFunction} */
 const httpTrigger = async function (context, _req) {
@@ -14,11 +16,22 @@ const httpTrigger = async function (context, _req) {
         throw new Error("Set either BOT_AUTH_TOKEN or AUTH_TOKEN to a valid auth token");
     }
 
-    context.log('HTTP trigger function processed a request.');
+    context.log('HTTP trigger function received a request.');
     const event = req.headers["x-github-event"]
 
-    // TODO: Verify GH signature
-    // https://github.com/microsoft/TypeScript-repos-automation/blob/40ae8b3db63fd0150938e82e47dcb63ce65f7a2d/TypeScriptRepoPullRequestWebhook/index.ts#L19
+    const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
+    const secret = process.env.GITHUB_WEBHOOK_SECRET;
+  
+    // For process.env.GITHUB_WEBHOOK_SECRET see
+    // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
+    if (!isDev && !verify(secret, req.body, sign(secret, req.body))) {
+      context.res = {
+        status: 500,
+        body: "This webhook did not come from GitHub"
+      };
+      return;
+    }
+  
 
 
     // https://developer.github.com/webhooks/
