@@ -20,21 +20,31 @@ const httpTrigger = async function (context, _req) {
     // TODO: Verify GH signature
     // https://github.com/microsoft/TypeScript-repos-automation/blob/40ae8b3db63fd0150938e82e47dcb63ce65f7a2d/TypeScriptRepoPullRequestWebhook/index.ts#L19
 
+
+    // https://developer.github.com/webhooks/
+    const acceptedEventsToActions = {
+        "pull_request": ["opened", "closed", "reopened", "edited", "synchronized", "ready_for_review"],
+        "pull_request_review": ["submitted", "edited", "dismissed"],
+        "issue_comment": ["created", "edited", "deleted"]
+    }
+
+    const acceptedEvents = Object.keys(acceptedEventsToActions)
+
     // Bail if not a PR
-    if (event !== "pull_request") {
-        context.log.info(`Skipped webhook, do not know how to handle the event: ${event}`)
+    if (acceptedEvents.includes(event)) {
+        context.log.info(`Skipped webhook, do not know how to handle the event: ${event} - accepts: ${acceptedEvents.join(", ")}`)
         context.res = {
             status: 204,
-            body: "NOOPing due to not a PR"
+            body: "NOOPing due to unknown event"
         }
         return
     }
     
-    /** @type {import("@octokit/webhooks").WebhookPayloadPullRequest} */
-    const prWebhook = req.body
-    const action = prWebhook.action
+    /** @type {import("@octokit/webhooks").WebhookPayloadPullRequest | import("@octokit/webhooks").WebhookPayloadPullRequestReview | import("@octokit/webhooks").WebhookPayloadIssueComment} */
+    const webhook = req.body
+    const action = webhook.action
 
-    const allowListedActions = ["opened", "closed", "reopened", "edited", "synchronized"]
+    const allowListedActions = acceptedEventsToActions[event]
     if(!allowListedActions.includes(action)) {
         context.log.info(`Skipped webhook, do not know how to handle the action: ${action} on ${event}`)
         context.res = {
@@ -44,8 +54,17 @@ const httpTrigger = async function (context, _req) {
         return
     }
 
-
-    const prNumber = prWebhook.pull_request.number
+    let prNumber = -1
+    let prTitle = ""
+    if ("pull_request" in webhook) {
+        prNumber = webhook.pull_request.number
+        prTitle = webhook.pull_request.title
+    } else if("issue" in webhook) {
+        prNumber = webhook.issue.number
+        prTitle = webhook.issue.title
+    }
+    
+    if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`)
 
     // Allow running at the same time as the current dt bot
     if(!shouldRunOnPR(prNumber)) {
@@ -57,19 +76,27 @@ const httpTrigger = async function (context, _req) {
         return
     }
 
-    context.log.info(`Getting info for PR ${prNumber} - ${prWebhook.pull_request.title}`)
+    context.log.info(`Getting info for PR ${prNumber} - ${prTitle}`)
 
     // Generate the info for the PR from scratch
     const info = await getPRInfo(prNumber);
     
     // If it didn't work, bail early
     if (info.type === "fail") {
-        context.log.error(`Failed because of: ${info.message}`)
-        
-        context.res = {
-            status: 422,
-            body: `Failed because of: ${info.message}`
-        };
+        const isIssueNotPR = info.message === "No PR with this number exists" && "issue" in webhook
+        if (isIssueNotPR) {
+            context.res = {
+                status: 204,
+                body: `NOOPing due to ${prNumber} not being a PR`
+            };
+        } else {
+            context.log.error(`Failed because of: ${info.message}`)
+            
+            context.res = {
+                status: 422,
+                body: `Failed because of: ${info.message}`
+            };
+        }
 
         return;
     }
