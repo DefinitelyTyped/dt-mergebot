@@ -32,8 +32,6 @@ const httpTrigger = async function (context, _req) {
       return;
     }
   
-
-
     // https://developer.github.com/webhooks/
     const acceptedEventsToActions = {
         "pull_request": ["opened", "closed", "reopened", "edited", "synchronized", "ready_for_review"],
@@ -44,8 +42,8 @@ const httpTrigger = async function (context, _req) {
     const acceptedEvents = Object.keys(acceptedEventsToActions)
 
     // Bail if not a PR
-    if (acceptedEvents.includes(event)) {
-        context.log.info(`Skipped webhook, do not know how to handle the event: ${event} - accepts: ${acceptedEvents.join(", ")}`)
+    if (!acceptedEvents.includes(event)) {
+        context.log.info(`Skipped webhook ${event}, do not know how to handle the event - accepts: ${acceptedEvents.join(", ")}`)
         context.res = {
             status: 204,
             body: "NOOPing due to unknown event"
@@ -59,7 +57,7 @@ const httpTrigger = async function (context, _req) {
 
     const allowListedActions = acceptedEventsToActions[event]
     if(!allowListedActions.includes(action)) {
-        context.log.info(`Skipped webhook, do not know how to handle the action: ${action} on ${event}`)
+        context.log.info(`Skipped webhook, ${action} on ${event}, do not know how to handle the action`)
         context.res = {
             status: 204,
             body: `NOOPing due to not supporting ${action} on ${event}`
