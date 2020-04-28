@@ -183,6 +183,7 @@ export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): 
     if (headCommit == null) return botFail("No head commit");
 
     if (prInfo.state !== "OPEN") return botNOOP("PR is not active");
+    if (prInfo.isDraft) return botNOOP("PR is a draft");
     
     const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
     const packages = getPackagesTouched(categorizedFiles);

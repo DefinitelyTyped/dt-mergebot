@@ -78,7 +78,7 @@ const httpTrigger = async function (context, _req) {
     if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`)
 
     // Allow running at the same time as the current dt bot
-    if(!shouldRunOnPR(prNumber)) {
+    if (!shouldRunOnPR(prNumber)) {
         context.log.info(`Skipped PR ${prNumber} because it did not fall in the PR range from process.env`)
         context.res = {
             status: 204,

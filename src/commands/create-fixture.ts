@@ -23,6 +23,8 @@ async function main() {
   writeFileSync(derivedFixturePath, JSON.stringify(derivedInfo, null, "  ")) 
   
   if (derivedInfo.type === "fail" || derivedInfo.type === "noop") {
+    const ownersJSONPath = join(fixturePath, "owners.json")
+    writeFileSync(ownersJSONPath, JSON.stringify({ allOwners: [], anyPackageIsNew: false }, null, "  ")) 
     return 
   }
 
