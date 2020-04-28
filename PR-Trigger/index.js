@@ -5,7 +5,7 @@ const compute = require("../bin/compute-pr-actions")
 const {executePrActions} = require("../bin/execute-pr-actions")
 const verify = require("@octokit/webhooks/verify");
 const sign = require("@octokit/webhooks/sign");
-const {runQueryToGetPRMetadataForStatus} = require("../src/queries/status-to-PR-query")
+const {runQueryToGetPRMetadataForStatus} = require("../bin/queries/status-to-PR-query")
 
 /** @type {import("@azure/functions").AzureFunction} */
 const httpTrigger = async function (context, _req) {
