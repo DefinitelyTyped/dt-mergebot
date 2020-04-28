@@ -4,7 +4,7 @@
 
 import * as HeaderPaser from "definitelytyped-header-parser";
 import { client } from "../graphql-client";
-import { GetFileContent } from "../file-query";
+import { GetFileContent } from "../queries/file-query";
 
 import { GetFileContent as GetFileContentResult } from "../schema/GetFileContent";
 

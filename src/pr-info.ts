@@ -1,11 +1,10 @@
-import { GetPRInfo } from "./pr-query";
+import { GetPRInfo } from "./queries/pr-query";
 
 import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest } from "./schema/PR";
 
-import { GetFileContent, GetFileExists } from "./file-query";
+import { GetFileContent, GetFileExists } from "./queries/file-query";
 import { GetFileExists  as GetFileExistsResult } from "./schema/GetFileExists";
 import { GetFileContent as GetFileContentResult } from "./schema/GetFileContent";
-import * as HeaderPaser from "definitelytyped-header-parser";
 
 import moment = require("moment");
 
