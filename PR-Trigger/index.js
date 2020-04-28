@@ -78,7 +78,7 @@ const httpTrigger = async function (context, _req) {
     if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`)
 
     // Allow running at the same time as the current dt bot
-    if(!shouldRunOnPR(prNumber)) {
+    if (!shouldRunOnPR(prNumber)) {
         context.log.info(`Skipped PR ${prNumber} because it did not fall in the PR range from process.env`)
         context.res = {
             status: 204,
@@ -110,6 +110,17 @@ const httpTrigger = async function (context, _req) {
         }
 
         return;
+    }
+
+    // Allow the info to declare that nothing should happen
+    if (info.type === "noop") {
+        context.log.info(`NOOPing because of: ${info.message}`)
+            
+        context.res = {
+            status: 204,
+            body: `NOOPing because of: ${info.message}`
+        };
+        return
     }
 
     // Convert the info to a set of actions for the bot

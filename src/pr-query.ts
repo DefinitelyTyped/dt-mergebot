@@ -29,6 +29,7 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
             name
           }
         }
+        isDraft
         mergeable
         number
         state
