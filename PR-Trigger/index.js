@@ -112,6 +112,17 @@ const httpTrigger = async function (context, _req) {
         return;
     }
 
+    // Allow the info to declare that nothing should happen
+    if (info.type === "noop") {
+        context.log.info(`NOOPing because of: ${info.message}`)
+            
+        context.res = {
+            status: 204,
+            body: `NOOPing because of: ${info.message}`
+        };
+        return
+    }
+
     // Convert the info to a set of actions for the bot
     const actions = compute.process(info);
     
