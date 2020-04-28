@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequestReviewState, CheckConclusionState, CheckStatusState, StatusState } from "./graphql-global-types";
+import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequestReviewState, CheckConclusionState, CheckStatusState, StatusState } from "./../../schema/graphql-global-types";
 
 // ====================================================
 // GraphQL query operation: PR
@@ -449,10 +449,6 @@ export interface PR_repository_pullRequest {
    * A list of labels associated with the object.
    */
   labels: PR_repository_pullRequest_labels | null;
-  /**
-   * Identifies if the pull request is a draft.
-   */
-  isDraft: boolean;
   /**
    * Whether or not the pull request can be merged based on the existence of merge conflicts.
    */

@@ -1,11 +1,10 @@
-import { GetPRInfo } from "./pr-query";
+import { GetPRInfo } from "./queries/pr-query";
 
 import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest } from "./schema/PR";
 
-import { GetFileContent, GetFileExists } from "./file-query";
+import { GetFileContent, GetFileExists } from "./queries/file-query";
 import { GetFileExists  as GetFileExistsResult } from "./schema/GetFileExists";
 import { GetFileContent as GetFileContentResult } from "./schema/GetFileContent";
-import * as HeaderPaser from "definitelytyped-header-parser";
 
 import moment = require("moment");
 
@@ -44,6 +43,11 @@ export type PopularityLevel =
 
 export interface BotFail {
     readonly type: "fail";
+    readonly message: string;
+}
+
+export interface BotNOOP {
+    readonly type: "noop";
     readonly message: string;
 }
 
@@ -148,7 +152,7 @@ function getHeadCommit(pr: GraphqlPullRequest) {
 }
 
 
-export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail> {
+export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail | BotNOOP> {
     const info = await queryPRInfo(prNumber);
     const result =  await deriveStateForPR(info);
     return result;
@@ -167,7 +171,7 @@ export async function queryPRInfo(prNumber: number) {
 }
 
 // The GQL response -> Useful data for us
-export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): Promise<PrInfo | BotFail>  {
+export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): Promise<PrInfo | BotFail | BotNOOP>  {
     const prInfo = info.data.repository?.pullRequest;
     // console.log(JSON.stringify(prInfo, undefined, 2));
     
@@ -176,6 +180,9 @@ export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): 
     
     const headCommit = getHeadCommit(prInfo);
     if (headCommit == null) return botFail("No head commit");
+
+    if (prInfo.state !== "OPEN") return botNOOP("PR is not active");
+    if (prInfo.isDraft) return botNOOP("PR is a draft");
     
     const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
     const packages = getPackagesTouched(categorizedFiles);
@@ -238,6 +245,11 @@ export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): 
         return { type: "fail", message };
     }
     
+
+    function botNOOP(message: string): BotNOOP {
+        return { type: "noop", message };
+    }
+
     function isOwner(login: string) {
         return owners.some(k => k.toLowerCase() === login.toLowerCase());
     }

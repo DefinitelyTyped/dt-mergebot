@@ -5,6 +5,7 @@ const compute = require("../bin/compute-pr-actions")
 const {executePrActions} = require("../bin/execute-pr-actions")
 const verify = require("@octokit/webhooks/verify");
 const sign = require("@octokit/webhooks/sign");
+const {runQueryToGetPRMetadataForStatus} = require("../src/queries/status-to-PR-query")
 
 /** @type {import("@azure/functions").AzureFunction} */
 const httpTrigger = async function (context, _req) {
@@ -36,7 +37,8 @@ const httpTrigger = async function (context, _req) {
     const acceptedEventsToActions = {
         "pull_request": ["opened", "closed", "reopened", "edited", "synchronized", "ready_for_review"],
         "pull_request_review": ["submitted", "edited", "dismissed"],
-        "issue_comment": ["created", "edited", "deleted"]
+        "issue_comment": ["created", "edited", "deleted"],
+        "status": ["*"]
     }
 
     const acceptedEvents = Object.keys(acceptedEventsToActions)
@@ -51,12 +53,12 @@ const httpTrigger = async function (context, _req) {
         return
     }
     
-    /** @type {import("@octokit/webhooks").WebhookPayloadPullRequest | import("@octokit/webhooks").WebhookPayloadPullRequestReview | import("@octokit/webhooks").WebhookPayloadIssueComment} */
+    /** @type {import("@octokit/webhooks").WebhookPayloadPullRequest | import("@octokit/webhooks").WebhookPayloadPullRequestReview | import("@octokit/webhooks").WebhookPayloadIssueComment | import("@octokit/webhooks").WebhookPayloadStatus } */
     const webhook = req.body
-    const action = webhook.action
+    const action = "action" in webhook ? webhook.action : "status"
 
     const allowListedActions = acceptedEventsToActions[event]
-    if(!allowListedActions.includes(action)) {
+    if(!allowListedActions.includes(action) || allowListedActions.includes("*")) {
         context.log.info(`Skipped webhook, ${action} on ${event}, do not know how to handle the action`)
         context.res = {
             status: 204,
@@ -73,12 +75,22 @@ const httpTrigger = async function (context, _req) {
     } else if("issue" in webhook) {
         prNumber = webhook.issue.number
         prTitle = webhook.issue.title
+    } else if("sha" in webhook) {
+        // See https://github.com/maintainers/early-access-feedback/issues/114 for more context on getting a PR from a SHA
+        // TLDR: it's not in the API, and this search hack has been in used on Peril for the last ~3 years
+        const repoString = webhook.repository.full_name
+        const query = `${webhook.sha} type:pr is:open repo:${repoString}` 
+        const pr = await runQueryToGetPRMetadataForStatus(query)
+        if (pr) {
+            prNumber = pr.number
+            prTitle = pr.title
+        }
     }
     
     if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`)
 
     // Allow running at the same time as the current dt bot
-    if(!shouldRunOnPR(prNumber)) {
+    if (!shouldRunOnPR(prNumber)) {
         context.log.info(`Skipped PR ${prNumber} because it did not fall in the PR range from process.env`)
         context.res = {
             status: 204,
@@ -110,6 +122,17 @@ const httpTrigger = async function (context, _req) {
         }
 
         return;
+    }
+
+    // Allow the info to declare that nothing should happen
+    if (info.type === "noop") {
+        context.log.info(`NOOPing because of: ${info.message}`)
+            
+        context.res = {
+            status: 204,
+            body: `NOOPing because of: ${info.message}`
+        };
+        return
     }
 
     // Convert the info to a set of actions for the bot

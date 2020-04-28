@@ -1,8 +1,8 @@
-import { GetPRInfo } from "./pr-query";
+import { GetPRInfo } from "./queries/pr-query";
 import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest } from "./schema/PR";
 import { Actions } from "./compute-pr-actions";
 import { client, mutate } from "./graphql-client";
-import { GetLabels, GetProjectColumns } from "./label-query";
+import { GetLabels, GetProjectColumns } from "./queries/label-query";
 import { createCache } from "./ttl-cache";
 import { GetProjectColumns as GetProjectColumnsResult } from "./schema/GetProjectColumns";
 import { GetLabels as GetLabelsResult } from "./schema/GetLabels";

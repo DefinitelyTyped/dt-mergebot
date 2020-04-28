@@ -30,6 +30,18 @@ npm install
 npm test
 ```
 
+# How the app works
+
+There are three main stages once the app has a PR number:
+
+ - Query the GitHub GraphQL API for PR metadata (`src/pr-info.ts`)
+ - Create a PR Info metadata object (`src/compute-pr-actions.ts`)
+ - Do work based on the PR Info (`src/execute-pr-actions.ts`)
+
+# How the bot works
+
+There is an Azure function in `PR-Trigger` which receives webhooks; its job is to find the PR number then it runs the above steps.
+
 # Running Locally
 
 To run and update this repo, you need to have a GitHub API access key in either: `DT_BOT_AUTH_TOKEN`, `BOT_AUTH_TOKEN` or `AUTH_TOKEN`.
