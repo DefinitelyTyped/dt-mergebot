@@ -33,10 +33,12 @@
     "single": "npm run build && node bin/commands/process-single.js",
     "single-info": "npm run build && node bin/commands/show-info.js",
     "single-info-debug": "npm run build && node --inspect-brk bin/commands/show-info.js",
+    "update-test-data": "npm run build && node bin/commands/update-test-data.js",
     "start": "func start",
     "deploy": "func azure functionapp publish TypeScriptReposAutomation",
     "cleanproject": "npm run build && node bin/commands/clean-columns.js",
     "create-fixture": "npm run build && node bin/commands/create-fixture.js",
+    "update-all-fixtures": "npm run build && node bin/commands/update-all-fixtures.js",
     "graphql-schema": "npx apollo client:codegen schema --target typescript --globalTypesFile=src/schema/graphql-global-types.ts",
     "test": " jest"
   },

@@ -1,12 +1,23 @@
-import fetch from "node-fetch";
+import fetch, { RequestInit } from "node-fetch";
 import { ApolloClient } from "apollo-boost";
 import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 
+export interface Mutation extends RequestInit {
+    method: "POST";
+    headers: {
+        authorization: string;
+        accept: "application/vnd.github.antiope-preview+json";
+        "Content-type": "application/json";
+    };
+    body: string;
+}
+
 const headers = {
     authorization: `Bearer ${getAuthToken()}`,
     accept: "application/vnd.github.antiope-preview+json"
-};
+} as const;
+
 const uri = "https://api.github.com/graphql";
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
@@ -30,8 +41,13 @@ export const client = new ApolloClient({ cache, link, defaultOptions: {
   }
 });
 
-export async function mutate(query: string, input: object) {
-    const result = await fetch(uri, {
+export async function mutate(mutation: Mutation) {
+    const result = await fetch(uri, mutation);
+    return await result.text();
+}
+
+export function createMutation(query: string, input: object): Mutation {
+    return {
         method: "POST",
         headers: {
             ...headers,
@@ -41,9 +57,7 @@ export async function mutate(query: string, input: object) {
             query,
             variables: input
         }, undefined, 2)
-    });
-    
-    return await result.text();
+    };
 }
 
 function getAuthToken() {
