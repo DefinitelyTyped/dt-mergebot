@@ -10,7 +10,7 @@ async function main() {
     console.log(`=== Raw PR Info ===`);
     console.log(render(info));
 
-    if (info.type === "fail") {
+    if (info.type !== "info") {
         return;
     }
 

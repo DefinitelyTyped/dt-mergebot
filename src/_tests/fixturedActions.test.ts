@@ -38,7 +38,7 @@ describe('with fixtures', () => {
       const actionJSONPath = join(fixture, "result.json")
       
       const response = JSON.parse(readFileSync(responseJSONPath, "utf8"))
-        if (fixtureName === "43235") {
+         if (fixtureName === "43235") {
           // debugger
           }
           
@@ -51,7 +51,12 @@ describe('with fixtures', () => {
           mockNPMDownloads.mockResolvedValueOnce(123)
           
           const derived = await deriveStateForPR(response)
+
           if (derived.type === "fail") throw new Error("Should never happen")
+          if (derived.type === "noop") {
+            expect(JSON.stringify(derived, null, "  ")).toMatchFile(actionJSONPath)
+            return
+          }
           
           // So that fixtures don't change per day
           const existingDerivedJSON = JSON.parse(readFileSync(derivedJSONPath, "utf8"))
