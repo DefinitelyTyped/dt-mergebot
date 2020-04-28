@@ -58,7 +58,7 @@ const httpTrigger = async function (context, _req) {
     const action = "action" in webhook ? webhook.action : "status"
 
     const allowListedActions = acceptedEventsToActions[event]
-    if(!allowListedActions.includes(action) || allowListedActions.includes("*")) {
+    if (!allowListedActions.includes(action) && !allowListedActions.includes("*")) {
         context.log.info(`Skipped webhook, ${action} on ${event}, do not know how to handle the action`)
         context.res = {
             status: 204,

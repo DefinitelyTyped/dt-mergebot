@@ -38,8 +38,7 @@ async function getOwnersForPackage(packageName: string): Promise<string[] | unde
       console.error(e);
       return undefined;
   }
-} 
-
+}
 
 async function fetchFile(expr: string): Promise<string | undefined> {
   const info = await client.query<GetFileContentResult>({
