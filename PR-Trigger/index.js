@@ -9,6 +9,7 @@ const {runQueryToGetPRMetadataForStatus} = require("../bin/queries/status-to-PR-
 
 /** @type {import("@azure/functions").AzureFunction} */
 const httpTrigger = async function (context, _req) {
+
     /** @type {import("@azure/functions").HttpRequest} */
     const req = _req
 
