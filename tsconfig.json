@@ -1,6 +1,6 @@
 {
     "include": ["src"],
-    "exclude": ["src/use-pr-info.ts", "src/rules.ts"],
+    "exclude": ["src/use-pr-info.ts"],
     "compilerOptions": {
         "outDir": "bin",
         "rootDir": "src",

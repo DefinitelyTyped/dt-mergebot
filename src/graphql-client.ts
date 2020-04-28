@@ -1,4 +1,4 @@
-import fetch, { Request } from "node-fetch";
+import fetch from "node-fetch";
 import { ApolloClient } from "apollo-boost";
 import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
