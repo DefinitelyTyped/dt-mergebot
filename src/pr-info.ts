@@ -303,7 +303,8 @@ async function fetchFile(expr: string): Promise<string | undefined> {
 
 function categorizeFile(filePath: string): FileLocation {
     const typeDefinitionFile = /^types\/([^\/]+)\/(.*)\.d\.ts$/i;
-    const typeTestFile = /^types\/([^\/]+)\/(.*)\.ts$/i;
+    // https://regex101.com/r/QfAfRn/1
+    const typeTestFile = /^types\/([^\/]+)\/(.*)\.tsx?$/i;
     const typeOtherFile = /^types\/([^\/]+)\/(.*)$/i;
     let match;
     if (match = typeDefinitionFile.exec(filePath)) {
