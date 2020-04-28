@@ -1,0 +1,31 @@
+[
+  {
+    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWw1NzUzNDM5Nw=="
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0MzkxMDM3MzMy"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0MzkxMDM3MzMy",
+        "body": "@Favna Thank you for submitting this PR! \n\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can merge this once someone else signs off on it.\n\n🔔 @Esri @bsvensson - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43235/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n```json\n{\n  \"type\": \"info\",\n  \"pr_number\": 43235,\n  \"author\": \"Favna\",\n  \"owners\": [\n    \"Esri\",\n    \"bsvensson\"\n  ],\n  \"dangerLevel\": \"ScopedAndTested\",\n  \"headCommitAbbrOid\": \"933d8d8\",\n  \"headCommitOid\": \"933d8d81859cea3cb2df640bd099ef80bee3d691\",\n  \"mergeIsRequested\": false,\n  \"stalenessInDays\": 0,\n  \"lastCommitDate\": \"2020-03-19T14:37:52.000Z\",\n  \"reviewLink\": \"https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43235/files\",\n  \"hasMergeConflict\": false,\n  \"authorIsOwner\": false,\n  \"isFirstContribution\": false,\n  \"popularityLevel\": \"Well-liked by everyone\",\n  \"anyPackageIsNew\": false,\n  \"packages\": [\n    \"arcgis-js-api\"\n  ],\n  \"files\": [\n    {\n      \"filePath\": \"types/arcgis-js-api/arcgis-js-api-tests.ts\",\n      \"kind\": \"test\",\n      \"package\": \"arcgis-js-api\"\n    },\n    {\n      \"filePath\": \"types/arcgis-js-api/index.d.ts\",\n      \"kind\": \"definition\",\n      \"package\": \"arcgis-js-api\"\n    }\n  ],\n  \"otherApprovalCount\": 0,\n  \"ownerApprovalCount\": 0,\n  \"maintainerApprovalCount\": 0,\n  \"hasDismissedReview\": false,\n  \"travisResult\": \"pass\",\n  \"reviewersWithStaleReviews\": [],\n  \"approvalFlags\": 0,\n  \"isChangesRequested\": false\n}\n```\n\n</details>\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "contentId": "MDExOlB1bGxSZXF1ZXN0MzkxMDM3MzMy",
+        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
+      }
+    }
+  }
+]
