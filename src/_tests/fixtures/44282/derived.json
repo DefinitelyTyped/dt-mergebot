@@ -1,0 +1,41 @@
+{
+  "type": "info",
+  "pr_number": 44282,
+  "author": "fishcharlie",
+  "owners": [],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "2579430",
+  "headCommitOid": "25794304acf8c1fd70712bd068beb07b0e09755e",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastCommitDate": "2020-04-27T23:58:24.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44282/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": true,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "benchmark"
+  ],
+  "files": [
+    {
+      "filePath": "types/benchmark/benchmark-tests.ts",
+      "kind": "test",
+      "package": "benchmark"
+    },
+    {
+      "filePath": "types/benchmark/index.d.ts",
+      "kind": "definition",
+      "package": "benchmark"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 0,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}

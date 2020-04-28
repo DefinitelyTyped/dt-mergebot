@@ -221,7 +221,7 @@ function createWelcomeComment(info: PrInfo) {
         introCommentLines.push(" " + dangerComment);
     }
 
-    const waitingOnThePRAuthorToMerge = !info.hasMergeConflict && info.travisResult === TravisResult.Pass && info.dangerLevel === "ScopedAndTested" && hasFinalApproval(info)
+    const waitingOnThePRAuthorToMerge = !info.hasMergeConflict && info.travisResult === TravisResult.Pass && info.dangerLevel === "ScopedAndTested" && hasFinalApproval(info).approved
 
     introCommentLines.push(``);
     introCommentLines.push(`## Code Reviews`)
