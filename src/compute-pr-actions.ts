@@ -34,6 +34,9 @@ export const DefaultActions = {
     shouldMerge: false
 };
 
+const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package"
+const uriForTestingNewPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#testing"
+
 export function process(info: PrInfo): Actions {
     const context = {
         ...DefaultActions,
@@ -182,6 +185,7 @@ function daysStaleBetween(lowerBoundInclusive: number, upperBoundExclusive: numb
 
 function createWelcomeComment(info: PrInfo) {
     const otherOwners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
+    const testsLink = info.anyPackageIsNew ? uriForTestingNewPackages : uriForTestingEditedPackages
 
     const specialWelcome = info.isFirstContribution ? ` I see this is your first time submitting to DefinitelyTyped 👋 - keep an eye on this comment as I'll be updating it with information as things progress.` : ""
     const introCommentLines: string[] = [];
@@ -212,9 +216,9 @@ function createWelcomeComment(info: PrInfo) {
     }
     
     if (info.dangerLevel === "ScopedAndUntested") {
-        dangerComment = "This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered adding tests to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module.";
+        dangerComment = `This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`;
     } else if (info.dangerLevel === "Infrastructure") {
-        dangerComment = "This PR touches some part of DefinitelyTyped infrastructure, so a maintainer will need to review it. This is rare - did you mean to do this?";
+        dangerComment = "This PR touches some part of DefinitelyTyped infrastructure, meaning a DT maintainer will need to review it. This is rare - did you mean to do this?";
     }
 
     if (dangerComment !== undefined) {
