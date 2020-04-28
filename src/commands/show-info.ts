@@ -20,10 +20,10 @@ async function main() {
   console.log(`=== Actions ===`);
   console.log(render(actions));
 
-  const mutations = executePrActions(actions, info.data, /*dry*/ true);
+  const mutations = await executePrActions(actions, info.data, /*dry*/ true);
   console.log(``);
   console.log(`=== Mutations ===`);
-  console.log(render(mutations));
+  console.log(render(mutations.map(m => JSON.parse(m))));
 }
 
 main().then(() => {
