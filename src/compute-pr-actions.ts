@@ -2,36 +2,39 @@ import * as Comments from "./comments";
 import { PrInfo, ApprovalFlags } from "./pr-info";
 import { TravisResult } from "./util/travis";
 
-export type Actions = typeof DefaultActions;
-export const DefaultActions = {
-    pr_number: 0,
-    targetColumn: "Other" as
-        "Other" |
-        "Needs Maintainer Review" |
-        "Waiting for Author to Merge" |
-        "Needs Author Action" |
-        "Recently Merged" |
-        "Waiting for Code Reviews",
-    labels: {
-        "Has Merge Conflict": false,
-        "The Travis CI build failed": false,
-        "Revision needed": false,
-        "New Definition": false,
-        "Where is Travis?": false,
-        "Owner Approved": false,
-        "Other Approved": false,
-        "Maintainer Approved": false,
-        "Merge:LGTM": false,
-        "Merge:YSYL": false,
-        "Popular package": false,
-        "Critical package": false,
-        "Edits Infrastructure": false,
-        "Edits multiple packages": false,
-        "Author is Owner": false
-    },
-    responseComments: [] as Comments.Comment[],
-    shouldClose: false,
-    shouldMerge: false
+export type Actions = ReturnType<typeof createDefaultActions>;
+
+function createDefaultActions() {
+    return {
+        pr_number: 0,
+        targetColumn: "Other" as
+            "Other" |
+            "Needs Maintainer Review" |
+            "Waiting for Author to Merge" |
+            "Needs Author Action" |
+            "Recently Merged" |
+            "Waiting for Code Reviews",
+        labels: {
+            "Has Merge Conflict": false,
+            "The Travis CI build failed": false,
+            "Revision needed": false,
+            "New Definition": false,
+            "Where is Travis?": false,
+            "Owner Approved": false,
+            "Other Approved": false,
+            "Maintainer Approved": false,
+            "Merge:LGTM": false,
+            "Merge:YSYL": false,
+            "Popular package": false,
+            "Critical package": false,
+            "Edits Infrastructure": false,
+            "Edits multiple packages": false,
+            "Author is Owner": false
+        },
+        responseComments: [] as Comments.Comment[],
+        shouldClose: false,
+        shouldMerge: false
+    };
 };
 
 const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package"
@@ -39,7 +42,7 @@ const uriForTestingNewPackages = "https://github.com/DefinitelyTyped/DefinitelyT
 
 export function process(info: PrInfo): Actions {
     const context = {
-        ...DefaultActions,
+        ...createDefaultActions(),
         responseComments: [] as Comments.Comment[],
         pr_number: info.pr_number
      };
@@ -102,7 +105,6 @@ export function process(info: PrInfo): Actions {
 
     // CI is green
     if (info.travisResult === TravisResult.Pass) {
-        debugger;
         const isAutoMergeable = canBeMergedNow(info);
 
         if (isAutoMergeable) {

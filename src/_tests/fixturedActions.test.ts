@@ -38,9 +38,6 @@ describe('with fixtures', () => {
       const mutationsPath = join(fixture, "mutations.json")
 
       const response = JSON.parse(readFileSync(responseJSONPath, "utf8"))
-      if (fixtureName === "43235") {
-        // debugger
-      }
 
       // Because Owners is another API call, we need to make it a fixture also
       // and so this fixture overrides the current

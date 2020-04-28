@@ -33,7 +33,6 @@ export async function getOwnersOfPackages(packages: readonly string[]): Promise<
 
 
 async function getOwnersForPackage(packageName: string): Promise<string[] | undefined> {
-  debugger;
   const indexDts = `master:types/${packageName}/index.d.ts`;
   const indexDtsContent = await fetchFile(indexDts);
   if (indexDtsContent === undefined) return undefined;

@@ -239,7 +239,6 @@ export async function deriveStateForPR(
     };
     
     function botFail(message: string): BotFail {
-        debugger;
         return { type: "fail", message };
     }
     

@@ -40,7 +40,7 @@
     "create-fixture": "npm run build && node bin/commands/create-fixture.js",
     "update-all-fixtures": "npm run build && node bin/commands/update-all-fixtures.js",
     "graphql-schema": "npx apollo client:codegen schema --target typescript --globalTypesFile=src/schema/graphql-global-types.ts",
-    "test": " jest"
+    "test": "jest"
   },
   "repository": {
     "type": "git",

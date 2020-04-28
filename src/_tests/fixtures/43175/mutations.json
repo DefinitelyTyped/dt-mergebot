@@ -1,16 +1,5 @@
 [
   {
-    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "labelIds": [
-          "MDU6TGFiZWw1NzUzNDM5Nw=="
-        ],
-        "labelableId": "MDExOlB1bGxSZXF1ZXN0Mzg5NzQ2Mjcx"
-      }
-    }
-  },
-  {
     "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {

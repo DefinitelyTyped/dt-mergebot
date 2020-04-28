@@ -2,7 +2,9 @@
   "type": "info",
   "pr_number": 44288,
   "author": "nomatteus",
-  "owners": [],
+  "owners": [
+    "gosticks"
+  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "05ee6f2",
   "headCommitOid": "05ee6f2784d694258f61e7a93a95e758ea29ad9d",

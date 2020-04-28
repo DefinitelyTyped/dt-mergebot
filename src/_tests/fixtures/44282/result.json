@@ -3,8 +3,8 @@
   "targetColumn": "Waiting for Code Reviews",
   "labels": {
     "Has Merge Conflict": false,
-    "The Travis CI build failed": true,
-    "Revision needed": true,
+    "The Travis CI build failed": false,
+    "Revision needed": false,
     "New Definition": false,
     "Where is Travis?": false,
     "Owner Approved": false,
