@@ -22,9 +22,8 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
   const pr = info.repository?.pullRequest!;
 
   let mutations: Mutation[] = [];
-  const labels = info.repository?.pullRequest?.labels?.nodes!;
 
-  const labelMutations = await getMutationsForLabels(actions, labels, pr);
+  const labelMutations = await getMutationsForLabels(actions, pr);
   mutations = mutations.concat(labelMutations);
 
   const projectMutations = await getMutationsForProjectChanges(actions, pr);
@@ -46,17 +45,12 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
       mutationResults.push({ mutation, result });
     }
 
-    console.log(
-      JSON.stringify(
-        mutationResults.map(({ mutation, result }) => ({
-          mutation: mutation.body,
-          result,
-        })),
-        undefined,
-        2
-      )
-    );
+    const results = mutationResults.map(({ mutation, result }) => ({
+      mutation: mutation.body,
+      result,
+    }))
 
+    console.log(JSON.stringify(results, undefined, 2));
     return;
   }
 }
@@ -64,11 +58,8 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
 const prefix = "\n<!--typescript_bot_";
 const suffix = "-->";
 
-async function getMutationsForLabels(
-  actions: Actions,
-  labels: ({ name: string } | null)[],
-  pr: PR_repository_pullRequest
-) {
+async function getMutationsForLabels( actions: Actions, pr: PR_repository_pullRequest) {
+const labels = pr.labels?.nodes!;
   const mutations: Mutation[] = [];
   const labelsToAdd: string[] = [];
   const labelsToRemove: string[] = [];
@@ -79,13 +70,8 @@ async function getMutationsForLabels(
 
   for (const key of Object.keys(actions.labels) as (keyof typeof actions["labels"])[]) {
     const exists = labels.some((l) => l && l.name === key);
-    if (exists && !actions.labels[key]) {
-      labelsToRemove.push(key);
-    }
-
-    if (!exists && actions.labels[key]) {
-      labelsToAdd.push(key);
-    }
+    if (exists && !actions.labels[key]) labelsToRemove.push(key);
+    if (!exists && actions.labels[key]) labelsToAdd.push(key);
   }
 
   if (labelsToAdd.length) {
@@ -93,14 +79,8 @@ async function getMutationsForLabels(
     for (const label of labelsToAdd) {
       labelIds.push(await getLabelIdByName(label));
     }
-    mutations.push(
-      createMutation(addLabels, {
-        input: {
-          labelIds,
-          labelableId: pr.id,
-        },
-      })
-    );
+
+    mutations.push( createMutation(addLabels, { input: { labelIds, labelableId: pr.id, } }));
   }
 
   if (labelsToRemove.length) {
@@ -109,14 +89,7 @@ async function getMutationsForLabels(
       labelIds.push(await getLabelIdByName(label));
     }
 
-    mutations.push(
-      createMutation(removeLabels, {
-        input: {
-          labelIds,
-          labelableId: pr.id,
-        },
-      })
-    );
+    mutations.push( createMutation(removeLabels, { input: { labelIds, labelableId: pr.id } }) );
   }
 
   return mutations;
@@ -136,21 +109,11 @@ async function getMutationsForProjectChanges(actions: Actions, pr: PR_repository
     const targetColumnId = await getProjectBoardColumnIdByName(actions.targetColumn);
     if (extantCard) {
       if (extantCard.column?.name !== actions.targetColumn) {
-        mutations.push(
-          createMutation(moveProjectCard, {
-            input: {
-              cardId: extantCard.id,
-              columnId: targetColumnId,
-            },
-          })
-        );
+        mutations.push( createMutation(moveProjectCard, { input: { cardId: extantCard.id, columnId: targetColumnId } }) );
       }
+
     } else {
-      mutations.push(
-        createMutation(addProjectCard, {
-          input: { contentId: pr.id, projectColumnId: targetColumnId },
-        })
-      );
+      mutations.push( createMutation(addProjectCard, { input: { contentId: pr.id, projectColumnId: targetColumnId } }) );
     }
   }
   return mutations;
@@ -172,14 +135,7 @@ async function getMutationsForComments(actions: Actions, pr: PR_repository_pullR
             const body = makeComment(wantedComment.status, wantedComment.tag);
             if (body === actualComment.body) break;
 
-            mutations.push(
-              createMutation(editComment, {
-                input: {
-                  id: actualComment.id,
-                  body,
-                },
-              })
-            );
+            mutations.push( createMutation(editComment, { input: { id: actualComment.id, body, } }) );
           }
           break;
         }
@@ -187,8 +143,7 @@ async function getMutationsForComments(actions: Actions, pr: PR_repository_pullR
     }
 
     if (!exists) {
-      mutations.push(
-        createMutation(addComment, {
+      mutations.push( createMutation(addComment, {
           input: { subjectId: pr.id, body: makeComment(wantedComment.status, wantedComment.tag) },
         })
       );
@@ -215,13 +170,7 @@ async function getMutationsForChangingPRState(actions: Actions, pr: PR_repositor
   }
 
   if (actions.shouldClose) {
-    mutations.push(
-      createMutation(closePr, {
-        input: {
-          pullRequestId: pr.id,
-        },
-      })
-    );
+    mutations.push( createMutation(closePr, { input: { pullRequestId: pr.id } }) );
   }
   return mutations;
 }
