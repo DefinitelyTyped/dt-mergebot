@@ -2,6 +2,7 @@
   "type": "info",
   "now": "2020-03-19T13:02:50.000Z",
   "pr_number": 43160,
+  "updatedAt": null,
   "author": "rikkertkoppes",
   "owners": [
     "qinfchen",
@@ -15,6 +16,7 @@
   "mergeIsRequested": false,
   "stalenessInDays": 3,
   "lastCommitDate": "2020-03-16T08:14:50.000Z",
+  "lastAuthorCommentDate": "2020-03-16T08:14:50.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43160/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,

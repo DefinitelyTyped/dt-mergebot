@@ -2,6 +2,7 @@
   "type": "info",
   "now": "2020-03-19T19:14:42.000Z",
   "pr_number": 43136,
+  "updatedAt": null,
   "author": "larsrh",
   "owners": [
     "RReverser"
@@ -12,6 +13,7 @@
   "mergeIsRequested": false,
   "stalenessInDays": 3,
   "lastCommitDate": "2020-03-16T14:26:42.000Z",
+  "lastAuthorCommentDate": "2020-03-16T14:26:42.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43136/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,

@@ -2,6 +2,7 @@
   "type": "info",
   "now": "2020-03-19T04:59:48.000Z",
   "pr_number": 43144,
+  "updatedAt": null,
   "author": "jeffreymeng",
   "owners": [
     "pocesar"
@@ -12,6 +13,7 @@
   "mergeIsRequested": false,
   "stalenessInDays": 4,
   "lastCommitDate": "2020-03-15T00:11:48.000Z",
+  "lastAuthorCommentDate": "2020-03-15T00:11:48.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43144/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,

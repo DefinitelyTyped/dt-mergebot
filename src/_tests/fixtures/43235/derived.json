@@ -2,6 +2,7 @@
   "type": "info",
   "now": "2020-03-19T19:25:52.000Z",
   "pr_number": 43235,
+  "updatedAt": null,
   "author": "Favna",
   "owners": [
     "Esri",
@@ -13,6 +14,7 @@
   "mergeIsRequested": false,
   "stalenessInDays": 0,
   "lastCommitDate": "2020-03-19T14:37:52.000Z",
+  "lastAuthorCommentDate": "2020-03-19T14:37:52.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43235/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,
