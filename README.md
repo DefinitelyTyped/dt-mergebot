@@ -9,13 +9,6 @@ It is both a series of command line scripts which you can use to test different 
 
 This repo is deployed on every push to master.
 
-# ENV Vars
-
-To allow for both the old style DT and the new bot to run along-side each other, there is a way to declare that this bot should work with a specific set of PRs:
-
-- `DT_PR_START` - the lower bound
-- `DT_PR_END` - the last PR and then it will be ignored
-
 # Setup
 
 ```sh
