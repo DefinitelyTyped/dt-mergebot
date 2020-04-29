@@ -2,6 +2,7 @@ import { queryPRInfo, deriveStateForPR } from "../pr-info";
 import * as computeActions from "../compute-pr-actions";
 import { render } from "prettyjson";
 import { executePrActions } from "../execute-pr-actions";
+import { formatMutationRequest } from "../util/formatMutationRequest";
 
 async function main() {
   const num = +process.argv[2];
@@ -23,7 +24,7 @@ async function main() {
   const mutations = await executePrActions(actions, info.data, /*dry*/ true);
   console.log(``);
   console.log(`=== Mutations ===`);
-  console.log(render(mutations.map(m => JSON.parse(m))));
+  console.log(render(mutations.map(formatMutationRequest)));
 }
 
 main().then(() => {
