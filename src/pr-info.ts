@@ -282,7 +282,7 @@ function getLastAuthorActivityDate(authorLogin: string, timelineItems: PR_reposi
         return item?.__typename === "IssueComment" && item.author?.login === authorLogin;
     });
     const lastReviewComment = forEachReverse(reviews?.nodes, review => {
-        return findLast(review?.comments.nodes, comment => {
+        return findLast(review?.comments?.nodes, comment => {
             return comment?.author?.login === authorLogin;
         });
     });

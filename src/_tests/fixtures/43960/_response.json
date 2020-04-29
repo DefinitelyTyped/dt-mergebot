@@ -4,6 +4,7 @@
       "pullRequest": {
         "id": "MDExOlB1bGxSZXF1ZXN0NDA0NTUyMTQ2",
         "title": "supertest: supertest.agent() supports request methods like superagent.agent",
+        "updatedAt": "2020-04-29T20:48:53Z",
         "lastEditedAt": null,
         "author": {
           "login": "aaltepet",
@@ -41,49 +42,88 @@
         "timelineItems": {
           "nodes": [
             {
-              "__typename": "PullRequestCommit",
-              "commit": {
-                "oid": "129f84e4492a76e7cd5af9d946c4583a60e6eb88",
-                "__typename": "Commit"
-              }
+              "__typename": "IssueComment",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "createdAt": "2020-04-16T17:49:03Z"
             },
             {
-              "__typename": "IssueComment"
+              "__typename": "IssueComment",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "createdAt": "2020-04-16T18:22:32Z"
             },
             {
-              "__typename": "IssueComment"
+              "__typename": "IssueComment",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "createdAt": "2020-04-21T17:31:28Z"
             },
             {
-              "__typename": "IssueComment"
+              "__typename": "IssueComment",
+              "author": {
+                "login": "elibarzilay",
+                "__typename": "User"
+              },
+              "createdAt": "2020-04-27T15:54:49Z"
             },
             {
-              "__typename": "IssueComment"
+              "__typename": "IssueComment",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "createdAt": "2020-04-27T19:32:06Z"
             },
             {
-              "__typename": "PullRequestReview",
+              "__typename": "IssueComment",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "createdAt": "2020-04-29T20:46:09Z"
+            },
+            {
+              "__typename": "IssueComment",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "createdAt": "2020-04-29T20:46:09Z"
+            },
+            {
+              "__typename": "IssueComment",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "createdAt": "2020-04-29T20:46:10Z"
+            },
+            {
+              "__typename": "IssueComment",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "createdAt": "2020-04-29T20:46:10Z"
+            },
+            {
+              "__typename": "IssueComment",
               "author": {
                 "login": "andrewbranch",
                 "__typename": "User"
               },
-              "state": "CHANGES_REQUESTED"
+              "createdAt": "2020-04-29T20:48:52Z"
             },
             {
-              "__typename": "IssueComment"
-            },
-            {
-              "__typename": "IssueComment"
-            },
-            {
-              "__typename": "IssueComment"
-            },
-            {
-              "__typename": "IssueComment"
-            },
-            {
-              "__typename": "IssueComment"
-            },
-            {
-              "__typename": "IssueComment"
+              "__typename": "ReopenedEvent",
+              "createdAt": "2020-04-29T20:48:52Z"
             }
           ],
           "__typename": "PullRequestTimelineItemsConnection"
@@ -100,6 +140,19 @@
                 "abbreviatedOid": "129f84e",
                 "__typename": "Commit"
               },
+              "comments": {
+                "nodes": [
+                  {
+                    "author": {
+                      "login": "andrewbranch",
+                      "__typename": "User"
+                    },
+                    "createdAt": "2020-04-27T18:55:48Z",
+                    "__typename": "PullRequestReviewComment"
+                  }
+                ],
+                "__typename": "PullRequestReviewCommentConnection"
+              },
               "authorAssociation": "MEMBER",
               "state": "CHANGES_REQUESTED",
               "submittedAt": "2020-04-27T18:56:06Z",
@@ -115,6 +168,19 @@
                 "oid": "129f84e4492a76e7cd5af9d946c4583a60e6eb88",
                 "abbreviatedOid": "129f84e",
                 "__typename": "Commit"
+              },
+              "comments": {
+                "nodes": [
+                  {
+                    "author": {
+                      "login": "aaltepet",
+                      "__typename": "User"
+                    },
+                    "createdAt": "2020-04-29T20:46:05Z",
+                    "__typename": "PullRequestReviewComment"
+                  }
+                ],
+                "__typename": "PullRequestReviewCommentConnection"
               },
               "authorAssociation": "CONTRIBUTOR",
               "state": "COMMENTED",
@@ -137,9 +203,9 @@
                         "name": "Azure Pipelines",
                         "__typename": "App"
                       },
-                      "conclusion": null,
+                      "conclusion": "SUCCESS",
                       "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/129f84e4492a76e7cd5af9d946c4583a60e6eb88/checks?check_suite_id=603720715",
-                      "status": "IN_PROGRESS",
+                      "status": "COMPLETED",
                       "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/129f84e4492a76e7cd5af9d946c4583a60e6eb88/checks?check_suite_id=603720715",
                       "__typename": "CheckSuite"
                     }
