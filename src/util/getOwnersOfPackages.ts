@@ -8,8 +8,13 @@ import { GetFileContent } from "../queries/file-query";
 
 import { GetFileContent as GetFileContentResult } from "../schema/GetFileContent";
 
-export async function getOwnersOfPackages(packages: readonly string[]) {
-  const allOwners = new Set<string>();
+export interface OwnerInfo {
+    anyPackageIsNew: boolean;
+    allOwners: string[];
+}
+
+export async function getOwnersOfPackages(packages: readonly string[]): Promise<OwnerInfo> {
+  const allOwners = [];
   let anyPackageIsNew = false;
   for (const p of packages) {
       const owners = await getOwnersForPackage(p);
@@ -17,7 +22,9 @@ export async function getOwnersOfPackages(packages: readonly string[]) {
           anyPackageIsNew = true;
       } else {
           for (const o of owners) {
-              allOwners.add(o);
+              if (!owners.includes(o)) {
+                allOwners.push(o);
+              }
           }
       }
   }
@@ -26,7 +33,6 @@ export async function getOwnersOfPackages(packages: readonly string[]) {
 
 
 async function getOwnersForPackage(packageName: string): Promise<string[] | undefined> {
-  debugger;
   const indexDts = `master:types/${packageName}/index.d.ts`;
   const indexDtsContent = await fetchFile(indexDts);
   if (indexDtsContent === undefined) return undefined;

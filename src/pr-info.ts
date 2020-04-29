@@ -14,7 +14,7 @@ import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckCon
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
-import { getOwnersOfPackages } from "./util/getOwnersOfPackages";
+import { getOwnersOfPackages, OwnerInfo } from "./util/getOwnersOfPackages";
 
 const MyName = "typescript-bot";
 
@@ -151,13 +151,6 @@ function getHeadCommit(pr: GraphqlPullRequest) {
     return headCommit;
 }
 
-
-export async function getPRInfo(prNumber: number): Promise<PrInfo | BotFail | BotNOOP> {
-    const info = await queryPRInfo(prNumber);
-    const result =  await deriveStateForPR(info);
-    return result;
-}
-
 // Just the networking
 export async function queryPRInfo(prNumber: number) {
     return await client.query<PRQueryResult>({
@@ -171,7 +164,11 @@ export async function queryPRInfo(prNumber: number) {
 }
 
 // The GQL response -> Useful data for us
-export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): Promise<PrInfo | BotFail | BotNOOP>  {
+export async function deriveStateForPR(
+    info: ApolloQueryResult<PRQueryResult>,
+    getOwners?: (packages: readonly string[]) => OwnerInfo | Promise<OwnerInfo>,
+    getDownloads?: (packages: readonly string[]) => Record<string, number> | Promise<Record<string, number>>
+): Promise<PrInfo | BotFail | BotNOOP>  {
     const prInfo = info.data.repository?.pullRequest;
     // console.log(JSON.stringify(prInfo, undefined, 2));
     
@@ -187,8 +184,7 @@ export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): 
     const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
     const packages = getPackagesTouched(categorizedFiles);
     
-    const { anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages);
-    const owners = Array.from(allOwners.keys());
+    const { anyPackageIsNew, allOwners } = getOwners ? await getOwners(packages) : await getOwnersOfPackages(packages);
     const authorIsOwner = isOwner(prInfo.author.login);
     
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
@@ -206,7 +202,7 @@ export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): 
             // DefinitelyTyped maintainer
             return "maintainer";
         }
-        if (owners.indexOf(review?.author?.login || "") >= 0) {
+        if (allOwners.indexOf(review?.author?.login || "") >= 0) {
             // Known package owner
             return "owner";
         }
@@ -218,7 +214,7 @@ export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): 
         type: "info",
         pr_number: prInfo.number,
         author: prInfo.author.login,
-        owners,
+        owners: allOwners,
         dangerLevel: getDangerLevel(categorizedFiles),
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
@@ -228,7 +224,9 @@ export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): 
         reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         authorIsOwner, isFirstContribution,
-        popularityLevel: await getPopularityLevel(packages),
+        popularityLevel: getDownloads
+            ? getPopularityLevelFromDownloads(await getDownloads(packages))
+            : await getPopularityLevel(packages),
         anyPackageIsNew,
         packages,
         files: categorizedFiles,
@@ -241,7 +239,6 @@ export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): 
     };
     
     function botFail(message: string): BotFail {
-        debugger;
         return { type: "fail", message };
     }
     
@@ -251,7 +248,7 @@ export async function deriveStateForPR(info: ApolloQueryResult<PRQueryResult>): 
     }
 
     function isOwner(login: string) {
-        return owners.some(k => k.toLowerCase() === login.toLowerCase());
+        return allOwners.some(k => k.toLowerCase() === login.toLowerCase());
     }
 
 }
@@ -532,6 +529,20 @@ async function getPopularityLevel(packagesTouched: string[]): Promise<Popularity
     let popularityLevel: PopularityLevel = "Well-liked by everyone";
     for (const p of packagesTouched) {
         const downloads = await getMonthlyDownloadCount(p);
+        if (downloads > CriticalPopularityThreshold) {
+            // Can short-circuit
+            return "Critical";
+        } else if (downloads > NormalPopularityThreshold) {
+            popularityLevel = "Popular";
+        }
+    }
+    return popularityLevel;
+}
+
+function getPopularityLevelFromDownloads(downloadsPerPackage: Record<string, number>) {
+    let popularityLevel: PopularityLevel = "Well-liked by everyone";
+    for (const packageName in downloadsPerPackage) {
+        const downloads = downloadsPerPackage[packageName];
         if (downloads > CriticalPopularityThreshold) {
             // Can short-circuit
             return "Critical";

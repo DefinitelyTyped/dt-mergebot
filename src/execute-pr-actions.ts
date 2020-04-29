@@ -1,16 +1,10 @@
-import { GetPRInfo } from "./queries/pr-query";
-import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest } from "./schema/PR";
+import { PR as PRQueryResult } from "./schema/PR";
 import { Actions } from "./compute-pr-actions";
-import { client, mutate } from "./graphql-client";
-import { GetLabels, GetProjectColumns } from "./queries/label-query";
-import { createCache } from "./ttl-cache";
-import { GetProjectColumns as GetProjectColumnsResult } from "./schema/GetProjectColumns";
-import { GetLabels as GetLabelsResult } from "./schema/GetLabels";
+import { createMutation, mutate, Mutation } from "./graphql-client";
+import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/projects/5
 const ProjectBoardNumber = 5;
-
-const cache = createCache();
 
 const addComment = `mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }`;
 const addLabels = `mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }`;
@@ -22,21 +16,13 @@ const closePr = `mutation($input: ClosePullRequestInput!) { closePullRequest(inp
 const addProjectCard = `mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }`;
 const moveProjectCard = `mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }`;
 
-export async function executePrActions(actions: Actions) {
-    // Get the latest version of this PR's info
-    const info = await client.query<PRQueryResult>({
-        query: GetPRInfo,
-        variables: {
-            pr_number: actions.pr_number
-        },
-        fetchPolicy: "network-only",
-        fetchResults: true
-    });
-    const pr = info.data.repository?.pullRequest!;
+export async function executePrActions(actions: Actions, info: PRQueryResult, dry: true): Promise<string[]>;
+export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean): Promise<undefined>;
+export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean) {
+    const pr = info.repository?.pullRequest!;
 
-    const waiting: Promise<unknown>[] = [];
-
-    const labels = info.data.repository?.pullRequest?.labels?.nodes!;
+    const mutations: Mutation[] = [];
+    const labels = info.repository?.pullRequest?.labels?.nodes!;
     const labelsToAdd: string[] = [];
     const labelsToRemove: string[] = [];
     for (const key of Object.keys(actions.labels) as (keyof (typeof actions)["labels"])[]) {
@@ -54,7 +40,7 @@ export async function executePrActions(actions: Actions) {
         for (const label of labelsToAdd) {
             labelIds.push(await getLabelIdByName(label));
         }
-        waiting.push(mutate(addLabels, {
+        mutations.push(createMutation(addLabels, {
             input: {
                 labelIds,
                 labelableId: pr.id
@@ -67,7 +53,7 @@ export async function executePrActions(actions: Actions) {
             labelIds.push(await getLabelIdByName(label));
         }
 
-        waiting.push(mutate(removeLabels, {
+        mutations.push(createMutation(removeLabels, {
             input: {
                 labelIds,
                 labelableId: pr.id
@@ -77,7 +63,7 @@ export async function executePrActions(actions: Actions) {
 
     for (const wantedComment of actions.responseComments) {
         let exists = false;
-        for (const actualComment of info.data.repository?.pullRequest?.comments.nodes ?? []) {
+        for (const actualComment of info.repository?.pullRequest?.comments.nodes ?? []) {
             if (actualComment?.author?.login === "typescript-bot") {
                 const parsed = parseComment(actualComment.body);
                 if (parsed && parsed.tag === wantedComment.tag) {
@@ -89,7 +75,7 @@ export async function executePrActions(actions: Actions) {
                         const body = makeComment(wantedComment.status, wantedComment.tag)
                         if (body === actualComment.body) break
                         
-                        waiting.push(mutate(editComment, {
+                        mutations.push(createMutation(editComment, {
                             input: {
                                 id: actualComment.id,
                                 body
@@ -102,7 +88,7 @@ export async function executePrActions(actions: Actions) {
         }
 
         if (!exists) {
-            waiting.push(mutate(addComment, {
+            mutations.push(createMutation(addComment, {
                 input: {
                     subjectId: pr.id,
                     body: makeComment(wantedComment.status, wantedComment.tag)
@@ -112,7 +98,7 @@ export async function executePrActions(actions: Actions) {
     }
 
     if (actions.shouldMerge) {
-        waiting.push(mutate(mergePr, {
+        mutations.push(createMutation(mergePr, {
             input: {
                 commitHeadline: `🤖 Merge PR #${pr.number} ${pr.title} by @${pr.author?.login ?? "(ghost)"}`,
                 expectedHeadOid: pr.headRefOid,
@@ -123,7 +109,7 @@ export async function executePrActions(actions: Actions) {
     }
     
     if (actions.shouldClose) {
-        waiting.push(mutate(closePr, {
+        mutations.push(createMutation(closePr, {
             input: {
                 pullRequestId: pr.id
             }
@@ -136,7 +122,7 @@ export async function executePrActions(actions: Actions) {
         const targetColumnId = await getProjectBoardColumnIdByName(actions.targetColumn);
         if (extantCard) {
             if (extantCard.column?.name !== actions.targetColumn) {
-                waiting.push(mutate(moveProjectCard, {
+                mutations.push(createMutation(moveProjectCard, {
                     input: {
                         cardId: extantCard.id,
                         columnId: targetColumnId
@@ -144,7 +130,7 @@ export async function executePrActions(actions: Actions) {
                 }));
             }
         } else {
-            waiting.push(mutate(addProjectCard, {
+            mutations.push(createMutation(addProjectCard, {
                 input: {
                     contentId: pr.id,
                     projectColumnId: targetColumnId
@@ -153,10 +139,22 @@ export async function executePrActions(actions: Actions) {
         }
     }
     
+    if (dry) {
+        return mutations.map(m => m.body);
+    } else {
+        // Perform mutations one at a time
+        const mutationResults: { mutation: Mutation, result: string }[] = [];
+        for (const mutation of mutations) {
+            const result = await mutate(mutation);
+            mutationResults.push({ mutation, result });
+        }
 
-    const results = await Promise.all(waiting);
-    for (const res of results) {
-        console.log(res);
+        console.log(JSON.stringify(mutationResults.map(({ mutation, result }) => ({
+            mutation: mutation.body,
+            result
+        })), undefined, 2));
+
+        return;
     }
 }
 
@@ -180,38 +178,19 @@ function makeComment(body: string, tag: string) {
 }
 
 async function getProjectBoardColumnIdByName(name: string): Promise<string> {
-    const data = await cache.getAsync("project board colum names", Infinity, async () => {
-        const res = await query<GetProjectColumnsResult>(GetProjectColumns);
-        return res.repository?.project?.columns.nodes ?? [];
-    });
-    const res = data.filter(e => e && e.name === name)[0]?.id;
+    const columns = await getProjectBoardColumns();
+    const res = columns.filter(e => e && e.name === name)[0]?.id;
     if (res !== undefined) {
         return res;
     }
     throw new Error(`No project board column named "${name}" exists`);
 }
 
-async function getLabelIdByName(name: string): Promise<string> {
-    const data = await cache.getAsync("label ids", Infinity, async () => {
-        const res = await query<GetLabelsResult>(GetLabels);
-        return res.repository?.labels?.nodes?.filter(defined) ?? [];
-    });
-    const res = data.filter(e => e.name === name)[0]?.id;
+export async function getLabelIdByName(name: string): Promise<string> {
+    const labels = await getLabels();
+    const res = labels.find(l => l.name === name)?.id;
     if (res !== undefined) {
         return res;
     }
     throw new Error(`No label named "${name}" exists`);
-}
-
-function defined<T>(arg: T | null | undefined): arg is T {
-    return arg != null;
-}
-
-async function query<T>(gql: any): Promise<T> {
-    const res = await client.query<T>({
-        query: gql,
-        fetchPolicy: "network-only",
-        fetchResults: true
-    });
-    return res.data;
 }
