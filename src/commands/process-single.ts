@@ -3,36 +3,38 @@ import * as computeActions from "../compute-pr-actions";
 import * as exec from "../execute-pr-actions";
 import { render } from "prettyjson";
 
-async function main() {
-    const num = +process.argv[2];
-    const info = await queryPRInfo(num);
+export default async function main(prNumber: number, log: (...args: any[]) => void, dry?: boolean) {
+    const info = await queryPRInfo(prNumber);
     const state = await deriveStateForPR(info);
-    console.log(``);
-    console.log(`=== Raw PR Info ===`);
-    console.log(render(state));
+    log(``);
+    log(`=== Raw PR Info ===`);
+    log(render(state));
 
     if (state.type !== "info") {
-        return;
+        return [];
     }
 
     const actions = computeActions.process(state);
-    console.log(``);
-    console.log(`=== Actions ===`);
-    console.log(render(actions));
+    log(``);
+    log(`=== Actions ===`);
+    log(render(actions));
 
-    console.log(``);
-    console.log(`Executing...`);
-    await exec.executePrActions(actions, info.data);
+    log(``);
+    log(dry ? `Simulating execution...` : `Executing...`);
+    return exec.executePrActions(actions, info.data, dry);
 }
 
-main().then(() => {
-    console.log("Done!");
-    process.exit(0);
-}, err => {
-    if (err?.stack) {
-        console.error(err.stack);
-    } else {
-        console.error(err);
-    }
-    process.exit(1);
-});
+if (!module.parent) {
+    const num = +process.argv[2];
+    main(num, console.log.bind(console)).then(() => {
+        console.log("Done!");
+        process.exit(0);
+    }, err => {
+        if (err?.stack) {
+            console.error(err.stack);
+        } else {
+            console.error(err);
+        }
+        process.exit(1);
+    });
+}
