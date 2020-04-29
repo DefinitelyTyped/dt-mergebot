@@ -1,5 +1,14 @@
 [
   {
+    "query": "mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "contentId": "MDExOlB1bGxSZXF1ZXN0Mzg4NDkxOTI2",
+        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIz"
+      }
+    }
+  },
+  {
     "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
@@ -14,15 +23,6 @@
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0Mzg4NDkxOTI2",
         "body": "@jeffreymeng Everything looks good here. Great job! I am ready to merge this PR on your behalf.\nIf you'd like that to happen, please post a comment with the exact text\n\n> Ready to merge\n\nand I'll merge it the next time I look at this PR.\n<!--typescript_bot_merge-offer-->"
-      }
-    }
-  },
-  {
-    "query": "mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "contentId": "MDExOlB1bGxSZXF1ZXN0Mzg4NDkxOTI2",
-        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIz"
       }
     }
   }

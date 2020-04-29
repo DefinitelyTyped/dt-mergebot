@@ -1,5 +1,14 @@
 [
   {
+    "query": "mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "contentId": "MDExOlB1bGxSZXF1ZXN0Mzg5MDYwOTQ4",
+        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI0"
+      }
+    }
+  },
+  {
     "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
@@ -13,16 +22,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0Mzg5MDYwOTQ4",
-        "body": "@rikkertkoppes The Travis CI build failed! Please [review the logs for more information](https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/662962786?utm_source=github_status&utm_medium=notification).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n<!--typescript_bot_complaint-6d5d2a8-->"
-      }
-    }
-  },
-  {
-    "query": "mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "contentId": "MDExOlB1bGxSZXF1ZXN0Mzg5MDYwOTQ4",
-        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI0"
+        "body": "@rikkertkoppes The Travis CI build failed! Please [review the logs for more information](https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/662962786?utm_source=github_status&utm_medium=notification).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n<!--typescript_bot_travis-complaint-6d5d2a8-->"
       }
     }
   }
