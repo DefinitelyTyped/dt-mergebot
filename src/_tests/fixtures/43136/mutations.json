@@ -23,6 +23,15 @@
     }
   },
   {
+    "query": "mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "contentId": "MDExOlB1bGxSZXF1ZXN0Mzg4MzgyMzYy",
+        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
+      }
+    }
+  },
+  {
     "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
@@ -46,15 +55,6 @@
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0Mzg4MzgyMzYy",
         "body": "@RReverser Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-f5a3ad-37d784d-->"
-      }
-    }
-  },
-  {
-    "query": "mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "contentId": "MDExOlB1bGxSZXF1ZXN0Mzg4MzgyMzYy",
-        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
       }
     }
   }

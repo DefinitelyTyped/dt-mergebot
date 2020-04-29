@@ -90,16 +90,6 @@ const httpTrigger = async function (context, _req) {
     
     if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`)
 
-    // Allow running at the same time as the current dt bot
-    if (!shouldRunOnPR(prNumber)) {
-        context.log.info(`Skipped PR ${prNumber} because it did not fall in the PR range from process.env`)
-        context.res = {
-            status: 204,
-            body: `NOOPing due to ${prNumber} not being between DT_PR_START (${process.env.DT_PR_START}) & DT_PR_END (${process.env.DT_PR_END})`
-        }
-        return
-    }
-
     context.log.info(`Getting info for PR ${prNumber} - ${prTitle}`)
 
     // Generate the info for the PR from scratch
@@ -149,14 +139,6 @@ const httpTrigger = async function (context, _req) {
         status: 200,
         body: actions 
     };
-
-    function shouldRunOnPR(number) {
-        if (!process.env.DT_PR_START) return true
-
-        const lower = Number(process.env.DT_PR_START)
-        const higher = Number(process.env.DT_PR_END)
-        return lower < number && number < higher
-    }
 };
 
 module.exports = httpTrigger;

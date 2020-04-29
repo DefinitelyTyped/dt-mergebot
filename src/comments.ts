@@ -16,7 +16,7 @@ export const NearlyAbandoned = (user: string) => ({
 });
 
 export const TravisFailed = (slug: string, user: string, travisUrl: string) => ({
-    tag: `complaint-${slug}`,
+    tag: `travis-complaint-${slug}`,
     status: `@${user} The Travis CI build failed! Please [review the logs for more information](${travisUrl}).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!`
 });
 
@@ -26,7 +26,7 @@ export const MergeConflicted = (slug: string, user: string) => ({
 });
 
 export const ChangesRequest = (headOid: string, user: string) => ({
-    tag: `complaint-${headOid}`,
+    tag: `reviewer-complaint-${headOid}`,
     status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can "dismiss" the review using GitHub's review UI. Thank you!`
 });
 

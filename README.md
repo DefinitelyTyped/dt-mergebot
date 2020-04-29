@@ -9,13 +9,6 @@ It is both a series of command line scripts which you can use to test different 
 
 This repo is deployed on every push to master.
 
-# ENV Vars
-
-To allow for both the old style DT and the new bot to run along-side each other, there is a way to declare that this bot should work with a specific set of PRs:
-
-- `DT_PR_START` - the lower bound
-- `DT_PR_END` - the last PR and then it will be ignored
-
 # Setup
 
 ```sh
@@ -44,7 +37,9 @@ There is an Azure function in `PR-Trigger` which receives webhooks; its job is t
 
 # Running Locally
 
-To run and update this repo, you need to have a GitHub API access key in either: `DT_BOT_AUTH_TOKEN`, `BOT_AUTH_TOKEN` or `AUTH_TOKEN`.
+You _probably_ don't need to do this. Use test to validate any change inside the src dir against integration tests.
+
+However, you need to have a GitHub API access key in either: `DT_BOT_AUTH_TOKEN`, `BOT_AUTH_TOKEN` or `AUTH_TOKEN`.
 Ask Ryan for the bot's auth token (TypeScript team members: Look in the team OneNote).
 Don't run the bot under your own auth token as this will generate a bunch of spam from duplicate comments.
 
@@ -67,14 +62,19 @@ npm run build
 
 # Run the CLI to see what would happen to an existing PR
 npm run single-info -- [PR_NUM]
+# Or
+npm run single-info-debug -- [PR_NUM]
 ```
 
 # Tests
 
 ```sh
-# Run tests
+# Run tests, TypeScript is transpiled at runtime
 npm test
 ```
+
+Most of the tests run against a fixtured PR, these are high level integration tests which store the PR info and 
+then re-run the latter two phases of the app.
 
 To create fixtures of a current PR:
 
@@ -88,3 +88,12 @@ Then you can work against these fixtures offline with:
 ```sh
 npm test -- --watch
 ```
+
+If your changes require re-creating all fixtures:
+
+```sh
+npm run update-all-fixtures
+```
+
+Be careful with this, because PRs may now be in a different state e.g. it's now merged and it used to be a specific
+weird state.
