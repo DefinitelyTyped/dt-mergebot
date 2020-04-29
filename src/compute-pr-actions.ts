@@ -33,7 +33,9 @@ function createDefaultActions() {
         },
         responseComments: [] as Comments.Comment[],
         shouldClose: false,
-        shouldMerge: false
+        shouldMerge: false,
+        shouldUpdateLabels: true,
+        shouldUpdateProjectColumn: true
     };
 };
 
