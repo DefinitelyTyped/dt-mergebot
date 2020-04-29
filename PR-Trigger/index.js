@@ -103,44 +103,45 @@ const httpTrigger = async function (context, _req) {
     context.log.info(`Getting info for PR ${prNumber} - ${prTitle}`)
 
     // Generate the info for the PR from scratch
-    const info = await deriveStateForPR(await queryPRInfo(prNumber));
+    const info = await queryPRInfo(prNumber)
+    const state = await deriveStateForPR(info)
     
     // If it didn't work, bail early
-    if (info.type === "fail") {
-        const isIssueNotPR = info.message === "No PR with this number exists" && "issue" in webhook
+    if (state.type === "fail") {
+        const isIssueNotPR = state.message === "No PR with this number exists" && "issue" in webhook
         if (isIssueNotPR) {
             context.res = {
                 status: 204,
                 body: `NOOPing due to ${prNumber} not being a PR`
             };
         } else {
-            context.log.error(`Failed because of: ${info.message}`)
+            context.log.error(`Failed because of: ${state.message}`)
             
             context.res = {
                 status: 422,
-                body: `Failed because of: ${info.message}`
+                body: `Failed because of: ${state.message}`
             };
         }
 
         return;
     }
 
-    // Allow the info to declare that nothing should happen
-    if (info.type === "noop") {
-        context.log.info(`NOOPing because of: ${info.message}`)
+    // Allow the state to declare that nothing should happen
+    if (state.type === "noop") {
+        context.log.info(`NOOPing because of: ${state.message}`)
             
         context.res = {
             status: 204,
-            body: `NOOPing because of: ${info.message}`
+            body: `NOOPing because of: ${state.message}`
         };
         return
     }
 
     // Convert the info to a set of actions for the bot
-    const actions = compute.process(info);
+    const actions = compute.process(state);
     
     // Act on the actions
-    await executePrActions(actions);
+    await executePrActions(actions, info.data);
 
     // We are responding real late in the process, so it might show
     // as a timeout in GH a few times (e.g. after GH/DT/NPM lookups)
