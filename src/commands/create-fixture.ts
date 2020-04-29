@@ -22,23 +22,19 @@ export default async function main(prNumber: number, overwriteInfo: boolean) {
   
   const ownersJSONPath = join(fixturePath, "_owners.json")
   const downloadsJSONPath = join(fixturePath, "_downloads.json")
+  const derivedFixturePath = join(fixturePath, "derived.json")
 
   const derivedInfo = await deriveStateForPR(
     response,
     !overwriteInfo && existsSync(ownersJSONPath) ? getOwnersFromFile : fetchOwnersAndWriteToFile,
-    !overwriteInfo && existsSync(downloadsJSONPath) ? getDownloadsFromFile : fetchDownloadsAndWriteToFile
+    !overwriteInfo && existsSync(downloadsJSONPath) ? getDownloadsFromFile : fetchDownloadsAndWriteToFile,
+    !overwriteInfo && existsSync(derivedFixturePath) ? getTimeFromFile : undefined,
   );
 
-  const derivedFixturePath = join(fixturePath, "derived.json")
-  if (!overwriteInfo && existsSync(derivedFixturePath) && derivedInfo.type == "info") {
-    const prevDerivedInfo: PrInfo = JSON.parse(readFileSync(derivedFixturePath, "utf8"))
-    ;(derivedInfo as any).stalenessInDays = prevDerivedInfo.stalenessInDays
-    ;(derivedInfo as any).now = prevDerivedInfo.now;
-  }
   writeFileSync(derivedFixturePath, JSON.stringify(derivedInfo, null, "  ")) 
   
   if (derivedInfo.type === "fail" || derivedInfo.type === "noop") {
-    const ownersJSONPath = join(fixturePath, "owners.json")
+    const ownersJSONPath = join(fixturePath, "_owners.json")
     writeFileSync(ownersJSONPath, JSON.stringify({ allOwners: [], anyPackageIsNew: false }, null, "  ")) 
     return
   }
@@ -78,6 +74,10 @@ export default async function main(prNumber: number, overwriteInfo: boolean) {
       assert(packageName in downloadsPerPackage)
     }
     return downloadsPerPackage
+  }
+
+  function getTimeFromFile() {
+    return new Date(JSON.parse(readFileSync(derivedFixturePath, "utf8")).now);
   }
 }
 

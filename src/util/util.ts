@@ -47,6 +47,6 @@ export function forEachReverse<T, U>(arr: readonly T[] | null | undefined, actio
     return undefined;
 }
 
-export function daysSince(date: Date): number {
-    return Math.floor(moment().diff(moment(date), "days"));
+export function daysSince(date: Date, now: Date | string): number {
+    return Math.floor(moment(now).diff(moment(date), "days"));
 }

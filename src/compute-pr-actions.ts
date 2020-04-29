@@ -196,9 +196,9 @@ const enum Staleness {
 }
 
 function getStaleness(info: PrInfo): Staleness {
-    const daysSinceLastAuthorComment = daysSince(info.lastAuthorCommentDate);
-    const daysSinceLastPush = daysSince(info.lastCommitDate);
-    const daysSinceReopened = info.reopenedDate ? daysSince(info.reopenedDate) : undefined;
+    const daysSinceLastAuthorComment = daysSince(info.lastAuthorCommentDate, info.now);
+    const daysSinceLastPush = daysSince(info.lastCommitDate, info.now);
+    const daysSinceReopened = info.reopenedDate ? daysSince(info.reopenedDate, info.now) : undefined;
     const daysSinceLastActivity = Math.min(daysSinceLastPush, daysSinceLastAuthorComment, daysSinceReopened ?? Infinity);
 
     if (daysSinceLastActivity >= 7) return Staleness.Abandoned;

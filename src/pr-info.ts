@@ -175,7 +175,8 @@ export async function queryPRInfo(prNumber: number) {
 export async function deriveStateForPR(
     info: ApolloQueryResult<PRQueryResult>,
     getOwners?: (packages: readonly string[]) => OwnerInfo | Promise<OwnerInfo>,
-    getDownloads?: (packages: readonly string[]) => Record<string, number> | Promise<Record<string, number>>
+    getDownloads?: (packages: readonly string[]) => Record<string, number> | Promise<Record<string, number>>,
+    getNow = () => new Date(),
 ): Promise<PrInfo | BotFail | BotNOOP>  {
     const prInfo = info.data.repository?.pullRequest;
     // console.log(JSON.stringify(prInfo, undefined, 2));
@@ -218,10 +219,11 @@ export async function deriveStateForPR(
     
     
     const lastPushDate = new Date(headCommit.pushedDate);
+    const now = getNow().toISOString();
 
     return {
         type: "info",
-        now: new Date().toISOString(),
+        now,
         pr_number: prInfo.number,
         updatedAt: new Date(prInfo.updatedAt),
         author: prInfo.author.login,
@@ -230,7 +232,7 @@ export async function deriveStateForPR(
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
         mergeIsRequested: authorSaysReadyToMerge(prInfo),
-        stalenessInDays: daysSince(headCommit.pushedDate),
+        stalenessInDays: daysSince(headCommit.pushedDate, now),
         lastCommitDate: lastPushDate,
         reopenedDate: getReopenedDate(prInfo.timelineItems),
         lastAuthorCommentDate: getLastAuthorActivityDate(prInfo.author.login, prInfo.timelineItems, prInfo.reviews) || lastPushDate,
