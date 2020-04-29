@@ -15,7 +15,6 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { getOwnersOfPackages, OwnerInfo } from "./util/getOwnersOfPackages";
-import { DangerousChangeType } from "graphql";
 
 const MyName = "typescript-bot";
 
