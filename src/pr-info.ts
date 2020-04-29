@@ -15,6 +15,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { getOwnersOfPackages, OwnerInfo } from "./util/getOwnersOfPackages";
+import { DangerousChangeType } from "graphql";
 
 const MyName = "typescript-bot";
 
@@ -53,6 +54,9 @@ export interface BotNOOP {
 
 export interface PrInfo {
     readonly type: "info";
+
+    /** ISO8601 date string for the time the PR info was created at */
+    readonly now: string;
 
     readonly pr_number: number;
 
@@ -212,6 +216,7 @@ export async function deriveStateForPR(
     
     return {
         type: "info",
+        now: new Date().toISOString(),
         pr_number: prInfo.number,
         author: prInfo.author.login,
         owners: allOwners,

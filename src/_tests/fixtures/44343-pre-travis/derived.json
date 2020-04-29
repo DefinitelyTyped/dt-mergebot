@@ -1,0 +1,37 @@
+{
+  "type": "info",
+  "now": "2020-04-29T16:19:21.000Z",
+  "pr_number": 44343,
+  "author": "sandersn",
+  "owners": [],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "abd65c3",
+  "headCommitOid": "abd65c3bbbf3463b41127be203c37fe64f717a7e",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastCommitDate": "2020-04-29T16:19:21.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44343/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "amplify"
+  ],
+  "files": [
+    {
+      "filePath": "types/amplify/amplify-tests.ts",
+      "kind": "test",
+      "package": "amplify"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 0,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "unknown",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}

@@ -49,6 +49,8 @@ export function process(info: PrInfo): Actions {
         pr_number: info.pr_number
      };
 
+    const now = new Date(info.now)
+
     // Some step should override this
     context.targetColumn = "Other";
 
@@ -119,7 +121,8 @@ export function process(info: PrInfo): Actions {
             }
         } else {
             // Give 4 days for PRs with other owners
-            if (info.lastCommitDate.valueOf() + 4 * 24 * 60 * 60 * 1000 > Date.now()) {
+            const fourDays = 4 * 24 * 60 * 60 * 1000
+            if (info.lastCommitDate.valueOf() + fourDays > now.valueOf()) {
                 context.targetColumn = "Waiting for Code Reviews";
             } else {
                 context.targetColumn = "Needs Maintainer Review";
@@ -131,6 +134,15 @@ export function process(info: PrInfo): Actions {
             context.responseComments.push(Comments.PingStaleReviewer(staleReviewer.reviewedAbbrOid, staleReviewer.reviewer))
         }
     }
+
+    // This bot is faster than Travis in coming back to give a response, and so the bot starts flipping between
+    // a 'where is travis'-ish state and a 'got travis deets' state. To work around this, we wait a 
+    // minute since the last timeline push action before label/project states can be updated
+
+    const oneMinute = 60 * 1000
+    const tooEarlyForLabelsOrProjects = info.lastCommitDate.valueOf() + oneMinute < now.valueOf()
+    context.shouldUpdateLabels = tooEarlyForLabelsOrProjects
+    context.shouldUpdateProjectColumn = tooEarlyForLabelsOrProjects
 
     return context;
 }
@@ -264,9 +276,14 @@ function createWelcomeComment(info: PrInfo) {
         introCommentLines.push(`All of the items on the list are green. **To merge, you need to post a comment including the string "Ready to merge"** to bring in your changes.`)
     }
 
+    // Remove the 'now' attribute because otherwise the comment would need editing every time
+    // and that's spammy.
+    const shallowPresentationInfoCopy = { ...info }
+    shallowPresentationInfoCopy.now = '-'
+
     introCommentLines.push(``);
     introCommentLines.push(`----------------------`);
-    introCommentLines.push(`<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n${'```json\n' + JSON.stringify(info, undefined, 2) + '\n```'}\n\n</details>`);
+    introCommentLines.push(`<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n${'```json\n' + JSON.stringify(shallowPresentationInfoCopy, undefined, 2) + '\n```'}\n\n</details>`);
 
     return introCommentLines.join("\n");
 

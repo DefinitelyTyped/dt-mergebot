@@ -57,6 +57,8 @@ describe('with fixtures', () => {
       const existingDerivedJSON = JSON.parse(readFileSync(derivedJSONPath, "utf8"))
       // @ts-ignore
       derived.stalenessInDays = existingDerivedJSON.stalenessInDays
+      // @ts-ignore
+      derived.now = existingDerivedJSON.now
 
       const action = process(derived)
 
