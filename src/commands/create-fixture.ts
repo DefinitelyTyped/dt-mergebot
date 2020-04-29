@@ -7,8 +7,11 @@ import { getOwnersOfPackages } from "../util/getOwnersOfPackages";
 import { executePrActions } from "../execute-pr-actions";
 import { getMonthlyDownloadCount } from "../util/npm";
 
-export default async function main(prNumber: number, overwriteInfo: boolean) {
-  const fixturePath = join("src", "_tests", "fixtures", prNumber + "")
+export default async function main(directory: string, overwriteInfo: boolean) {
+  const fixturePath = join("src", "_tests", "fixtures", directory)
+  const prNumber = parseInt(directory, 10);
+  if (isNaN(prNumber)) throw new Error(`Expected ${directory} to be parseable as a PR number`);
+
   if (!existsSync(fixturePath)) mkdirSync(fixturePath)
 
   const jsonFixturePath = join(fixturePath, "_response.json")
@@ -83,7 +86,7 @@ export default async function main(prNumber: number, overwriteInfo: boolean) {
 
 
 if (!module.parent) {
-  const num = +process.argv[2]
+  const num = process.argv[2]
   const overwriteInfo = process.argv.slice(2).includes("--overwrite-info")
   main(num, overwriteInfo).then(() => {
     process.exit(0)
