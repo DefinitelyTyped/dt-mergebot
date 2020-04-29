@@ -1,6 +1,7 @@
 import * as Comments from "./comments";
 import { PrInfo, ApprovalFlags } from "./pr-info";
 import { TravisResult } from "./util/travis";
+import { daysSince } from "./util/util";
 
 export type Actions = ReturnType<typeof createDefaultActions>;
 
@@ -88,12 +89,14 @@ export function process(info: PrInfo): Actions {
         }
 
         // Could be abandoned
-        if (daysStaleBetween(5, 7)(info)) {
-            context.responseComments.push(Comments.NearlyAbandoned(info.author));
-        }
-        if (daysStaleAtLeast(7)(info)) {
-            context.responseComments.push(Comments.SorryAbandoned(info.author));
-            context.shouldClose = true;
+        switch (getStaleness(info)) {
+            case Staleness.NearlyAbandoned:
+                context.responseComments.push(Comments.NearlyAbandoned(info.author));
+                break;
+            case Staleness.Abandoned:
+                context.responseComments.push(Comments.SorryAbandoned(info.author));
+                context.shouldClose = true;
+                break;
         }
     }
 
@@ -186,9 +189,21 @@ function hasFinalApproval(info: PrInfo) {
     }
 }
 
+const enum Staleness {
+    Fresh,
+    NearlyAbandoned,
+    Abandoned,
+}
 
-function needsMaintainerApproval(info: PrInfo) {
-    return (info.dangerLevel !== "ScopedAndTested") || (info.popularityLevel !== "Well-liked by everyone");
+function getStaleness(info: PrInfo): Staleness {
+    const daysSinceLastAuthorComment = daysSince(info.lastAuthorCommentDate);
+    const daysSinceLastPush = daysSince(info.lastCommitDate);
+    const daysSinceReopened = info.reopenedDate ? daysSince(info.reopenedDate) : undefined;
+    const daysSinceLastActivity = Math.min(daysSinceLastPush, daysSinceLastAuthorComment, daysSinceReopened ?? Infinity);
+
+    if (daysSinceLastActivity >= 7) return Staleness.Abandoned;
+    if (daysSinceLastActivity >= 5) return Staleness.NearlyAbandoned;
+    return Staleness.Fresh;
 }
 
 function daysStaleAtLeast(days: number) {
