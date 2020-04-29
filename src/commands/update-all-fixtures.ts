@@ -8,7 +8,7 @@ async function main() {
   const fixtures = await fs.promises.readdir(fixturesDir, { withFileTypes: true });
   for (const dir of fixtures) {
     if (!dir.isDirectory) continue;
-    const prNumber = +dir.name;
+    const prNumber = parseInt(dir.name, 10);
     if (isNaN(prNumber)) throw new Error(`Expected ${dir.name} to be parseable as a PR number`);
 
     console.log(`Updating #${prNumber}, ${overwriteInfo ? 'overwriting' : 'preserving'} the existing PR info...`);
