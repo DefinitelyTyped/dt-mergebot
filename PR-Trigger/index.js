@@ -103,7 +103,7 @@ const httpTrigger = async function (context, _req) {
     context.log.info(`Getting info for PR ${prNumber} - ${prTitle}`)
 
     // Generate the info for the PR from scratch
-    const info = deriveStateForPR(await queryPRInfo(prNumber));
+    const info = await deriveStateForPR(await queryPRInfo(prNumber));
     
     // If it didn't work, bail early
     if (info.type === "fail") {
