@@ -25,5 +25,13 @@
         "body": "@rikkertkoppes The Travis CI build failed! Please [review the logs for more information](https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/662962786?utm_source=github_status&utm_medium=notification).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n<!--typescript_bot_travis-complaint-6d5d2a8-->"
       }
     }
+  },
+  {
+    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDU5OTQwMzQzNw=="
+      }
+    }
   }
 ]
