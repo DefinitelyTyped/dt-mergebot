@@ -1,6 +1,6 @@
 // @ts-check
 
-const {getPRInfo} = require("../bin/pr-info")
+const { queryPRInfo, deriveStateForPR } = require("../bin/pr-info")
 const compute = require("../bin/compute-pr-actions")
 const {executePrActions} = require("../bin/execute-pr-actions")
 const verify = require("@octokit/webhooks/verify");
@@ -103,7 +103,7 @@ const httpTrigger = async function (context, _req) {
     context.log.info(`Getting info for PR ${prNumber} - ${prTitle}`)
 
     // Generate the info for the PR from scratch
-    const info = await getPRInfo(prNumber);
+    const info = deriveStateForPR(await queryPRInfo(prNumber));
     
     // If it didn't work, bail early
     if (info.type === "fail") {
