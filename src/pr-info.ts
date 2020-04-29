@@ -443,7 +443,7 @@ function getDangerLevel(categorizedFiles: readonly FileLocation[]) {
                         meta = true;
                         break;
                     default:
-                        assertNever();
+                        assertNever(f);
                 }
             }
 
@@ -460,8 +460,8 @@ function getDangerLevel(categorizedFiles: readonly FileLocation[]) {
     }
 }
 
-function assertNever() {
-    throw new Error("impossible");
+function assertNever(n: never) {
+    throw new Error(`Impossible: ${n}`);
 }
 
 function getTravisResult(headCommit: PR_repository_pullRequest_commits_nodes_commit) {
