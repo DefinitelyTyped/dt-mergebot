@@ -2,7 +2,7 @@
 // file so that it's easy to isolate the async networking 
 // in tests
 
-import * as HeaderPaser from "definitelytyped-header-parser";
+import * as HeaderParser from "definitelytyped-header-parser";
 import { client } from "../graphql-client";
 import { GetFileContent } from "../queries/file-query";
 
@@ -38,7 +38,7 @@ async function getOwnersForPackage(packageName: string): Promise<string[] | unde
   if (indexDtsContent === undefined) return undefined;
 
   try {
-      const parsed = HeaderPaser.parseHeaderOrFail(indexDtsContent);
+      const parsed = HeaderParser.parseHeaderOrFail(indexDtsContent);
       return parsed.contributors.map(c => c.githubUsername).filter(notUndefined);
   } catch(e) {
       console.error(e);

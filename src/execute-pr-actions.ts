@@ -7,9 +7,10 @@ import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
 const ProjectBoardNumber = 5;
 
 const addComment = `mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }`;
+const deleteComment = `mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }`;
+const editComment = `mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }`;
 const addLabels = `mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }`;
 const removeLabels = `mutation($input: RemoveLabelsFromLabelableInput!) { removeLabelsFromLabelable(input: $input) { clientMutationId } }`;
-const editComment = `mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }`;
 const mergePr = `mutation($input: MergePullRequestInput!) { mergePullRequest(input: $input) { clientMutationId } }`;
 const closePr = `mutation($input: ClosePullRequestInput!) { closePullRequest(input: $input) { clientMutationId } }`;
 
@@ -31,6 +32,9 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
 
   const commentMutations = await getMutationsForComments(actions, pr);
   mutations = mutations.concat(commentMutations);
+
+  const commentRemovalMutations = await getMutationsForCommentRemovals(actions, pr);
+  mutations = mutations.concat(commentRemovalMutations);
 
   const prStateMutations = await getMutationsForChangingPRState(actions, pr);
   mutations = mutations.concat(prStateMutations);
@@ -147,6 +151,26 @@ async function getMutationsForComments(actions: Actions, pr: PR_repository_pullR
           input: { subjectId: pr.id, body: makeComment(wantedComment.status, wantedComment.tag) },
         })
       );
+    }
+  }
+
+  return mutations;
+}
+
+
+async function getMutationsForCommentRemovals(actions: Actions, pr: PR_repository_pullRequest) {
+  const mutations: Mutation[] = [];
+
+  const travisMessageToKeep = actions.responseComments.find(c => c.tag.startsWith("travis-complaint"))
+  const botComments = (pr.comments.nodes ?? []).filter(comment => comment?.author?.login === "typescript-bot")
+  for (const comment of botComments) {
+    if (!comment) continue
+
+    const parsed = parseComment(comment.body);    
+    if (!parsed) continue
+
+    if (parsed.tag.includes("travis") && parsed.tag !== travisMessageToKeep?.tag) {
+      mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) )
     }
   }
 
