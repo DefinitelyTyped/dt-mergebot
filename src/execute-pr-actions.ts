@@ -16,8 +16,6 @@ const closePr = `mutation($input: ClosePullRequestInput!) { closePullRequest(inp
 const addProjectCard = `mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }`;
 const moveProjectCard = `mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }`;
 
-export async function executePrActions(actions: Actions, info: PRQueryResult, dry: true): Promise<string[]>;
-export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean): Promise<undefined>;
 export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean) {
   const pr = info.repository?.pullRequest!;
 
@@ -35,9 +33,7 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
   const prStateMutations = await getMutationsForChangingPRState(actions, pr);
   mutations = mutations.concat(prStateMutations);
 
-  if (dry) {
-    return mutations.map((m) => m.body);
-  } else {
+  if (!dry) {
     // Perform mutations one at a time
     const mutationResults: { mutation: Mutation; result: string }[] = [];
     for (const mutation of mutations) {
@@ -51,8 +47,9 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
     }))
 
     console.log(JSON.stringify(results, undefined, 2));
-    return;
   }
+
+  return mutations.map((m) => m.body);
 }
 
 const prefix = "\n<!--typescript_bot_";

@@ -31,6 +31,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "single": "npm run build && node bin/commands/process-single.js",
+    "many": "npm run build && node bin/commands/process-many.js",
     "single-info": "npm run build && node bin/commands/show-info.js",
     "single-info-debug": "npm run build && node --inspect-brk bin/commands/show-info.js",
     "update-test-data": "npm run build && node bin/commands/update-test-data.js",

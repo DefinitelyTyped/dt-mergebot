@@ -450,6 +450,10 @@ export interface PR_repository_pullRequest {
    */
   labels: PR_repository_pullRequest_labels | null;
   /**
+   * Identifies if the pull request is a draft.
+   */
+  isDraft: boolean;
+  /**
    * Whether or not the pull request can be merged based on the existence of merge conflicts.
    */
   mergeable: MergeableState;
