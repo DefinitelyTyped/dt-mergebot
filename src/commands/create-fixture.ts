@@ -33,6 +33,7 @@ export default async function main(prNumber: number, overwriteInfo: boolean) {
   if (!overwriteInfo && existsSync(derivedFixturePath) && derivedInfo.type == "info") {
     const prevDerivedInfo: PrInfo = JSON.parse(readFileSync(derivedFixturePath, "utf8"))
     ;(derivedInfo as any).stalenessInDays = prevDerivedInfo.stalenessInDays
+    ;(derivedInfo as any).now = prevDerivedInfo.now;
   }
   writeFileSync(derivedFixturePath, JSON.stringify(derivedInfo, null, "  ")) 
   
