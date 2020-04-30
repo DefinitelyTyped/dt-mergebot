@@ -2,6 +2,7 @@ import { deriveStateForPR, queryPRInfo } from "../pr-info";
 import * as computeActions from "../compute-pr-actions";
 import * as exec from "../execute-pr-actions";
 import { render } from "prettyjson";
+import { formatMutationRequest } from "../util/formatMutationRequest";
 
 export default async function main(prNumber: number, log: (...args: any[]) => void, dry?: boolean) {
     const info = await queryPRInfo(prNumber);
@@ -21,7 +22,12 @@ export default async function main(prNumber: number, log: (...args: any[]) => vo
 
     log(``);
     log(dry ? `Simulating execution...` : `Executing...`);
-    return exec.executePrActions(actions, info.data, dry);
+    
+    const mutations = await exec.executePrActions(actions, info.data, dry);
+    log(``);
+    log(`=== Mutations ===`);
+    log(render(mutations.map(formatMutationRequest)));
+    return mutations;
 }
 
 if (!module.parent) {
