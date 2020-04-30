@@ -1,22 +1,16 @@
 import { GetPRInfo } from "./queries/pr-query";
 
-import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest } from "./schema/PR";
-
-import { GetFileContent, GetFileExists } from "./queries/file-query";
-import { GetFileExists  as GetFileExistsResult } from "./schema/GetFileExists";
-import { GetFileContent as GetFileContentResult } from "./schema/GetFileContent";
+import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest, PR_repository_pullRequest_timelineItems, PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent, PR_repository_pullRequest_reviews, PR_repository_pullRequest_timelineItems_nodes_IssueComment } from "./queries/schema/PR";
 
 import moment = require("moment");
-
-import { Opinion, Review } from "./reviews";
 import { TravisResult } from "./util/travis";
-import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./schema/graphql-global-types";
+import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState, PullRequestState } from "./queries/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { getOwnersOfPackages, OwnerInfo } from "./util/getOwnersOfPackages";
+import { findLast, forEachReverse, daysSince } from "./util/util";
 
-const MyName = "typescript-bot";
 
 export enum ApprovalFlags {
     None = 0,
@@ -46,8 +40,9 @@ export interface BotFail {
     readonly message: string;
 }
 
-export interface BotNOOP {
-    readonly type: "noop";
+export interface BotEnsureRemovedFromProject {
+    readonly type: "remove";
+    readonly pr_number: number;
     readonly message: string;
 }
 
@@ -58,6 +53,7 @@ export interface PrInfo {
     readonly now: string;
 
     readonly pr_number: number;
+    readonly updatedAt: Date;
 
     /**
      * The head commit of this PR (full format)
@@ -108,6 +104,16 @@ export interface PrInfo {
      * The date the latest commit was pushed to GitHub
      */
     readonly lastCommitDate: Date;
+
+    /**
+     * The date the PR author last had a meaningful interaction with the PR
+     */
+    readonly lastAuthorCommentDate: Date;
+
+    /**
+     * The date the PR was last reopened by a maintainer
+     */
+    readonly reopenedDate?: Date;
 
     /**
      * A list of people who have reviewed this PR in the past, but for
@@ -170,8 +176,9 @@ export async function queryPRInfo(prNumber: number) {
 export async function deriveStateForPR(
     info: ApolloQueryResult<PRQueryResult>,
     getOwners?: (packages: readonly string[]) => OwnerInfo | Promise<OwnerInfo>,
-    getDownloads?: (packages: readonly string[]) => Record<string, number> | Promise<Record<string, number>>
-): Promise<PrInfo | BotFail | BotNOOP>  {
+    getDownloads?: (packages: readonly string[]) => Record<string, number> | Promise<Record<string, number>>,
+    getNow = () => new Date(),
+): Promise<PrInfo | BotFail | BotEnsureRemovedFromProject>  {
     const prInfo = info.data.repository?.pullRequest;
     // console.log(JSON.stringify(prInfo, undefined, 2));
     
@@ -181,8 +188,8 @@ export async function deriveStateForPR(
     const headCommit = getHeadCommit(prInfo);
     if (headCommit == null) return botFail("No head commit");
 
-    if (prInfo.state !== "OPEN") return botNOOP("PR is not active");
-    if (prInfo.isDraft) return botNOOP("PR is a draft");
+    if (prInfo.state !== "OPEN") return botEnsureRemovedFromProject(prInfo.number, "PR is not active");
+    if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft");
     
     const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
     const packages = getPackagesTouched(categorizedFiles);
@@ -192,7 +199,6 @@ export async function deriveStateForPR(
     
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
     
-    const reviews = partition(prInfo.reviews?.nodes ?? [], e => e?.commit?.oid === headCommit.oid ? "fresh" : "stale");
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
     // const rejections = noNulls(freshReviewsByState.CHANGES_REQUESTED);
     const approvals = noNulls(freshReviewsByState.APPROVED);
@@ -213,18 +219,24 @@ export async function deriveStateForPR(
     });
     
     
+    const lastPushDate = new Date(headCommit.pushedDate);
+    const now = getNow().toISOString();
+
     return {
         type: "info",
-        now: new Date().toISOString(),
+        now,
         pr_number: prInfo.number,
+        updatedAt: new Date(prInfo.updatedAt),
         author: prInfo.author.login,
         owners: allOwners,
         dangerLevel: getDangerLevel(categorizedFiles),
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
         mergeIsRequested: authorSaysReadyToMerge(prInfo),
-        stalenessInDays: Math.floor(moment().diff(moment(headCommit.pushedDate), "days")),
-        lastCommitDate: new Date(headCommit.pushedDate),
+        stalenessInDays: daysSince(headCommit.pushedDate, now),
+        lastCommitDate: lastPushDate,
+        reopenedDate: getReopenedDate(prInfo.timelineItems),
+        lastAuthorCommentDate: getLastAuthorActivityDate(prInfo.author.login, prInfo.timelineItems, prInfo.reviews) || lastPushDate,
         reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         authorIsOwner, isFirstContribution,
@@ -247,14 +259,46 @@ export async function deriveStateForPR(
     }
     
 
-    function botNOOP(message: string): BotNOOP {
-        return { type: "noop", message };
+    function botEnsureRemovedFromProject(prNumber: number, message: string): BotEnsureRemovedFromProject {
+        return { type: "remove", pr_number: prNumber, message };
     }
 
     function isOwner(login: string) {
         return allOwners.some(k => k.toLowerCase() === login.toLowerCase());
     }
 
+}
+
+type ReopenedEvent = PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent;
+
+function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems) {
+    const createdAt = findLast(timelineItems.nodes, (item): item is ReopenedEvent => item?.__typename === "ReopenedEvent")?.createdAt;
+    if (createdAt) {
+        return new Date(createdAt);
+    }
+    return undefined;
+}
+
+type IssueComment = PR_repository_pullRequest_timelineItems_nodes_IssueComment;
+function getLastAuthorActivityDate(authorLogin: string, timelineItems: PR_repository_pullRequest_timelineItems, reviews: PR_repository_pullRequest_reviews | null) {
+    const lastIssueComment = findLast(timelineItems.nodes, (item): item is IssueComment => {
+        return item?.__typename === "IssueComment" && item.author?.login === authorLogin;
+    });
+    const lastReviewComment = forEachReverse(reviews?.nodes, review => {
+        return findLast(review?.comments?.nodes, comment => {
+            return comment?.author?.login === authorLogin;
+        });
+    });
+    if (lastIssueComment && lastReviewComment) {
+        return new Date([
+            lastIssueComment.createdAt,
+            lastReviewComment.createdAt
+        ].sort()[1]);
+    }
+    if (lastIssueComment || lastReviewComment) {
+        return new Date((lastIssueComment || lastReviewComment)?.createdAt);
+    }
+    return undefined;
 }
 
 type FileLocation = ({
@@ -269,38 +313,6 @@ type FileLocation = ({
 } | {
     kind: "infrastructure"
 }) & { filePath: string };
-
-
-async function fileExists(filename: string): Promise<boolean> {
-    const info = await client.query<GetFileExistsResult>({
-        query: GetFileExists,
-        variables: {
-            name: "DefinitelyTyped",
-            owner: "DefinitelyTyped",
-            expr: `master:${filename}`
-        }
-    });
-    if (info.data.repository?.object?.__typename === "Blob") {
-        return !!(info.data.repository?.object?.id);
-    }
-    return false;
-}
-
-async function fetchFile(expr: string): Promise<string | undefined> {
-    const info = await client.query<GetFileContentResult>({
-        query: GetFileContent,
-        variables: {
-            name: "DefinitelyTyped",
-            owner: "DefinitelyTyped",
-            expr: `${expr}`
-        }
-    });
-
-    if (info.data.repository?.object?.__typename === "Blob") {
-        return info.data.repository.object.text ?? undefined;
-    }
-    return undefined;
-}
 
 function categorizeFile(filePath: string): FileLocation {
     const typeDefinitionFile = /^types\/([^\/]+)\/(.*)\.d\.ts$/i;
@@ -347,26 +359,7 @@ function noNulls<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined)
     return arr.filter(arr => arr != null) as T[];
 }
 
-function hasApprovalAndNoRejection(reviews: ReadonlyArray<Review>, filter: (r: Review) => boolean): boolean {
-    let approve = false;
-    for (const review of reviews) {
-        if (!filter(review)) {
-            continue;
-        }
-        switch (review.verdict) {
-            case Opinion.Approve:
-                approve = true;
-                break;
-            case Opinion.Reject:
-                return false;
-        }
-    }
-    return approve;
-}
 
-function addDays(date: Date, days: number): Date {
-    return moment(date).add(days, "days").toDate();
-}
 
 function authorSaysReadyToMerge(info: PR_repository_pullRequest) {
     return info.comments.nodes?.some(comment => {
@@ -435,7 +428,6 @@ function getDangerLevel(categorizedFiles: readonly FileLocation[]) {
             // ????
             return "Infrastructure";
         } else if (packagesTouched.length === 1) {
-            const packageName = packagesTouched[0];
             let tested = false;
             let meta = false;
             for (const f of categorizedFiles) {
@@ -470,7 +462,7 @@ function getDangerLevel(categorizedFiles: readonly FileLocation[]) {
 }
 
 function assertNever(n: never) {
-    throw new Error("impossible");
+    throw new Error(`Impossible: ${n}`);
 }
 
 function getTravisResult(headCommit: PR_repository_pullRequest_commits_nodes_commit) {
@@ -557,5 +549,4 @@ function getPopularityLevelFromDownloads(downloadsPerPackage: Record<string, num
     return popularityLevel;
 }
 
-function notUndefined<T>(arg: T | undefined): arg is T { return arg !== undefined; }
 

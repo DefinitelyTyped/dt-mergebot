@@ -1,7 +1,8 @@
 {
   "type": "info",
-  "now": "2020-04-29T16:18:32Z",
+  "now": "2020-03-19T18:39:37.000Z",
   "pr_number": 43175,
+  "updatedAt": null,
   "author": "ankhler",
   "owners": [
     "matthewkimber",
@@ -21,6 +22,7 @@
   "mergeIsRequested": false,
   "stalenessInDays": 2,
   "lastCommitDate": "2020-03-17T13:51:37.000Z",
+  "lastAuthorCommentDate": "2020-03-17T13:51:37.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43175/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,

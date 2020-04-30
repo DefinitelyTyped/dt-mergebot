@@ -50,8 +50,22 @@ export const YSYL = () => ({
     status: "After 5 days, no one has reviewed the PR 😞. A maintainer will be reviewing the PR in the next few days and will either merge it or request revisions. Thank you for your patience!"
 });
 
+export const PingReviewers = (names: readonly string[], reviewLink: string) => ({
+    tag: "pinging-reviewers",
+    status: `🔔 ${names.map(n => `@${n}`).join(" ")} - please [review this PR](${reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`
+})
+
+export const PingReviewersTooMany = (names: readonly string[]) => ({
+    tag: "pinging-reviewers-too-many",
+    status: `⚠️ There are too many reviewers for this PR change (${names.length}). Merging can only be handled by a DT maintainer.
+
+<details>
+<summary>People who would have been pinged</summary>
+${names.map(n => `${n}`).join(" ")}
+</details>`
+})
+
 export const Welcome = (login: string, isFirstPR: boolean) => `@${login} Thank you for submitting this PR!${isFirstPR ? " I see this is your first PR to DefinitelyTyped - don't worry, I'll be helping you throughout the process. Stay tuned for updates." : ""}`;
-export const PingReviewers = (names: readonly string[], reviewLink: string) => `🔔 ${names.map(n => `@${n}`).join(" ")} - please [review this PR](${reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`;
 export const NewDefinition = `Because this is a new definition, a DefinitelyTyped maintainer will be reviewing this PR in the next few days once the Travis CI build passes.`;
 export const NoOtherReviewers = `Because this PR doesn't have any code reviewers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the Travis CI build passes.`;
 
@@ -61,7 +75,6 @@ export const PingStaleReviewer = (reviewedAbbrOid: string, reviewer: string) => 
 });
 
 export const MergeChecklist = (travisGreen: boolean, noMergeConflict: boolean, approved: boolean) => {
-
     return ({
         tag: `merge-checklist`,
         status: ``

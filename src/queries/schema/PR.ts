@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequestReviewState, CheckConclusionState, CheckStatusState, StatusState } from "./../../schema/graphql-global-types";
+import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequestReviewState, CheckConclusionState, CheckStatusState, StatusState } from "../graphql-global-types";
 
 // ====================================================
 // GraphQL query operation: PR
@@ -42,26 +42,10 @@ export interface PR_repository_pullRequest_labels {
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent {
-  __typename: "AddedToProjectEvent" | "AssignedEvent" | "BaseRefChangedEvent" | "BaseRefForcePushedEvent" | "ClosedEvent" | "CommentDeletedEvent" | "ConnectedEvent" | "ConvertToDraftEvent" | "ConvertedNoteToIssueEvent" | "CrossReferencedEvent" | "DemilestonedEvent" | "DeployedEvent" | "DeploymentEnvironmentChangedEvent" | "DisconnectedEvent" | "HeadRefDeletedEvent" | "HeadRefForcePushedEvent" | "HeadRefRestoredEvent" | "IssueComment" | "LabeledEvent" | "LockedEvent" | "MarkedAsDuplicateEvent" | "MentionedEvent" | "MergedEvent" | "MilestonedEvent" | "MovedColumnsInProjectEvent" | "PinnedEvent" | "PullRequestCommitCommentThread" | "PullRequestReviewThread" | "PullRequestRevisionMarker" | "ReadyForReviewEvent" | "ReferencedEvent" | "RemovedFromProjectEvent" | "RenamedTitleEvent" | "ReopenedEvent" | "ReviewDismissedEvent" | "ReviewRequestRemovedEvent" | "ReviewRequestedEvent" | "SubscribedEvent" | "TransferredEvent" | "UnassignedEvent" | "UnlabeledEvent" | "UnlockedEvent" | "UnmarkedAsDuplicateEvent" | "UnpinnedEvent" | "UnsubscribedEvent" | "UserBlockedEvent";
+  __typename: "AddedToProjectEvent" | "AssignedEvent" | "BaseRefChangedEvent" | "BaseRefForcePushedEvent" | "ClosedEvent" | "CommentDeletedEvent" | "ConnectedEvent" | "ConvertToDraftEvent" | "ConvertedNoteToIssueEvent" | "CrossReferencedEvent" | "DemilestonedEvent" | "DeployedEvent" | "DeploymentEnvironmentChangedEvent" | "DisconnectedEvent" | "HeadRefDeletedEvent" | "HeadRefForcePushedEvent" | "HeadRefRestoredEvent" | "LabeledEvent" | "LockedEvent" | "MarkedAsDuplicateEvent" | "MentionedEvent" | "MergedEvent" | "MilestonedEvent" | "MovedColumnsInProjectEvent" | "PinnedEvent" | "PullRequestCommit" | "PullRequestCommitCommentThread" | "PullRequestReview" | "PullRequestReviewThread" | "PullRequestRevisionMarker" | "ReadyForReviewEvent" | "ReferencedEvent" | "RemovedFromProjectEvent" | "RenamedTitleEvent" | "ReviewDismissedEvent" | "ReviewRequestRemovedEvent" | "ReviewRequestedEvent" | "SubscribedEvent" | "TransferredEvent" | "UnassignedEvent" | "UnlabeledEvent" | "UnlockedEvent" | "UnmarkedAsDuplicateEvent" | "UnpinnedEvent" | "UnsubscribedEvent" | "UserBlockedEvent";
 }
 
-export interface PR_repository_pullRequest_timelineItems_nodes_PullRequestCommit_commit {
-  __typename: "Commit";
-  /**
-   * The Git object ID
-   */
-  oid: any;
-}
-
-export interface PR_repository_pullRequest_timelineItems_nodes_PullRequestCommit {
-  __typename: "PullRequestCommit";
-  /**
-   * The Git commit object
-   */
-  commit: PR_repository_pullRequest_timelineItems_nodes_PullRequestCommit_commit;
-}
-
-export interface PR_repository_pullRequest_timelineItems_nodes_PullRequestReview_author {
+export interface PR_repository_pullRequest_timelineItems_nodes_IssueComment_author {
   __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
   /**
    * The username of the actor.
@@ -69,19 +53,27 @@ export interface PR_repository_pullRequest_timelineItems_nodes_PullRequestReview
   login: string;
 }
 
-export interface PR_repository_pullRequest_timelineItems_nodes_PullRequestReview {
-  __typename: "PullRequestReview";
+export interface PR_repository_pullRequest_timelineItems_nodes_IssueComment {
+  __typename: "IssueComment";
   /**
    * The actor who authored the comment.
    */
-  author: PR_repository_pullRequest_timelineItems_nodes_PullRequestReview_author | null;
+  author: PR_repository_pullRequest_timelineItems_nodes_IssueComment_author | null;
   /**
-   * Identifies the current state of the pull request review.
+   * Identifies the date and time when the object was created.
    */
-  state: PullRequestReviewState;
+  createdAt: any;
 }
 
-export type PR_repository_pullRequest_timelineItems_nodes = PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent | PR_repository_pullRequest_timelineItems_nodes_PullRequestCommit | PR_repository_pullRequest_timelineItems_nodes_PullRequestReview;
+export interface PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent {
+  __typename: "ReopenedEvent";
+  /**
+   * Identifies the date and time when the object was created.
+   */
+  createdAt: any;
+}
+
+export type PR_repository_pullRequest_timelineItems_nodes = PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent | PR_repository_pullRequest_timelineItems_nodes_IssueComment | PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent;
 
 export interface PR_repository_pullRequest_timelineItems {
   __typename: "PullRequestTimelineItemsConnection";
@@ -111,6 +103,34 @@ export interface PR_repository_pullRequest_reviews_nodes_commit {
   abbreviatedOid: string;
 }
 
+export interface PR_repository_pullRequest_reviews_nodes_comments_nodes_author {
+  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  /**
+   * The username of the actor.
+   */
+  login: string;
+}
+
+export interface PR_repository_pullRequest_reviews_nodes_comments_nodes {
+  __typename: "PullRequestReviewComment";
+  /**
+   * The actor who authored the comment.
+   */
+  author: PR_repository_pullRequest_reviews_nodes_comments_nodes_author | null;
+  /**
+   * Identifies when the comment was created.
+   */
+  createdAt: any;
+}
+
+export interface PR_repository_pullRequest_reviews_nodes_comments {
+  __typename: "PullRequestReviewCommentConnection";
+  /**
+   * A list of nodes.
+   */
+  nodes: (PR_repository_pullRequest_reviews_nodes_comments_nodes | null)[] | null;
+}
+
 export interface PR_repository_pullRequest_reviews_nodes {
   __typename: "PullRequestReview";
   /**
@@ -121,6 +141,10 @@ export interface PR_repository_pullRequest_reviews_nodes {
    * Identifies the commit associated with this pull request review.
    */
   commit: PR_repository_pullRequest_reviews_nodes_commit | null;
+  /**
+   * A list of review comments for the current pull request review.
+   */
+  comments: PR_repository_pullRequest_reviews_nodes_comments;
   /**
    * Author's association with the subject of the comment.
    */
@@ -422,6 +446,10 @@ export interface PR_repository_pullRequest {
    */
   title: string;
   /**
+   * Identifies the date and time when the object was last updated.
+   */
+  updatedAt: any;
+  /**
    * The moment the editor made the last edit
    */
   lastEditedAt: any | null;
@@ -449,6 +477,10 @@ export interface PR_repository_pullRequest {
    * A list of labels associated with the object.
    */
   labels: PR_repository_pullRequest_labels | null;
+  /**
+   * Identifies if the pull request is a draft.
+   */
+  isDraft: boolean;
   /**
    * Whether or not the pull request can be merged based on the existence of merge conflicts.
    */

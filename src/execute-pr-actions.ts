@@ -1,4 +1,4 @@
-import { PR as PRQueryResult, PR_repository_pullRequest } from "./schema/PR";
+import { PR as PRQueryResult, PR_repository_pullRequest } from "./queries/schema/PR";
 import { Actions } from "./compute-pr-actions";
 import { createMutation, mutate, Mutation } from "./graphql-client";
 import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
@@ -16,9 +16,8 @@ const closePr = `mutation($input: ClosePullRequestInput!) { closePullRequest(inp
 
 const addProjectCard = `mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }`;
 const moveProjectCard = `mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }`;
+const deleteProjectCard = `mutation($input: DeleteProjectCardInput!) { deleteProjectCard(input: $input) { clientMutationId } }`;
 
-export async function executePrActions(actions: Actions, info: PRQueryResult, dry: true): Promise<string[]>;
-export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean): Promise<undefined>;
 export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean) {
   const pr = info.repository?.pullRequest!;
 
@@ -30,39 +29,29 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
   const projectMutations = await getMutationsForProjectChanges(actions, pr);
   mutations = mutations.concat(projectMutations);
 
-  const commentMutations = await getMutationsForComments(actions, pr);
+  const commentMutations = getMutationsForComments(actions, pr);
   mutations = mutations.concat(commentMutations);
 
-  const commentRemovalMutations = await getMutationsForCommentRemovals(actions, pr);
+  const commentRemovalMutations = getMutationsForCommentRemovals(actions, pr);
   mutations = mutations.concat(commentRemovalMutations);
 
-  const prStateMutations = await getMutationsForChangingPRState(actions, pr);
+  const prStateMutations = getMutationsForChangingPRState(actions, pr);
   mutations = mutations.concat(prStateMutations);
 
-  if (dry) {
-    return mutations.map((m) => m.body);
-  } else {
+  if (!dry) {
     // Perform mutations one at a time
-    const mutationResults: { mutation: Mutation; result: string }[] = [];
     for (const mutation of mutations) {
-      const result = await mutate(mutation);
-      mutationResults.push({ mutation, result });
+      await mutate(mutation);
     }
-
-    const results = mutationResults.map(({ mutation, result }) => ({
-      mutation: mutation.body,
-      result,
-    }))
-
-    console.log(JSON.stringify(results, undefined, 2));
-    return;
   }
+
+  return mutations.map((m) => m.body);
 }
 
 const prefix = "\n<!--typescript_bot_";
 const suffix = "-->";
 
-async function getMutationsForLabels( actions: Actions, pr: PR_repository_pullRequest) {
+async function getMutationsForLabels(actions: Actions, pr: PR_repository_pullRequest) {
 const labels = pr.labels?.nodes!;
   const mutations: Mutation[] = [];
   const labelsToAdd: string[] = [];
@@ -102,13 +91,21 @@ const labels = pr.labels?.nodes!;
 async function getMutationsForProjectChanges(actions: Actions, pr: PR_repository_pullRequest) {
   const mutations: Mutation[] = [];
 
+  if (actions.shouldRemoveFromActiveColumns) {
+    const card = pr.projectCards.nodes?.find(card => card?.project.number === ProjectBoardNumber);
+    if (card && card.column?.name !== "Recently Merged") {
+      mutations.push(createMutation(deleteProjectCard, { cardId: card.id }));
+    }
+    return mutations;
+  }
+
   if (!actions.shouldUpdateProjectColumn) {
     return mutations;
   }
 
   // Create a project card if needed, otherwise move if needed
   if (actions.targetColumn) {
-    const extantCard = pr.projectCards.nodes?.filter((n) => !!n?.column && n.project.number === ProjectBoardNumber)[0];
+    const extantCard = pr.projectCards.nodes?.find((n) => !!n?.column && n.project.number === ProjectBoardNumber);
 
     const targetColumnId = await getProjectBoardColumnIdByName(actions.targetColumn);
     if (extantCard) {
@@ -123,7 +120,7 @@ async function getMutationsForProjectChanges(actions: Actions, pr: PR_repository
   return mutations;
 }
 
-async function getMutationsForComments(actions: Actions, pr: PR_repository_pullRequest) {
+function getMutationsForComments(actions: Actions, pr: PR_repository_pullRequest) {
   const mutations: Mutation[] = [];
   for (const wantedComment of actions.responseComments) {
     let exists = false;
@@ -158,7 +155,7 @@ async function getMutationsForComments(actions: Actions, pr: PR_repository_pullR
 }
 
 
-async function getMutationsForCommentRemovals(actions: Actions, pr: PR_repository_pullRequest) {
+function getMutationsForCommentRemovals(actions: Actions, pr: PR_repository_pullRequest) {
   const mutations: Mutation[] = [];
 
   const travisMessageToKeep = actions.responseComments.find(c => c.tag.startsWith("travis-complaint"))
@@ -177,7 +174,7 @@ async function getMutationsForCommentRemovals(actions: Actions, pr: PR_repositor
   return mutations;
 }
 
-async function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pullRequest) {
+function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pullRequest) {
   const mutations: Mutation[] = [];
 
   if (actions.shouldMerge) {

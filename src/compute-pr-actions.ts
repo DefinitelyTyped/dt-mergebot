@@ -1,19 +1,50 @@
 import * as Comments from "./comments";
-import { PrInfo, ApprovalFlags } from "./pr-info";
+import { PrInfo, ApprovalFlags, BotEnsureRemovedFromProject } from "./pr-info";
 import { TravisResult } from "./util/travis";
+import { daysSince } from "./util/util";
 
-export type Actions = ReturnType<typeof createDefaultActions>;
+type ColumnName =
+    | "Other"
+    | "Needs Maintainer Review"
+    | "Waiting for Author to Merge"
+    | "Needs Author Action"
+    | "Recently Merged"
+    | "Waiting for Code Reviews";
 
-function createDefaultActions() {
+type LabelName =
+    | "Has Merge Conflict"
+    | "The Travis CI build failed"
+    | "Revision needed"
+    | "New Definition"
+    | "Where is Travis?"
+    | "Owner Approved"
+    | "Other Approved"
+    | "Maintainer Approved"
+    | "Merge:LGTM"
+    | "Merge:YSYL"
+    | "Popular package"
+    | "Critical package"
+    | "Edits Infrastructure"
+    | "Edits multiple packages"
+    | "Author is Owner";
+
+
+export interface Actions {
+    pr_number: number;
+    targetColumn?: ColumnName;
+    labels: { [L in LabelName]?: boolean };
+    responseComments: Comments.Comment[];
+    shouldClose: boolean;
+    shouldMerge: boolean;
+    shouldUpdateLabels: boolean;
+    shouldUpdateProjectColumn: boolean;
+    shouldRemoveFromActiveColumns: boolean;
+}
+
+function createDefaultActions(prNumber: number): Actions {
     return {
-        pr_number: 0,
-        targetColumn: "Other" as
-            "Other" |
-            "Needs Maintainer Review" |
-            "Waiting for Author to Merge" |
-            "Needs Author Action" |
-            "Recently Merged" |
-            "Waiting for Code Reviews",
+        pr_number: prNumber,
+        targetColumn: "Other",
         labels: {
             "Has Merge Conflict": false,
             "The Travis CI build failed": false,
@@ -31,23 +62,40 @@ function createDefaultActions() {
             "Edits multiple packages": false,
             "Author is Owner": false
         },
-        responseComments: [] as Comments.Comment[],
+        responseComments: [],
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: true,
-        shouldUpdateProjectColumn: true
+        shouldUpdateProjectColumn: true,
+        shouldRemoveFromActiveColumns: false,
     };
+}
+
+function createEmptyActions(prNumber: number): Actions {
+    return {
+        pr_number: prNumber,
+        labels: {},
+        responseComments: [],
+        shouldClose: false,
+        shouldMerge: false,
+        shouldUpdateLabels: false,
+        shouldUpdateProjectColumn: false,
+        shouldRemoveFromActiveColumns: false,
 };
+}
 
 const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package"
 const uriForTestingNewPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#testing"
 
-export function process(info: PrInfo): Actions {
-    const context = {
-        ...createDefaultActions(),
-        responseComments: [] as Comments.Comment[],
-        pr_number: info.pr_number
-     };
+export function process(info: PrInfo | BotEnsureRemovedFromProject): Actions {
+    if (info.type === "remove") {
+        return {
+            ...createEmptyActions(info.pr_number),
+            shouldRemoveFromActiveColumns: true,
+        };
+    }
+
+    const context = createDefaultActions(info.pr_number)
 
     const now = new Date(info.now)
 
@@ -69,6 +117,16 @@ export function process(info: PrInfo): Actions {
         status: createWelcomeComment(info)
     });
 
+    // Ping reviewers when needed
+    if (info.owners.length) {
+        const tooManyOwners = info.owners.length > 50
+        if (tooManyOwners) {
+            context.responseComments.push(Comments.PingReviewersTooMany(info.owners))
+        } else {
+            context.responseComments.push(Comments.PingReviewers(info.owners, info.reviewLink))
+        }
+    }
+
     // Needs author attention (bad CI, merge conflicts)
     const failedCI = info.travisResult === TravisResult.Fail;
     if (failedCI || info.hasMergeConflict || info.isChangesRequested) {
@@ -88,12 +146,14 @@ export function process(info: PrInfo): Actions {
         }
 
         // Could be abandoned
-        if (daysStaleBetween(5, 7)(info)) {
-            context.responseComments.push(Comments.NearlyAbandoned(info.author));
-        }
-        if (daysStaleAtLeast(7)(info)) {
-            context.responseComments.push(Comments.SorryAbandoned(info.author));
-            context.shouldClose = true;
+        switch (getStaleness(info)) {
+            case Staleness.NearlyAbandoned:
+                context.responseComments.push(Comments.NearlyAbandoned(info.author));
+                break;
+            case Staleness.Abandoned:
+                context.responseComments.push(Comments.SorryAbandoned(info.author));
+                context.shouldClose = true;
+                break;
         }
     }
 
@@ -159,10 +219,11 @@ function canBeMergedNow(info: PrInfo): boolean {
 }
 
 function hasFinalApproval(info: PrInfo) {
+    const tooManyReviewers = info.owners.length > 50
     let approved = false
     let requiredApprovalBy = "DT Maintainers"
 
-    if (info.dangerLevel === "ScopedAndTested") {
+    if (info.dangerLevel === "ScopedAndTested" && !tooManyReviewers) {
         if (info.popularityLevel === "Well-liked by everyone") {
             approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other));
             requiredApprovalBy = "type definition owners, DT maintainers or others"
@@ -186,17 +247,21 @@ function hasFinalApproval(info: PrInfo) {
     }
 }
 
-
-function needsMaintainerApproval(info: PrInfo) {
-    return (info.dangerLevel !== "ScopedAndTested") || (info.popularityLevel !== "Well-liked by everyone");
+const enum Staleness {
+    Fresh,
+    NearlyAbandoned,
+    Abandoned,
 }
 
-function daysStaleAtLeast(days: number) {
-    return (info: PrInfo) => info.stalenessInDays >= days;
-}
+function getStaleness(info: PrInfo): Staleness {
+    const daysSinceLastAuthorComment = daysSince(info.lastAuthorCommentDate, info.now);
+    const daysSinceLastPush = daysSince(info.lastCommitDate, info.now);
+    const daysSinceReopened = info.reopenedDate ? daysSince(info.reopenedDate, info.now) : undefined;
+    const daysSinceLastActivity = Math.min(daysSinceLastPush, daysSinceLastAuthorComment, daysSinceReopened ?? Infinity);
 
-function daysStaleBetween(lowerBoundInclusive: number, upperBoundExclusive: number) {
-    return (info: PrInfo) => (info.stalenessInDays >= lowerBoundInclusive && info.stalenessInDays < upperBoundExclusive);
+    if (daysSinceLastActivity >= 7) return Staleness.Abandoned;
+    if (daysSinceLastActivity >= 5) return Staleness.NearlyAbandoned;
+    return Staleness.Fresh;
 }
 
 function createWelcomeComment(info: PrInfo) {
@@ -269,7 +334,6 @@ function createWelcomeComment(info: PrInfo) {
     }
     
     introCommentLines.push(``);
-
     if (!waitingOnThePRAuthorToMerge) {
         introCommentLines.push(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`)
     } else {

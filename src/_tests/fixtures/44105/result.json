@@ -1,4 +1,10 @@
 {
-  "type": "noop",
-  "message": "PR is not active"
+  "pr_number": 44105,
+  "labels": {},
+  "responseComments": [],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": false,
+  "shouldUpdateProjectColumn": false,
+  "shouldRemoveFromActiveColumns": true
 }

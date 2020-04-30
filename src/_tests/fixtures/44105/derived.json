@@ -1,4 +1,5 @@
 {
-  "type": "noop",
+  "type": "remove",
+  "pr_number": 44105,
   "message": "PR is not active"
 }

@@ -1,4 +1,10 @@
 {
-  "type": "noop",
-  "message": "PR is a draft"
+  "pr_number": 44290,
+  "labels": {},
+  "responseComments": [],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": false,
+  "shouldUpdateProjectColumn": false,
+  "shouldRemoveFromActiveColumns": true
 }
