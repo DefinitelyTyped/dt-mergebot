@@ -26,6 +26,6 @@
   ],
   "shouldClose": false,
   "shouldMerge": false,
-  "shouldUpdateLabels": true,
-  "shouldUpdateProjectColumn": true
+  "shouldUpdateLabels": false,
+  "shouldUpdateProjectColumn": false
 }
