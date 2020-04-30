@@ -4,7 +4,7 @@ import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, P
 
 import moment = require("moment");
 import { TravisResult } from "./util/travis";
-import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./queries/graphql-global-types";
+import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState, PullRequestState } from "./queries/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
@@ -40,8 +40,9 @@ export interface BotFail {
     readonly message: string;
 }
 
-export interface BotNOOP {
-    readonly type: "noop";
+export interface BotEnsureRemovedFromProject {
+    readonly type: "remove";
+    readonly pr_number: number;
     readonly message: string;
 }
 
@@ -177,7 +178,7 @@ export async function deriveStateForPR(
     getOwners?: (packages: readonly string[]) => OwnerInfo | Promise<OwnerInfo>,
     getDownloads?: (packages: readonly string[]) => Record<string, number> | Promise<Record<string, number>>,
     getNow = () => new Date(),
-): Promise<PrInfo | BotFail | BotNOOP>  {
+): Promise<PrInfo | BotFail | BotEnsureRemovedFromProject>  {
     const prInfo = info.data.repository?.pullRequest;
     // console.log(JSON.stringify(prInfo, undefined, 2));
     
@@ -187,8 +188,8 @@ export async function deriveStateForPR(
     const headCommit = getHeadCommit(prInfo);
     if (headCommit == null) return botFail("No head commit");
 
-    if (prInfo.state !== "OPEN") return botNOOP("PR is not active");
-    if (prInfo.isDraft) return botNOOP("PR is a draft");
+    if (prInfo.state !== "OPEN") return botEnsureRemovedFromProject(prInfo.number, "PR is not active");
+    if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft");
     
     const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
     const packages = getPackagesTouched(categorizedFiles);
@@ -258,8 +259,8 @@ export async function deriveStateForPR(
     }
     
 
-    function botNOOP(message: string): BotNOOP {
-        return { type: "noop", message };
+    function botEnsureRemovedFromProject(prNumber: number, message: string): BotEnsureRemovedFromProject {
+        return { type: "remove", pr_number: prNumber, message };
     }
 
     function isOwner(login: string) {
