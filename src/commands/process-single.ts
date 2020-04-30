@@ -32,7 +32,8 @@ export default async function main(prNumber: number, log: (...args: any[]) => vo
 
 if (!module.parent) {
     const num = +process.argv[2];
-    main(num, console.log.bind(console)).then(() => {
+    const dry = process.argv.slice(2).includes('--dry');
+    main(num, console.log.bind(console), dry).then(() => {
         console.log("Done!");
         process.exit(0);
     }, err => {
