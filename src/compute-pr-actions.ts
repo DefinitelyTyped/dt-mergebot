@@ -122,7 +122,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject): Actions {
         const tooManyOwners = info.owners.length > 50
         if (tooManyOwners) {
             context.responseComments.push(Comments.PingReviewersTooMany(info.owners))
-        } else {
+        } else if (info.ownerApprovalCount === 0) {
             context.responseComments.push(Comments.PingReviewers(info.owners, info.reviewLink))
         }
     }

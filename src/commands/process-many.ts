@@ -12,17 +12,26 @@ interface ProcessManyOptions {
 
 async function main({ dateRange, dry }: ProcessManyOptions) {
   const prs = await getRecentlyUpdatedPRs(dateRange.startTime, dateRange.endTime);
-  
   const results = [];
-  for (const pr of prs) {
-    console.log(`Processing #${pr} (${prs.indexOf(pr) + 1} of ${prs.length})...`);
-    const result = await processSingle(pr, () => {}, dry);
-    if (result.length) {
-      results.push({ pr, mutations: result });
+
+  try {
+    for (const pr of prs) {
+      console.log(`Processing #${pr} (${prs.indexOf(pr) + 1} of ${prs.length})...`);
+      const result = await processSingle(pr, () => {}, dry);
+      if (result.length) {
+        results.push({ pr, mutations: result });
+      }
     }
+  } catch (err) {
+    reportResults(results, prs.length, dry);
+    throw err;
   }
 
-  console.log((dry ? 'Found' : 'Performed') + ` actions for ${results.length} of ${prs.length} recently updated PRs.`);
+  reportResults(results, prs.length, dry);
+}
+
+function reportResults(results: { pr: number, mutations: string[] }[], prCount: number, dry?: boolean) {
+  console.log((dry ? 'Found' : 'Performed') + ` actions for ${results.length} of ${prCount} recently updated PRs.`);
   console.log('');
   for (const { pr, mutations } of results) {
     console.log(`=== https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${pr} ===`);

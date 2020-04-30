@@ -1,0 +1,49 @@
+{
+  "type": "info",
+  "now": "2020-04-30T22:04:05.517Z",
+  "pr_number": 44267,
+  "author": "ErikMartensson",
+  "owners": [
+    "jineshshah36",
+    "peping",
+    "mikhail-monchak",
+    "cdoe",
+    "malithrw"
+  ],
+  "dangerLevel": "ScopedAndUntested",
+  "headCommitAbbrOid": "ceb74b3",
+  "headCommitOid": "ceb74b3471454b2f57cbe671e130028c680ffb88",
+  "mergeIsRequested": false,
+  "stalenessInDays": 3,
+  "lastCommitDate": "2020-04-27T14:15:25.000Z",
+  "lastAuthorCommentDate": "2020-04-27T14:15:25.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44267/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": true,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "intercom-client"
+  ],
+  "files": [
+    {
+      "filePath": "types/intercom-client/User.d.ts",
+      "kind": "definition",
+      "package": "intercom-client"
+    },
+    {
+      "filePath": "types/intercom-client/index.d.ts",
+      "kind": "definition",
+      "package": "intercom-client"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 1,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 2,
+  "isChangesRequested": false
+}

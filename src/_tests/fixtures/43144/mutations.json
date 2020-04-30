@@ -22,15 +22,6 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0Mzg4NDkxOTI2",
-        "body": "🔔 @pocesar - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43144/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->"
-      }
-    }
-  },
-  {
-    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "subjectId": "MDExOlB1bGxSZXF1ZXN0Mzg4NDkxOTI2",
         "body": "@jeffreymeng Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n<!--typescript_bot_merge-offer-->"
       }
     }
