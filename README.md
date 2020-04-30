@@ -86,7 +86,10 @@ npm run create-fixture -- 43161
 Then you can work against these fixtures offline with:
 
 ```sh
+# Watch mode for all tests
 npm test -- --watch
+# Just run fixtures for one PR
+npm test --testNamePattern 44299
 ```
 
 If your changes require re-creating all fixtures:

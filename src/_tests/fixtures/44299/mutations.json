@@ -1,0 +1,51 @@
+[
+  {
+    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYyMDcwMjk5OQ==",
+        "body": "@geopic Thank you for submitting this PR!  I see this is your first time submitting to DefinitelyTyped 👋 - keep an eye on this comment as I'll be updating it with information as things progress.\n\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n- [hcaptcha__vue-hcaptcha](https://www.npmjs.com/package/hcaptcha__vue-hcaptcha)\n\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can merge changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n```json\n{\n  \"type\": \"info\",\n  \"now\": \"-\",\n  \"pr_number\": 44299,\n  \"updatedAt\": null,\n  \"author\": \"geopic\",\n  \"owners\": [],\n  \"dangerLevel\": \"ScopedAndConfiguration\",\n  \"headCommitAbbrOid\": \"683fb3b\",\n  \"headCommitOid\": \"683fb3b1298223256be3a49823686f35bd94a730\",\n  \"mergeIsRequested\": false,\n  \"stalenessInDays\": 0,\n  \"lastCommitDate\": \"2020-04-29T10:57:59.000Z\",\n  \"lastAuthorCommentDate\": \"2020-04-29T10:57:59.000Z\",\n  \"reviewLink\": \"https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44299/files\",\n  \"hasMergeConflict\": false,\n  \"authorIsOwner\": false,\n  \"isFirstContribution\": true,\n  \"popularityLevel\": \"Well-liked by everyone\",\n  \"anyPackageIsNew\": true,\n  \"packages\": [\n    \"hcaptcha__vue-hcaptcha\"\n  ],\n  \"files\": [\n    {\n      \"filePath\": \"types/hcaptcha__vue-hcaptcha/hcaptcha__vue-hcaptcha-tests.ts\",\n      \"kind\": \"test\",\n      \"package\": \"hcaptcha__vue-hcaptcha\"\n    },\n    {\n      \"filePath\": \"types/hcaptcha__vue-hcaptcha/index.d.ts\",\n      \"kind\": \"definition\",\n      \"package\": \"hcaptcha__vue-hcaptcha\"\n    },\n    {\n      \"filePath\": \"types/hcaptcha__vue-hcaptcha/package.json\",\n      \"kind\": \"package-meta\",\n      \"package\": \"hcaptcha__vue-hcaptcha\"\n    },\n    {\n      \"filePath\": \"types/hcaptcha__vue-hcaptcha/tsconfig.json\",\n      \"kind\": \"package-meta\",\n      \"package\": \"hcaptcha__vue-hcaptcha\"\n    },\n    {\n      \"filePath\": \"types/hcaptcha__vue-hcaptcha/tslint.json\",\n      \"kind\": \"package-meta\",\n      \"package\": \"hcaptcha__vue-hcaptcha\"\n    }\n  ],\n  \"otherApprovalCount\": 0,\n  \"ownerApprovalCount\": 0,\n  \"maintainerApprovalCount\": 0,\n  \"hasDismissedReview\": false,\n  \"travisResult\": \"pass\",\n  \"reviewersWithStaleReviews\": [],\n  \"approvalFlags\": 0,\n  \"isChangesRequested\": false\n}\n```\n\n</details>\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYyMDk3NDc1NA=="
+      }
+    }
+  },
+  {
+    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYyMTExNTE0Ng=="
+      }
+    }
+  },
+  {
+    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYyMTExODgzNQ=="
+      }
+    }
+  },
+  {
+    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYyMTEyNDIyMw=="
+      }
+    }
+  },
+  {
+    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYyMTEyODE3MA=="
+      }
+    }
+  }
+]
