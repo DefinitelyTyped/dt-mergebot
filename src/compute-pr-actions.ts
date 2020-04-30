@@ -1,20 +1,50 @@
 import * as Comments from "./comments";
-import { PrInfo, ApprovalFlags } from "./pr-info";
+import { PrInfo, ApprovalFlags, BotEnsureRemovedFromProject } from "./pr-info";
 import { TravisResult } from "./util/travis";
 import { daysSince } from "./util/util";
 
-export type Actions = ReturnType<typeof createDefaultActions>;
+type ColumnName =
+    | "Other"
+    | "Needs Maintainer Review"
+    | "Waiting for Author to Merge"
+    | "Needs Author Action"
+    | "Recently Merged"
+    | "Waiting for Code Reviews";
 
-function createDefaultActions() {
+type LabelName =
+    | "Has Merge Conflict"
+    | "The Travis CI build failed"
+    | "Revision needed"
+    | "New Definition"
+    | "Where is Travis?"
+    | "Owner Approved"
+    | "Other Approved"
+    | "Maintainer Approved"
+    | "Merge:LGTM"
+    | "Merge:YSYL"
+    | "Popular package"
+    | "Critical package"
+    | "Edits Infrastructure"
+    | "Edits multiple packages"
+    | "Author is Owner";
+
+
+export interface Actions {
+    pr_number: number;
+    targetColumn?: ColumnName;
+    labels: { [L in LabelName]?: boolean };
+    responseComments: Comments.Comment[];
+    shouldClose: boolean;
+    shouldMerge: boolean;
+    shouldUpdateLabels: boolean;
+    shouldUpdateProjectColumn: boolean;
+    shouldRemoveFromActiveColumns: boolean;
+}
+
+function createDefaultActions(prNumber: number): Actions {
     return {
-        pr_number: 0,
-        targetColumn: "Other" as
-            "Other" |
-            "Needs Maintainer Review" |
-            "Waiting for Author to Merge" |
-            "Needs Author Action" |
-            "Recently Merged" |
-            "Waiting for Code Reviews",
+        pr_number: prNumber,
+        targetColumn: "Other",
         labels: {
             "Has Merge Conflict": false,
             "The Travis CI build failed": false,
@@ -32,23 +62,40 @@ function createDefaultActions() {
             "Edits multiple packages": false,
             "Author is Owner": false
         },
-        responseComments: [] as Comments.Comment[],
+        responseComments: [],
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: true,
-        shouldUpdateProjectColumn: true
+        shouldUpdateProjectColumn: true,
+        shouldRemoveFromActiveColumns: false,
     };
+}
+
+function createEmptyActions(prNumber: number): Actions {
+    return {
+        pr_number: prNumber,
+        labels: {},
+        responseComments: [],
+        shouldClose: false,
+        shouldMerge: false,
+        shouldUpdateLabels: false,
+        shouldUpdateProjectColumn: false,
+        shouldRemoveFromActiveColumns: false,
 };
+}
 
 const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package"
 const uriForTestingNewPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#testing"
 
-export function process(info: PrInfo): Actions {
-    const context = {
-        ...createDefaultActions(),
-        responseComments: [] as Comments.Comment[],
-        pr_number: info.pr_number
-     };
+export function process(info: PrInfo | BotEnsureRemovedFromProject): Actions {
+    if (info.type === "remove") {
+        return {
+            ...createEmptyActions(info.pr_number),
+            shouldRemoveFromActiveColumns: true,
+        };
+    }
+
+    const context = createDefaultActions(info.pr_number)
 
     const now = new Date(info.now)
 
@@ -204,14 +251,6 @@ function getStaleness(info: PrInfo): Staleness {
     if (daysSinceLastActivity >= 7) return Staleness.Abandoned;
     if (daysSinceLastActivity >= 5) return Staleness.NearlyAbandoned;
     return Staleness.Fresh;
-}
-
-function daysStaleAtLeast(days: number) {
-    return (info: PrInfo) => info.stalenessInDays >= days;
-}
-
-function daysStaleBetween(lowerBoundInclusive: number, upperBoundExclusive: number) {
-    return (info: PrInfo) => (info.stalenessInDays >= lowerBoundInclusive && info.stalenessInDays < upperBoundExclusive);
 }
 
 function createWelcomeComment(info: PrInfo) {

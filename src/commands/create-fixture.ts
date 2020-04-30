@@ -36,7 +36,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
 
   writeFileSync(derivedFixturePath, JSON.stringify(derivedInfo, null, "  ")) 
   
-  if (derivedInfo.type === "fail" || derivedInfo.type === "noop") {
+  if (derivedInfo.type === "fail") {
     const ownersJSONPath = join(fixturePath, "_owners.json")
     writeFileSync(ownersJSONPath, JSON.stringify({ allOwners: [], anyPackageIsNew: false }, null, "  ")) 
     return

@@ -10,7 +10,7 @@ export default async function main(prNumber: number, log: (...args: any[]) => vo
     log(`=== Raw PR Info ===`);
     log(render(state));
 
-    if (state.type !== "info") {
+    if (state.type === "fail") {
         return [];
     }
 
