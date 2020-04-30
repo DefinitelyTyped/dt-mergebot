@@ -314,11 +314,6 @@ function createWelcomeComment(info: PrInfo) {
     introCommentLines.push(``);
     introCommentLines.push(reviewerAdvisory);
     introCommentLines.push(``);
-    if (otherOwners.length !== 0) {
-        introCommentLines.push(`🔔 ${otherOwners.map(n => `@${n}`).join(" ")} - please [review this PR](${info.reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`);
-    }
-
-    introCommentLines.push(``);
     introCommentLines.push(`## Status`)
     introCommentLines.push(``);
     introCommentLines.push(` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);

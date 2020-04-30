@@ -264,7 +264,6 @@ export async function deriveStateForPR(
     function isOwner(login: string) {
         return allOwners.some(k => k.toLowerCase() === login.toLowerCase());
     }
-
 }
 
 type ReopenedEvent = PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent;
