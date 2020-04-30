@@ -117,6 +117,16 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject): Actions {
         status: createWelcomeComment(info)
     });
 
+    // Ping reviewers when needed
+    if (info.owners.length) {
+        const tooManyOwners = info.owners.length > 50
+        if (tooManyOwners) {
+            context.responseComments.push(Comments.PingReviewersTooMany(info.owners))
+        } else {
+            context.responseComments.push(Comments.PingReviewers(info.owners, info.reviewLink))
+        }
+    }
+
     // Needs author attention (bad CI, merge conflicts)
     const failedCI = info.travisResult === TravisResult.Fail;
     if (failedCI || info.hasMergeConflict || info.isChangesRequested) {
@@ -209,10 +219,11 @@ function canBeMergedNow(info: PrInfo): boolean {
 }
 
 function hasFinalApproval(info: PrInfo) {
+    const tooManyReviewers = info.owners.length > 50
     let approved = false
     let requiredApprovalBy = "DT Maintainers"
 
-    if (info.dangerLevel === "ScopedAndTested") {
+    if (info.dangerLevel === "ScopedAndTested" && !tooManyReviewers) {
         if (info.popularityLevel === "Well-liked by everyone") {
             approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other));
             requiredApprovalBy = "type definition owners, DT maintainers or others"
@@ -323,7 +334,6 @@ function createWelcomeComment(info: PrInfo) {
     }
     
     introCommentLines.push(``);
-
     if (!waitingOnThePRAuthorToMerge) {
         introCommentLines.push(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`)
     } else {

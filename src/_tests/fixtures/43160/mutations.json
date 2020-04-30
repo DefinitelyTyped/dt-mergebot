@@ -22,6 +22,15 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0Mzg5MDYwOTQ4",
+        "body": "🔔 @qinfchen @Frankrike @vilterp @rustedgrail - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43160/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0Mzg5MDYwOTQ4",
         "body": "@rikkertkoppes The Travis CI build failed! Please [review the logs for more information](https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/662962786?utm_source=github_status&utm_medium=notification).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n<!--typescript_bot_travis-complaint-6d5d2a8-->"
       }
     }
