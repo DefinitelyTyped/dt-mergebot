@@ -58,6 +58,15 @@ const httpTrigger = async function (context, _req) {
     const webhook = req.body
     const action = "action" in webhook ? webhook.action : "status"
 
+    if (webhook.sender.login === "typescript-bot") {
+        context.log.info(`Skipped webhook because it was triggered by typescript-bot`)
+        context.res = {
+            status: 204,
+            body: `NOOPing because typescript-bot triggered the request`
+        }
+        return
+    }
+
     const allowListedActions = acceptedEventsToActions[event]
     if (!allowListedActions.includes(action) && !allowListedActions.includes("*")) {
         context.log.info(`Skipped webhook, ${action} on ${event}, do not know how to handle the action`)
