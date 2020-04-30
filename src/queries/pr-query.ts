@@ -14,7 +14,6 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
       pullRequest(number: $pr_number) {
         id
         title
-        updatedAt
         lastEditedAt
         author {
           login

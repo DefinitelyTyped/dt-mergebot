@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequestReviewState, CheckConclusionState, CheckStatusState, StatusState } from "../graphql-global-types";
+import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequestReviewState, CheckConclusionState, CheckStatusState, StatusState } from "./../../schema/graphql-global-types";
 
 // ====================================================
 // GraphQL query operation: PR
@@ -445,10 +445,6 @@ export interface PR_repository_pullRequest {
    * Identifies the pull request title.
    */
   title: string;
-  /**
-   * Identifies the date and time when the object was last updated.
-   */
-  updatedAt: any;
   /**
    * The moment the editor made the last edit
    */

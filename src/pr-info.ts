@@ -53,7 +53,6 @@ export interface PrInfo {
     readonly now: string;
 
     readonly pr_number: number;
-    readonly updatedAt: Date;
 
     /**
      * The head commit of this PR (full format)
@@ -226,7 +225,6 @@ export async function deriveStateForPR(
         type: "info",
         now,
         pr_number: prInfo.number,
-        updatedAt: new Date(prInfo.updatedAt),
         author: prInfo.author.login,
         owners: allOwners,
         dangerLevel: getDangerLevel(categorizedFiles),
