@@ -14,7 +14,7 @@ export interface OwnerInfo {
 }
 
 export async function getOwnersOfPackages(packages: readonly string[]): Promise<OwnerInfo> {
-  const allOwners = [];
+  const allOwners: string[] = [];
   let anyPackageIsNew = false;
   for (const p of packages) {
       const owners = await getOwnersForPackage(p);
@@ -22,7 +22,7 @@ export async function getOwnersOfPackages(packages: readonly string[]): Promise<
           anyPackageIsNew = true;
       } else {
           for (const o of owners) {
-              if (!owners.includes(o)) {
+              if (!allOwners.includes(o)) {
                 allOwners.push(o);
               }
           }
