@@ -48,10 +48,6 @@ describe('with fixtures', () => {
       )
 
       if (derived.type === "fail") throw new Error("Should never happen")
-      if (derived.type === "noop") {
-        expect(JSON.stringify(derived, null, "  ")).toMatchFile(actionJSONPath)
-        return
-      }
 
       // So that fixtures don't change per day
       const existingDerivedJSON = JSON.parse(readFileSync(derivedJSONPath, "utf8"))

@@ -27,5 +27,6 @@
   "shouldClose": false,
   "shouldMerge": false,
   "shouldUpdateLabels": false,
-  "shouldUpdateProjectColumn": false
+  "shouldUpdateProjectColumn": false,
+  "shouldRemoveFromProject": false
 }
