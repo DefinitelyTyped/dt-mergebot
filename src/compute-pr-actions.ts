@@ -38,7 +38,7 @@ export interface Actions {
     shouldMerge: boolean;
     shouldUpdateLabels: boolean;
     shouldUpdateProjectColumn: boolean;
-    shouldRemoveFromProject: boolean;
+    shouldRemoveFromActiveColumns: boolean;
 }
 
 function createDefaultActions(prNumber: number): Actions {
@@ -67,7 +67,7 @@ function createDefaultActions(prNumber: number): Actions {
         shouldMerge: false,
         shouldUpdateLabels: true,
         shouldUpdateProjectColumn: true,
-        shouldRemoveFromProject: false,
+        shouldRemoveFromActiveColumns: false,
     };
 }
 
@@ -80,8 +80,8 @@ function createEmptyActions(prNumber: number): Actions {
         shouldMerge: false,
         shouldUpdateLabels: false,
         shouldUpdateProjectColumn: false,
-        shouldRemoveFromProject: false,
-    };
+        shouldRemoveFromActiveColumns: false,
+};
 }
 
 const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package"
@@ -91,7 +91,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject): Actions {
     if (info.type === "remove") {
         return {
             ...createEmptyActions(info.pr_number),
-            shouldRemoveFromProject: true,
+            shouldRemoveFromActiveColumns: true,
         };
     }
 

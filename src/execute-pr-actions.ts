@@ -87,9 +87,9 @@ const labels = pr.labels?.nodes!;
 async function getMutationsForProjectChanges(actions: Actions, pr: PR_repository_pullRequest) {
   const mutations: Mutation[] = [];
 
-  if (actions.shouldRemoveFromProject) {
+  if (actions.shouldRemoveFromActiveColumns) {
     const card = pr.projectCards.nodes?.find(card => card?.project.number === ProjectBoardNumber);
-    if (card) {
+    if (card && card.column?.name !== "Recently Merged") {
       mutations.push(createMutation(deleteProjectCard, { cardId: card.id }));
     }
     return mutations;
