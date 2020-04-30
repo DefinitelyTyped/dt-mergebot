@@ -2,7 +2,6 @@ import { GetPRInfo } from "./queries/pr-query";
 
 import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest, PR_repository_pullRequest_timelineItems, PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent, PR_repository_pullRequest_reviews, PR_repository_pullRequest_timelineItems_nodes_IssueComment } from "./queries/schema/PR";
 
-import moment = require("moment");
 import { TravisResult } from "./util/travis";
 import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState, PullRequestState } from "./queries/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
@@ -192,7 +191,7 @@ export async function deriveStateForPR(
     
     const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
     const packages = getPackagesTouched(categorizedFiles);
-    
+
     const { anyPackageIsNew, allOwners } = getOwners ? await getOwners(packages) : await getOwnersOfPackages(packages);
     const authorIsOwner = isOwner(prInfo.author.login);
     
