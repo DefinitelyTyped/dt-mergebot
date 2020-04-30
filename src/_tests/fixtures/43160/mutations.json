@@ -36,7 +36,7 @@
     }
   },
   {
-    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDU5OTQwMzQzNw=="

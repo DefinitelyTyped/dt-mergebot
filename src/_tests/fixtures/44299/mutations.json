@@ -9,7 +9,7 @@
     }
   },
   {
-    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYyMDk3NDc1NA=="
@@ -17,7 +17,7 @@
     }
   },
   {
-    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYyMTExNTE0Ng=="
@@ -25,7 +25,7 @@
     }
   },
   {
-    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYyMTExODgzNQ=="
@@ -33,7 +33,7 @@
     }
   },
   {
-    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYyMTEyNDIyMw=="
@@ -41,7 +41,7 @@
     }
   },
   {
-    "query": "mutation($input: DeleteCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYyMTEyODE3MA=="
