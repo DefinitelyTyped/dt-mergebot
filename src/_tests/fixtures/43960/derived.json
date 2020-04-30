@@ -1,0 +1,45 @@
+{
+  "type": "info",
+  "now": "2020-04-29T22:09:53.999Z",
+  "pr_number": 43960,
+  "updatedAt": "2020-04-29T20:48:53.000Z",
+  "author": "aaltepet",
+  "owners": [],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "129f84e",
+  "headCommitOid": "129f84e4492a76e7cd5af9d946c4583a60e6eb88",
+  "mergeIsRequested": false,
+  "stalenessInDays": 13,
+  "lastCommitDate": "2020-04-16T17:21:54.000Z",
+  "reopenedDate": "2020-04-29T20:48:52.000Z",
+  "lastAuthorCommentDate": "2020-04-29T20:46:05.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43960/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Popular",
+  "anyPackageIsNew": false,
+  "packages": [
+    "supertest"
+  ],
+  "files": [
+    {
+      "filePath": "types/supertest/index.d.ts",
+      "kind": "definition",
+      "package": "supertest"
+    },
+    {
+      "filePath": "types/supertest/supertest-tests.ts",
+      "kind": "test",
+      "package": "supertest"
+    }
+  ],
+  "otherApprovalCount": 0,
+  "ownerApprovalCount": 0,
+  "maintainerApprovalCount": 0,
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": true
+}

@@ -1,6 +1,6 @@
 import { GetLabels, GetProjectColumns } from "../queries/label-query";
-import { GetProjectColumns as GetProjectColumnsResult } from "../schema/GetProjectColumns";
-import { GetLabels as GetLabelsResult } from "../schema/GetLabels";
+import { GetProjectColumns as GetProjectColumnsResult } from "../queries/schema/GetProjectColumns";
+import { GetLabels as GetLabelsResult } from "../queries/schema/GetLabels";
 import { createCache } from "../ttl-cache";
 import { client } from "../graphql-client";
 

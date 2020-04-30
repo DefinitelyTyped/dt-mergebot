@@ -14,6 +14,7 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
       pullRequest(number: $pr_number) {
         id
         title
+        updatedAt
         lastEditedAt
         author {
           login
@@ -35,15 +36,15 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
         state
         headRefOid
         
-        timelineItems(first: 100, itemTypes:[PULL_REQUEST_COMMIT, PULL_REQUEST_REVIEW, PULL_REQUEST_REVIEW_THREAD, ISSUE_COMMENT]) {
+        timelineItems(last: 100, itemTypes: [ISSUE_COMMENT, REOPENED_EVENT]) {
           nodes {
             __typename
-            ... on PullRequestCommit {
-              commit { oid }
-            }
-            ... on PullRequestReview {
+            ... on IssueComment {
               author { login }
-              state
+              createdAt
+            }
+            ... on ReopenedEvent {
+              createdAt
             }
           }
         }
@@ -56,6 +57,14 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
             commit {
               oid
               abbreviatedOid
+            }
+            comments(last: 10) {
+              nodes {
+                author {
+                  login
+                }
+                createdAt
+              }
             }
             authorAssociation
             state

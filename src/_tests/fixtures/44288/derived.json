@@ -1,7 +1,8 @@
 {
   "type": "info",
-  "now": "2020-04-29T16:18:32Z",
+  "now": "2020-04-28T09:34:31.000Z",
   "pr_number": 44288,
+  "updatedAt": null,
   "author": "nomatteus",
   "owners": [
     "gosticks"
@@ -12,6 +13,7 @@
   "mergeIsRequested": false,
   "stalenessInDays": 0,
   "lastCommitDate": "2020-04-28T04:46:31.000Z",
+  "lastAuthorCommentDate": "2020-04-28T04:46:31.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44288/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,

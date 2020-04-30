@@ -1,7 +1,8 @@
 {
   "type": "info",
-  "now": "2020-04-29T16:18:32Z",
+  "now": "2020-03-22T21:36:44.000Z",
   "pr_number": 43314,
+  "updatedAt": null,
   "author": "metonym",
   "owners": [],
   "dangerLevel": "ScopedAndConfiguration",
@@ -10,6 +11,7 @@
   "mergeIsRequested": false,
   "stalenessInDays": 0,
   "lastCommitDate": "2020-03-22T16:48:44.000Z",
+  "lastAuthorCommentDate": "2020-03-22T16:48:44.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43314/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,

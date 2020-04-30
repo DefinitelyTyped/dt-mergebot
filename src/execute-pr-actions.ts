@@ -1,4 +1,4 @@
-import { PR as PRQueryResult, PR_repository_pullRequest } from "./schema/PR";
+import { PR as PRQueryResult, PR_repository_pullRequest } from "./queries/schema/PR";
 import { Actions } from "./compute-pr-actions";
 import { createMutation, mutate, Mutation } from "./graphql-client";
 import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
@@ -35,18 +35,9 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
 
   if (!dry) {
     // Perform mutations one at a time
-    const mutationResults: { mutation: Mutation; result: string }[] = [];
     for (const mutation of mutations) {
-      const result = await mutate(mutation);
-      mutationResults.push({ mutation, result });
+      await mutate(mutation);
     }
-
-    const results = mutationResults.map(({ mutation, result }) => ({
-      mutation: mutation.body,
-      result,
-    }))
-
-    console.log(JSON.stringify(results, undefined, 2));
   }
 
   return mutations.map((m) => m.body);
