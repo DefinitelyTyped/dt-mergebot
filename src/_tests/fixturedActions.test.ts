@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, lstatSync } from 'fs'
 import { join } from 'path'
 import { toMatchFile } from 'jest-file-snapshot'
 import { process } from '../compute-pr-actions'
-import { deriveStateForPR } from '../pr-info'
+import { deriveStateForPR, PrInfo } from '../pr-info'
 import * as cachedQueries from './cachedQueries.json';
 jest.mock("../util/cachedQueries", () => ({
   getProjectBoardColumns: jest.fn(() => cachedQueries.getProjectBoardColumns),
@@ -38,23 +38,18 @@ describe('with fixtures', () => {
       const mutationsPath = join(fixture, "mutations.json")
 
       const response = JSON.parse(readFileSync(responseJSONPath, "utf8"))
+      const existingDerivedJSON: PrInfo = JSON.parse(readFileSync(derivedJSONPath, "utf8"))
 
       // Because Owners is another API call, we need to make it a fixture also
       // and so this fixture overrides the current
       const derived = await deriveStateForPR(
         response,
         () => JSON.parse(readFileSync(ownersJSONPath, "utf8")),
-        () => JSON.parse(readFileSync(downloadsJSONPath, "utf8"))
+        () => JSON.parse(readFileSync(downloadsJSONPath, "utf8")),
+        () => new Date(existingDerivedJSON.now)
       )
 
       if (derived.type === "fail") throw new Error("Should never happen")
-
-      // So that fixtures don't change per day
-      const existingDerivedJSON = JSON.parse(readFileSync(derivedJSONPath, "utf8"))
-      // @ts-ignore
-      derived.stalenessInDays = existingDerivedJSON.stalenessInDays
-      // @ts-ignore
-      derived.now = existingDerivedJSON.now
 
       const action = process(derived)
 
