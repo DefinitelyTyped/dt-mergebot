@@ -118,11 +118,11 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject): Actions {
     });
 
     // Ping reviewers when needed
-    if (info.owners.length) {
+    if (info.owners.length && !info.isChangesRequested && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
         const tooManyOwners = info.owners.length > 50
         if (tooManyOwners) {
             context.responseComments.push(Comments.PingReviewersTooMany(info.owners))
-        } else if (info.ownerApprovalCount === 0) {
+        } else {
             context.responseComments.push(Comments.PingReviewers(info.owners, info.reviewLink))
         }
     }

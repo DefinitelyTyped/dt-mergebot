@@ -131,10 +131,6 @@ export interface PrInfo {
     readonly approvalFlags: ApprovalFlags;
     readonly dangerLevel: DangerLevel;
 
-    readonly ownerApprovalCount: number;
-    readonly otherApprovalCount: number;
-    readonly maintainerApprovalCount: number;
-
     /**
      * Integer count of days of inactivity from the author
      */
@@ -178,7 +174,6 @@ export async function deriveStateForPR(
     getNow = () => new Date(),
 ): Promise<PrInfo | BotFail | BotEnsureRemovedFromProject>  {
     const prInfo = info.data.repository?.pullRequest;
-    // console.log(JSON.stringify(prInfo, undefined, 2));
     
     if (!prInfo) return botFail("No PR with this number exists");
     if (prInfo.author == null) return botFail("PR author does not exist");
@@ -198,7 +193,6 @@ export async function deriveStateForPR(
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
     
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
-    // const rejections = noNulls(freshReviewsByState.CHANGES_REQUESTED);
     const approvals = noNulls(freshReviewsByState.APPROVED);
     const hasDismissedReview = !!freshReviewsByState.DISMISSED?.length;
     const approvalsByRole = partition(approvals, review => {
@@ -215,7 +209,6 @@ export async function deriveStateForPR(
         }
         return "other";
     });
-    
     
     const lastPushDate = new Date(headCommit.pushedDate);
     const now = getNow().toISOString();
@@ -243,9 +236,6 @@ export async function deriveStateForPR(
         anyPackageIsNew,
         packages,
         files: categorizedFiles,
-        otherApprovalCount: approvalsByRole.other?.length ?? 0,
-        ownerApprovalCount: approvalsByRole.owner?.length ?? 0,
-        maintainerApprovalCount: approvalsByRole.maintainer?.length ?? 0,
         hasDismissedReview,
         ...getTravisResult(headCommit),
         ...analyzeReviews(prInfo, isOwner)

@@ -38,9 +38,6 @@
       "package": "chrome"
     }
   ],
-  "otherApprovalCount": 0,
-  "ownerApprovalCount": 0,
-  "maintainerApprovalCount": 0,
   "hasDismissedReview": false,
   "travisResult": "pass",
   "reviewersWithStaleReviews": [

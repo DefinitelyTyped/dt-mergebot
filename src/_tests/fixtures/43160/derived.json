@@ -32,9 +32,6 @@
       "package": "dagre"
     }
   ],
-  "otherApprovalCount": 0,
-  "ownerApprovalCount": 1,
-  "maintainerApprovalCount": 0,
   "hasDismissedReview": false,
   "travisResult": "fail",
   "travisUrl": "https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/662962786?utm_source=github_status&utm_medium=notification",

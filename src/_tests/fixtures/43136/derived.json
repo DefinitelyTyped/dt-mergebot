@@ -34,9 +34,6 @@
       "package": "estree"
     }
   ],
-  "otherApprovalCount": 0,
-  "ownerApprovalCount": 1,
-  "maintainerApprovalCount": 0,
   "hasDismissedReview": false,
   "travisResult": "pass",
   "reviewersWithStaleReviews": [
