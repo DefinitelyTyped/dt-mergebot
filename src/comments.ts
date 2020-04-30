@@ -74,21 +74,15 @@ export const PingStaleReviewer = (reviewedAbbrOid: string, reviewer: string) => 
     status: `@${reviewer} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
 });
 
-export const MergeChecklist = (travisGreen: boolean, noMergeConflict: boolean, approved: boolean) => {
-    return ({
-        tag: `merge-checklist`,
-        status: ``
-    });
-};
-
 export const AskForAutoMergePermission = (author: string) => ({
     tag: `merge-offer`,
     status: `@${author} Everything looks good here. Great job! I am ready to merge this PR on your behalf.
-If you'd like that to happen, please post a comment with the exact text
+
+If you'd like that to happen, please post a comment saying:
 
 > Ready to merge
 
-and I'll merge it the next time I look at this PR.`});
+and I'll merge this PR almost instantly. Thanks for helping out! :heart:`});
 
 function tinyHash(s: string): string {
     return crypto.createHash("sha256").update(s).digest("hex").substr(0, 6);
