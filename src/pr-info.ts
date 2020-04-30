@@ -109,6 +109,11 @@ export interface PrInfo {
     readonly lastAuthorCommentDate: Date;
 
     /**
+     * The date of the most recent review on the head commit
+     */
+    readonly lastReviewDate?: Date;
+
+    /**
      * The date the PR was last reopened by a maintainer
      */
     readonly reopenedDate?: Date;
@@ -362,6 +367,7 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     const hasUpToDateReview: Set<string> = new Set();
     const headCommitOid: string = prInfo.headRefOid;
     const reviewersWithStaleReviews: { reviewer: string, reviewedAbbrOid: string }[] = [];
+    let lastReviewDate;
     let isChangesRequested = false;
     let approvalFlags = ApprovalFlags.None;
     
@@ -377,6 +383,8 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
         if (r.commit.oid === headCommitOid) {
             // Review of head commit
             hasUpToDateReview.add(r.author.login);
+            const reviewDate = new Date(r.submittedAt);
+            lastReviewDate = lastReviewDate && lastReviewDate > reviewDate ? lastReviewDate : reviewDate;
             if (r.state === PullRequestReviewState.CHANGES_REQUESTED) {
                 isChangesRequested = true;
             } else if (r.state === PullRequestReviewState.APPROVED) {
@@ -398,7 +406,7 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     }
 
     return ({
-
+        lastReviewDate,
         reviewersWithStaleReviews,
         approvalFlags,
         isChangesRequested
