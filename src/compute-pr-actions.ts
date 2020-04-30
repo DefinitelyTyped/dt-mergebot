@@ -70,8 +70,8 @@ export function process(info: PrInfo): Actions {
         status: createWelcomeComment(info)
     });
 
-    // Ping reviewers
-    if (!info.anyPackageIsNew && info.owners.length) {
+    // Ping reviewers when needed
+    if (info.owners.length) {
         const tooManyOwners = info.owners.length > 50
         if (tooManyOwners) {
             context.responseComments.push(Comments.PingReviewersTooMany(info.owners))
@@ -295,7 +295,6 @@ function createWelcomeComment(info: PrInfo) {
     }
     
     introCommentLines.push(``);
-
     if (!waitingOnThePRAuthorToMerge) {
         introCommentLines.push(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`)
     } else {
