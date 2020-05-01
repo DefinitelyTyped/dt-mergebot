@@ -92,6 +92,14 @@ npm test -- --watch
 npm test --testNamePattern 44299
 ```
 
+Run a test with the debugger:
+
+```sh
+node --inspect --inspect-brk ./node_modules/.bin/jest -i --runInBand --testNamePattern 44299
+```
+
+Then use "Attach to Process ID" to connect to that test runner
+
 If your changes require re-creating all fixtures:
 
 ```sh

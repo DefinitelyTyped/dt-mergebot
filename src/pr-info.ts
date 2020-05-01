@@ -479,48 +479,23 @@ function getTravisResult(headCommit: PR_repository_pullRequest_commits_nodes_com
     let travisUrl: string | undefined = undefined;
     let travisResult: TravisResult = undefined!;
 
-    const checkSuite = headCommit.checkSuites?.nodes?.[0];
-    if (checkSuite) {
-        switch (checkSuite.conclusion) {
-            case CheckConclusionState.SUCCESS:
+    const totalStatusChecks = headCommit.status?.contexts.find(check => check.description?.includes("Travis CI"))
+    if (totalStatusChecks) {
+        switch (totalStatusChecks.state) {
+            case StatusState.SUCCESS:
                 travisResult = TravisResult.Pass;
                 break;
-            case CheckConclusionState.TIMED_OUT:
-            case CheckConclusionState.CANCELLED:
-            case CheckConclusionState.ACTION_REQUIRED:
-            case CheckConclusionState.FAILURE:
+
+            case StatusState.FAILURE:
                 travisResult = TravisResult.Fail;
-                travisUrl = checkSuite.url;
+                travisUrl = totalStatusChecks.targetUrl;
                 break;
-            case CheckConclusionState.NEUTRAL:
+            
+            case StatusState.EXPECTED:
+            case StatusState.PENDING:
             default:
                 travisResult = TravisResult.Pending;
                 break;
-        }
-    } 
-    
-    // I'm not sure what determines why a checksuite will show, but there are cases when
-    // the CI result information in the checkSuite is null, and the info is still available
-    // inside the commit status results for that commit specifically.
-    if (!travisResult) {
-        const totalStatusChecks = headCommit.status?.contexts.find(check => check.description?.includes("Travis CI"))
-        if (totalStatusChecks) {
-            switch (totalStatusChecks.state) {
-                case StatusState.SUCCESS:
-                    travisResult = TravisResult.Pass;
-                    break;
-                case StatusState.PENDING:
-                case StatusState.FAILURE:
-                    travisResult = TravisResult.Fail;
-                    travisUrl = totalStatusChecks.targetUrl;
-                    break;
-                
-                    case StatusState.EXPECTED:
-                case StatusState.PENDING:
-                default:
-                    travisResult = TravisResult.Pending;
-                    break;
-            }
         }
     }
 
