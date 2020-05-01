@@ -16,7 +16,8 @@
     "Critical package": false,
     "Edits Infrastructure": false,
     "Edits multiple packages": false,
-    "Author is Owner": false
+    "Author is Owner": false,
+    "Merge:Auto": true
   },
   "responseComments": [
     {
