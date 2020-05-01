@@ -45,7 +45,6 @@ export interface BotEnsureRemovedFromProject {
     readonly message: string;
 }
 
-
 export interface BotNoPackages {
     readonly type: "no_packages";
     readonly pr_number: number;
@@ -361,8 +360,6 @@ function noNulls<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined)
 
     return arr.filter(arr => arr != null) as T[];
 }
-
-
 
 function authorSaysReadyToMerge(info: PR_repository_pullRequest) {
     return info.comments.nodes?.some(comment => {
