@@ -91,10 +91,10 @@ const httpTrigger = async function (context, _req) {
         const repoString = webhook.repository.full_name
         const query = `${webhook.sha} type:pr is:open repo:${repoString}` 
         const pr = await runQueryToGetPRMetadataForStatus(query)
-        if (pr) {
-            prNumber = pr.number
-            prTitle = pr.title
-        }
+        if (!pr) throw new Error(`Could not get PR for the status on ${webhook.sha} - made a search query with ${query}`)
+
+        prNumber = pr.number
+        prTitle = pr.title
     }
     
     if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`)
