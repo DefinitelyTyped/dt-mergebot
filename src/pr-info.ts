@@ -378,7 +378,8 @@ function authorSaysReadyToMerge(info: PR_repository_pullRequest) {
 function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: string) => boolean) {
     const hasUpToDateReview: Set<string> = new Set();
     const headCommitOid: string = prInfo.headRefOid;
-    const reviewersWithStaleReviews: { reviewer: string, reviewedAbbrOid: string }[] = [];
+    /** Key: commit id. Value: reviewer. */
+    const staleReviewAuthorsByCommit = new Map<string, string>();
     let lastReviewDate;
     let isChangesRequested = false;
     let approvalFlags = ApprovalFlags.None;
@@ -412,14 +413,17 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
             // Stale review
             // Reviewers with reviews of the current commit are not stale
             if (!hasUpToDateReview.has(r.author.login)) {
-                reviewersWithStaleReviews.push({ reviewedAbbrOid: r.commit.abbreviatedOid, reviewer: r.author.login });
+                staleReviewAuthorsByCommit.set(r.commit.abbreviatedOid, r.author.login);
             }
         }
     }
 
     return ({
         lastReviewDate,
-        reviewersWithStaleReviews,
+        reviewersWithStaleReviews: Array.from(staleReviewAuthorsByCommit.entries()).map(([commit, author]) => ({
+            reviewedAbbrOid: commit,
+            reviewer: author
+        })),
         approvalFlags,
         isChangesRequested
     });
