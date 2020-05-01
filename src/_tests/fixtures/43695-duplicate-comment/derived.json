@@ -1,0 +1,72 @@
+{
+  "type": "info",
+  "now": "2020-05-01T17:11:04.885Z",
+  "pr_number": 43695,
+  "author": "alexandercerutti",
+  "owners": [],
+  "dangerLevel": "ScopedAndConfiguration",
+  "headCommitAbbrOid": "3e83617",
+  "headCommitOid": "3e836178b736e5512361ffda46e84a5c668d7a90",
+  "mergeIsRequested": false,
+  "stalenessInDays": null,
+  "lastCommitDate": "1970-01-01T00:00:00.000Z",
+  "reopenedDate": "2020-04-30T23:08:16.000Z",
+  "lastAuthorCommentDate": "2020-05-01T00:19:19.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43695/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "accedo__accedo-one"
+  ],
+  "files": [
+    {
+      "filePath": "types/accedo__accedo-one/accedo__accedo-one-tests.ts",
+      "kind": "test",
+      "package": "accedo__accedo-one"
+    },
+    {
+      "filePath": "types/accedo__accedo-one/index.d.ts",
+      "kind": "definition",
+      "package": "accedo__accedo-one"
+    },
+    {
+      "filePath": "types/accedo__accedo-one/tsconfig.json",
+      "kind": "package-meta",
+      "package": "accedo__accedo-one"
+    },
+    {
+      "filePath": "types/accedo__accedo-one/tslint.json",
+      "kind": "package-meta",
+      "package": "accedo__accedo-one"
+    }
+  ],
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [
+    {
+      "reviewedAbbrOid": "68463fd",
+      "reviewer": "andrewbranch"
+    },
+    {
+      "reviewedAbbrOid": "68463fd",
+      "reviewer": "andrewbranch"
+    },
+    {
+      "reviewedAbbrOid": "90c94f9",
+      "reviewer": "andrewbranch"
+    },
+    {
+      "reviewedAbbrOid": "90c94f9",
+      "reviewer": "andrewbranch"
+    },
+    {
+      "reviewedAbbrOid": "a5285cd",
+      "reviewer": "RyanCavanaugh"
+    }
+  ],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}
