@@ -288,7 +288,7 @@ function createWelcomeComment(info: PrInfo) {
     // Some kind of extra warning
     let dangerComment: string | undefined;
     if (info.anyPackageIsNew) {
-        const links = info.packages.map(p => `- [${p} on npm](https://www.npmjs.com/package/${p})\n - [${p} on unpkg](https://unpkg.com/browse/${p}@latest/)`).join("\n")
+        const links = info.packages.map(p => `- [${p} on npm](https://www.npmjs.com/package/${p})\n - [${p} on unpkg](https://unpkg.com/browse/${p}@latest//)`).join("\n")
         reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n${links}`;
          
     } else if (info.popularityLevel !== "Well-liked by everyone") {
