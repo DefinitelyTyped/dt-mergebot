@@ -45,6 +45,12 @@ export interface BotEnsureRemovedFromProject {
     readonly message: string;
 }
 
+
+export interface BotNoPackages {
+    readonly type: "no_packages";
+    readonly pr_number: number;
+}
+
 export interface PrInfo {
     readonly type: "info";
 
@@ -177,7 +183,7 @@ export async function deriveStateForPR(
     getOwners?: (packages: readonly string[]) => OwnerInfo | Promise<OwnerInfo>,
     getDownloads?: (packages: readonly string[]) => Record<string, number> | Promise<Record<string, number>>,
     getNow = () => new Date(),
-): Promise<PrInfo | BotFail | BotEnsureRemovedFromProject>  {
+): Promise<PrInfo | BotFail | BotEnsureRemovedFromProject | BotNoPackages>  {
     const prInfo = info.data.repository?.pullRequest;
     
     if (!prInfo) return botFail("No PR with this number exists");
@@ -188,9 +194,11 @@ export async function deriveStateForPR(
 
     if (prInfo.state !== "OPEN") return botEnsureRemovedFromProject(prInfo.number, "PR is not active");
     if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft");
-    
+
     const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
     const packages = getPackagesTouched(categorizedFiles);
+
+    if (packages.length === 0) return botNoPackages(prInfo.number)
 
     const { anyPackageIsNew, allOwners } = getOwners ? await getOwners(packages) : await getOwnersOfPackages(packages);
     const authorIsOwner = isOwner(prInfo.author.login);
@@ -253,6 +261,10 @@ export async function deriveStateForPR(
 
     function botEnsureRemovedFromProject(prNumber: number, message: string): BotEnsureRemovedFromProject {
         return { type: "remove", pr_number: prNumber, message };
+    }
+
+    function botNoPackages(prNumber: number): BotNoPackages {
+        return { type: "no_packages", pr_number: prNumber };
     }
 
     function isOwner(login: string) {
