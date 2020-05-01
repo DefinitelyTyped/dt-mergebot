@@ -327,7 +327,7 @@ function createWelcomeComment(info: PrInfo) {
     introCommentLines.push(``);
     introCommentLines.push(` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
     introCommentLines.push(` * ${emoji(info.travisResult === TravisResult.Pass)} Continuous integration tests have passed`);
-        
+
     const approval = hasFinalApproval(info)
     if (info.anyPackageIsNew) {
         introCommentLines.push(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes when there are new packages added`);
@@ -335,6 +335,8 @@ function createWelcomeComment(info: PrInfo) {
         introCommentLines.push(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
     } else if (otherOwners.length === 0) { 
         introCommentLines.push(` * ${emoji(approval.approved)} A DT maintainer can merge changes when there are no other reviewers`);
+    } else if (info.dangerLevel === "ScopedAndConfiguration") { 
+        introCommentLines.push(` * ${emoji(approval.approved)} A DT maintainer needs to merge changes which affect module config files`);
     } else {
         introCommentLines.push(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes [without tests](${testsLink})`);
     }
