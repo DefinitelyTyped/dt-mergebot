@@ -43,7 +43,7 @@
     }
   ],
   "hasDismissedReview": false,
-  "travisResult": "unknown",
+  "travisResult": "pass",
   "lastReviewDate": "2020-04-30T23:07:49.000Z",
   "reviewersWithStaleReviews": [
     {

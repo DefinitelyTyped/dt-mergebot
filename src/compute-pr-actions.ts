@@ -326,7 +326,9 @@ function createWelcomeComment(info: PrInfo) {
     introCommentLines.push(`## Status`)
     introCommentLines.push(``);
     introCommentLines.push(` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
-    introCommentLines.push(` * ${emoji(info.travisResult === TravisResult.Pass)} Continuous integration tests have passed`);
+
+    const expectedResults = info.travisResult === TravisResult.Pending ? "finished" : "passed"
+    introCommentLines.push(` * ${emoji(info.travisResult === TravisResult.Pass)} Continuous integration tests have ${expectedResults}`);
 
     const approval = hasFinalApproval(info)
     if (info.anyPackageIsNew) {
