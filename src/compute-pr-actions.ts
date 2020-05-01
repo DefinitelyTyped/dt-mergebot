@@ -118,12 +118,13 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject): Actions {
     });
 
     // Ping reviewers when needed
-    if (info.owners.length && !info.isChangesRequested && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
+    const otherOwners = info.owners.filter(o => info.author.toLowerCase() !== o.toLowerCase())
+    if (otherOwners.length && !info.isChangesRequested && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
         const tooManyOwners = info.owners.length > 50
         if (tooManyOwners) {
-            context.responseComments.push(Comments.PingReviewersTooMany(info.owners))
+            context.responseComments.push(Comments.PingReviewersTooMany(otherOwners))
         } else {
-            context.responseComments.push(Comments.PingReviewers(info.owners, info.reviewLink))
+            context.responseComments.push(Comments.PingReviewers(otherOwners, info.reviewLink))
         }
     }
 
@@ -301,7 +302,6 @@ function createWelcomeComment(info: PrInfo) {
         dangerComment = `This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`;
     } else if (info.dangerLevel === "Infrastructure") {
         dangerComment = "This PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare - did you mean to do this?";
-
     }
 
     if (dangerComment !== undefined) {
@@ -323,8 +323,10 @@ function createWelcomeComment(info: PrInfo) {
     const approval = hasFinalApproval(info)
     if (info.anyPackageIsNew) {
         introCommentLines.push(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes when there are new packages added`);
-    } else if(info.dangerLevel === "ScopedAndTested") { 
+    } else if (info.dangerLevel === "ScopedAndTested") { 
         introCommentLines.push(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
+    } else if (otherOwners.length === 0) { 
+        introCommentLines.push(` * ${emoji(approval.approved)} A DT maintainer can merge changes when there are no other reviewers`);
     } else {
         introCommentLines.push(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes [without tests](${testsLink})`);
     }

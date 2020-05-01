@@ -1,0 +1,32 @@
+{
+  "pr_number": 44316,
+  "targetColumn": "Waiting for Code Reviews",
+  "labels": {
+    "Has Merge Conflict": false,
+    "The Travis CI build failed": false,
+    "Revision needed": false,
+    "New Definition": false,
+    "Where is Travis?": false,
+    "Owner Approved": false,
+    "Other Approved": false,
+    "Maintainer Approved": false,
+    "Merge:LGTM": false,
+    "Merge:YSYL": false,
+    "Popular package": false,
+    "Critical package": false,
+    "Edits Infrastructure": false,
+    "Edits multiple packages": false,
+    "Author is Owner": true
+  },
+  "responseComments": [
+    {
+      "tag": "welcome",
+      "status": "@mattleff Thank you for submitting this PR! \n\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer can merge changes when there are no other reviewers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n```json\n{\n  \"type\": \"info\",\n  \"now\": \"-\",\n  \"pr_number\": 44316,\n  \"author\": \"mattleff\",\n  \"owners\": [\n    \"mattleff\"\n  ],\n  \"dangerLevel\": \"ScopedAndConfiguration\",\n  \"headCommitAbbrOid\": \"55357f7\",\n  \"headCommitOid\": \"55357f7d60d059b5c84a23bd92854276a8f9a419\",\n  \"mergeIsRequested\": false,\n  \"stalenessInDays\": 2,\n  \"lastCommitDate\": \"2020-04-29T15:19:08.000Z\",\n  \"lastAuthorCommentDate\": \"2020-04-29T15:19:08.000Z\",\n  \"reviewLink\": \"https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44316/files\",\n  \"hasMergeConflict\": false,\n  \"authorIsOwner\": true,\n  \"isFirstContribution\": false,\n  \"popularityLevel\": \"Well-liked by everyone\",\n  \"anyPackageIsNew\": false,\n  \"packages\": [\n    \"vimeo\"\n  ],\n  \"files\": [\n    {\n      \"filePath\": \"types/vimeo/index.d.ts\",\n      \"kind\": \"definition\",\n      \"package\": \"vimeo\"\n    },\n    {\n      \"filePath\": \"types/vimeo/tsconfig.json\",\n      \"kind\": \"package-meta\",\n      \"package\": \"vimeo\"\n    },\n    {\n      \"filePath\": \"types/vimeo/vimeo-tests.ts\",\n      \"kind\": \"test\",\n      \"package\": \"vimeo\"\n    }\n  ],\n  \"hasDismissedReview\": false,\n  \"travisResult\": \"pass\",\n  \"reviewersWithStaleReviews\": [],\n  \"approvalFlags\": 0,\n  \"isChangesRequested\": false\n}\n```\n\n</details>"
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false
+}

@@ -1,0 +1,47 @@
+{
+  "type": "info",
+  "now": "2020-05-01T15:22:22.898Z",
+  "pr_number": 44316,
+  "author": "mattleff",
+  "owners": [
+    "mattleff"
+  ],
+  "dangerLevel": "ScopedAndConfiguration",
+  "headCommitAbbrOid": "55357f7",
+  "headCommitOid": "55357f7d60d059b5c84a23bd92854276a8f9a419",
+  "mergeIsRequested": false,
+  "stalenessInDays": 2,
+  "lastCommitDate": "2020-04-29T15:19:08.000Z",
+  "lastAuthorCommentDate": "2020-04-29T15:19:08.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44316/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": true,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "vimeo"
+  ],
+  "files": [
+    {
+      "filePath": "types/vimeo/index.d.ts",
+      "kind": "definition",
+      "package": "vimeo"
+    },
+    {
+      "filePath": "types/vimeo/tsconfig.json",
+      "kind": "package-meta",
+      "package": "vimeo"
+    },
+    {
+      "filePath": "types/vimeo/vimeo-tests.ts",
+      "kind": "test",
+      "package": "vimeo"
+    }
+  ],
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}
