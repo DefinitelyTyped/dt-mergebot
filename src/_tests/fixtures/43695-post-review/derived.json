@@ -1,16 +1,16 @@
 {
   "type": "info",
-  "now": "2020-04-08T12:29:36.999Z",
+  "now": "2020-04-30T23:13:37.659Z",
   "pr_number": 43695,
   "author": "alexandercerutti",
   "owners": [],
   "dangerLevel": "ScopedAndConfiguration",
-  "headCommitAbbrOid": "a5285cd",
-  "headCommitOid": "a5285cda2722912a390770722a334e6d6e43d1ab",
+  "headCommitAbbrOid": "90c94f9",
+  "headCommitOid": "90c94f91120c026f5f8bcc586426e8590b7b4048",
   "mergeIsRequested": false,
-  "stalenessInDays": 1,
-  "lastCommitDate": "2020-04-07T07:41:37.000Z",
-  "lastAuthorCommentDate": "2020-04-07T07:41:37.000Z",
+  "stalenessInDays": 15,
+  "lastCommitDate": "2020-04-15T15:53:29.000Z",
+  "lastAuthorCommentDate": "2020-04-21T11:55:50.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43695/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,
@@ -43,9 +43,14 @@
     }
   ],
   "hasDismissedReview": false,
-  "travisResult": "pass",
-  "lastReviewDate": "2020-04-08T16:23:52.000Z",
-  "reviewersWithStaleReviews": [],
+  "travisResult": "unknown",
+  "lastReviewDate": "2020-04-30T23:07:49.000Z",
+  "reviewersWithStaleReviews": [
+    {
+      "reviewedAbbrOid": "a5285cd",
+      "reviewer": "RyanCavanaugh"
+    }
+  ],
   "approvalFlags": 0,
   "isChangesRequested": true
 }

@@ -35,6 +35,7 @@
   ],
   "hasDismissedReview": false,
   "travisResult": "pass",
+  "lastReviewDate": "2020-04-27T18:56:06.000Z",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 0,
   "isChangesRequested": true
