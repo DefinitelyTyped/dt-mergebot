@@ -1,5 +1,5 @@
 import * as Comments from "./comments";
-import { PrInfo, ApprovalFlags, BotEnsureRemovedFromProject } from "./pr-info";
+import { PrInfo, ApprovalFlags, BotEnsureRemovedFromProject, BotNoPackages } from "./pr-info";
 import { TravisResult } from "./util/travis";
 import { daysSince } from "./util/util";
 
@@ -87,11 +87,19 @@ function createEmptyActions(prNumber: number): Actions {
 const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package"
 const uriForTestingNewPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#testing"
 
-export function process(info: PrInfo | BotEnsureRemovedFromProject): Actions {
+export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackages): Actions {
     if (info.type === "remove") {
         return {
             ...createEmptyActions(info.pr_number),
             shouldRemoveFromActiveColumns: true,
+        };
+    }
+
+    if (info.type === "no_packages") {
+        return {
+            ...createEmptyActions(info.pr_number),
+            targetColumn: "Needs Maintainer Review",
+            shouldUpdateProjectColumn: true
         };
     }
 
