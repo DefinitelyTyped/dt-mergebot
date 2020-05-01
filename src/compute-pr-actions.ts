@@ -20,6 +20,7 @@ type LabelName =
     | "Owner Approved"
     | "Other Approved"
     | "Maintainer Approved"
+    | "Merge:Auto"
     | "Merge:LGTM"
     | "Merge:YSYL"
     | "Popular package"
@@ -60,7 +61,8 @@ function createDefaultActions(prNumber: number): Actions {
             "Critical package": false,
             "Edits Infrastructure": false,
             "Edits multiple packages": false,
-            "Author is Owner": false
+            "Author is Owner": false,
+            "Merge:Auto": false
         },
         responseComments: [],
         shouldClose: false,
@@ -118,6 +120,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
     context.labels["New Definition"] = info.anyPackageIsNew;
     context.labels["Author is Owner"] = info.authorIsOwner;
+    context.labels["Merge:Auto"] = canBeMergedNow(info);
 
     // Update intro comment
     context.responseComments.push({

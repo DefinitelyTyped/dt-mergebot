@@ -1,5 +1,16 @@
 [
   {
+    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWw2OTcwMTg5NzI="
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0Mzg4NDkxOTI2"
+      }
+    }
+  },
+  {
     "query": "mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
