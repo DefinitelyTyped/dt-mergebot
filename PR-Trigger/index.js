@@ -37,7 +37,7 @@ const httpTrigger = async function (context, _req) {
     // https://developer.github.com/webhooks/
     const acceptedEventsToActions = {
         "pull_request": ["opened", "closed", "reopened", "edited", "synchronized", "ready_for_review"],
-        "pull_request_review": ["submitted", "edited", "dismissed"],
+        "pull_request_review": ["submitted", "dismissed"],
         "issue_comment": ["created", "edited", "deleted"],
         "status": ["*"]
     }
