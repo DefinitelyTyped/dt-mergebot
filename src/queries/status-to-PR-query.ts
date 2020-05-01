@@ -21,6 +21,7 @@ export const GetPRForStatusQuery = gql`query GetPRForStatus($query: String!) {
       ... on PullRequest {
         title
         number
+        closed
       }
     }
   }

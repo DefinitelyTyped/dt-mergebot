@@ -89,9 +89,17 @@ const httpTrigger = async function (context, _req) {
         // See https://github.com/maintainers/early-access-feedback/issues/114 for more context on getting a PR from a SHA
         // TLDR: it's not in the API, and this search hack has been in used on Peril for the last ~3 years
         const repoString = webhook.repository.full_name
-        const query = `${webhook.sha} type:pr is:open repo:${repoString}` 
+        const query = `${webhook.sha} type:pr  repo:${repoString}` 
         const pr = await runQueryToGetPRMetadataForStatus(query)
+        
         if (!pr) throw new Error(`Could not get PR for the status on ${webhook.sha} - made a search query with ${query}`)
+        if (pr.closed) {
+            context.log.info(`Skipped webhook, could not find an open PR for the sha referenced in the status (${webhook.sha})`)
+            context.res = {
+                status: 204,
+                body: `NOOPing due to not finding an open PR for the sha ${webhook.sha}`
+            }
+        }
 
         prNumber = pr.number
         prTitle = pr.title

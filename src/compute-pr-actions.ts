@@ -81,7 +81,7 @@ function createEmptyActions(prNumber: number): Actions {
         shouldUpdateLabels: false,
         shouldUpdateProjectColumn: false,
         shouldRemoveFromActiveColumns: false,
-};
+    };
 }
 
 const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package"
