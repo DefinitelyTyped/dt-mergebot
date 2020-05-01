@@ -367,7 +367,7 @@ function noNulls<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined)
 function authorSaysReadyToMerge(info: PR_repository_pullRequest) {
     return info.comments.nodes?.some(comment => {
         if (comment?.author?.login === info.author?.login) {
-            if (comment?.body.trim().toLowerCase() === "ready to merge") {
+            if (comment?.body.trim().toLowerCase().startsWith("ready to merge")) {
                 return true;
             }
         }
