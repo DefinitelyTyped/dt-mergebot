@@ -1,0 +1,47 @@
+{
+  "type": "info",
+  "now": "2020-05-02T15:44:09.276Z",
+  "pr_number": 44437,
+  "author": "johnnyreilly",
+  "owners": [
+    "Berkays",
+    "unindented",
+    "kamontat",
+    "theweirdone",
+    "whoaa512"
+  ],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "eb92456",
+  "headCommitOid": "eb92456861d4537c6e96dd7865e715aa4812aae0",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastCommitDate": "2020-05-02T12:17:06.000Z",
+  "lastAuthorCommentDate": "2020-05-02T12:17:06.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44437/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Popular",
+  "anyPackageIsNew": false,
+  "packages": [
+    "prompts"
+  ],
+  "files": [
+    {
+      "filePath": "types/prompts/index.d.ts",
+      "kind": "definition",
+      "package": "prompts"
+    },
+    {
+      "filePath": "types/prompts/prompts-tests.ts",
+      "kind": "test",
+      "package": "prompts"
+    }
+  ],
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "lastReviewDate": "2020-05-02T12:17:22.000Z",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 2,
+  "isChangesRequested": false
+}
