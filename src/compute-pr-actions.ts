@@ -297,7 +297,7 @@ function createWelcomeComment(info: PrInfo) {
     } else if (info.popularityLevel === "Critical") {
         reviewerAdvisory = "Because this is a widely-used package, a DT maintainer will need to review it before it can be merged.";
     } else if (info.dangerLevel === "ScopedAndTested") {
-        reviewerAdvisory = "Because you edited one package and updated the tests (👏), I can merge this once someone else signs off on it.";
+        reviewerAdvisory = "Because you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.";
     } else if (otherOwners.length === 0) {
         reviewerAdvisory = "There aren't any other owners of this package, so a DT maintainer will review it.";
     } else if (info.dangerLevel === "MultiplePackagesEdited") {
