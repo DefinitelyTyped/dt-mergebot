@@ -294,7 +294,7 @@ function createWelcomeComment(info: PrInfo) {
         const links = info.packages.map(p => `- [${p} on npm](https://www.npmjs.com/package/${p})\n - [${p} on unpkg](https://unpkg.com/browse/${p}@latest//)`).join("\n")
         reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n${links}`;
          
-    } else if (info.popularityLevel !== "Well-liked by everyone") {
+    } else if (info.popularityLevel === "Critical") {
         reviewerAdvisory = "Because this is a widely-used package, a DT maintainer will need to review it before it can be merged.";
     } else if (info.dangerLevel === "ScopedAndTested") {
         reviewerAdvisory = "Because you edited one package and updated the tests (👏), I can merge this once someone else signs off on it.";
