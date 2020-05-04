@@ -1,6 +1,6 @@
 {
   "pr_number": 43695,
-  "targetColumn": "Waiting for Code Reviews",
+  "targetColumn": "Needs Author Action",
   "labels": {
     "Has Merge Conflict": false,
     "The Travis CI build failed": false,
