@@ -27,10 +27,6 @@
     {
       "tag": "reviewer-complaint-90c94f9",
       "status": "@alexandercerutti One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can \"dismiss\" the review using GitHub's review UI. Thank you!"
-    },
-    {
-      "tag": "stale-ping-fbf110-a5285cd",
-      "status": "@RyanCavanaugh Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?"
     }
   ],
   "shouldClose": false,
