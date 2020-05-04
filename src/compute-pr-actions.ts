@@ -168,19 +168,16 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
                 break;
         }
     }
-
     // CI is running; default column is Waiting for Reviewers
-    if (info.travisResult === TravisResult.Pending) {
+    else if (info.travisResult === TravisResult.Pending) {
         context.targetColumn = "Waiting for Code Reviews";
     }
-
     // CI is missing
-    if (info.travisResult === TravisResult.Missing) {
+    else if (info.travisResult === TravisResult.Missing) {
         context.labels["Where is Travis?"] = true;
     }
-
     // CI is green
-    if (info.travisResult === TravisResult.Pass) {
+    else if (info.travisResult === TravisResult.Pass) {
         const isAutoMergeable = canBeMergedNow(info);
 
         if (isAutoMergeable) {
