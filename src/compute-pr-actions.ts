@@ -165,6 +165,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
             case Staleness.Abandoned:
                 context.responseComments.push(Comments.SorryAbandoned(info.author));
                 context.shouldClose = true;
+                context.shouldRemoveFromActiveColumns = true
                 break;
         }
     }
