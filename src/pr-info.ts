@@ -272,13 +272,14 @@ export async function deriveStateForPR(
 }
 
 type ReopenedEvent = PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent;
+type ReadyForReviewEvent = PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent;
 
+/** Either: when the PR was last opened, or switched to ready from draft */
 function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems) {
     const createdAt = findLast(timelineItems.nodes, (item): item is ReopenedEvent => item?.__typename === "ReopenedEvent")?.createdAt;
-    if (createdAt) {
-        return new Date(createdAt);
-    }
-    return undefined;
+    const availableForReviewAt = findLast(timelineItems.nodes, (item): item is ReadyForReviewEvent => item?.__typename === "ReadyForReviewEvent")?.createdAt;
+    const dates = [createdAt && new Date(createdAt), availableForReviewAt && new Date(availableForReviewAt)].filter(Boolean)
+    return dates.sort()[0]
 }
 
 type IssueComment = PR_repository_pullRequest_timelineItems_nodes_IssueComment;

@@ -49,9 +49,6 @@ set BOT_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # *nix
 export BOT_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx 
-
-# Code-gen the schema
-npm run graphql-schema
 ```
 
 # Development
@@ -65,6 +62,15 @@ npm run single-info -- [PR_NUM]
 # Or
 npm run single-info-debug -- [PR_NUM]
 ```
+
+If you update any queries, running:
+
+```sh
+# Code-gen the schema
+npm run graphql-schema
+```
+
+Will set up all your types.
 
 # Tests
 
