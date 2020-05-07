@@ -1,6 +1,6 @@
 import { GetPRInfo } from "./queries/pr-query";
 
-import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest, PR_repository_pullRequest_timelineItems, PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent, PR_repository_pullRequest_reviews, PR_repository_pullRequest_timelineItems_nodes_IssueComment } from "./queries/schema/PR";
+import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest, PR_repository_pullRequest_timelineItems, PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent, PR_repository_pullRequest_reviews, PR_repository_pullRequest_timelineItems_nodes_IssueComment, PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent } from "./queries/schema/PR";
 
 import { TravisResult } from "./util/travis";
 import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState, PullRequestState } from "./queries/graphql-global-types";
@@ -272,14 +272,15 @@ export async function deriveStateForPR(
 }
 
 type ReopenedEvent = PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent;
-type ReadyForReviewEvent = PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent;
+type ReadyForReviewEvent = PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent;
 
 /** Either: when the PR was last opened, or switched to ready from draft */
 function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems) {
-    const createdAt = findLast(timelineItems.nodes, (item): item is ReopenedEvent => item?.__typename === "ReopenedEvent")?.createdAt;
-    const availableForReviewAt = findLast(timelineItems.nodes, (item): item is ReadyForReviewEvent => item?.__typename === "ReadyForReviewEvent")?.createdAt;
-    const dates = [createdAt && new Date(createdAt), availableForReviewAt && new Date(availableForReviewAt)].filter(Boolean)
-    return dates.sort()[0]
+    const lastItem = findLast(timelineItems.nodes, (item): item is ReopenedEvent | ReadyForReviewEvent => (
+        item?.__typename === "ReopenedEvent" || item?.__typename === "ReadyForReviewEvent"
+      ));
+    
+    return lastItem && lastItem.createdAt && new Date(lastItem.createdAt)
 }
 
 type IssueComment = PR_repository_pullRequest_timelineItems_nodes_IssueComment;
