@@ -42,7 +42,7 @@ export interface PR_repository_pullRequest_labels {
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent {
-  __typename: "AddedToProjectEvent" | "AssignedEvent" | "BaseRefChangedEvent" | "BaseRefForcePushedEvent" | "ClosedEvent" | "CommentDeletedEvent" | "ConnectedEvent" | "ConvertToDraftEvent" | "ConvertedNoteToIssueEvent" | "CrossReferencedEvent" | "DemilestonedEvent" | "DeployedEvent" | "DeploymentEnvironmentChangedEvent" | "DisconnectedEvent" | "HeadRefDeletedEvent" | "HeadRefForcePushedEvent" | "HeadRefRestoredEvent" | "LabeledEvent" | "LockedEvent" | "MarkedAsDuplicateEvent" | "MentionedEvent" | "MergedEvent" | "MilestonedEvent" | "MovedColumnsInProjectEvent" | "PinnedEvent" | "PullRequestCommit" | "PullRequestCommitCommentThread" | "PullRequestReview" | "PullRequestReviewThread" | "PullRequestRevisionMarker" | "ReadyForReviewEvent" | "ReferencedEvent" | "RemovedFromProjectEvent" | "RenamedTitleEvent" | "ReviewDismissedEvent" | "ReviewRequestRemovedEvent" | "ReviewRequestedEvent" | "SubscribedEvent" | "TransferredEvent" | "UnassignedEvent" | "UnlabeledEvent" | "UnlockedEvent" | "UnmarkedAsDuplicateEvent" | "UnpinnedEvent" | "UnsubscribedEvent" | "UserBlockedEvent";
+  __typename: "AddedToProjectEvent" | "AssignedEvent" | "BaseRefChangedEvent" | "BaseRefForcePushedEvent" | "ClosedEvent" | "CommentDeletedEvent" | "ConnectedEvent" | "ConvertToDraftEvent" | "ConvertedNoteToIssueEvent" | "CrossReferencedEvent" | "DemilestonedEvent" | "DeployedEvent" | "DeploymentEnvironmentChangedEvent" | "DisconnectedEvent" | "HeadRefDeletedEvent" | "HeadRefForcePushedEvent" | "HeadRefRestoredEvent" | "LabeledEvent" | "LockedEvent" | "MarkedAsDuplicateEvent" | "MentionedEvent" | "MergedEvent" | "MilestonedEvent" | "MovedColumnsInProjectEvent" | "PinnedEvent" | "PullRequestCommit" | "PullRequestCommitCommentThread" | "PullRequestReview" | "PullRequestReviewThread" | "PullRequestRevisionMarker" | "ReferencedEvent" | "RemovedFromProjectEvent" | "RenamedTitleEvent" | "ReviewDismissedEvent" | "ReviewRequestRemovedEvent" | "ReviewRequestedEvent" | "SubscribedEvent" | "TransferredEvent" | "UnassignedEvent" | "UnlabeledEvent" | "UnlockedEvent" | "UnmarkedAsDuplicateEvent" | "UnpinnedEvent" | "UnsubscribedEvent" | "UserBlockedEvent";
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_IssueComment_author {
@@ -73,7 +73,15 @@ export interface PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent {
   createdAt: any;
 }
 
-export type PR_repository_pullRequest_timelineItems_nodes = PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent | PR_repository_pullRequest_timelineItems_nodes_IssueComment | PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent;
+export interface PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent {
+  __typename: "ReadyForReviewEvent";
+  /**
+   * Identifies the date and time when the object was created.
+   */
+  createdAt: any;
+}
+
+export type PR_repository_pullRequest_timelineItems_nodes = PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent | PR_repository_pullRequest_timelineItems_nodes_IssueComment | PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent | PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent;
 
 export interface PR_repository_pullRequest_timelineItems {
   __typename: "PullRequestTimelineItemsConnection";

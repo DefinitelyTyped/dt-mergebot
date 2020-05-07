@@ -21,6 +21,10 @@ export interface GetPRForStatus_search_nodes_PullRequest {
    * Identifies the pull request number.
    */
   number: number;
+  /**
+   * `true` if the pull request is closed
+   */
+  closed: boolean;
 }
 
 export type GetPRForStatus_search_nodes = GetPRForStatus_search_nodes_App | GetPRForStatus_search_nodes_PullRequest;
