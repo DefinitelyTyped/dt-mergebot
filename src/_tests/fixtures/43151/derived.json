@@ -10,7 +10,7 @@
   "mergeIsRequested": false,
   "stalenessInDays": 4,
   "lastCommitDate": "2020-03-15T12:50:20.000Z",
-  "lastAuthorCommentDate": "2020-03-15T12:50:20.000Z",
+  "lastCommentDate": "2020-03-15T12:50:20.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43151/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,

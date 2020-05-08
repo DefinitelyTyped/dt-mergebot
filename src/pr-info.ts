@@ -109,9 +109,9 @@ export interface PrInfo {
     readonly lastCommitDate: Date;
 
     /**
-     * The date the PR author last had a meaningful interaction with the PR
+     * The date the anyone had a meaningful interaction with the PR
      */
-    readonly lastAuthorCommentDate: Date;
+    readonly lastCommentDate: Date;
 
     /**
      * The date of the most recent review on the head commit
@@ -238,7 +238,7 @@ export async function deriveStateForPR(
         stalenessInDays: daysSince(headCommit.pushedDate, now),
         lastCommitDate: lastPushDate,
         reopenedDate: getReopenedDate(prInfo.timelineItems),
-        lastAuthorCommentDate: getLastAuthorActivityDate(prInfo.author.login, prInfo.timelineItems, prInfo.reviews) || lastPushDate,
+        lastCommentDate: getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastPushDate,
         reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         authorIsOwner, isFirstContribution,
@@ -284,20 +284,17 @@ function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems)
 }
 
 type IssueComment = PR_repository_pullRequest_timelineItems_nodes_IssueComment;
-function getLastAuthorActivityDate(authorLogin: string, timelineItems: PR_repository_pullRequest_timelineItems, reviews: PR_repository_pullRequest_reviews | null) {
+function getLastCommentishActivityDate(timelineItems: PR_repository_pullRequest_timelineItems, reviews: PR_repository_pullRequest_reviews | null) {
     const lastIssueComment = findLast(timelineItems.nodes, (item): item is IssueComment => {
-        return item?.__typename === "IssueComment" && item.author?.login === authorLogin;
+        return item?.__typename === "IssueComment" && !!item.author;
     });
     const lastReviewComment = forEachReverse(reviews?.nodes, review => {
-        return findLast(review?.comments?.nodes, comment => {
-            return comment?.author?.login === authorLogin;
-        });
+        return findLast(review?.comments?.nodes, comment => !!comment?.author?.login)
     });
+
     if (lastIssueComment && lastReviewComment) {
-        return new Date([
-            lastIssueComment.createdAt,
-            lastReviewComment.createdAt
-        ].sort()[1]);
+        const latestDate = [lastIssueComment.createdAt, lastReviewComment.createdAt].sort()[1]
+        return new Date(latestDate);
     }
     if (lastIssueComment || lastReviewComment) {
         return new Date((lastIssueComment || lastReviewComment)?.createdAt);
