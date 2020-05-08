@@ -263,7 +263,7 @@ const enum Staleness {
 }
 
 function getStaleness(info: PrInfo): Staleness {
-    const daysSinceLastAuthorComment = daysSince(info.lastAuthorCommentDate, info.now);
+    const daysSinceLastAuthorComment = daysSince(info.lastCommentDate, info.now);
     const daysSinceLastPush = daysSince(info.lastCommitDate, info.now);
     const daysSinceReopened = info.reopenedDate ? daysSince(info.reopenedDate, info.now) : Infinity;
     const daysSinceLastReview = info.lastReviewDate ? daysSince(info.lastReviewDate, info.now) : Infinity;
