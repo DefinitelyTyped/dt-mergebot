@@ -284,16 +284,15 @@ function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems)
 type IssueComment = PR_repository_pullRequest_timelineItems_nodes_IssueComment;
 function getLastCommentishActivityDate(timelineItems: PR_repository_pullRequest_timelineItems, reviews: PR_repository_pullRequest_reviews | null) {
     const lastIssueComment = findLast(timelineItems.nodes, (item): item is IssueComment => {
-        return item?.__typename === "IssueComment" ;
+        return item?.__typename === "IssueComment" && !!item.author;
     });
     const lastReviewComment = forEachReverse(reviews?.nodes, review => {
-        return findLast(review?.comments?.nodes, _ => true)
+        return findLast(review?.comments?.nodes, comment => !!comment?.author?.login)
     });
+
     if (lastIssueComment && lastReviewComment) {
-        return new Date([
-            lastIssueComment.createdAt,
-            lastReviewComment.createdAt
-        ].sort()[1]);
+        const latestDate = [lastIssueComment.createdAt, lastReviewComment.createdAt].sort()[1]
+        return new Date(latestDate);
     }
     if (lastIssueComment || lastReviewComment) {
         return new Date((lastIssueComment || lastReviewComment)?.createdAt);
