@@ -7,6 +7,8 @@ const { executePrActions } = require("../bin/execute-pr-actions");
 
 /** @type {import("@azure/functions").AzureFunction} */
 const run = async function (context) {
+  context.log.info(`Getting open PRs.`);
+
   const prs = await getAllOpenPRs();
 
   for (const pr of prs) {
