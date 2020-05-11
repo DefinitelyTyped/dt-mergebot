@@ -6,7 +6,7 @@ const compute = require("../bin/compute-pr-actions");
 const { executePrActions } = require("../bin/execute-pr-actions");
 
 /** @type {import("@azure/functions").AzureFunction} */
-const run = async function (context) {
+const timerTrigger = async function (context) {
   context.log.info(`Getting open PRs.`);
 
   const prs = await getAllOpenPRs();
@@ -34,6 +34,8 @@ const run = async function (context) {
     // Act on the actions
     await executePrActions(actions, info.data);
   }
+
+  context.log.info(`Cutting 'recently merged' projects to the last 50`);
 };
 
-module.exports = run;
+module.exports = timerTrigger;
