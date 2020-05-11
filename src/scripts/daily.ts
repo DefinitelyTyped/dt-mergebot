@@ -19,12 +19,14 @@ const start = async function () {
 
     // If it didn't work, bail early
     if (state.type === "fail") {
-      return console.error(`Failed because of: ${state.message}`);
+      console.error(`Failed because of: ${state.message}`);
+      continue
     }
 
     // Allow the state to declare that nothing should happen
     if (state.type === "no_packages") {
-      return console.error(`NOOPing because no packages`);
+      console.error(`NOOPing because no packages`);
+      continue
     }
 
     // Convert the info to a set of actions for the bot
