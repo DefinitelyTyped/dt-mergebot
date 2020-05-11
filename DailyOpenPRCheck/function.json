@@ -2,7 +2,7 @@
   "bindings": [
     {
       "name": "daily-pr-trigger",
-      "type": "run",
+      "type": "timerTrigger",
       "direction": "in",
       "schedule": "0 0 3 * * *"
     }
