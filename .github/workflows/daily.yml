@@ -1,0 +1,26 @@
+name: Daily updates for v2
+
+# For testing
+on: push
+
+# For prod
+# on:
+#   schedule:
+#     - cron: '0 4 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+      - run: npm install
+      - run: npm run build
+
+      # Go through all open PRs and run the bot over them
+      - run: node ./bin/scripts/daily.js
+        env:
+          BOT_AUTH_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
+
+   

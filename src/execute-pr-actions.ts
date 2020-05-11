@@ -16,7 +16,7 @@ const closePr = `mutation($input: ClosePullRequestInput!) { closePullRequest(inp
 
 const addProjectCard = `mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }`;
 const moveProjectCard = `mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }`;
-const deleteProjectCard = `mutation($input: DeleteProjectCardInput!) { deleteProjectCard(input: $input) { clientMutationId } }`;
+export const deleteProjectCard = `mutation($input: DeleteProjectCardInput!) { deleteProjectCard(input: $input) { clientMutationId } }`;
 
 export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean) {
   const pr = info.repository?.pullRequest!;
