@@ -36,4 +36,4 @@ const run = async function (context) {
   }
 };
 
-export default run;
+module.exports = run;
