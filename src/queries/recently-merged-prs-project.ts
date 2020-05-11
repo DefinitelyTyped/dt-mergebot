@@ -9,7 +9,7 @@ const GetRecentlyMergedPRsProjectQuery = gql`
         columns(first: 5) {
           nodes {
             name
-            cards(first: 100) {
+            cards(last: 100) {
               nodes {
                 id
                 updatedAt
