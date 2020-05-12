@@ -69,9 +69,9 @@ export const Welcome = (login: string, isFirstPR: boolean) => `@${login} Thank y
 export const NewDefinition = `Because this is a new definition, a DefinitelyTyped maintainer will be reviewing this PR in the next few days once the Travis CI build passes.`;
 export const NoOtherReviewers = `Because this PR doesn't have any code reviewers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the Travis CI build passes.`;
 
-export const PingStaleReviewer = (reviewedAbbrOid: string, reviewer: string) => ({
-    tag: `stale-ping-${tinyHash(reviewer)}-${reviewedAbbrOid}`,
-    status: `@${reviewer} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
+export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) => ({
+    tag: `stale-ping-${tinyHash(reviewers.join("-"))}-${reviewedAbbrOid}`,
+    status: `@${reviewers.join(", @")} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
 });
 
 export const AskForAutoMergePermission = (author: string) => ({

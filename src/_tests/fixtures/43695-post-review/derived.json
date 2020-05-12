@@ -48,7 +48,8 @@
   "reviewersWithStaleReviews": [
     {
       "reviewedAbbrOid": "a5285cd",
-      "reviewer": "RyanCavanaugh"
+      "reviewer": "RyanCavanaugh",
+      "date": "2020-04-08T16:23:52Z"
     }
   ],
   "approvalFlags": 0,
