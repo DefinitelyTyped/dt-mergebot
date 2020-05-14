@@ -241,7 +241,8 @@ export async function deriveStateForPR(
         lastCommentDate: getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastPushDate,
         reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
-        authorIsOwner, isFirstContribution,
+        authorIsOwner, 
+        isFirstContribution,
         popularityLevel: getDownloads
             ? getPopularityLevelFromDownloads(await getDownloads(packages))
             : await getPopularityLevel(packages),

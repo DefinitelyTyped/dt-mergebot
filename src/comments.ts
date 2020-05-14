@@ -7,12 +7,12 @@ export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
 
 export const SorryAbandoned = (user: string) => ({
     tag: "abandon-sorry",
-    status: `@${user} To keep things tidy, we have to close PRs that aren't mergeable but don't have activity from their author. No worries, though - please open a new PR if you'd like to continue with this change. Thank you!`
+    status: `@${user} To keep things tidy, we have to close PRs that aren't mergeable but don't have activity in the last week. No worries, though - please open a new PR if you'd like to continue with this change. Thank you!`
 });
 
 export const NearlyAbandoned = (user: string) => ({
     tag: "abandon-warn",
-    status: `@${user} I haven't seen anything from you in a while and this PR currently has problems that prevent it from being merged. The PR will be closed tomorrow if there aren't new commits to fix the issues.`
+    status: `@${user} I haven't seen any activity on this PR in a while and this PR currently has problems that prevent it from being merged. The PR will be closed tomorrow if there aren't new commits to fix the issues.`
 });
 
 export const TravisFailed = (slug: string, user: string, travisUrl: string) => ({
