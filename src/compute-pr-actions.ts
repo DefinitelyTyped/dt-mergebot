@@ -200,8 +200,10 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
         }
 
         // Ping stale reviewers if any
-        for (const staleReviewer of info.reviewersWithStaleReviews) {
-            context.responseComments.push(Comments.PingStaleReviewer(staleReviewer.reviewedAbbrOid, staleReviewer.reviewer))
+        if (info.reviewersWithStaleReviews.length) {
+            const mostRecentReview = [...info.reviewersWithStaleReviews].sort((l, r) => l.date.localeCompare(r.date))[0]
+            const reviewersDeDuped = [...new Set(info.reviewersWithStaleReviews.map(r => r.reviewer))]
+            context.responseComments.push(Comments.PingStaleReviewer(mostRecentReview.reviewedAbbrOid, reviewersDeDuped))
         }
     }
 

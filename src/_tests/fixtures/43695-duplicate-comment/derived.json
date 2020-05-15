@@ -48,15 +48,18 @@
   "reviewersWithStaleReviews": [
     {
       "reviewedAbbrOid": "68463fd",
-      "reviewer": "andrewbranch"
+      "reviewer": "andrewbranch",
+      "date": "2020-04-30T23:58:31Z"
     },
     {
       "reviewedAbbrOid": "90c94f9",
-      "reviewer": "andrewbranch"
+      "reviewer": "andrewbranch",
+      "date": "2020-04-30T23:07:49Z"
     },
     {
       "reviewedAbbrOid": "a5285cd",
-      "reviewer": "RyanCavanaugh"
+      "reviewer": "RyanCavanaugh",
+      "date": "2020-04-08T16:23:52Z"
     }
   ],
   "approvalFlags": 0,

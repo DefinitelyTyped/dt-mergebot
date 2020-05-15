@@ -127,7 +127,7 @@ export interface PrInfo {
      * A list of people who have reviewed this PR in the past, but for
      * a prior commit.
      */
-    readonly reviewersWithStaleReviews: ReadonlyArray<{ reviewer: string, reviewedAbbrOid: string }>;
+    readonly reviewersWithStaleReviews: ReadonlyArray<{ reviewer: string, reviewedAbbrOid: string, date: string }>;
 
     /**
      * A link to the Review tab to provide reviewers with
@@ -375,8 +375,8 @@ function authorSaysReadyToMerge(info: PR_repository_pullRequest) {
 function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: string) => boolean) {
     const hasUpToDateReview: Set<string> = new Set();
     const headCommitOid: string = prInfo.headRefOid;
-    /** Key: commit id. Value: reviewer. */
-    const staleReviewAuthorsByCommit = new Map<string, string>();
+    /** Key: commit id. Value: review info. */
+    const staleReviewAuthorsByCommit = new Map<string, { reviewer: string, date: string }>();
     let lastReviewDate;
     let isChangesRequested = false;
     let approvalFlags = ApprovalFlags.None;
@@ -410,16 +410,17 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
             // Stale review
             // Reviewers with reviews of the current commit are not stale
             if (!hasUpToDateReview.has(r.author.login)) {
-                staleReviewAuthorsByCommit.set(r.commit.abbreviatedOid, r.author.login);
+                staleReviewAuthorsByCommit.set(r.commit.abbreviatedOid, { reviewer: r.author.login, date: r.submittedAt });
             }
         }
     }
 
     return ({
         lastReviewDate,
-        reviewersWithStaleReviews: Array.from(staleReviewAuthorsByCommit.entries()).map(([commit, author]) => ({
+        reviewersWithStaleReviews: Array.from(staleReviewAuthorsByCommit.entries()).map(([commit, info]) => ({
             reviewedAbbrOid: commit,
-            reviewer: author
+            reviewer: info.reviewer,
+            date: info.date
         })),
         approvalFlags,
         isChangesRequested

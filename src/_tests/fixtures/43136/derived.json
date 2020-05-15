@@ -39,7 +39,8 @@
   "reviewersWithStaleReviews": [
     {
       "reviewedAbbrOid": "37d784d",
-      "reviewer": "RReverser"
+      "reviewer": "RReverser",
+      "date": "2020-03-14T19:22:34Z"
     }
   ],
   "approvalFlags": 0,
