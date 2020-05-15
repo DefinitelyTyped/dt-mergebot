@@ -50,3 +50,13 @@ export function forEachReverse<T, U>(arr: readonly T[] | null | undefined, actio
 export function daysSince(date: Date, now: Date | string): number {
     return Math.floor(moment(now).diff(moment(date), "days"));
 }
+
+export function authorNotBot(commentable: { login: string } | { author?: { login: string } | null}): boolean {
+    if ("author" in commentable) {
+        return commentable.author!.login !== "typescript-bot";
+    }  
+    if ("login" in commentable) {
+        return commentable.login !== "typescript-bot";
+    }
+    return false
+}
