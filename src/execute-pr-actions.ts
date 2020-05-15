@@ -171,7 +171,6 @@ function getMutationsForCommentRemovals(actions: Actions, pr: PR_repository_pull
       mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) )
     }
 
-    console.log(parsed.tag)
     // It used to be mergable, but now it is not, remove those comments
     if (parsed.tag === "merge-offer" && !actions.isClassedAsReadyForMerge) {
       mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) )
