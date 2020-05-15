@@ -30,5 +30,5 @@
   "shouldUpdateLabels": true,
   "shouldUpdateProjectColumn": true,
   "shouldRemoveFromActiveColumns": false,
-  "isClassedAsReadyForMerge": false
+  "isReadyForAutoMerge": false
 }

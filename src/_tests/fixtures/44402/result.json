@@ -7,6 +7,6 @@
   "shouldUpdateLabels": false,
   "shouldUpdateProjectColumn": true,
   "shouldRemoveFromActiveColumns": false,
-  "isClassedAsReadyForMerge": false,
+  "isReadyForAutoMerge": false,
   "targetColumn": "Needs Maintainer Review"
 }
