@@ -272,8 +272,8 @@ function getStaleness(info: PrInfo): Staleness {
     const daysSinceLastReview = info.lastReviewDate ? daysSince(info.lastReviewDate, info.now) : Infinity;
     const daysSinceLastActivity = Math.min(daysSinceLastPush, daysSinceLastAuthorComment, daysSinceReopened, daysSinceLastReview);
 
-    if (daysSinceLastActivity >= 7) return Staleness.Abandoned;
-    if (daysSinceLastActivity >= 5) return Staleness.NearlyAbandoned;
+    if (daysSinceLastActivity >= 30) return Staleness.Abandoned;
+    if (daysSinceLastActivity >= 28) return Staleness.NearlyAbandoned;
     return Staleness.Fresh;
 }
 
