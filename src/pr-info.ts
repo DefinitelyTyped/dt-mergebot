@@ -8,7 +8,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { getOwnersOfPackages, OwnerInfo } from "./util/getOwnersOfPackages";
-import { findLast, forEachReverse, daysSince } from "./util/util";
+import { findLast, forEachReverse, daysSince, authorNotBot } from "./util/util";
 
 
 export enum ApprovalFlags {
@@ -286,8 +286,9 @@ function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems)
 
 type IssueComment = PR_repository_pullRequest_timelineItems_nodes_IssueComment;
 function getLastCommentishActivityDate(timelineItems: PR_repository_pullRequest_timelineItems, reviews: PR_repository_pullRequest_reviews | null) {
+
     const lastIssueComment = findLast(timelineItems.nodes, (item): item is IssueComment => {
-        return item?.__typename === "IssueComment" && !!item.author;
+        return item?.__typename === "IssueComment" && authorNotBot(item!);
     });
     const lastReviewComment = forEachReverse(reviews?.nodes, review => {
         return findLast(review?.comments?.nodes, comment => !!comment?.author?.login)
