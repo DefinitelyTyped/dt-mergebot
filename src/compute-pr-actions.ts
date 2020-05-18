@@ -40,6 +40,7 @@ export interface Actions {
     shouldUpdateLabels: boolean;
     shouldUpdateProjectColumn: boolean;
     shouldRemoveFromActiveColumns: boolean;
+    isReadyForAutoMerge: boolean;
 }
 
 function createDefaultActions(prNumber: number): Actions {
@@ -70,6 +71,7 @@ function createDefaultActions(prNumber: number): Actions {
         shouldUpdateLabels: true,
         shouldUpdateProjectColumn: true,
         shouldRemoveFromActiveColumns: false,
+        isReadyForAutoMerge: false
     };
 }
 
@@ -83,6 +85,7 @@ function createEmptyActions(prNumber: number): Actions {
         shouldUpdateLabels: false,
         shouldUpdateProjectColumn: false,
         shouldRemoveFromActiveColumns: false,
+        isReadyForAutoMerge: false
     };
 }
 
@@ -121,6 +124,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["New Definition"] = info.anyPackageIsNew;
     context.labels["Author is Owner"] = info.authorIsOwner;
     context.labels["Merge:Auto"] = canBeMergedNow(info);
+    context.isReadyForAutoMerge = canBeMergedNow(info);
 
     // Update intro comment
     context.responseComments.push({

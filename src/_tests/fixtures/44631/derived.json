@@ -1,0 +1,44 @@
+{
+  "type": "info",
+  "now": "2020-05-15T15:43:58.396Z",
+  "pr_number": 44631,
+  "author": "mAAdhaTTah",
+  "owners": [
+    "AyaMorisawa",
+    "HitoriSensei"
+  ],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "96d6582",
+  "headCommitOid": "96d6582f60431d273c179dcf6816426b4f1e37ac",
+  "mergeIsRequested": false,
+  "stalenessInDays": 4,
+  "lastCommitDate": "2020-05-10T21:26:25.000Z",
+  "lastCommentDate": "2020-05-10T21:26:25.000Z",
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44631/files",
+  "hasMergeConflict": true,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "kefir"
+  ],
+  "files": [
+    {
+      "filePath": "types/kefir/index.d.ts",
+      "kind": "definition",
+      "package": "kefir"
+    },
+    {
+      "filePath": "types/kefir/kefir-tests.ts",
+      "kind": "test",
+      "package": "kefir"
+    }
+  ],
+  "hasDismissedReview": false,
+  "travisResult": "pass",
+  "lastReviewDate": "2020-05-15T15:41:39.000Z",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 4,
+  "isChangesRequested": false
+}

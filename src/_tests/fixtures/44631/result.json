@@ -1,0 +1,38 @@
+{
+  "pr_number": 44631,
+  "targetColumn": "Needs Author Action",
+  "labels": {
+    "Has Merge Conflict": true,
+    "The Travis CI build failed": false,
+    "Revision needed": false,
+    "New Definition": false,
+    "Where is Travis?": false,
+    "Owner Approved": false,
+    "Other Approved": false,
+    "Maintainer Approved": true,
+    "Merge:LGTM": false,
+    "Merge:YSYL": false,
+    "Popular package": false,
+    "Critical package": false,
+    "Edits Infrastructure": false,
+    "Edits multiple packages": false,
+    "Author is Owner": false,
+    "Merge:Auto": false
+  },
+  "responseComments": [
+    {
+      "tag": "welcome",
+      "status": "@mAAdhaTTah Thank you for submitting this PR! \n\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ❌ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n```json\n{\n  \"type\": \"info\",\n  \"now\": \"-\",\n  \"pr_number\": 44631,\n  \"author\": \"mAAdhaTTah\",\n  \"owners\": [\n    \"AyaMorisawa\",\n    \"HitoriSensei\"\n  ],\n  \"dangerLevel\": \"ScopedAndTested\",\n  \"headCommitAbbrOid\": \"96d6582\",\n  \"headCommitOid\": \"96d6582f60431d273c179dcf6816426b4f1e37ac\",\n  \"mergeIsRequested\": false,\n  \"stalenessInDays\": 4,\n  \"lastCommitDate\": \"2020-05-10T21:26:25.000Z\",\n  \"lastCommentDate\": \"2020-05-10T21:26:25.000Z\",\n  \"reviewLink\": \"https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44631/files\",\n  \"hasMergeConflict\": true,\n  \"authorIsOwner\": false,\n  \"isFirstContribution\": false,\n  \"popularityLevel\": \"Well-liked by everyone\",\n  \"anyPackageIsNew\": false,\n  \"packages\": [\n    \"kefir\"\n  ],\n  \"files\": [\n    {\n      \"filePath\": \"types/kefir/index.d.ts\",\n      \"kind\": \"definition\",\n      \"package\": \"kefir\"\n    },\n    {\n      \"filePath\": \"types/kefir/kefir-tests.ts\",\n      \"kind\": \"test\",\n      \"package\": \"kefir\"\n    }\n  ],\n  \"hasDismissedReview\": false,\n  \"travisResult\": \"pass\",\n  \"lastReviewDate\": \"2020-05-15T15:41:39.000Z\",\n  \"reviewersWithStaleReviews\": [],\n  \"approvalFlags\": 4,\n  \"isChangesRequested\": false\n}\n```\n\n</details>"
+    },
+    {
+      "tag": "merge-complaint-96d6582",
+      "status": "@mAAdhaTTah Unfortunately, this pull request currently has a merge conflict 😥. Please update your PR branch to be up-to-date with respect to master. Have a nice day!"
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false,
+  "isReadyForAutoMerge": false
+}

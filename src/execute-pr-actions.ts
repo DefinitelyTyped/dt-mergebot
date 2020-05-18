@@ -166,10 +166,18 @@ function getMutationsForCommentRemovals(actions: Actions, pr: PR_repository_pull
     const parsed = parseComment(comment.body);    
     if (!parsed) continue
 
+    // Remove stale travis 'your build is green' notifications
     if (parsed.tag.includes("travis") && parsed.tag !== travisMessageToKeep?.tag) {
       mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) )
     }
+
+    // It used to be mergable, but now it is not, remove those comments
+    if (parsed.tag === "merge-offer" && !actions.isReadyForAutoMerge) {
+      mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) )
+    } 
   }
+
+
 
   return mutations;
 }

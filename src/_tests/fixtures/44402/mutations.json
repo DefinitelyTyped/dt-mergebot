@@ -7,5 +7,13 @@
         "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
       }
     }
+  },
+  {
+    "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYyMjE3NTQ3NA=="
+      }
+    }
   }
 ]
