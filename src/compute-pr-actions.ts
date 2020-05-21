@@ -185,6 +185,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     else if (info.travisResult === TravisResult.Pass) {
         const isAutoMergeable = canBeMergedNow(info);
 
+
         if (isAutoMergeable) {
             if (info.mergeIsRequested) {
                 context.shouldMerge = true;
@@ -197,7 +198,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
             // Give 4 days for PRs with other owners
             const fourDays = 4 * 24 * 60 * 60 * 1000
             if (!info.anyPackageIsNew && info.lastCommitDate.valueOf() + fourDays > now.valueOf()) {
-                context.targetColumn = "Waiting for Code Reviews";
+                context.targetColumn = projectBoardForReviewWithWithLeastAccess(info);
             } else {
                 context.targetColumn = "Needs Maintainer Review";
             }
@@ -234,10 +235,12 @@ function canBeMergedNow(info: PrInfo): boolean {
     return hasFinalApproval(info).approved;
 }
 
+type PotentialReviewers = "DT maintainers" | "type definition owners or DT maintainers" | "type definition owners, DT maintainers or others"
+
 function hasFinalApproval(info: PrInfo) {
     const tooManyReviewers = info.owners.length > 50
     let approved = false
-    let requiredApprovalBy = "DT Maintainers"
+    let requiredApprovalBy: PotentialReviewers = "DT maintainers"
 
     if (info.dangerLevel === "ScopedAndTested" && !tooManyReviewers) {
         if (info.popularityLevel === "Well-liked by everyone") {
@@ -260,6 +263,16 @@ function hasFinalApproval(info: PrInfo) {
     return {
         approved,
         requiredApprovalBy
+    }
+}
+
+/** E.g. let people review, but fall back to the DT maintainers based on the access rights above */
+function projectBoardForReviewWithWithLeastAccess(info: PrInfo):  Actions["targetColumn"] {
+    const approvers = hasFinalApproval(info)
+    if (approvers.requiredApprovalBy === "DT maintainers") {
+        return "Needs Maintainer Review"
+    } else {
+        return "Waiting for Code Reviews"
     }
 }
 
