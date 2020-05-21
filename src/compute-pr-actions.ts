@@ -196,7 +196,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
         } else {
             // Give 4 days for PRs with other owners
             const fourDays = 4 * 24 * 60 * 60 * 1000
-            if (info.lastCommitDate.valueOf() + fourDays > now.valueOf()) {
+            if (!info.anyPackageIsNew && info.lastCommitDate.valueOf() + fourDays > now.valueOf()) {
                 context.targetColumn = "Waiting for Code Reviews";
             } else {
                 context.targetColumn = "Needs Maintainer Review";
