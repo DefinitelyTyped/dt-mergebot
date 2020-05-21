@@ -3,6 +3,7 @@
 const { queryPRInfo, deriveStateForPR } = require("../bin/pr-info")
 const compute = require("../bin/compute-pr-actions")
 const {executePrActions} = require("../bin/execute-pr-actions")
+const {mergeCodeOwnersOnGreen} = require("../bin/side-effects/merge-codeowner-prs")
 const verify = require("@octokit/webhooks/verify");
 const sign = require("@octokit/webhooks/sign");
 const {runQueryToGetPRMetadataForStatus} = require("../bin/queries/status-to-PR-query")
@@ -33,7 +34,15 @@ const httpTrigger = async function (context, _req) {
       };
       return;
     }
-  
+
+    // Allow the bot to run side-effects which are not the 'core' function
+    // of the review cycle, but are related to keeping DT running smoothly
+    const sideEffects = {
+        "check_suite": mergeCodeOwnersOnGreen
+    }
+
+    if (sideEffects[event]) sideEffects[event](req.body)
+
     // https://developer.github.com/webhooks/
     const acceptedEventsToActions = {
         "pull_request": ["opened", "closed", "reopened", "edited", "synchronized", "ready_for_review"],
