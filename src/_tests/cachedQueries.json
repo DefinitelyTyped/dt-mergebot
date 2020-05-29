@@ -266,6 +266,16 @@
       "id": "MDU6TGFiZWwxNjA4NjM0NDg0",
       "name": "Critical package",
       "__typename": "Label"
+    },
+    {
+      "id": "MDU6TGFiZWwxNj14NjM0NDg0",
+      "name": "Where is GH Actions?",
+      "__typename": "Label"
+    },
+    {
+      "id": "MDU6TGFiZWwxNaA4NjM0NDg0",
+      "name": "The CI failed",
+      "__typename": "Label"
     }
   ]
 }

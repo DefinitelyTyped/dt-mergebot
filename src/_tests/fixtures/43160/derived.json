@@ -33,8 +33,8 @@
     }
   ],
   "hasDismissedReview": false,
-  "travisResult": "fail",
-  "travisUrl": "https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/662962786?utm_source=github_status&utm_medium=notification",
+  "ciResult": "fail",
+  "ciUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
   "lastReviewDate": "2020-03-17T14:33:47.000Z",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 2,

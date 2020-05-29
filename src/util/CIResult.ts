@@ -1,4 +1,4 @@
-export enum TravisResult {
+export enum CIResult {
     Pending = "unknown",
     Pass = "pass",
     Fail = "fail",

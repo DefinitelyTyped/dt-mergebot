@@ -529,7 +529,7 @@
     }
   ],
   "hasDismissedReview": false,
-  "travisResult": "unknown",
+  "ciResult": "unknown",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 0,
   "isChangesRequested": false

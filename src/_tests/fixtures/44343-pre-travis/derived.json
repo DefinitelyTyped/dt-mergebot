@@ -28,7 +28,7 @@
     }
   ],
   "hasDismissedReview": false,
-  "travisResult": "missing",
+  "ciResult": "unknown",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 0,
   "isChangesRequested": false

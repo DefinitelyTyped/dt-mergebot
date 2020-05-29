@@ -158,7 +158,7 @@ function getMutationsForComments(actions: Actions, pr: PR_repository_pullRequest
 function getMutationsForCommentRemovals(actions: Actions, pr: PR_repository_pullRequest) {
   const mutations: Mutation[] = [];
 
-  const travisMessageToKeep = actions.responseComments.find(c => c.tag.startsWith("travis-complaint"))
+  const ciMessageToKeep = actions.responseComments.find(c => c.tag.startsWith("ci-complaint"))
   const botComments = (pr.comments.nodes ?? []).filter(comment => comment?.author?.login === "typescript-bot")
   for (const comment of botComments) {
     if (!comment) continue
@@ -166,8 +166,8 @@ function getMutationsForCommentRemovals(actions: Actions, pr: PR_repository_pull
     const parsed = parseComment(comment.body);    
     if (!parsed) continue
 
-    // Remove stale travis 'your build is green' notifications
-    if (parsed.tag.includes("travis") && parsed.tag !== travisMessageToKeep?.tag) {
+    // Remove stale CI 'your build is green' notifications
+    if (parsed.tag.includes("ci-") && parsed.tag !== ciMessageToKeep?.tag) {
       mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) )
     }
 
