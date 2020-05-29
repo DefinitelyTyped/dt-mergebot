@@ -2,7 +2,7 @@ import { GetPRInfo } from "./queries/pr-query";
 
 import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest, PR_repository_pullRequest_timelineItems, PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent, PR_repository_pullRequest_reviews, PR_repository_pullRequest_timelineItems_nodes_IssueComment, PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent } from "./queries/schema/PR";
 
-import { TravisResult } from "./util/travis";
+import { CIResult } from "./util/CIResult";
 import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState, PullRequestState } from "./queries/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
@@ -91,12 +91,12 @@ export interface PrInfo {
     /**
      * The CI status of the head commit
      */
-    readonly travisResult: TravisResult;
+    readonly ciResult: CIResult;
 
     /**
      * A link to the log for the failing CI if it exists
      */
-    readonly travisUrl: string | undefined;
+    readonly ciUrl: string | undefined;
 
     /**
      * True if the PR has a merge conflict
@@ -250,7 +250,7 @@ export async function deriveStateForPR(
         packages,
         files: categorizedFiles,
         hasDismissedReview,
-        ...getTravisResult(headCommit),
+        ...getCIResult(headCommit),
         ...analyzeReviews(prInfo, isOwner)
     };
     
@@ -474,35 +474,35 @@ function assertNever(n: never) {
     throw new Error(`Impossible: ${n}`);
 }
 
-function getTravisResult(headCommit: PR_repository_pullRequest_commits_nodes_commit) {
-    let travisUrl: string | undefined = undefined;
-    let travisResult: TravisResult = undefined!;
+function getCIResult(headCommit: PR_repository_pullRequest_commits_nodes_commit) {
+    let ciUrl: string | undefined = undefined;
+    let ciResult: CIResult = undefined!;
 
-    const totalStatusChecks = headCommit.status?.contexts.find(check => check.description?.includes("Travis CI"))
+    const totalStatusChecks = headCommit.checkSuites?.nodes?.find(check => check?.app?.name?.includes("GitHub Actions"))
     if (totalStatusChecks) {
-        switch (totalStatusChecks.state) {
-            case StatusState.SUCCESS:
-                travisResult = TravisResult.Pass;
+        switch (totalStatusChecks.conclusion) {
+            case CheckConclusionState.SUCCESS:
+                ciResult = CIResult.Pass;
                 break;
 
-            case StatusState.FAILURE:
-                travisResult = TravisResult.Fail;
-                travisUrl = totalStatusChecks.targetUrl;
+            case CheckConclusionState.FAILURE:
+            case CheckConclusionState.SKIPPED:
+            case CheckConclusionState.TIMED_OUT:
+                ciResult = CIResult.Fail;
+                ciUrl = totalStatusChecks.url;
                 break;
-            
-            case StatusState.EXPECTED:
-            case StatusState.PENDING:
+
             default:
-                travisResult = TravisResult.Pending;
+                ciResult = CIResult.Pending;
                 break;
         }
     }
 
-    if (!travisResult) {
-        return { travisResult: TravisResult.Missing, travisUrl: undefined };
+    if (!ciResult) {
+        return { ciResult: CIResult.Missing, ciUrl: undefined };
     }
 
-    return { travisResult, travisUrl };
+    return { ciResult, ciUrl };
 }
 
 async function getPopularityLevel(packagesTouched: string[]): Promise<PopularityLevel> {

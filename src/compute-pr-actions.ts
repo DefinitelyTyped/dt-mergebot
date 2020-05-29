@@ -1,6 +1,6 @@
 import * as Comments from "./comments";
 import { PrInfo, ApprovalFlags, BotEnsureRemovedFromProject, BotNoPackages } from "./pr-info";
-import { TravisResult } from "./util/travis";
+import { CIResult } from "./util/CIResult";
 import { daysSince } from "./util/util";
 
 type ColumnName =
@@ -13,10 +13,10 @@ type ColumnName =
 
 type LabelName =
     | "Has Merge Conflict"
-    | "The Travis CI build failed"
+    | "The CI failed"
     | "Revision needed"
     | "New Definition"
-    | "Where is Travis?"
+    | "Where is GH Actions?"
     | "Owner Approved"
     | "Other Approved"
     | "Maintainer Approved"
@@ -49,10 +49,10 @@ function createDefaultActions(prNumber: number): Actions {
         targetColumn: "Other",
         labels: {
             "Has Merge Conflict": false,
-            "The Travis CI build failed": false,
+            "The CI failed": false,
             "Revision needed": false,
             "New Definition": false,
-            "Where is Travis?": false,
+            "Where is GH Actions?": false,
             "Owner Approved": false,
             "Other Approved": false,
             "Maintainer Approved": false,
@@ -144,7 +144,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     }
 
     // Needs author attention (bad CI, merge conflicts)
-    const failedCI = info.travisResult === TravisResult.Fail;
+    const failedCI = info.ciResult === CIResult.Fail;
     if (failedCI || info.hasMergeConflict || info.isChangesRequested) {
         context.targetColumn = "Needs Author Action";
 
@@ -153,8 +153,8 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
             context.responseComments.push(Comments.MergeConflicted(info.headCommitAbbrOid, info.author));
         }
         if (failedCI) {
-            context.labels["The Travis CI build failed"] = true;
-            context.responseComments.push(Comments.TravisFailed(info.headCommitAbbrOid, info.author, info.travisUrl!));
+            context.labels["The CI failed"] = true;
+            context.responseComments.push(Comments.CIFailed(info.headCommitAbbrOid, info.author, info.ciUrl!));
         }
         if (info.isChangesRequested) {
             context.labels["Revision needed"] = true;
@@ -174,15 +174,15 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
         }
     }
     // CI is running; default column is Waiting for Reviewers
-    else if (info.travisResult === TravisResult.Pending) {
+    else if (info.ciResult === CIResult.Pending) {
         context.targetColumn = "Waiting for Code Reviews";
     }
     // CI is missing
-    else if (info.travisResult === TravisResult.Missing) {
-        context.labels["Where is Travis?"] = true;
+    else if (info.ciResult === CIResult.Missing) {
+        context.labels["Where is GH Actions?"] = true;
     }
     // CI is green
-    else if (info.travisResult === TravisResult.Pass) {
+    else if (info.ciResult === CIResult.Pass) {
         const isAutoMergeable = canBeMergedNow(info);
 
 
@@ -212,8 +212,8 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
         }
     }
 
-    // This bot is faster than Travis in coming back to give a response, and so the bot starts flipping between
-    // a 'where is travis'-ish state and a 'got travis deets' state. To work around this, we wait a 
+    // This bot is faster than CI in coming back to give a response, and so the bot starts flipping between
+    // a 'where is CI'-ish state and a 'got CI deets' state. To work around this, we wait a 
     // minute since the last timeline push action before label/project states can be updated
 
     const oneMinute = 60 * 1000
@@ -225,7 +225,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
 }
 
 function canBeMergedNow(info: PrInfo): boolean {
-    if (info.travisResult !== TravisResult.Pass) {
+    if (info.ciResult !== CIResult.Pass) {
         return false;
     }
     if (info.hasMergeConflict) {
@@ -335,7 +335,7 @@ function createWelcomeComment(info: PrInfo) {
         introCommentLines.push(" " + dangerComment);
     }
 
-    const waitingOnThePRAuthorToMerge = !info.hasMergeConflict && info.travisResult === TravisResult.Pass && info.dangerLevel === "ScopedAndTested" && hasFinalApproval(info).approved
+    const waitingOnThePRAuthorToMerge = !info.hasMergeConflict && info.ciResult === CIResult.Pass && info.dangerLevel === "ScopedAndTested" && hasFinalApproval(info).approved
 
     introCommentLines.push(``);
     introCommentLines.push(`## Code Reviews`)
@@ -346,8 +346,8 @@ function createWelcomeComment(info: PrInfo) {
     introCommentLines.push(``);
     introCommentLines.push(` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
 
-    const expectedResults = info.travisResult === TravisResult.Pending ? "finished" : "passed"
-    introCommentLines.push(` * ${emoji(info.travisResult === TravisResult.Pass)} Continuous integration tests have ${expectedResults}`);
+    const expectedResults = info.ciResult === CIResult.Pending ? "finished" : "passed"
+    introCommentLines.push(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
 
     const approval = hasFinalApproval(info)
     if (info.anyPackageIsNew) {

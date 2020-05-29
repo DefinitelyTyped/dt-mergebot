@@ -15,9 +15,9 @@ export const NearlyAbandoned = (user: string) => ({
     status: `@${user} I haven't seen any activity on this PR in 4 weeks, and this PR currently has problems that prevent it from being merged. The PR will be closed in two days if there aren't new commits to fix the issues.`
 });
 
-export const TravisFailed = (slug: string, user: string, travisUrl: string) => ({
-    tag: `travis-complaint-${slug}`,
-    status: `@${user} The Travis CI build failed! Please [review the logs for more information](${travisUrl}).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!`
+export const CIFailed = (slug: string, user: string, ciUrl: string) => ({
+    tag: `gh-actions-complaint-${slug}`,
+    status: `@${user} The CI build failed! Please [review the logs for more information](${ciUrl}).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!`
 });
 
 export const MergeConflicted = (slug: string, user: string) => ({
@@ -66,8 +66,8 @@ ${names.map(n => `${n}`).join(" ")}
 })
 
 export const Welcome = (login: string, isFirstPR: boolean) => `@${login} Thank you for submitting this PR!${isFirstPR ? " I see this is your first PR to DefinitelyTyped - don't worry, I'll be helping you throughout the process. Stay tuned for updates." : ""}`;
-export const NewDefinition = `Because this is a new definition, a DefinitelyTyped maintainer will be reviewing this PR in the next few days once the Travis CI build passes.`;
-export const NoOtherReviewers = `Because this PR doesn't have any code reviewers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the Travis CI build passes.`;
+export const NewDefinition = `Because this is a new definition, a DefinitelyTyped maintainer will be reviewing this PR in the next few days once the CI build passes.`;
+export const NoOtherReviewers = `Because this PR doesn't have any code reviewers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the CI build passes.`;
 
 export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) => ({
     tag: `stale-ping-${tinyHash(reviewers.join("-"))}-${reviewedAbbrOid}`,
