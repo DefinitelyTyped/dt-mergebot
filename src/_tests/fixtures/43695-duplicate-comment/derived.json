@@ -44,7 +44,7 @@
     }
   ],
   "hasDismissedReview": false,
-  "travisResult": "pass",
+  "ciResult": "pass",
   "reviewersWithStaleReviews": [
     {
       "reviewedAbbrOid": "68463fd",

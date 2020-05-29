@@ -214,6 +214,17 @@
                       "status": "COMPLETED",
                       "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/a5285cda2722912a390770722a334e6d6e43d1ab/checks?check_suite_id=578707768",
                       "__typename": "CheckSuite"
+                    },
+                    {
+                      "app": {
+                        "name": "GitHub Actions",
+                        "__typename": "App"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
+                      "status": "SUCCESS",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
+                      "__typename": "CheckSuite"
                     }
                   ],
                   "__typename": "CheckSuiteConnection"

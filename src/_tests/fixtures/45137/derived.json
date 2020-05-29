@@ -59,8 +59,7 @@
     }
   ],
   "hasDismissedReview": false,
-  "travisResult": "fail",
-  "travisUrl": "https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/692427445?utm_source=github_status&utm_medium=notification",
+  "ciResult": "pass",
   "lastReviewDate": "2020-05-29T07:13:24.000Z",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 2,

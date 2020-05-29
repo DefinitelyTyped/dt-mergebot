@@ -43,7 +43,7 @@
     }
   ],
   "hasDismissedReview": false,
-  "travisResult": "pass",
+  "ciResult": "pass",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 0,
   "isChangesRequested": false

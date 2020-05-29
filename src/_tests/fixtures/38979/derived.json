@@ -386,7 +386,7 @@
     }
   ],
   "hasDismissedReview": true,
-  "travisResult": "pass",
+  "ciResult": "pass",
   "lastReviewDate": "2020-05-12T04:51:52.000Z",
   "reviewersWithStaleReviews": [
     {
