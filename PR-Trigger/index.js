@@ -104,7 +104,7 @@ const httpTrigger = async function (context, _req) {
         
         if (!pr) throw new Error(`Could not get PR for the status on ${sha} - made a search query with ${query}`)
         if (pr.closed) {
-            context.log.info(`Skipped webhook, could not find an open PR for the sha referenced in the status (${webhook.sha})`)
+            context.log.info(`Skipped webhook, could not find an open PR for the sha referenced in the status (${sha})`)
             context.res = {
                 status: 204,
                 body: `NOOPing due to not finding an open PR for the sha ${sha}`
