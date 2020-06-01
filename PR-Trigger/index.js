@@ -6,6 +6,7 @@ const {executePrActions} = require("../bin/execute-pr-actions")
 const {mergeCodeOwnersOnGreen} = require("../bin/side-effects/merge-codeowner-prs")
 const verify = require("@octokit/webhooks/verify");
 const sign = require("@octokit/webhooks/sign");
+const {runQueryToGetPRMetadataForStatus} = require("../bin/queries/status-to-PR-query")
 
 /** @type {import("@azure/functions").AzureFunction} */
 const httpTrigger = async function (context, _req) {
@@ -94,6 +95,22 @@ const httpTrigger = async function (context, _req) {
         prNumber = webhook.issue.number
         prTitle = webhook.issue.title
     } else if("check_suite" in webhook) {
+        // See https://github.com/maintainers/early-access-feedback/issues/114 for more context on getting a PR from a SHA
+        // TLDR: it's not in the API, and this search hack has been in used on Peril for the last ~3 years
+        const repoString = webhook.repository.full_name
+        const sha = webhook.check_suite.head_sha
+        const query = `${sha} type:pr  repo:${repoString}` 
+        const pr = await runQueryToGetPRMetadataForStatus(query)
+        
+        if (!pr) throw new Error(`Could not get PR for the status on ${sha} - made a search query with ${query}`)
+        if (pr.closed) {
+            context.log.info(`Skipped webhook, could not find an open PR for the sha referenced in the status (${sha})`)
+            context.res = {
+                status: 204,
+                body: `NOOPing due to not finding an open PR for the sha ${sha}`
+            }
+        }
+
         prNumber = webhook.check_suite.pull_requests[0].number
         prTitle = "" // this is only used for logging, not worth an API lookup
     }
