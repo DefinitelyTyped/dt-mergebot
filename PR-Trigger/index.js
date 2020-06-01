@@ -6,7 +6,6 @@ const {executePrActions} = require("../bin/execute-pr-actions")
 const {mergeCodeOwnersOnGreen} = require("../bin/side-effects/merge-codeowner-prs")
 const verify = require("@octokit/webhooks/verify");
 const sign = require("@octokit/webhooks/sign");
-const {runQueryToGetPRMetadataForStatus} = require("../bin/queries/status-to-PR-query")
 
 /** @type {import("@azure/functions").AzureFunction} */
 const httpTrigger = async function (context, _req) {
@@ -48,7 +47,7 @@ const httpTrigger = async function (context, _req) {
         "pull_request": ["opened", "closed", "reopened", "edited", "synchronized", "ready_for_review"],
         "pull_request_review": ["submitted", "dismissed"],
         "issue_comment": ["created", "edited", "deleted"],
-        "status": ["*"]
+        "check_suite": ["completed"]
     }
 
     const acceptedEvents = Object.keys(acceptedEventsToActions)
@@ -63,7 +62,7 @@ const httpTrigger = async function (context, _req) {
         return
     }
     
-    /** @type {import("@octokit/webhooks").WebhookPayloadPullRequest | import("@octokit/webhooks").WebhookPayloadPullRequestReview | import("@octokit/webhooks").WebhookPayloadIssueComment | import("@octokit/webhooks").WebhookPayloadStatus } */
+    /** @type {import("@octokit/webhooks").WebhookPayloadPullRequest | import("@octokit/webhooks").WebhookPayloadPullRequestReview | import("@octokit/webhooks").WebhookPayloadIssueComment | import("@octokit/webhooks").WebhookPayloadCheckSuite } */
     const webhook = req.body
     const action = "action" in webhook ? webhook.action : "status"
 
@@ -94,24 +93,9 @@ const httpTrigger = async function (context, _req) {
     } else if("issue" in webhook) {
         prNumber = webhook.issue.number
         prTitle = webhook.issue.title
-    } else if("sha" in webhook) {
-        // See https://github.com/maintainers/early-access-feedback/issues/114 for more context on getting a PR from a SHA
-        // TLDR: it's not in the API, and this search hack has been in used on Peril for the last ~3 years
-        const repoString = webhook.repository.full_name
-        const query = `${webhook.sha} type:pr  repo:${repoString}` 
-        const pr = await runQueryToGetPRMetadataForStatus(query)
-        
-        if (!pr) throw new Error(`Could not get PR for the status on ${webhook.sha} - made a search query with ${query}`)
-        if (pr.closed) {
-            context.log.info(`Skipped webhook, could not find an open PR for the sha referenced in the status (${webhook.sha})`)
-            context.res = {
-                status: 204,
-                body: `NOOPing due to not finding an open PR for the sha ${webhook.sha}`
-            }
-        }
-
-        prNumber = pr.number
-        prTitle = pr.title
+    } else if("check_suite" in webhook) {
+        prNumber = webhook.check_suite.pull_requests[0].number
+        prTitle = "" // this is only used for logging, not worth an API lookup
     }
     
     if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`)
