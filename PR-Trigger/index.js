@@ -111,7 +111,7 @@ const httpTrigger = async function (context, _req) {
             }
         }
 
-        prNumber = webhook.check_suite.pull_requests[0].number
+        prNumber = pr.number
         prTitle = "" // this is only used for logging, not worth an API lookup
     }
     
