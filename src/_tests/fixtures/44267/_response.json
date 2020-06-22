@@ -29,6 +29,10 @@
             {
               "name": "Perf: Same",
               "__typename": "Label"
+            },
+            {
+              "name": "Untested Change",
+              "__typename": "Label"
             }
           ],
           "__typename": "LabelConnection"

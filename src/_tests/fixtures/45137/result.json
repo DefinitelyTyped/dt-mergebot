@@ -17,7 +17,8 @@
     "Edits Infrastructure": false,
     "Edits multiple packages": false,
     "Author is Owner": true,
-    "Merge:Auto": false
+    "Merge:Auto": false,
+    "Untested Change": true
   },
   "responseComments": [
     {
