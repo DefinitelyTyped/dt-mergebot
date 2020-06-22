@@ -17,6 +17,7 @@
     "Edits Infrastructure": false,
     "Edits multiple packages": false,
     "Author is Owner": false,
+    "No Other Owners": false,
     "Merge:Auto": true,
     "Untested Change": false,
     "Config Edit": false

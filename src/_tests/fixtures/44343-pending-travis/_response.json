@@ -17,7 +17,11 @@
         "changedFiles": 1,
         "createdAt": "2020-04-29T15:57:10Z",
         "labels": {
-          "nodes": [],
+          "nodes": [
+            {
+              "name": "No Other Owners",
+              "__typename": "Label"
+            }],
           "__typename": "LabelConnection"
         },
         "isDraft": false,

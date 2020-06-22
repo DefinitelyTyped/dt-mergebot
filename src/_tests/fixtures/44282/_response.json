@@ -21,6 +21,10 @@
             {
               "name": "Perf: Same",
               "__typename": "Label"
+            },
+            {
+              "name": "No Other Owners",
+              "__typename": "Label"
             }
           ],
           "__typename": "LabelConnection"
