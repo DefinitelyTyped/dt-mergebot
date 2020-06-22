@@ -21,6 +21,10 @@
             {
               "name": "Author is Owner",
               "__typename": "Label"
+            },
+            {
+              "name": "Config Edit",
+              "__typename": "Label"
             }
           ],
           "__typename": "LabelConnection"
