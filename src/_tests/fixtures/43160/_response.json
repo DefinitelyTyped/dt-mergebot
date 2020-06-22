@@ -25,6 +25,10 @@
             {
               "name": "The Travis CI build failed",
               "__typename": "Label"
+            },
+            {
+              "name": "Untested Change",
+              "__typename": "Label"
             }
           ],
           "__typename": "LabelConnection"
