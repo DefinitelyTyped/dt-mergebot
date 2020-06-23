@@ -129,6 +129,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["Owner Approved"] = !!(info.approvalFlags & ApprovalFlags.Owner);
     context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
     context.labels["New Definition"] = info.anyPackageIsNew;
+    context.labels["Edits Infrastructure"] = info.dangerLevel === "Infrastructure";
     context.labels["Edits multiple packages"] = info.dangerLevel === "MultiplePackagesEdited";
     context.labels["Author is Owner"] = info.authorIsOwner;
     context.labels["No Other Owners"] = !info.anyPackageIsNew && otherOwners.length === 0;

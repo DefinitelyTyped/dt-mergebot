@@ -14,7 +14,7 @@
     "Merge:YSYL": false,
     "Popular package": false,
     "Critical package": false,
-    "Edits Infrastructure": false,
+    "Edits Infrastructure": true,
     "Edits multiple packages": false,
     "Author is Owner": false,
     "No Other Owners": false,
