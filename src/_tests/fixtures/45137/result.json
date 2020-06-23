@@ -18,6 +18,7 @@
     "Edits multiple packages": false,
     "Author is Owner": true,
     "No Other Owners": false,
+    "Too Many Owners": false,
     "Merge:Auto": false,
     "Untested Change": true,
     "Config Edit": false

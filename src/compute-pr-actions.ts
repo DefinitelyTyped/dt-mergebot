@@ -29,6 +29,7 @@ type LabelName =
     | "Edits multiple packages"
     | "Author is Owner"
     | "No Other Owners"
+    | "Too Many Owners"
     | "Untested Change"
     | "Config Edit";
 
@@ -66,6 +67,7 @@ function createDefaultActions(prNumber: number): Actions {
             "Edits multiple packages": false,
             "Author is Owner": false,
             "No Other Owners": false,
+            "Too Many Owners": false,
             "Merge:Auto": false,
             "Untested Change": false,
             "Config Edit": false
@@ -129,8 +131,11 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["Owner Approved"] = !!(info.approvalFlags & ApprovalFlags.Owner);
     context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
     context.labels["New Definition"] = info.anyPackageIsNew;
+    context.labels["Edits Infrastructure"] = info.dangerLevel === "Infrastructure";
+    context.labels["Edits multiple packages"] = info.dangerLevel === "MultiplePackagesEdited";
     context.labels["Author is Owner"] = info.authorIsOwner;
     context.labels["No Other Owners"] = !info.anyPackageIsNew && otherOwners.length === 0;
+    context.labels["Too Many Owners"] = tooManyOwners(info);
     context.labels["Merge:Auto"] = canBeMergedNow(info);
     context.labels["Config Edit"] = !info.anyPackageIsNew && info.dangerLevel === "ScopedAndConfiguration";
     context.isReadyForAutoMerge = canBeMergedNow(info);
@@ -144,8 +149,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
 
     // Ping reviewers when needed
     if (otherOwners.length > 0 && !info.isChangesRequested && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
-        const tooManyOwners = info.owners.length > 50;
-        if (tooManyOwners) {
+        if (tooManyOwners(info)) {
             context.responseComments.push(Comments.PingReviewersTooMany(otherOwners));
         } else {
             context.responseComments.push(Comments.PingReviewers(otherOwners, info.reviewLink));
@@ -243,14 +247,17 @@ function canBeMergedNow(info: PrInfo): boolean {
     return hasFinalApproval(info).approved;
 }
 
+function tooManyOwners(info: PrInfo): boolean {
+    return info.owners.length > 50;
+}
+
 type PotentialReviewers = "DT maintainers" | "type definition owners or DT maintainers" | "type definition owners, DT maintainers or others"
 
 function hasFinalApproval(info: PrInfo) {
-    const tooManyReviewers = info.owners.length > 50;
     let approved = false;
     let requiredApprovalBy: PotentialReviewers = "DT maintainers";
 
-    if (info.dangerLevel === "ScopedAndTested" && !tooManyReviewers) {
+    if (info.dangerLevel === "ScopedAndTested" && !tooManyOwners(info)) {
         if (info.popularityLevel === "Well-liked by everyone") {
             approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other));
             requiredApprovalBy = "type definition owners, DT maintainers or others";
@@ -306,7 +313,7 @@ function createWelcomeComment(info: PrInfo) {
     const otherOwners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
     const testsLink = info.anyPackageIsNew ? uriForTestingNewPackages : uriForTestingEditedPackages;
 
-    const specialWelcome = info.isFirstContribution ? ` I see this is your first time submitting to DefinitelyTyped 👋 - keep an eye on this comment as I'll be updating it with information as things progress.` : "";
+    const specialWelcome = info.isFirstContribution ? ` I see this is your first time submitting to DefinitelyTyped 👋 — keep an eye on this comment as I'll be updating it with information as things progress.` : "";
     const introCommentLines: string[] = [];
     introCommentLines.push(`@${info.author} Thank you for submitting this PR! ${specialWelcome}`);
     introCommentLines.push(``);
@@ -316,7 +323,7 @@ function createWelcomeComment(info: PrInfo) {
     // Some kind of extra warning
     let dangerComment: string | undefined;
     if (info.anyPackageIsNew) {
-        const links = info.packages.map(p => `- [${p} on npm](https://www.npmjs.com/package/${p})\n - [${p} on unpkg](https://unpkg.com/browse/${p}@latest//)`).join("\n");
+        const links = info.packages.map(p => `- [${p} on npm](https://www.npmjs.com/package/${p})\n- [${p} on unpkg](https://unpkg.com/browse/${p}@latest//)`).join("\n");
         reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n${links}`;
     } else if (info.popularityLevel === "Critical") {
         reviewerAdvisory = "Because this is a widely-used package, a DT maintainer will need to review it before it can be merged.";
@@ -335,7 +342,7 @@ function createWelcomeComment(info: PrInfo) {
     if (info.dangerLevel === "ScopedAndUntested") {
         dangerComment = `This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`;
     } else if (info.dangerLevel === "Infrastructure") {
-        dangerComment = "This PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare - did you mean to do this?";
+        dangerComment = "This PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?";
     }
 
     if (dangerComment !== undefined) {
