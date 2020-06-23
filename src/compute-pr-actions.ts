@@ -28,8 +28,8 @@ type LabelName =
     | "Edits Infrastructure"
     | "Edits multiple packages"
     | "Author is Owner"
-    | "Untested Change";
-
+    | "Untested Change"
+    | "Config Edit";
 
 export interface Actions {
     pr_number: number;
@@ -65,7 +65,8 @@ function createDefaultActions(prNumber: number): Actions {
             "Edits multiple packages": false,
             "Author is Owner": false,
             "Merge:Auto": false,
-            "Untested Change": false
+            "Untested Change": false,
+            "Config Edit": false
         },
         responseComments: [],
         shouldClose: false,
@@ -126,6 +127,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["New Definition"] = info.anyPackageIsNew;
     context.labels["Author is Owner"] = info.authorIsOwner;
     context.labels["Merge:Auto"] = canBeMergedNow(info);
+    context.labels["Config Edit"] = !info.anyPackageIsNew && info.dangerLevel === "ScopedAndConfiguration";
     context.isReadyForAutoMerge = canBeMergedNow(info);
     context.labels["Untested Change"] = info.dangerLevel === "ScopedAndUntested";
 

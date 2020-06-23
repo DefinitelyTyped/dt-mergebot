@@ -18,7 +18,8 @@
     "Edits multiple packages": false,
     "Author is Owner": false,
     "Merge:Auto": false,
-    "Untested Change": false
+    "Untested Change": false,
+    "Config Edit": true
   },
   "responseComments": [
     {

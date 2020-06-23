@@ -25,6 +25,10 @@
             {
               "name": "Other Approved",
               "__typename": "Label"
+            },
+            {
+              "name": "Config Edit",
+              "__typename": "Label"
             }
           ],
           "__typename": "LabelConnection"
