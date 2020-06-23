@@ -29,6 +29,7 @@ type LabelName =
     | "Edits multiple packages"
     | "Author is Owner"
     | "No Other Owners"
+    | "Too Many Owners"
     | "Untested Change"
     | "Config Edit";
 
@@ -66,6 +67,7 @@ function createDefaultActions(prNumber: number): Actions {
             "Edits multiple packages": false,
             "Author is Owner": false,
             "No Other Owners": false,
+            "Too Many Owners": false,
             "Merge:Auto": false,
             "Untested Change": false,
             "Config Edit": false
@@ -133,6 +135,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["Edits multiple packages"] = info.dangerLevel === "MultiplePackagesEdited";
     context.labels["Author is Owner"] = info.authorIsOwner;
     context.labels["No Other Owners"] = !info.anyPackageIsNew && otherOwners.length === 0;
+    context.labels["Too Many Owners"] = tooManyOwners(info);
     context.labels["Merge:Auto"] = canBeMergedNow(info);
     context.labels["Config Edit"] = !info.anyPackageIsNew && info.dangerLevel === "ScopedAndConfiguration";
     context.isReadyForAutoMerge = canBeMergedNow(info);
@@ -146,8 +149,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
 
     // Ping reviewers when needed
     if (otherOwners.length > 0 && !info.isChangesRequested && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
-        const tooManyOwners = info.owners.length > 50;
-        if (tooManyOwners) {
+        if (tooManyOwners(info)) {
             context.responseComments.push(Comments.PingReviewersTooMany(otherOwners));
         } else {
             context.responseComments.push(Comments.PingReviewers(otherOwners, info.reviewLink));
@@ -245,14 +247,17 @@ function canBeMergedNow(info: PrInfo): boolean {
     return hasFinalApproval(info).approved;
 }
 
+function tooManyOwners(info: PrInfo): boolean {
+    return info.owners.length > 50;
+}
+
 type PotentialReviewers = "DT maintainers" | "type definition owners or DT maintainers" | "type definition owners, DT maintainers or others"
 
 function hasFinalApproval(info: PrInfo) {
-    const tooManyReviewers = info.owners.length > 50;
     let approved = false;
     let requiredApprovalBy: PotentialReviewers = "DT maintainers";
 
-    if (info.dangerLevel === "ScopedAndTested" && !tooManyReviewers) {
+    if (info.dangerLevel === "ScopedAndTested" && !tooManyOwners(info)) {
         if (info.popularityLevel === "Well-liked by everyone") {
             approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other));
             requiredApprovalBy = "type definition owners, DT maintainers or others";
