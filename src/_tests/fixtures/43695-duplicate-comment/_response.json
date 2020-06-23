@@ -23,6 +23,10 @@
               "__typename": "Label"
             },
             {
+              "name": "No Other Owners",
+              "__typename": "Label"
+            },
+            {
               "name": "Config Edit",
               "__typename": "Label"
             }

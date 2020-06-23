@@ -28,6 +28,7 @@ type LabelName =
     | "Edits Infrastructure"
     | "Edits multiple packages"
     | "Author is Owner"
+    | "No Other Owners"
     | "Untested Change"
     | "Config Edit";
 
@@ -64,6 +65,7 @@ function createDefaultActions(prNumber: number): Actions {
             "Edits Infrastructure": false,
             "Edits multiple packages": false,
             "Author is Owner": false,
+            "No Other Owners": false,
             "Merge:Auto": false,
             "Untested Change": false,
             "Config Edit": false
@@ -115,6 +117,8 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
 
     const now = new Date(info.now);
 
+    const otherOwners = info.owners.filter(o => info.author.toLowerCase() !== o.toLowerCase());
+
     // Some step should override this
     context.targetColumn = "Other";
 
@@ -126,6 +130,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
     context.labels["New Definition"] = info.anyPackageIsNew;
     context.labels["Author is Owner"] = info.authorIsOwner;
+    context.labels["No Other Owners"] = !info.anyPackageIsNew && otherOwners.length === 0;
     context.labels["Merge:Auto"] = canBeMergedNow(info);
     context.labels["Config Edit"] = !info.anyPackageIsNew && info.dangerLevel === "ScopedAndConfiguration";
     context.isReadyForAutoMerge = canBeMergedNow(info);
@@ -138,8 +143,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     });
 
     // Ping reviewers when needed
-    const otherOwners = info.owners.filter(o => info.author.toLowerCase() !== o.toLowerCase());
-    if (otherOwners.length && !info.isChangesRequested && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
+    if (otherOwners.length > 0 && !info.isChangesRequested && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
         const tooManyOwners = info.owners.length > 50;
         if (tooManyOwners) {
             context.responseComments.push(Comments.PingReviewersTooMany(otherOwners));

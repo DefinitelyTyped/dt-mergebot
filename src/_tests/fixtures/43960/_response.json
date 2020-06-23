@@ -30,6 +30,10 @@
             {
               "name": "Revision needed",
               "__typename": "Label"
+            },
+            {
+              "name": "No Other Owners",
+              "__typename": "Label"
             }
           ],
           "__typename": "LabelConnection"
