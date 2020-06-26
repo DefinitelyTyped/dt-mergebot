@@ -205,15 +205,13 @@ function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pull
 }
 
 function parseComment(body: string): undefined | { status: string; tag: string } {
-  if (body.endsWith(suffix)) {
-    const start = body.lastIndexOf(prefix);
-    const end = body.lastIndexOf(suffix);
-    return {
-      status: body.substr(0, start),
-      tag: body.substr(start + prefix.length, end - start - prefix.length),
-    };
-  }
-  return undefined;
+  const start = body.lastIndexOf(prefix);
+  const end = body.lastIndexOf(suffix);
+  return start < 0 || end < 0 || end + suffix.length != body.length
+    ? undefined
+    : { status: body.substr(0, start),
+        tag: body.substr(start + prefix.length, end - start - prefix.length),
+      };
 }
 
 function makeComment(body: string, tag: string) {

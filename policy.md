@@ -7,25 +7,23 @@ DefinitelyTyped PRs are now subject to the following constraints to improve thro
 
 A PR is *unmergeable* if any of the following are true:
  * It contains merge conflicts (the `Has Merge Conflict` label will be applied)
- * It is failing the CI build (the `The Travs CI build failed` label will be applied)
+ * It is failing the CI build (the `The CI build failed` label will be applied)
  * It has unaddressed comments from code reviewers (the `Revision needed`) will be applied
 
 ### Mergeable
 
-A PR is *mergeable* if all of the following are true:
- * It is not *unmergeable*
- * The CI build has passed
+A PR is *mergeable* if it is not *unmergeable*.
 
 ### Passing Code Review
 
- A user has submitted a *passing code review* if they:
-  * :+1: `dt-bot`'s comment
-  * Post a comment containing :+1:
-  * Use GitHub's "review" feature and Approve
+A user has submitted a *passing code review* if they:
+ * :+1: `dt-bot`'s comment
+ * Post a comment containing :+1:
+ * Use GitHub's "review" feature and Approve
 
 ### Definition Author
 
-A *definition author* is a user listed in the index.d.ts file authors list.
+A *definition author* is a user listed in the `index.d.ts` file authors list.
 These users are assumed to have appropriate knowledge of the file and are considered trustworthy reviewers.
 
 DT maintainers may treat themselves as definition authors at their discretion.
@@ -58,9 +56,9 @@ A PR is available to *YSYL merge* if:
 
 ### Abandoned
 
- A PR is *abandoned* if:
-  * It is *unmergeable*
-  * The author has not commented on the PR in seven days
-  * The author has not pushed commits to the PR in seven days
+A PR is *abandoned* if:
+ * It is *unmergeable*
+ * The author has not commented on the PR in seven days
+ * The author has not pushed commits to the PR in seven days
 
 Abandoned PRs will be automatically closed.

@@ -19,9 +19,9 @@ _Disclaimer: This could be out of date, the source of truth is always [compute-p
 
 When a PR:
 
- - Has merge conflicts, CI is failing or has Reviews which reject the most recent commit
- - Has not had any commits/comments/reviews/review comments in the last 28 days
- 
+- Has merge conflicts, CI is failing or has Reviews which reject the most recent commit
+- Has not had any commits/comments/reviews/review comments in the last 28 days
+
 It will get a ping that it has two days for something to happen.
 
 Then, assuming no new activities, a PR which:
