@@ -210,7 +210,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
             // Give 4 days for PRs with other owners
             const fourDays = 4 * 24 * 60 * 60 * 1000;
             if (!info.anyPackageIsNew && info.lastCommitDate.valueOf() + fourDays > now.valueOf()) {
-                context.targetColumn = projectBoardForReviewWithWithLeastAccess(info);
+                context.targetColumn = projectBoardForReviewWithLeastAccess(info);
             } else {
                 context.targetColumn = "Needs Maintainer Review";
             }
@@ -282,8 +282,8 @@ function hasFinalApproval(info: PrInfo) {
 }
 
 /** E.g. let people review, but fall back to the DT maintainers based on the access rights above */
-function projectBoardForReviewWithWithLeastAccess(info: PrInfo):  Actions["targetColumn"] {
-    const approvers = hasFinalApproval(info)
+function projectBoardForReviewWithLeastAccess(info: PrInfo):  Actions["targetColumn"] {
+    const approvers = hasFinalApproval(info);
     if (approvers.requiredApprovalBy === "DT maintainers") {
         return "Needs Maintainer Review";
     } else {
@@ -310,13 +310,17 @@ function getStaleness(info: PrInfo): Staleness {
 }
 
 function createWelcomeComment(info: PrInfo) {
+    let content: string = "";
+    function display(...lines: string[]) {
+        lines.forEach(line => content += line + "\n");
+    }
+
     const otherOwners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
     const testsLink = info.anyPackageIsNew ? uriForTestingNewPackages : uriForTestingEditedPackages;
 
     const specialWelcome = info.isFirstContribution ? ` I see this is your first time submitting to DefinitelyTyped 👋 — keep an eye on this comment as I'll be updating it with information as things progress.` : "";
-    const introCommentLines: string[] = [];
-    introCommentLines.push(`@${info.author} Thank you for submitting this PR! ${specialWelcome}`);
-    introCommentLines.push(``);
+    display(`@${info.author} Thank you for submitting this PR! ${specialWelcome}`,
+            ``);
 
     // Lets the author know who needs to review this
     let reviewerAdvisory: string | undefined;
@@ -346,57 +350,60 @@ function createWelcomeComment(info: PrInfo) {
     }
 
     if (dangerComment !== undefined) {
-        introCommentLines.push(" " + dangerComment);
+        display(" " + dangerComment);
     }
 
-    const waitingOnThePRAuthorToMerge = !info.hasMergeConflict && info.ciResult === CIResult.Pass && info.dangerLevel === "ScopedAndTested" && hasFinalApproval(info).approved;
+    const approval = hasFinalApproval(info);
+    const waitingOnThePRAuthorToMerge =
+        !info.hasMergeConflict
+        && info.ciResult === CIResult.Pass
+        && info.dangerLevel === "ScopedAndTested"
+        && approval.approved;
 
-    introCommentLines.push(``);
-    introCommentLines.push(`## Code Reviews`);
-    introCommentLines.push(``);
-    introCommentLines.push(reviewerAdvisory);
-    introCommentLines.push(``);
-    introCommentLines.push(`## Status`);
-    introCommentLines.push(``);
-    introCommentLines.push(` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
+    display(``,
+            `## Code Reviews`,
+            ``,
+            reviewerAdvisory,
+            ``,
+            `## Status`,
+            ``,
+            ` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
 
     const expectedResults = info.ciResult === CIResult.Pending ? "finished" : "passed";
-    introCommentLines.push(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
+    display(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
 
-    const approval = hasFinalApproval(info)
     if (info.anyPackageIsNew) {
-        introCommentLines.push(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes when there are new packages added`);
+        display(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes when there are new packages added`);
     } else if (info.dangerLevel === "ScopedAndTested") {
-        introCommentLines.push(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
+        display(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
     } else if (otherOwners.length === 0) {
-        introCommentLines.push(` * ${emoji(approval.approved)} A DT maintainer can merge changes when there are no other reviewers`);
+        display(` * ${emoji(approval.approved)} A DT maintainer can merge changes when there are no other reviewers`);
     } else if (info.files.find(f => f.kind === "infrastructure")) {
         const infraFiles = info.files.filter(f => f.kind === "infrastructure")
         const links = infraFiles.map(f => `[${f.filePath}](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.filePath})`)
-        introCommentLines.push(` * ${emoji(approval.approved)} A DT maintainer needs to merge changes which affect DT infrastructure (${links.join(", ")})`);
+        display(` * ${emoji(approval.approved)} A DT maintainer needs to merge changes which affect DT infrastructure (${links.join(", ")})`);
     } else if (info.dangerLevel === "ScopedAndConfiguration") {
-        introCommentLines.push(` * ${emoji(approval.approved)} A DT maintainer needs to merge changes which affect module config files`);
+        display(` * ${emoji(approval.approved)} A DT maintainer needs to merge changes which affect module config files`);
     } else {
-        introCommentLines.push(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes [without tests](${testsLink})`);
+        display(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes [without tests](${testsLink})`);
     }
 
-    introCommentLines.push(``);
+    display(``);
     if (!waitingOnThePRAuthorToMerge) {
-        introCommentLines.push(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`);
+        display(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`);
     } else {
-        introCommentLines.push(`All of the items on the list are green. **To merge, you need to post a comment including the string "Ready to merge"** to bring in your changes.`);
+        display(`All of the items on the list are green. **To merge, you need to post a comment including the string "Ready to merge"** to bring in your changes.`);
     }
 
     // Remove the 'now' attribute because otherwise the comment would need editing every time
     // and that's spammy.
-    const shallowPresentationInfoCopy = { ...info };
-    shallowPresentationInfoCopy.now = "-";
+    const shallowPresentationInfoCopy = { ...info, now: "-" };
 
-    introCommentLines.push(``);
-    introCommentLines.push(`----------------------`);
-    introCommentLines.push(`<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n${'```json\n' + JSON.stringify(shallowPresentationInfoCopy, undefined, 2) + '\n```'}\n\n</details>`);
+    display(``,
+            `----------------------`,
+            `<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n${'```json\n' + JSON.stringify(shallowPresentationInfoCopy, undefined, 2) + '\n```'}\n\n</details>`);
 
-    return introCommentLines.join("\n");
+    return content.trimEnd();
 
     function emoji(n: boolean) {
         return n ? "✅" : "❌";

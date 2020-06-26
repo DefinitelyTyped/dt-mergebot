@@ -22,7 +22,7 @@ export default async function main(prNumber: number, log: (...args: any[]) => vo
 
     log(``);
     log(dry ? `Simulating execution...` : `Executing...`);
-    
+
     const mutations = await exec.executePrActions(actions, info.data, dry);
     log(``);
     log(`=== Mutations ===`);
