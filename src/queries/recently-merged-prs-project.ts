@@ -5,9 +5,12 @@ import { GetRecentlyMergedPRsProject } from "./schema/GetRecentlyMergedPRsProjec
 const GetRecentlyMergedPRsProjectQuery = gql`
   query GetRecentlyMergedPRsProject {
     repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
+      id
       project(number: 5) {
+        id
         columns(first: 5) {
           nodes {
+            id
             name
             cards(last: 100) {
               nodes {
@@ -30,7 +33,7 @@ export async function getRecentlyUpdatedPRProjectBoardCards() {
   });
 
   if (results.errors) {
-    throw new Error(results.errors.join("\n"));
+    throw new Error(JSON.stringify(results.errors));
   }
 
   const project = results.data.repository?.project;
