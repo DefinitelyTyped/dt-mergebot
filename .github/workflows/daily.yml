@@ -22,5 +22,3 @@ jobs:
       - run: node ./bin/scripts/daily.js
         env:
           BOT_AUTH_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
-
-   

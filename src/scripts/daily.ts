@@ -20,13 +20,13 @@ const start = async function () {
     // If it didn't work, bail early
     if (state.type === "fail") {
       console.error(`Failed because of: ${state.message}`);
-      continue
+      continue;
     }
 
     // Allow the state to declare that nothing should happen
     if (state.type === "no_packages") {
       console.error(`NOOPing because no packages`);
-      continue
+      continue;
     }
 
     // Convert the info to a set of actions for the bot
@@ -37,16 +37,16 @@ const start = async function () {
   }
 
   console.log(`Cutting 'recently merged' projects to the last 50`);
-  
-  const allRecentlyUpdatedPRs = await getRecentlyUpdatedPRProjectBoardCards()
+
+  const allRecentlyUpdatedPRs = await getRecentlyUpdatedPRProjectBoardCards();
   const afterFirst50 = allRecentlyUpdatedPRs.sort((l, r) => l.updatedAt.localeCompare(r.updatedAt))
-                                            .filter((_, i) => i > 50)
+                                            .filter((_, i) => i > 50);
   for (const node of afterFirst50) {
-   const mutation =  createMutation(deleteProjectCard, { id: node.id })
-   await mutate(mutation)
+    const mutation =  createMutation(deleteProjectCard, { id: node.id });
+    await mutate(mutation);
   }
-  
-  console.log("Done")
+
+  console.log("Done");
 };
 
-start()
+start();
