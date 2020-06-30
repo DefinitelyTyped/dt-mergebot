@@ -11,7 +11,7 @@
   "headCommitAbbrOid": "96d6582",
   "headCommitOid": "96d6582f60431d273c179dcf6816426b4f1e37ac",
   "mergeIsRequested": false,
-  "stalenessInDays": 4,
+  "stalenessInDays": 0,
   "lastCommitDate": "2020-05-10T21:26:25.000Z",
   "lastCommentDate": "2020-05-10T21:26:25.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44631/files",

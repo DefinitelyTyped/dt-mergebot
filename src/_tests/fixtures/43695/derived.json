@@ -8,7 +8,7 @@
   "headCommitAbbrOid": "a5285cd",
   "headCommitOid": "a5285cda2722912a390770722a334e6d6e43d1ab",
   "mergeIsRequested": false,
-  "stalenessInDays": 1,
+  "stalenessInDays": 0,
   "lastCommitDate": "2020-04-07T07:41:37.000Z",
   "lastCommentDate": "2020-04-07T07:41:37.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43695/files",
