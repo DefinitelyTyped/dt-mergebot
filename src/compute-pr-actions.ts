@@ -318,8 +318,11 @@ function createWelcomeComment(info: PrInfo) {
     const otherOwners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
     const testsLink = info.anyPackageIsNew ? uriForTestingNewPackages : uriForTestingEditedPackages;
 
-    const specialWelcome = info.isFirstContribution ? ` I see this is your first time submitting to DefinitelyTyped 👋 — keep an eye on this comment as I'll be updating it with information as things progress.` : "";
-    display(`@${info.author} Thank you for submitting this PR! ${specialWelcome}`,
+    const specialWelcome = !info.isFirstContribution ? `` :
+        ` I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.`;
+    display(`@${info.author} Thank you for submitting this PR!${specialWelcome}`,
+            ``,
+            `***This is a live comment which I will keep updated.***`,
             ``);
 
     // Lets the author know who needs to review this
