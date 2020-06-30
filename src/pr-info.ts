@@ -29,7 +29,7 @@ export type DangerLevel =
     | "MultiplePackagesEdited"
     | "Infrastructure";
 
-export type PopularityLevel = 
+export type PopularityLevel =
     | "Well-liked by everyone"
     | "Popular"
     | "Critical";
@@ -184,10 +184,10 @@ export async function deriveStateForPR(
     getNow = () => new Date(),
 ): Promise<PrInfo | BotFail | BotEnsureRemovedFromProject | BotNoPackages>  {
     const prInfo = info.data.repository?.pullRequest;
-    
+
     if (!prInfo) return botFail("No PR with this number exists");
     if (prInfo.author == null) return botFail("PR author does not exist");
-    
+
     const headCommit = getHeadCommit(prInfo);
     if (headCommit == null) return botFail("No head commit");
 
@@ -201,9 +201,9 @@ export async function deriveStateForPR(
 
     const { anyPackageIsNew, allOwners } = getOwners ? await getOwners(packages) : await getOwnersOfPackages(packages);
     const authorIsOwner = isOwner(prInfo.author.login);
-    
+
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
-    
+
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
     const approvals = noNulls(freshReviewsByState.APPROVED);
     const hasDismissedReview = !!freshReviewsByState.DISMISSED?.length;
@@ -221,9 +221,12 @@ export async function deriveStateForPR(
         }
         return "other";
     });
-    
-    const lastPushDate = new Date(headCommit.pushedDate);
+
+    const lastCommitDate = new Date(headCommit.pushedDate);
+    const lastCommentDate = getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastCommitDate;
+    const reopenedDate = getReopenedDate(prInfo.timelineItems);
     const now = getNow().toISOString();
+    const reviewAnalysis = analyzeReviews(prInfo, isOwner);
 
     return {
         type: "info",
@@ -235,13 +238,12 @@ export async function deriveStateForPR(
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
         mergeIsRequested: authorSaysReadyToMerge(prInfo),
-        stalenessInDays: daysSince(headCommit.pushedDate, now),
-        lastCommitDate: lastPushDate,
-        reopenedDate: getReopenedDate(prInfo.timelineItems),
-        lastCommentDate: getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastPushDate,
+        stalenessInDays: Math.min(...[lastCommitDate, lastCommentDate, reopenedDate, reviewAnalysis.lastReviewDate]
+                                     .map(date => daysSince(date || lastCommitDate, now))),
+        lastCommitDate, reopenedDate, lastCommentDate,
         reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
-        authorIsOwner, 
+        authorIsOwner,
         isFirstContribution,
         popularityLevel: getDownloads
             ? getPopularityLevelFromDownloads(await getDownloads(packages))
@@ -251,13 +253,12 @@ export async function deriveStateForPR(
         files: categorizedFiles,
         hasDismissedReview,
         ...getCIResult(headCommit),
-        ...analyzeReviews(prInfo, isOwner)
+        ...reviewAnalysis
     };
-    
+
     function botFail(message: string): BotFail {
         return { type: "fail", message };
     }
-    
 
     function botEnsureRemovedFromProject(prNumber: number, message: string): BotEnsureRemovedFromProject {
         return { type: "remove", pr_number: prNumber, message };
@@ -280,7 +281,7 @@ function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems)
     const lastItem = findLast(timelineItems.nodes, (item): item is ReopenedEvent | ReadyForReviewEvent => (
         item?.__typename === "ReopenedEvent" || item?.__typename === "ReadyForReviewEvent"
       ));
-    
+
     return lastItem && lastItem.createdAt && new Date(lastItem.createdAt)
 }
 
@@ -381,7 +382,7 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     let lastReviewDate;
     let isChangesRequested = false;
     let approvalFlags = ApprovalFlags.None;
-    
+
     // Do this in reverse order so we can detect up-to-date-reviews correctly
     const reviews = [...prInfo.reviews?.nodes ?? []].reverse();
 
