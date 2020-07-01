@@ -189,6 +189,10 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
                 break;
         }
     }
+    // Stale & doesn't need author attention => move to maintainer queue
+    else if (staleness == Staleness.Abandoned) {
+        context.targetColumn = "Needs Maintainer Review";
+    }
     // CI is running; default column is Waiting for Reviewers
     else if (info.ciResult === CIResult.Pending) {
         context.targetColumn = "Waiting for Code Reviews";
