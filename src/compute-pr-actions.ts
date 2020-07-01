@@ -293,20 +293,16 @@ function projectBoardForReviewWithLeastAccess(info: PrInfo):  Actions["targetCol
 
 const enum Staleness {
     Fresh,
+    PayAttention,
     NearlyAbandoned,
     Abandoned,
 }
 
-function getStaleness(info: PrInfo): Staleness {
-    const daysSinceLastHumanComment = daysSince(info.lastCommentDate, info.now);
-    const daysSinceLastPush = daysSince(info.lastCommitDate, info.now);
-    const daysSinceReopened = info.reopenedDate ? daysSince(info.reopenedDate, info.now) : Infinity;
-    const daysSinceLastReview = info.lastReviewDate ? daysSince(info.lastReviewDate, info.now) : Infinity;
-    const daysSinceLastActivity = Math.min(daysSinceLastPush, daysSinceLastHumanComment, daysSinceReopened, daysSinceLastReview);
-
-    if (daysSinceLastActivity >= 30) return Staleness.Abandoned;
-    if (daysSinceLastActivity >= 28) return Staleness.NearlyAbandoned;
-    return Staleness.Fresh;
+function getStaleness(info: PrInfo) {
+    return info.stalenessInDays < 7 ? Staleness.Fresh
+        : info.stalenessInDays < 23 ? Staleness.PayAttention
+        : info.stalenessInDays < 31 ? Staleness.NearlyAbandoned
+        : Staleness.Abandoned;
 }
 
 function createWelcomeComment(info: PrInfo) {
@@ -396,6 +392,17 @@ function createWelcomeComment(info: PrInfo) {
         display(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`);
     } else {
         display(`All of the items on the list are green. **To merge, you need to post a comment including the string "Ready to merge"** to bring in your changes.`);
+    }
+
+    const staleness = getStaleness(info);
+    if (staleness !== Staleness.Fresh) {
+        display(``,
+                `## Inactive`,
+                ``,
+                `This PR has been inactive for ${info.stalenessInDays} days${
+                  staleness === Staleness.NearlyAbandoned ? " — it is considered nearly abandoned!"
+                  : staleness === Staleness.Abandoned ? " — it is considered abandoned!"
+                  : "."}`);
     }
 
     // Remove the 'now' attribute because otherwise the comment would need editing every time
