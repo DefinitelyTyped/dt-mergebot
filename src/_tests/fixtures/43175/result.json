@@ -21,7 +21,8 @@
     "Too Many Owners": false,
     "Merge:Auto": false,
     "Untested Change": true,
-    "Config Edit": false
+    "Config Edit": false,
+    "Abandoned": false
   },
   "responseComments": [
     {

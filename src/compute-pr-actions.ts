@@ -31,7 +31,8 @@ type LabelName =
     | "No Other Owners"
     | "Too Many Owners"
     | "Untested Change"
-    | "Config Edit";
+    | "Config Edit"
+    | "Abandoned";
 
 export interface Actions {
     pr_number: number;
@@ -70,7 +71,8 @@ function createDefaultActions(prNumber: number): Actions {
             "Too Many Owners": false,
             "Merge:Auto": false,
             "Untested Change": false,
-            "Config Edit": false
+            "Config Edit": false,
+            "Abandoned": false
         },
         responseComments: [],
         shouldClose: false,
@@ -118,7 +120,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     const context = createDefaultActions(info.pr_number);
 
     const now = new Date(info.now);
-
+    const staleness = getStaleness(info);
     const otherOwners = info.owners.filter(o => info.author.toLowerCase() !== o.toLowerCase());
 
     // Some step should override this
@@ -140,6 +142,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["Config Edit"] = !info.anyPackageIsNew && info.dangerLevel === "ScopedAndConfiguration";
     context.isReadyForAutoMerge = canBeMergedNow(info);
     context.labels["Untested Change"] = info.dangerLevel === "ScopedAndUntested";
+    context.labels["Abandoned"] = staleness === Staleness.Abandoned;
 
     // Update intro comment
     context.responseComments.push({
@@ -175,7 +178,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
         }
 
         // Could be abandoned
-        switch (getStaleness(info)) {
+        switch (staleness) {
             case Staleness.NearlyAbandoned:
                 context.responseComments.push(Comments.NearlyAbandoned(info.author));
                 break;
