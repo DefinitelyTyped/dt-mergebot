@@ -211,8 +211,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
             }
         } else {
             // Give 4 days for PRs with other owners
-            const fourDays = 4 * 24 * 60 * 60 * 1000;
-            if (!info.anyPackageIsNew && info.lastCommitDate.valueOf() + fourDays > now.valueOf()) {
+            if (!info.anyPackageIsNew && info.stalenessInDays < 4) {
                 context.targetColumn = projectBoardForReviewWithLeastAccess(info);
             } else {
                 context.targetColumn = "Needs Maintainer Review";
@@ -239,22 +238,17 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     return context;
 }
 
-function canBeMergedNow(info: PrInfo): boolean {
-    if (info.ciResult !== CIResult.Pass) {
-        return false;
-    }
-    if (info.hasMergeConflict) {
-        return false;
-    }
-
-    return hasFinalApproval(info).approved;
-}
-
 function tooManyOwners(info: PrInfo): boolean {
     return info.owners.length > 50;
 }
 
-type PotentialReviewers = "DT maintainers" | "type definition owners or DT maintainers" | "type definition owners, DT maintainers or others"
+function canBeMergedNow(info: PrInfo): boolean {
+    return info.ciResult === CIResult.Pass
+        && !info.hasMergeConflict
+        && hasFinalApproval(info).approved;
+}
+
+type PotentialReviewers = "DT maintainers" | "type definition owners or DT maintainers" | "type definition owners, DT maintainers or others";
 
 function hasFinalApproval(info: PrInfo) {
     let approved = false;
