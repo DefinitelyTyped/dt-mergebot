@@ -1,6 +1,6 @@
 {
   "type": "info",
-  "now": "2020-07-02T16:28:19.013Z",
+  "now": "2020-05-26T16:28:19.013Z",
   "pr_number": 44989,
   "author": "petr-motejlek",
   "owners": [
@@ -38,7 +38,7 @@
   "headCommitAbbrOid": "9ca6086",
   "headCommitOid": "9ca60862ea56c9ff8d6b0f26c28b7e0bdaef4b34",
   "mergeIsRequested": false,
-  "stalenessInDays": 40,
+  "stalenessInDays": 3,
   "lastCommitDate": "2020-05-23T08:41:39.000Z",
   "lastCommentDate": "2020-05-23T08:45:20.000Z",
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44989/files",
