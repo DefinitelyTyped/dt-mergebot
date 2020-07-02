@@ -120,7 +120,11 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     const context = createDefaultActions(info.pr_number);
 
     const now = new Date(info.now);
-    const staleness = getStaleness(info);
+
+    // Collect some additional info
+    const failedCI = info.ciResult === CIResult.Fail;
+    const needsAuthorAttention = failedCI || info.hasMergeConflict || info.isChangesRequested;
+    const staleness = getStaleness(info, needsAuthorAttention);
     const otherOwners = info.owners.filter(o => info.author.toLowerCase() !== o.toLowerCase());
 
     // Some step should override this
@@ -142,12 +146,13 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["Config Edit"] = !info.anyPackageIsNew && info.dangerLevel === "ScopedAndConfiguration";
     context.isReadyForAutoMerge = canBeMergedNow(info);
     context.labels["Untested Change"] = info.dangerLevel === "ScopedAndUntested";
+    context.labels["Merge:YSYL"] = staleness === Staleness.YSYL;
     context.labels["Abandoned"] = staleness === Staleness.Abandoned;
 
     // Update intro comment
     context.responseComments.push({
         tag: "welcome",
-        status: createWelcomeComment(info)
+        status: createWelcomeComment(info, staleness)
     });
 
     // Ping reviewers when needed
@@ -160,8 +165,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     }
 
     // Needs author attention (bad CI, merge conflicts)
-    const failedCI = info.ciResult === CIResult.Fail;
-    if (failedCI || info.hasMergeConflict || info.isChangesRequested) {
+    if (needsAuthorAttention) {
         context.targetColumn = "Needs Author Action";
 
         if (info.hasMergeConflict) {
@@ -179,6 +183,12 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
 
         // Could be abandoned
         switch (staleness) {
+            case Staleness.NearlyYSYL:
+                context.responseComments.push(Comments.NearlyYSYL(info.author));
+                break;
+            case Staleness.YSYL:
+                context.responseComments.push(Comments.YSYL());
+                break;
             case Staleness.NearlyAbandoned:
                 context.responseComments.push(Comments.NearlyAbandoned(info.author));
                 break;
@@ -190,7 +200,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
         }
     }
     // Stale & doesn't need author attention => move to maintainer queue
-    else if (staleness == Staleness.Abandoned) {
+    else if (staleness === Staleness.Abandoned || staleness === Staleness.YSYL) {
         context.targetColumn = "Needs Maintainer Review";
     }
     // CI is running; default column is Waiting for Reviewers
@@ -203,23 +213,16 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     }
     // CI is green
     else if (info.ciResult === CIResult.Pass) {
-        const isAutoMergeable = canBeMergedNow(info);
-
-        if (isAutoMergeable) {
-            if (info.mergeIsRequested) {
-                context.shouldMerge = true;
-                context.targetColumn = "Recently Merged";
-            } else {
-                context.responseComments.push(Comments.AskForAutoMergePermission(info.author));
-                context.targetColumn = "Waiting for Author to Merge";
-            }
-        } else {
-            // Give 4 days for PRs with other owners
-            if (!info.anyPackageIsNew && info.stalenessInDays < 4) {
-                context.targetColumn = projectBoardForReviewWithLeastAccess(info);
-            } else {
-                context.targetColumn = "Needs Maintainer Review";
-            }
+        if (!canBeMergedNow(info)) {
+            context.targetColumn = projectBoardForReviewWithLeastAccess(info);
+        }
+        else if (info.mergeIsRequested) {
+            context.shouldMerge = true;
+            context.targetColumn = "Recently Merged";
+        }
+        else {
+            context.responseComments.push(Comments.AskForAutoMergePermission(info.author));
+            context.targetColumn = "Waiting for Author to Merge";
         }
 
         // Ping stale reviewers if any
@@ -295,18 +298,25 @@ function projectBoardForReviewWithLeastAccess(info: PrInfo):  Actions["targetCol
 const enum Staleness {
     Fresh,
     PayAttention,
+    NearlyYSYL,
+    YSYL,
     NearlyAbandoned,
     Abandoned,
 }
 
-function getStaleness(info: PrInfo) {
-    return info.stalenessInDays < 7 ? Staleness.Fresh
-        : info.stalenessInDays < 23 ? Staleness.PayAttention
-        : info.stalenessInDays < 31 ? Staleness.NearlyAbandoned
-        : Staleness.Abandoned;
+function getStaleness(info: PrInfo, needsAuthorAttention: boolean) {
+    return needsAuthorAttention
+        ? (info.stalenessInDays <= 6 ? Staleness.Fresh
+           : info.stalenessInDays <= 22 ? Staleness.PayAttention
+           : info.stalenessInDays <= 30 ? Staleness.NearlyAbandoned
+           : Staleness.Abandoned)
+        : (info.stalenessInDays <= 2 ? Staleness.Fresh
+           : info.stalenessInDays <= 4 ? Staleness.PayAttention
+           : info.stalenessInDays <= 8 ? Staleness.NearlyYSYL
+           : Staleness.YSYL);
 }
 
-function createWelcomeComment(info: PrInfo) {
+function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     let content: string = "";
     function display(...lines: string[]) {
         lines.forEach(line => content += line + "\n");
@@ -395,14 +405,15 @@ function createWelcomeComment(info: PrInfo) {
         display(`All of the items on the list are green. **To merge, you need to post a comment including the string "Ready to merge"** to bring in your changes.`);
     }
 
-    const staleness = getStaleness(info);
     if (staleness !== Staleness.Fresh) {
         display(``,
                 `## Inactive`,
                 ``,
                 `This PR has been inactive for ${info.stalenessInDays} days${
                   staleness === Staleness.NearlyAbandoned ? " — it is considered nearly abandoned!"
+                  : staleness === Staleness.NearlyYSYL ? " — please merge or say something if there's a problem, otherwise it will move to the DT maintainer queue soon!"
                   : staleness === Staleness.Abandoned ? " — it is considered abandoned!"
+                  : staleness === Staleness.YSYL ? " — waiting for a DT maintainer!"
                   : "."}`);
     }
 

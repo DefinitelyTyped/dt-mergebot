@@ -15,6 +15,16 @@ export const NearlyAbandoned = (user: string) => ({
     status: `@${user} I haven't seen any activity on this PR in more than 3 weeks, and this PR currently has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.`
 });
 
+export const YSYL = () => ({
+    tag: "merge",
+    status: "After a week, no one has reviewed the PR 😞. A maintainer will be reviewing the PR in the next few days and will either merge it or request revisions. Thank you for your patience!"
+});
+
+export const NearlyYSYL = (user: string) => ({
+    tag: "ysyl-warn",
+    status: `@${user} I haven't seen any activity on this PR in almost a week. The PR will move to the DT maintainer queue soon if there is no further activity.  Please merge it or say why it shouldn't be soon.`
+});
+
 export const CIFailed = (slug: string, user: string, ciUrl: string) => ({
     tag: `gh-actions-complaint-${slug}`,
     status: `@${user} The CI build failed! Please [review the logs for more information](${ciUrl}).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!`
@@ -43,11 +53,6 @@ export const AuthorIsOwnerAndGreen = () => ({
 export const LGTM = () => ({
     tag: "merge",
     status: "We've gotten sign-off from a reviewer 👏. A maintainer will soon review this PR and merge it if there are no issues. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for contributing to DefinitelyTyped!"
-});
-
-export const YSYL = () => ({
-    tag: "merge",
-    status: "After 5 days, no one has reviewed the PR 😞. A maintainer will be reviewing the PR in the next few days and will either merge it or request revisions. Thank you for your patience!"
 });
 
 export const PingReviewers = (names: readonly string[], reviewLink: string) => ({
