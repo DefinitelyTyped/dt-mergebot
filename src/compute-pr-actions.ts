@@ -127,9 +127,6 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     const staleness = getStaleness(info, needsAuthorAttention);
     const otherOwners = info.owners.filter(o => info.author.toLowerCase() !== o.toLowerCase());
 
-    // Some step should override this
-    context.targetColumn = "Other";
-
     // General labelling and housekeeping
     context.labels["Critical package"] = info.popularityLevel === "Critical";
     context.labels["Popular package"] = info.popularityLevel === "Popular";
@@ -163,6 +160,9 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
             context.responseComments.push(Comments.PingReviewers(otherOwners, info.reviewLink));
         }
     }
+
+    // Some step should override this
+    context.targetColumn = "Other";
 
     // Needs author attention (bad CI, merge conflicts)
     if (needsAuthorAttention) {
@@ -287,12 +287,9 @@ function hasFinalApproval(info: PrInfo) {
 
 /** E.g. let people review, but fall back to the DT maintainers based on the access rights above */
 function projectBoardForReviewWithLeastAccess(info: PrInfo):  Actions["targetColumn"] {
-    const approvers = hasFinalApproval(info);
-    if (approvers.requiredApprovalBy === "DT maintainers") {
-        return "Needs Maintainer Review";
-    } else {
-        return "Waiting for Code Reviews";
-    }
+    return hasFinalApproval(info).requiredApprovalBy === "DT maintainers"
+        ? "Needs Maintainer Review"
+        : "Waiting for Code Reviews";
 }
 
 const enum Staleness {
