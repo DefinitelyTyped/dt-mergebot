@@ -203,23 +203,16 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     }
     // CI is green
     else if (info.ciResult === CIResult.Pass) {
-        const isAutoMergeable = canBeMergedNow(info);
-
-        if (isAutoMergeable) {
-            if (info.mergeIsRequested) {
-                context.shouldMerge = true;
-                context.targetColumn = "Recently Merged";
-            } else {
-                context.responseComments.push(Comments.AskForAutoMergePermission(info.author));
-                context.targetColumn = "Waiting for Author to Merge";
-            }
-        } else {
-            // Give 4 days for PRs with other owners
-            if (!info.anyPackageIsNew && info.stalenessInDays < 4) {
-                context.targetColumn = projectBoardForReviewWithLeastAccess(info);
-            } else {
-                context.targetColumn = "Needs Maintainer Review";
-            }
+        if (!canBeMergedNow(info)) {
+            context.targetColumn = projectBoardForReviewWithLeastAccess(info);
+        }
+        else if (info.mergeIsRequested) {
+            context.shouldMerge = true;
+            context.targetColumn = "Recently Merged";
+        }
+        else {
+            context.responseComments.push(Comments.AskForAutoMergePermission(info.author));
+            context.targetColumn = "Waiting for Author to Merge";
         }
 
         // Ping stale reviewers if any
