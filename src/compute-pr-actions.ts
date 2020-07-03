@@ -255,34 +255,22 @@ function canBeMergedNow(info: PrInfo): boolean {
         && hasFinalApproval(info).approved;
 }
 
-type PotentialReviewers = "DT maintainers" | "type definition owners or DT maintainers" | "type definition owners, DT maintainers or others";
-
+type ApproverKinds = "maintainers" | "owners" | "others";
 function hasFinalApproval(info: PrInfo) {
-    let approved = false;
-    let requiredApprovalBy: PotentialReviewers = "DT maintainers";
-
-    if (info.dangerLevel === "ScopedAndTested" && !tooManyOwners(info)) {
-        if (info.popularityLevel === "Well-liked by everyone") {
-            approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other));
-            requiredApprovalBy = "type definition owners, DT maintainers or others";
-        } else if (info.popularityLevel === "Popular") {
-            approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer | ApprovalFlags.Owner));
-            requiredApprovalBy = "type definition owners or DT maintainers";
-        } else if (info.popularityLevel === "Critical") {
-            approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer));
-            requiredApprovalBy = "DT maintainers";
-        } else {
-            throw new Error("Unknown popularity level " + info.popularityLevel);
-        }
-    } else {
-        approved = !!(info.approvalFlags & (ApprovalFlags.Maintainer));
-        requiredApprovalBy = "DT maintainers";
-    }
-
-    return {
-        approved,
-        requiredApprovalBy
-    };
+    const approvalFor = (who: ApproverKinds) => ({
+        approved: !!(info.approvalFlags &
+                     (who === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
+                      : who === "owners" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
+                      : (ApprovalFlags.Maintainer))),
+        requiredApprovalBy: (who === "others" ? "type definition owners, DT maintainers or others"
+                             : who === "owners" ? "type definition owners or DT maintainers"
+                             : "DT maintainers")
+    });
+    if (info.dangerLevel !== "ScopedAndTested" || tooManyOwners(info)) return approvalFor("maintainers");
+    if (info.popularityLevel === "Well-liked by everyone") return approvalFor("others");
+    if (info.popularityLevel === "Popular") return approvalFor("owners");
+    if (info.popularityLevel === "Critical") return approvalFor("maintainers");
+    throw new Error("Unknown popularity level " + info.popularityLevel);
 }
 
 /** E.g. let people review, but fall back to the DT maintainers based on the access rights above */
