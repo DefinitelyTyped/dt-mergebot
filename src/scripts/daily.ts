@@ -19,13 +19,19 @@ const start = async function () {
 
     // If it didn't work, bail early
     if (state.type === "fail") {
-      console.error(`Failed because of: ${state.message}`);
+      console.error(`  Failed because of: ${state.message}`);
       continue;
     }
 
     // Allow the state to declare that nothing should happen
     if (state.type === "no_packages") {
-      console.error(`NOOPing because no packages`);
+      console.error(`  NOOPing because no packages`);
+      continue;
+    }
+
+    // Show reason for ignoring PRs
+    if (state.type === "remove") {
+      console.log(`  Removing because of: ${state.message}`);
       continue;
     }
 
