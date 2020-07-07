@@ -167,7 +167,7 @@ export interface PrInfo {
     readonly popularityLevel: PopularityLevel;
 
     readonly packages: readonly string[];
-    readonly files: readonly FileLocation[];
+    readonly files: readonly FileInfo[];
 }
 
 function getHeadCommit(pr: GraphqlPullRequest) {
@@ -335,32 +335,28 @@ function getLastMaintainerBlessingDate(timelineItems: PR_repository_pullRequest_
     return undefined;
 }
 
-type FileLocation = ({
-    kind: "test",
-    package: string
-} | {
-    kind: "definition",
-    package: string
-} | {
-    kind: "package-meta",
-    package: string
-} | {
-    kind: "infrastructure"
-}) & { filePath: string };
+type FileKind = "test" | "definition" | "markdown" | "package-meta" | "infrastructure";
 
-function categorizeFile(filePath: string): FileLocation {
-    // https://regex101.com/r/OKUe4Q/1/
-    const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?))?$/.exec(filePath);
-    if (!match) return { filePath, kind: "infrastructure" };
+type FileInfo = {
+    path: string,
+    kind: FileKind,
+    package: string | undefined
+};
+
+function categorizeFile(path: string): FileInfo {
+    // https://regex101.com/r/eFvtrz/1
+    const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
+    if (!match) return { path, kind: "infrastructure", package: undefined };
     const [pkg, suffix] = match.slice(1); // `suffix` can be null
-    switch ((suffix || "").toLowerCase()) {
-        case "d.ts": return { filePath, kind: "definition", package: pkg };
-        case "ts": case "tsx": return { filePath, kind: "test", package: pkg };
-        default: return { filePath, kind: "package-meta", package: pkg };
+    switch ((suffix || "")) {
+        case "d.ts": return { path, kind: "definition", package: pkg };
+        case "ts": case "tsx": return { path, kind: "test", package: pkg };
+        case "md": return { path, kind: "markdown", package: pkg };
+        default: return { path, kind: "package-meta", package: pkg };
     }
 }
 
-export function getPackagesTouched(files: readonly FileLocation[]) {
+export function getPackagesTouched(files: readonly FileInfo[]) {
     return [...new Set(noNulls(files.map(f => "package" in f ? f.package : null)))];
 }
 
@@ -446,50 +442,22 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     });
 }
 
-function getDangerLevel(categorizedFiles: readonly FileLocation[]) {
+function getDangerLevel(categorizedFiles: readonly FileInfo[]) {
     if (categorizedFiles.some(f => f.kind === "infrastructure")) {
         return "Infrastructure";
-    } else {
-        const packagesTouched = getPackagesTouched(categorizedFiles);
-        if (packagesTouched.length === 0) {
-            // ????
-            return "Infrastructure";
-        } else if (packagesTouched.length === 1) {
-            let tested = false;
-            let meta = false;
-            for (const f of categorizedFiles) {
-                switch (f.kind) {
-                    case "infrastructure":
-                        throw new Error("impossible");
-                    case "definition":
-                        // Expected
-                        break;
-                    case "test":
-                        tested = true;
-                        break;
-                    case "package-meta":
-                        meta = true;
-                        break;
-                    default:
-                        assertNever(f);
-                }
-            }
-
-            if (meta) {
-                return "ScopedAndConfiguration";
-            } else if (tested) {
-                return "ScopedAndTested";
-            } else {
-                return "ScopedAndUntested";
-            }
-        } else {
-            return "MultiplePackagesEdited";
-        }
     }
-}
-
-function assertNever(n: never) {
-    throw new Error(`Impossible: ${n}`);
+    const packagesTouched = getPackagesTouched(categorizedFiles);
+    if (packagesTouched.length === 0) { // ????
+        return "Infrastructure";
+    } else if (packagesTouched.length > 1) {
+        return "MultiplePackagesEdited";
+    } else if (categorizedFiles.some(f => f.kind === "package-meta")) {
+        return "ScopedAndConfiguration";
+    } else if (categorizedFiles.some(f => f.kind === "test")) {
+        return "ScopedAndTested";
+    } else {
+        return "ScopedAndUntested";
+    }
 }
 
 function getCIResult(headCommit: PR_repository_pullRequest_commits_nodes_commit) {

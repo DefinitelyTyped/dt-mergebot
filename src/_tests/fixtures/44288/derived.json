@@ -25,12 +25,12 @@
   ],
   "files": [
     {
-      "filePath": "types/react-bootstrap-table2-paginator/index.d.ts",
+      "path": "types/react-bootstrap-table2-paginator/index.d.ts",
       "kind": "definition",
       "package": "react-bootstrap-table2-paginator"
     },
     {
-      "filePath": "types/react-bootstrap-table2-paginator/react-bootstrap-table2-paginator-tests.tsx",
+      "path": "types/react-bootstrap-table2-paginator/react-bootstrap-table2-paginator-tests.tsx",
       "kind": "test",
       "package": "react-bootstrap-table2-paginator"
     }

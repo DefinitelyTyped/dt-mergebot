@@ -26,32 +26,32 @@
   ],
   "files": [
     {
-      "filePath": "types/jest-image-snapshot/index.d.ts",
+      "path": "types/jest-image-snapshot/index.d.ts",
       "kind": "definition",
       "package": "jest-image-snapshot"
     },
     {
-      "filePath": "types/jest-image-snapshot/jest-image-snapshot-tests.ts",
+      "path": "types/jest-image-snapshot/jest-image-snapshot-tests.ts",
       "kind": "test",
       "package": "jest-image-snapshot"
     },
     {
-      "filePath": "types/jest-image-snapshot/v2/index.d.ts",
+      "path": "types/jest-image-snapshot/v2/index.d.ts",
       "kind": "definition",
       "package": "jest-image-snapshot"
     },
     {
-      "filePath": "types/jest-image-snapshot/v2/jest-image-snapshot-tests.ts",
+      "path": "types/jest-image-snapshot/v2/jest-image-snapshot-tests.ts",
       "kind": "test",
       "package": "jest-image-snapshot"
     },
     {
-      "filePath": "types/jest-image-snapshot/v2/tsconfig.json",
+      "path": "types/jest-image-snapshot/v2/tsconfig.json",
       "kind": "package-meta",
       "package": "jest-image-snapshot"
     },
     {
-      "filePath": "types/jest-image-snapshot/v2/tslint.json",
+      "path": "types/jest-image-snapshot/v2/tslint.json",
       "kind": "package-meta",
       "package": "jest-image-snapshot"
     }
