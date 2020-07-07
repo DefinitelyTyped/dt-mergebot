@@ -26,6 +26,7 @@ export interface GetRecentlyMergedPRsProject_repository_project_columns_nodes_ca
 
 export interface GetRecentlyMergedPRsProject_repository_project_columns_nodes {
   __typename: "ProjectColumn";
+  id: string;
   /**
    * The project column's name.
    */
@@ -46,6 +47,7 @@ export interface GetRecentlyMergedPRsProject_repository_project_columns {
 
 export interface GetRecentlyMergedPRsProject_repository_project {
   __typename: "Project";
+  id: string;
   /**
    * List of columns in the project
    */
@@ -54,6 +56,7 @@ export interface GetRecentlyMergedPRsProject_repository_project {
 
 export interface GetRecentlyMergedPRsProject_repository {
   __typename: "Repository";
+  id: string;
   /**
    * Find project by number.
    */
