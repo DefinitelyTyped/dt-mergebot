@@ -23,22 +23,22 @@
   ],
   "files": [
     {
-      "filePath": "types/gaze/gaze-tests.ts",
+      "path": "types/gaze/gaze-tests.ts",
       "kind": "test",
       "package": "gaze"
     },
     {
-      "filePath": "types/gaze/index.d.ts",
+      "path": "types/gaze/index.d.ts",
       "kind": "definition",
       "package": "gaze"
     },
     {
-      "filePath": "types/gaze/tsconfig.json",
+      "path": "types/gaze/tsconfig.json",
       "kind": "package-meta",
       "package": "gaze"
     },
     {
-      "filePath": "types/gaze/tslint.json",
+      "path": "types/gaze/tslint.json",
       "kind": "package-meta",
       "package": "gaze"
     }

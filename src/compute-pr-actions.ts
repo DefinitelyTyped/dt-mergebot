@@ -375,7 +375,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
         display(` * ${emoji(approval.approved)} A DT maintainer can merge changes when there are no other reviewers`);
     } else if (info.files.find(f => f.kind === "infrastructure")) {
         const infraFiles = info.files.filter(f => f.kind === "infrastructure")
-        const links = infraFiles.map(f => `[${f.filePath}](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.filePath})`)
+        const links = infraFiles.map(f => `[${f.path}](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.path})`)
         display(` * ${emoji(approval.approved)} A DT maintainer needs to merge changes which affect DT infrastructure (${links.join(", ")})`);
     } else if (info.dangerLevel === "ScopedAndConfiguration") {
         display(` * ${emoji(approval.approved)} A DT maintainer needs to merge changes which affect module config files`);

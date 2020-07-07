@@ -24,12 +24,12 @@
   ],
   "files": [
     {
-      "filePath": "types/supertest/index.d.ts",
+      "path": "types/supertest/index.d.ts",
       "kind": "definition",
       "package": "supertest"
     },
     {
-      "filePath": "types/supertest/supertest-tests.ts",
+      "path": "types/supertest/supertest-tests.ts",
       "kind": "test",
       "package": "supertest"
     }

@@ -23,22 +23,22 @@
   ],
   "files": [
     {
-      "filePath": "types/accedo__accedo-one/accedo__accedo-one-tests.ts",
+      "path": "types/accedo__accedo-one/accedo__accedo-one-tests.ts",
       "kind": "test",
       "package": "accedo__accedo-one"
     },
     {
-      "filePath": "types/accedo__accedo-one/index.d.ts",
+      "path": "types/accedo__accedo-one/index.d.ts",
       "kind": "definition",
       "package": "accedo__accedo-one"
     },
     {
-      "filePath": "types/accedo__accedo-one/tsconfig.json",
+      "path": "types/accedo__accedo-one/tsconfig.json",
       "kind": "package-meta",
       "package": "accedo__accedo-one"
     },
     {
-      "filePath": "types/accedo__accedo-one/tslint.json",
+      "path": "types/accedo__accedo-one/tslint.json",
       "kind": "package-meta",
       "package": "accedo__accedo-one"
     }

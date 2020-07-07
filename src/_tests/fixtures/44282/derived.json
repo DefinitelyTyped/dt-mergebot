@@ -23,12 +23,12 @@
   ],
   "files": [
     {
-      "filePath": "types/benchmark/benchmark-tests.ts",
+      "path": "types/benchmark/benchmark-tests.ts",
       "kind": "test",
       "package": "benchmark"
     },
     {
-      "filePath": "types/benchmark/index.d.ts",
+      "path": "types/benchmark/index.d.ts",
       "kind": "definition",
       "package": "benchmark"
     }

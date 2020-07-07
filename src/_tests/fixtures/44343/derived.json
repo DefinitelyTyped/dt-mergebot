@@ -23,7 +23,7 @@
   ],
   "files": [
     {
-      "filePath": "types/amplify/amplify-tests.ts",
+      "path": "types/amplify/amplify-tests.ts",
       "kind": "test",
       "package": "amplify"
     }

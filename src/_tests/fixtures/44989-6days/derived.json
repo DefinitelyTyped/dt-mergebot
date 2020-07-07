@@ -53,12 +53,12 @@
   ],
   "files": [
     {
-      "filePath": "types/ramda/index.d.ts",
+      "path": "types/ramda/index.d.ts",
       "kind": "definition",
       "package": "ramda"
     },
     {
-      "filePath": "types/ramda/test/paths-tests.ts",
+      "path": "types/ramda/test/paths-tests.ts",
       "kind": "test",
       "package": "ramda"
     }

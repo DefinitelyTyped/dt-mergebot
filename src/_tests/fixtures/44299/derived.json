@@ -23,27 +23,27 @@
   ],
   "files": [
     {
-      "filePath": "types/hcaptcha__vue-hcaptcha/hcaptcha__vue-hcaptcha-tests.ts",
+      "path": "types/hcaptcha__vue-hcaptcha/hcaptcha__vue-hcaptcha-tests.ts",
       "kind": "test",
       "package": "hcaptcha__vue-hcaptcha"
     },
     {
-      "filePath": "types/hcaptcha__vue-hcaptcha/index.d.ts",
+      "path": "types/hcaptcha__vue-hcaptcha/index.d.ts",
       "kind": "definition",
       "package": "hcaptcha__vue-hcaptcha"
     },
     {
-      "filePath": "types/hcaptcha__vue-hcaptcha/package.json",
+      "path": "types/hcaptcha__vue-hcaptcha/package.json",
       "kind": "package-meta",
       "package": "hcaptcha__vue-hcaptcha"
     },
     {
-      "filePath": "types/hcaptcha__vue-hcaptcha/tsconfig.json",
+      "path": "types/hcaptcha__vue-hcaptcha/tsconfig.json",
       "kind": "package-meta",
       "package": "hcaptcha__vue-hcaptcha"
     },
     {
-      "filePath": "types/hcaptcha__vue-hcaptcha/tslint.json",
+      "path": "types/hcaptcha__vue-hcaptcha/tslint.json",
       "kind": "package-meta",
       "package": "hcaptcha__vue-hcaptcha"
     }
