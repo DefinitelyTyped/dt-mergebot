@@ -319,32 +319,19 @@ type FileLocation = ({
 }) & { filePath: string };
 
 function categorizeFile(filePath: string): FileLocation {
-    const typeDefinitionFile = /^types\/([^\/]+)\/(.*)\.d\.ts$/i;
-    // https://regex101.com/r/QfAfRn/1
-    const typeTestFile = /^types\/([^\/]+)\/(.*)\.tsx?$/i;
-    const typeOtherFile = /^types\/([^\/]+)\/(.*)$/i;
-    let match;
-    if (match = typeDefinitionFile.exec(filePath)) {
-        return { filePath, kind: "definition", package: match[1] };
-    } else if (match = typeTestFile.exec(filePath)) {
-        return { filePath, kind: "test", package: match[1] };
-    } else if (match = typeOtherFile.exec(filePath)) {
-        return { filePath, kind: "package-meta", package: match[1] };
-    } else {
-        return { filePath, kind: "infrastructure" };
+    // https://regex101.com/r/OKUe4Q/1/
+    const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?))?$/.exec(filePath);
+    if (!match) return { filePath, kind: "infrastructure" };
+    const [pkg, suffix] = match.slice(1); // `suffix` can be null
+    switch ((suffix || "").toLowerCase()) {
+        case "d.ts": return { filePath, kind: "definition", package: pkg };
+        case "ts": case "tsx": return { filePath, kind: "test", package: pkg };
+        default: return { filePath, kind: "package-meta", package: pkg };
     }
 }
 
 export function getPackagesTouched(files: readonly FileLocation[]) {
-    const list: string[] = [];
-    for (const f of files) {
-        if ("package" in f) {
-            if (list.indexOf(f.package) < 0) {
-                list.push(f.package);
-            }
-        }
-    }
-    return list;
+    return [...new Set(noNulls(files.map(f => "package" in f ? f.package : null)))];
 }
 
 function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) => U) {
