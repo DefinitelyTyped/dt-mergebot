@@ -238,7 +238,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     // minute since the last timeline push action before label/project states can be updated
 
     const oneMinute = 60 * 1000;
-    const tooEarlyForLabelsOrProjects = info.lastCommitDate.valueOf() + oneMinute < now.valueOf();
+    const tooEarlyForLabelsOrProjects = info.lastPushDate.valueOf() + oneMinute < now.valueOf();
     context.shouldUpdateLabels = tooEarlyForLabelsOrProjects;
     context.shouldUpdateProjectColumn = tooEarlyForLabelsOrProjects;
 

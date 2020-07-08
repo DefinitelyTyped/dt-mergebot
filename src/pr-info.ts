@@ -112,7 +112,7 @@ export interface PrInfo {
     /**
      * The date the latest commit was pushed to GitHub
      */
-    readonly lastCommitDate: Date;
+    readonly lastPushDate: Date;
 
     /**
      * The date the anyone had a meaningful interaction with the PR
@@ -233,8 +233,8 @@ export async function deriveStateForPR(
         return "other";
     });
 
-    const lastCommitDate = new Date(headCommit.pushedDate);
-    const lastCommentDate = getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastCommitDate;
+    const lastPushDate = new Date(headCommit.pushedDate);
+    const lastCommentDate = getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastPushDate;
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
     const now = getNow().toISOString();
     const reviewAnalysis = analyzeReviews(prInfo, isOwner);
@@ -251,10 +251,10 @@ export async function deriveStateForPR(
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
         mergeIsRequested: authorSaysReadyToMerge(prInfo),
-        stalenessInDays: Math.min(...[lastCommitDate, lastCommentDate, reopenedDate, reviewAnalysis.lastReviewDate]
-                                     .map(date => daysSince(date || lastCommitDate, now))),
-        lastCommitDate, reopenedDate, lastCommentDate,
-        maintainerBlessed: lastBlessing ? lastBlessing.getTime() > lastCommitDate.getTime() : false,
+        stalenessInDays: Math.min(...[lastPushDate, lastCommentDate, reopenedDate, reviewAnalysis.lastReviewDate]
+                                     .map(date => daysSince(date || lastPushDate, now))),
+        lastPushDate, reopenedDate, lastCommentDate,
+        maintainerBlessed: lastBlessing ? lastBlessing.getTime() > lastPushDate.getTime() : false,
         reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         authorIsOwner,

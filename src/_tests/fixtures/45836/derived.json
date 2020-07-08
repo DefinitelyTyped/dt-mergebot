@@ -15,7 +15,7 @@
   "headCommitOid": "6c7735e2b8f39640cb73e40ae04cb6642a8ab2cd",
   "mergeIsRequested": true,
   "stalenessInDays": 0,
-  "lastCommitDate": "2020-07-01T23:06:38.000Z",
+  "lastPushDate": "2020-07-01T23:06:38.000Z",
   "lastCommentDate": "2020-07-08T18:13:23.000Z",
   "maintainerBlessed": false,
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/45836/files",
