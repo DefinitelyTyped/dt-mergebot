@@ -409,8 +409,14 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
         // Skip self-reviews
         if (r.author.login === prInfo.author!.login) continue;
 
-        if (r.commit.oid === headCommitOid) {
-            // Review of head commit
+        if (r.commit.oid !== headCommitOid) {
+            // Stale review
+            // Reviewers with reviews of the current commit are not stale
+            if (!hasUpToDateReview.has(r.author.login)) {
+                staleReviewAuthorsByCommit.set(r.commit.abbreviatedOid, { reviewer: r.author.login, date: r.submittedAt });
+            }
+        } else if (!hasUpToDateReview.has(r.author.login)) {
+            // Most recent review of head commit for this author
             hasUpToDateReview.add(r.author.login);
             const reviewDate = new Date(r.submittedAt);
             lastReviewDate = lastReviewDate && lastReviewDate > reviewDate ? lastReviewDate : reviewDate;
@@ -424,12 +430,6 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
                 } else {
                     approvalFlags |= ApprovalFlags.Other;
                 }
-            }
-        } else {
-            // Stale review
-            // Reviewers with reviews of the current commit are not stale
-            if (!hasUpToDateReview.has(r.author.login)) {
-                staleReviewAuthorsByCommit.set(r.commit.abbreviatedOid, { reviewer: r.author.login, date: r.submittedAt });
             }
         }
     }
