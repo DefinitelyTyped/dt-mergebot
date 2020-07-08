@@ -30,17 +30,17 @@
   ],
   "files": [
     {
-      "filePath": "types/prosemirror-commands/index.d.ts",
+      "path": "types/prosemirror-commands/index.d.ts",
       "kind": "definition",
       "package": "prosemirror-commands"
     },
     {
-      "filePath": "types/prosemirror-commands/prosemirror-commands-tests.ts",
+      "path": "types/prosemirror-commands/prosemirror-commands-tests.ts",
       "kind": "test",
       "package": "prosemirror-commands"
     },
     {
-      "filePath": "types/prosemirror-keymap/index.d.ts",
+      "path": "types/prosemirror-keymap/index.d.ts",
       "kind": "definition",
       "package": "prosemirror-keymap"
     }
