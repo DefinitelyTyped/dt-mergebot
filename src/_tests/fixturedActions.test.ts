@@ -2,7 +2,8 @@ import { readdirSync, readFileSync, lstatSync } from "fs";
 import { join } from "path";
 import { toMatchFile } from "jest-file-snapshot";
 import { process } from "../compute-pr-actions";
-import { deriveStateForPR, PrInfo } from "../pr-info";
+import { deriveStateForPR } from "../pr-info";
+import { scrubDiagnosticDetails } from "../util/util";
 import * as cachedQueries from "./cachedQueries.json";
 jest.mock("../util/cachedQueries", () => ({
   getProjectBoardColumns: jest.fn(() => cachedQueries.getProjectBoardColumns),
@@ -27,7 +28,7 @@ async function testFixture(dir: string) {
   const mutationsPath = join(dir, "mutations.json");
 
   const readJSON = (file: string) => JSON.parse(readFileSync(file, "utf8"));
-  const JSONString = (value: any) => JSON.stringify(value, null, "  ");
+  const JSONString = (value: any) => scrubDiagnosticDetails(JSON.stringify(value, null, "  "));
 
   const response = readJSON(responsePath);
 

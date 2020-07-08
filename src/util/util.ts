@@ -56,3 +56,7 @@ export function authorNotBot(node: { login: string } | { author?: { login: strin
         || ("actor" in node && node.actor!.login !== "typescript-bot")
         || ("login" in node && node.login !== "typescript-bot");
 }
+
+export function scrubDiagnosticDetails(s: string) {
+    return s.replace(/<details><summary>Diagnostic Information.*?<\/summary>(?:\\n)+```json\\n{.*?\\n}\\n```(?:\\n)+<\/details>/sg, "... diagnostics scrubbed ...");
+}

@@ -21,7 +21,8 @@
             {
               "name": "No Other Owners",
               "__typename": "Label"
-            }],
+            }
+          ],
           "__typename": "LabelConnection"
         },
         "isDraft": false,
@@ -222,7 +223,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@sandersn Thank you for submitting this PR! \n\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can merge this once someone else signs off on it.\n\n\n## Status\n\n * ✅ No merge conflicts\n * ❌ Continuous integration tests have passed\n * ❌ Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n```json\n{\n  \"type\": \"info\",\n  \"pr_number\": 44343,\n  \"author\": \"sandersn\",\n  \"owners\": [],\n  \"dangerLevel\": \"ScopedAndTested\",\n  \"headCommitAbbrOid\": \"7daa716\",\n  \"headCommitOid\": \"7daa7160e7c65f0316a094d531d0ffbb8f4e9e5f\",\n  \"mergeIsRequested\": false,\n  \"stalenessInDays\": 0,\n  \"lastCommitDate\": \"2020-04-29T16:02:30.000Z\",\n  \"reviewLink\": \"https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44343/files\",\n  \"hasMergeConflict\": false,\n  \"authorIsOwner\": false,\n  \"isFirstContribution\": false,\n  \"popularityLevel\": \"Well-liked by everyone\",\n  \"anyPackageIsNew\": false,\n  \"packages\": [\n    \"amplify\"\n  ],\n  \"files\": [\n    {\n      \"path\": \"types/amplify/amplify-tests.ts\",\n      \"kind\": \"test\",\n      \"package\": \"amplify\"\n    }\n  ],\n  \"otherApprovalCount\": 0,\n  \"ownerApprovalCount\": 0,\n  \"maintainerApprovalCount\": 0,\n  \"hasDismissedReview\": false,\n  \"travisResult\": \"unknown\",\n  \"reviewersWithStaleReviews\": [],\n  \"approvalFlags\": 0,\n  \"isChangesRequested\": false\n}\n```\n\n</details>\n<!--typescript_bot_welcome-->",
+              "body": "@sandersn Thank you for submitting this PR! \n\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can merge this once someone else signs off on it.\n\n\n## Status\n\n * ✅ No merge conflicts\n * ❌ Continuous integration tests have passed\n * ❌ Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
               "createdAt": "2020-04-29T15:57:13Z",
               "reactions": {
                 "nodes": [],
