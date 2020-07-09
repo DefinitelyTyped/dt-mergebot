@@ -1,5 +1,5 @@
 // These functions were moved out into their own
-// file so that it's easy to isolate the async networking 
+// file so that it's easy to isolate the async networking
 // in tests
 
 import * as HeaderParser from "definitelytyped-header-parser";
@@ -30,7 +30,6 @@ export async function getOwnersOfPackages(packages: readonly string[]): Promise<
   }
   return { allOwners, anyPackageIsNew };
 }
-
 
 async function getOwnersForPackage(packageName: string): Promise<string[] | undefined> {
   const indexDts = `master:types/${packageName}/index.d.ts`;

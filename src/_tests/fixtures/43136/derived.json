@@ -11,7 +11,7 @@
   "headCommitOid": "e6863537248bbfee8f0ef8c636bb00c25cf40b96",
   "mergeIsRequested": false,
   "stalenessInDays": 3,
-  "lastCommitDate": "2020-03-16T14:26:42.000Z",
+  "lastPushDate": "2020-03-16T14:26:42.000Z",
   "lastCommentDate": "2020-03-16T14:26:42.000Z",
   "maintainerBlessed": false,
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43136/files",
