@@ -10,12 +10,13 @@ import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest,
          PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent
        } from "./queries/schema/PR";
 import { CIResult } from "./util/CIResult";
-import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState, PullRequestState } from "./queries/graphql-global-types";
+import { PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./queries/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
-import { getOwnersOfPackages, OwnerInfo } from "./util/getOwnersOfPackages";
+import { fetchFile as defaultFetchFile } from "./util/fetchFile";
 import { findLast, forEachReverse, daysSince, authorNotBot } from "./util/util";
+import * as HeaderParser from "definitelytyped-header-parser";
 
 export enum ApprovalFlags {
     None = 0,
@@ -190,7 +191,7 @@ export async function queryPRInfo(prNumber: number) {
 // The GQL response => Useful data for us
 export async function deriveStateForPR(
     info: ApolloQueryResult<PRQueryResult>,
-    getOwners?: (packages: readonly string[]) => OwnerInfo | Promise<OwnerInfo>,
+    fetchFile = defaultFetchFile,
     getDownloads?: (packages: readonly string[]) => Record<string, number> | Promise<Record<string, number>>,
     getNow = () => new Date(),
 ): Promise<PrInfo | BotFail | BotEnsureRemovedFromProject | BotNoPackages>  {
@@ -210,7 +211,7 @@ export async function deriveStateForPR(
 
     if (packages.length === 0) return botNoPackages(prInfo.number)
 
-    const { anyPackageIsNew, allOwners } = getOwners ? await getOwners(packages) : await getOwnersOfPackages(packages);
+    const { anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages, fetchFile);
     const authorIsOwner = isOwner(prInfo.author.login);
 
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
@@ -518,3 +519,37 @@ function getPopularityLevelFromDownloads(downloadsPerPackage: Record<string, num
     }
     return popularityLevel;
 }
+
+interface OwnerInfo {
+    anyPackageIsNew: boolean;
+    allOwners: string[];
+}
+
+async function getOwnersOfPackages(packages: readonly string[], fetchFile: typeof defaultFetchFile): Promise<OwnerInfo> {
+  const allOwners: Set<string> = new Set();
+  let anyPackageIsNew = false;
+  for (const p of packages) {
+      const owners = await getOwnersForPackage(p, fetchFile);
+      if (owners === undefined) {
+          anyPackageIsNew = true;
+      } else {
+          owners.forEach(o => allOwners.add(o));
+      }
+  }
+    return { allOwners: [...allOwners], anyPackageIsNew };
+}
+
+async function getOwnersForPackage(packageName: string, fetchFile: typeof defaultFetchFile): Promise<string[] | undefined> {
+  const indexDts = `master:types/${packageName}/index.d.ts`;
+  const indexDtsContent = await fetchFile(indexDts, 10240); // grab at most 10k
+  if (indexDtsContent === undefined) return undefined;
+  try {
+      const parsed = HeaderParser.parseHeaderOrFail(indexDtsContent);
+      return parsed.contributors.map(c => c.githubUsername).filter(notUndefined);
+  } catch(e) {
+      console.error(e);
+      return undefined;
+  }
+}
+
+function notUndefined<T>(arg: T | undefined): arg is T { return arg !== undefined; }
