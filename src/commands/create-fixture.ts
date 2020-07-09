@@ -3,7 +3,7 @@ import * as computeActions from "../compute-pr-actions";
 import { deriveStateForPR, queryPRInfo } from "../pr-info";
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
 import { join } from "path";
-import { getOwnersOfPackages } from "../util/getOwnersOfPackages";
+import { fetchFile } from "../util/fetchFile";
 import { getMonthlyDownloadCount } from "../util/npm";
 import { scrubDiagnosticDetails } from "../util/util";
 import { executePrActions } from "../execute-pr-actions";
@@ -24,24 +24,23 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     response = JSON.parse(readFileSync(jsonFixturePath, "utf8"));
   }
 
-  const ownersJSONPath = join(fixturePath, "_owners.json");
+  const filesJSONPath = join(fixturePath, "_files.json");
+  const filesFetched: {[expr: string]: string | undefined} = {};
   const downloadsJSONPath = join(fixturePath, "_downloads.json");
   const derivedFixturePath = join(fixturePath, "derived.json");
 
+  const shouldOverwrite = (file: string) => overwriteInfo || !existsSync(file);
+
   const derivedInfo = await deriveStateForPR(
     response,
-    !overwriteInfo && existsSync(ownersJSONPath) ? getOwnersFromFile : fetchOwnersAndWriteToFile,
-    !overwriteInfo && existsSync(downloadsJSONPath) ? getDownloadsFromFile : fetchDownloadsAndWriteToFile,
-    !overwriteInfo && existsSync(derivedFixturePath) ? getTimeFromFile : undefined,
+    shouldOverwrite(filesJSONPath) ? initFetchFilesAndWriteToFile() : getFilesFromFile,
+    shouldOverwrite(downloadsJSONPath) ? fetchDownloadsAndWriteToFile : getDownloadsFromFile,
+    shouldOverwrite(derivedFixturePath) ? undefined : getTimeFromFile,
   );
 
   writeFileSync(derivedFixturePath, scrubDiagnosticDetails(JSON.stringify(derivedInfo, null, "  ")));
 
-  if (derivedInfo.type === "fail") {
-    const ownersJSONPath = join(fixturePath, "_owners.json");
-    writeFileSync(ownersJSONPath, JSON.stringify({ allOwners: [], anyPackageIsNew: false }, null, "  "));
-    return;
-  }
+  if (derivedInfo.type === "fail") return;
 
   const resultFixturePath = join(fixturePath, "result.json");
   const actions = computeActions.process(derivedInfo);
@@ -53,14 +52,17 @@ export default async function main(directory: string, overwriteInfo: boolean) {
 
   console.log(`Recorded`);
 
-  async function fetchOwnersAndWriteToFile(packages: readonly string[]) {
-    const owners = await getOwnersOfPackages(packages);
-    writeFileSync(ownersJSONPath, JSON.stringify(owners, null, "  "));
-    return owners;
+  function initFetchFilesAndWriteToFile() {
+    writeFileSync(filesJSONPath, "{}"); // one-time initialization of an empty storage
+    return fetchFilesAndWriteToFile;
   }
-
-  function getOwnersFromFile() {
-    return JSON.parse(readFileSync(ownersJSONPath, "utf8"));
+  async function fetchFilesAndWriteToFile(expr: string, limit?: number) {
+    filesFetched[expr] = await fetchFile(expr, limit);
+    writeFileSync(filesJSONPath, JSON.stringify(filesFetched, null, "  "));
+    return filesFetched[expr];
+  }
+  function getFilesFromFile(expr: string) {
+    return JSON.parse(readFileSync(filesJSONPath, "utf8"))[expr];
   }
 
   async function fetchDownloadsAndWriteToFile(packages: readonly string[]) {
@@ -71,7 +73,6 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     writeFileSync(downloadsJSONPath, JSON.stringify(downloadsPerPackage, null, "  "));
     return downloadsPerPackage;
   }
-
   function getDownloadsFromFile(packages: readonly string[]) {
     const downloadsPerPackage = JSON.parse(readFileSync(downloadsJSONPath, "utf8"));
     for (const packageName of packages) {

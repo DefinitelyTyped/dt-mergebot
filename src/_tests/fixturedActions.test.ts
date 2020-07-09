@@ -21,7 +21,7 @@ expect.extend({ toMatchFile });
 async function testFixture(dir: string) {
   // _foo.json are input files, except for Date.now from derived.json
   const responsePath = join(dir, "_response.json");
-  const ownersPath = join(dir, "_owners.json");
+  const filesPath = join(dir, "_files.json");
   const downloadsPath = join(dir, "_downloads.json");
   const derivedPath = join(dir, "derived.json");
   const resultPath = join(dir, "result.json");
@@ -31,12 +31,11 @@ async function testFixture(dir: string) {
   const JSONString = (value: any) => scrubDiagnosticDetails(JSON.stringify(value, null, "  "));
 
   const response = readJSON(responsePath);
+  const files = readJSON(filesPath);
 
-  // Because Owners is another API call, we need to make it a fixture also
-  // and so this fixture overrides the current
   const derived = await deriveStateForPR(
     response,
-    () => readJSON(ownersPath),
+    (expr: string) => Promise.resolve(files[expr] as string),
     () => readJSON(downloadsPath),
     () => new Date(readJSON(derivedPath).now)
   );
