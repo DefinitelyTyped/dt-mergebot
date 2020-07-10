@@ -5,7 +5,7 @@
     "Has Merge Conflict": false,
     "The CI failed": false,
     "Revision needed": false,
-    "New Definition": false,
+    "New Definition": true,
     "Where is GH Actions?": false,
     "Owner Approved": false,
     "Other Approved": false,
@@ -17,17 +17,17 @@
     "Edits Infrastructure": false,
     "Edits multiple packages": false,
     "Author is Owner": false,
-    "No Other Owners": true,
+    "No Other Owners": false,
     "Too Many Owners": false,
     "Merge:Auto": false,
     "Untested Change": false,
-    "Config Edit": true,
+    "Config Edit": false,
     "Abandoned": false
   },
   "responseComments": [
     {
       "tag": "welcome",
-      "status": "@alexandercerutti Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer can merge changes when there are no other reviewers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+      "status": "@alexandercerutti Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n- [accedo__accedo-one on npm](https://www.npmjs.com/package/accedo__accedo-one)\n- [accedo__accedo-one on unpkg](https://unpkg.com/browse/accedo__accedo-one@latest//)\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can merge changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
     },
     {
       "tag": "stale-ping-61f252-a5285cd",

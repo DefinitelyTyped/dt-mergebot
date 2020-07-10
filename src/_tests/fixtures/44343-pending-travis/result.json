@@ -17,7 +17,7 @@
     "Edits Infrastructure": false,
     "Edits multiple packages": false,
     "Author is Owner": false,
-    "No Other Owners": true,
+    "No Other Owners": false,
     "Too Many Owners": false,
     "Merge:Auto": false,
     "Untested Change": false,
@@ -28,6 +28,10 @@
     {
       "tag": "welcome",
       "status": "@sandersn Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ❌ Continuous integration tests have finished\n * ❌ Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+    },
+    {
+      "tag": "pinging-reviewers",
+      "status": "🔔 @joeriks - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44343/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on."
     }
   ],
   "shouldClose": false,

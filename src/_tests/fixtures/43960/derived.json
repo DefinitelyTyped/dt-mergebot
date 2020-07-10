@@ -3,7 +3,10 @@
   "now": "2020-04-29T22:09:53.999Z",
   "pr_number": 43960,
   "author": "aaltepet",
-  "owners": [],
+  "owners": [
+    "varju",
+    "pietu"
+  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "129f84e",
   "headCommitOid": "129f84e4492a76e7cd5af9d946c4583a60e6eb88",

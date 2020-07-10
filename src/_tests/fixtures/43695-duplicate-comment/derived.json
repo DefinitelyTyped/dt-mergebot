@@ -18,7 +18,7 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "anyPackageIsNew": false,
+  "anyPackageIsNew": true,
   "packages": [
     "accedo__accedo-one"
   ],
