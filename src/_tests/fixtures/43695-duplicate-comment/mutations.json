@@ -4,7 +4,8 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWw2NDY3ODg4ODg="
+          "MDU6TGFiZWwyMTU0ODU3ODAw",
+          "MDU6TGFiZWwyMTU0ODE2NTQ5"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDAwMTAwMTk2"
       }
@@ -24,7 +25,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYxMDIzNDI3MA==",
-        "body": "@alexandercerutti Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer can merge changes when there are no other reviewers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@alexandercerutti Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n- [accedo__accedo-one on npm](https://www.npmjs.com/package/accedo__accedo-one)\n- [accedo__accedo-one on unpkg](https://unpkg.com/browse/accedo__accedo-one@latest//)\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can merge changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },

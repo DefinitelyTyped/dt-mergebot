@@ -1,0 +1,3 @@
+{
+  "master:types/dagre/index.d.ts": "// Type definitions for dagre 0.7\n// Project: https://github.com/dagrejs/dagre\n// Definitions by: Qinfeng Chen <https://github.com/qinfchen>\n//                 Lisa Vallfors <https://github.com/Frankrike>\n//                 Pete Vilter <https://github.com/vilterp>\n//                 David Newell <https://github.com/rustedgrail>\n// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped\n// TypeScript Version: 2.2\n\nexport as namespace dagre;\n"
+}
