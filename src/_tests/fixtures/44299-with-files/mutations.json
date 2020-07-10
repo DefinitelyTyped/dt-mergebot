@@ -1,0 +1,20 @@
+[
+  {
+    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "cardId": "MDExOlByb2plY3RDYXJkMzcxODExMTU=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYyMDcwMjk5OQ==",
+        "body": "@geopic Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n- [hcaptcha__vue-hcaptcha on npm](https://www.npmjs.com/package/hcaptcha__vue-hcaptcha)\n- [hcaptcha__vue-hcaptcha on unpkg](https://unpkg.com/browse/hcaptcha__vue-hcaptcha@latest//)\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can merge changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  }
+]

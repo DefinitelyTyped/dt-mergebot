@@ -1,0 +1,56 @@
+{
+  "type": "info",
+  "now": "2020-04-29T17:19:10.716Z",
+  "pr_number": 44299,
+  "author": "geopic",
+  "owners": [],
+  "dangerLevel": "ScopedAndConfiguration",
+  "headCommitAbbrOid": "683fb3b",
+  "headCommitOid": "683fb3b1298223256be3a49823686f35bd94a730",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastPushDate": "2020-04-29T10:57:59.000Z",
+  "lastCommentDate": "2020-04-29T10:57:59.000Z",
+  "maintainerBlessed": false,
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44299/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": true,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": true,
+  "packages": [
+    "hcaptcha__vue-hcaptcha"
+  ],
+  "files": [
+    {
+      "path": "types/hcaptcha__vue-hcaptcha/hcaptcha__vue-hcaptcha-tests.ts",
+      "kind": "test",
+      "package": "hcaptcha__vue-hcaptcha"
+    },
+    {
+      "path": "types/hcaptcha__vue-hcaptcha/index.d.ts",
+      "kind": "definition",
+      "package": "hcaptcha__vue-hcaptcha"
+    },
+    {
+      "path": "types/hcaptcha__vue-hcaptcha/package.json",
+      "kind": "package-meta",
+      "package": "hcaptcha__vue-hcaptcha"
+    },
+    {
+      "path": "types/hcaptcha__vue-hcaptcha/tsconfig.json",
+      "kind": "package-meta",
+      "package": "hcaptcha__vue-hcaptcha"
+    },
+    {
+      "path": "types/hcaptcha__vue-hcaptcha/tslint.json",
+      "kind": "package-meta-ok",
+      "package": "hcaptcha__vue-hcaptcha"
+    }
+  ],
+  "hasDismissedReview": false,
+  "ciResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}

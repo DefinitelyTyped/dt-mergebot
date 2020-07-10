@@ -172,8 +172,7 @@ export interface PrInfo {
 }
 
 function getHeadCommit(pr: GraphqlPullRequest) {
-    const headCommit = pr.commits.nodes?.filter(c => c?.commit.oid === pr.headRefOid) ?.[0]?.commit;
-    return headCommit;
+    return pr.commits.nodes?.filter(c => c?.commit.oid === pr.headRefOid)?.[0]?.commit;
 }
 
 // Just the networking
@@ -206,7 +205,9 @@ export async function deriveStateForPR(
     if (prInfo.state !== "OPEN") return botEnsureRemovedFromProject(prInfo.number, "PR is not active");
     if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft");
 
-    const categorizedFiles = noNulls(prInfo.files?.nodes).map(f => categorizeFile(f.path));
+    const categorizedFiles = await Promise.all(
+        noNulls(prInfo.files?.nodes)
+            .map(f => categorizeFile(f.path, async () => fetchFile(`${headCommit.oid}:${f.path}`))));
     const packages = getPackagesTouched(categorizedFiles);
 
     if (packages.length === 0) return botNoPackages(prInfo.number)
@@ -336,7 +337,7 @@ function getLastMaintainerBlessingDate(timelineItems: PR_repository_pullRequest_
     return undefined;
 }
 
-type FileKind = "test" | "definition" | "markdown" | "package-meta" | "infrastructure";
+type FileKind = "test" | "definition" | "markdown" | "package-meta" | "package-meta-ok"| "infrastructure";
 
 type FileInfo = {
     path: string,
@@ -344,7 +345,7 @@ type FileInfo = {
     package: string | undefined
 };
 
-function categorizeFile(path: string): FileInfo {
+async function categorizeFile(path: string, contents: () => Promise<string | undefined>): Promise<FileInfo> {
     // https://regex101.com/r/eFvtrz/1
     const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
     if (!match) return { path, kind: "infrastructure", package: undefined };
@@ -353,9 +354,34 @@ function categorizeFile(path: string): FileInfo {
         case "d.ts": return { path, kind: "definition", package: pkg };
         case "ts": case "tsx": return { path, kind: "test", package: pkg };
         case "md": return { path, kind: "markdown", package: pkg };
-        default: return { path, kind: "package-meta", package: pkg };
+        default:
+            const ok = await configOK(path, contents);
+            return { path, kind: ok ? "package-meta-ok" : "package-meta", package: pkg };
     }
 }
+
+interface ConfigOK {
+    (path: string, getContents: () => Promise<string | undefined>): Promise<boolean>;
+    [basename: string]: (text: string) => boolean;
+};
+const configOK = <ConfigOK>(async (path, getContents) => {
+    const basename = path.replace(/.*\//, "");
+    if (!(basename in configOK)) return false;
+    const text = await getContents();
+    if (text === undefined) return false;
+    return configOK[basename](text)
+});
+configOK["OTHER_FILES.txt"] = contents => {
+    // not empty, all path parts are not empty and not all dots
+    return contents.length > 0 && contents.split(/\n/).every(line =>
+        line === "" || line.split(/\//).every(part =>
+            part.length > 0 && !part.match(/^\.+$/)));
+};
+configOK["tslint.json"] = contents => {
+    // just the recommended form
+    return JSON.stringify(JSON.parse(contents)) === JSON.stringify({ "extends": "dtslint/dt.json" });
+};
+
 
 export function getPackagesTouched(files: readonly FileInfo[]) {
     return [...new Set(noNulls(files.map(f => "package" in f ? f.package : null)))];
