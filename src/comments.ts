@@ -40,17 +40,17 @@ export const ChangesRequest = (headOid: string, user: string) => ({
     status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can "dismiss" the review using GitHub's review UI. Thank you!`
 });
 
-export const ApprovedByOwner = () => ({
+export const ApprovedByOwner = () => ({ // UNUSED
     tag: "merge",
     status: "A definition owner has approved this PR ⭐️. A maintainer will merge this PR shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!"
 });
 
-export const AuthorIsOwnerAndGreen = () => ({
+export const AuthorIsOwnerAndGreen = () => ({ // UNUSED
     tag: "merge",
     status: "Since you're a listed owner and the build passed, this PR is fast-tracked. A maintainer will merge shortly. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for your contribution to DefinitelyTyped!"
 });
 
-export const LGTM = () => ({
+export const LGTM = () => ({ // UNUSED
     tag: "merge",
     status: "We've gotten sign-off from a reviewer 👏. A maintainer will soon review this PR and merge it if there are no issues. If it shouldn't be merged yet, please leave a comment saying so and we'll wait. Thank you for contributing to DefinitelyTyped!"
 });
@@ -68,11 +68,7 @@ export const PingReviewersTooMany = (names: readonly string[]) => ({
 <summary>People who would have been pinged</summary>
 ${names.map(n => `${n}`).join(" ")}
 </details>`
-})
-
-export const Welcome = (login: string, isFirstPR: boolean) => `@${login} Thank you for submitting this PR!${isFirstPR ? " I see this is your first PR to DefinitelyTyped - don't worry, I'll be helping you throughout the process. Stay tuned for updates." : ""}`;
-export const NewDefinition = `Because this is a new definition, a DefinitelyTyped maintainer will be reviewing this PR in the next few days once the CI build passes.`;
-export const NoOtherReviewers = `Because this PR doesn't have any code reviewers, a DefinitelyTyped maintainer will be reviewing it in the next few days once the CI build passes.`;
+});
 
 export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) => ({
     tag: `stale-ping-${tinyHash(reviewers.join("-"))}-${reviewedAbbrOid}`,

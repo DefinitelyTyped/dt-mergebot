@@ -32,7 +32,6 @@ export type DangerLevel =
     | "ScopedAndTested"
     | "ScopedAndUntested"
     | "ScopedAndConfiguration"
-    | "NewDefinition"
     | "MultiplePackagesEdited"
     | "Infrastructure";
 
@@ -220,7 +219,7 @@ export async function deriveStateForPR(
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
     const approvals = noNulls(freshReviewsByState.APPROVED);
     const hasDismissedReview = !!freshReviewsByState.DISMISSED?.length;
-    const approvalsByRole = partition(approvals, review => {
+    const approvalsByRole = partition(approvals, review => { // UNUSED
         if (review?.author?.login === prInfo.author?.login) {
             return "self";
         }
@@ -474,7 +473,7 @@ function getDangerLevel(categorizedFiles: readonly FileInfo[]) {
         return "Infrastructure";
     }
     const packagesTouched = getPackagesTouched(categorizedFiles);
-    if (packagesTouched.length === 0) { // ????
+    if (packagesTouched.length === 0) {
         return "Infrastructure";
     } else if (packagesTouched.length > 1) {
         return "MultiplePackagesEdited";

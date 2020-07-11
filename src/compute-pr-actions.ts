@@ -22,7 +22,7 @@ type LabelName =
     | "Other Approved"
     | "Maintainer Approved"
     | "Merge:Auto"
-    | "Merge:LGTM"
+    | "Merge:LGTM" // UNUSED
     | "Merge:YSYL"
     | "Popular package"
     | "Critical package"
