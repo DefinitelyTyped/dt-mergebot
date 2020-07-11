@@ -1,0 +1,52 @@
+{
+  "type": "info",
+  "now": "2020-07-12T04:13:43.404Z",
+  "pr_number": 46019,
+  "author": "peterblazejewicz",
+  "owners": [],
+  "dangerLevel": "ScopedAndConfiguration",
+  "headCommitAbbrOid": "ceca9f7",
+  "headCommitOid": "ceca9f768be945932c692d7dd48fa14b6ff38096",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastPushDate": "2020-07-11T20:43:23.000Z",
+  "lastCommentDate": "2020-07-11T20:43:23.000Z",
+  "maintainerBlessed": false,
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46019/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": true,
+  "packages": [
+    "is-secret"
+  ],
+  "files": [
+    {
+      "path": "types/is-secret/index.d.ts",
+      "kind": "definition",
+      "package": "is-secret"
+    },
+    {
+      "path": "types/is-secret/is-secret-tests.ts",
+      "kind": "test",
+      "package": "is-secret"
+    },
+    {
+      "path": "types/is-secret/tsconfig.json",
+      "kind": "package-meta",
+      "package": "is-secret"
+    },
+    {
+      "path": "types/is-secret/tslint.json",
+      "kind": "package-meta-ok",
+      "package": "is-secret"
+    }
+  ],
+  "hasDismissedReview": false,
+  "ciResult": "pass",
+  "lastReviewDate": "2020-07-12T02:01:31.000Z",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 4,
+  "isChangesRequested": false
+}

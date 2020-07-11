@@ -1,6 +1,10 @@
 {
   "getProjectBoardColumns": [
     {
+      "id": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2",
+      "name": "Needs Maintainer Action"
+    },
+    {
       "id": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy",
       "name": "Needs Maintainer Review"
     },

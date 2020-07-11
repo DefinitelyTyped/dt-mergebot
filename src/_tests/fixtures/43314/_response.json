@@ -130,7 +130,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@metonym Thank you for submitting this PR! \n\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n- [carbon__icon-helpers](https://www.npmjs.com/package/carbon__icon-helpers)\n\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can merge changes without tests\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
+              "body": "@metonym Thank you for submitting this PR! \n\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n- [carbon__icon-helpers](https://www.npmjs.com/package/carbon__icon-helpers)\n\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can approve changes without tests\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
               "createdAt": "2020-03-22T16:50:45Z",
               "reactions": {
                 "nodes": [],

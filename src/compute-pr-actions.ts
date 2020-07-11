@@ -4,8 +4,9 @@ import { CIResult } from "./util/CIResult";
 import { daysSince } from "./util/util";
 
 type ColumnName =
-    | "Other"
+    | "Needs Maintainer Action"
     | "Needs Maintainer Review"
+    | "Other"
     | "Waiting for Author to Merge"
     | "Needs Author Action"
     | "Recently Merged"
@@ -112,7 +113,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     if (info.type === "no_packages") {
         return {
             ...createEmptyActions(info.pr_number),
-            targetColumn: "Needs Maintainer Review",
+            targetColumn: "Needs Maintainer Action",
             shouldUpdateProjectColumn: true
         };
     }
@@ -183,12 +184,8 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
 
         // Could be abandoned
         switch (staleness) {
-            case Staleness.NearlyYSYL:
-                context.responseComments.push(Comments.NearlyYSYL(info.author));
-                break;
-            case Staleness.YSYL:
-                context.responseComments.push(Comments.YSYL());
-                break;
+            case Staleness.NearlyYSYL: case Staleness.YSYL:
+                throw new Error("Internal Error: unexpected Staleness.YSYL");
             case Staleness.NearlyAbandoned:
                 context.responseComments.push(Comments.NearlyAbandoned(info.author));
                 break;
@@ -199,9 +196,12 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
                 break;
         }
     }
+    else if (staleness === Staleness.Abandoned) {
+        throw new Error("Internal Error: unexpected Staleness.Abandoned");
+    }
     // Stale & doesn't need author attention => move to maintainer queue
-    else if (staleness === Staleness.Abandoned || staleness === Staleness.YSYL) {
-        context.targetColumn = "Needs Maintainer Review";
+    else if (staleness === Staleness.YSYL) {
+        context.targetColumn = "Needs Maintainer Action";
     }
     // CI is running; default column is Waiting for Reviewers
     else if (info.ciResult === CIResult.Pending) {
@@ -260,10 +260,10 @@ function hasFinalApproval(info: PrInfo) {
     const approvalFor = (who: ApproverKinds) => ({
         approved: !!(info.approvalFlags &
                      (who === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
-                      : who === "owners" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
+                      : who === "owners" || info.maintainerBlessed ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
                       : (ApprovalFlags.Maintainer))),
         requiredApprovalBy: (who === "others" ? "type definition owners, DT maintainers or others"
-                             : who === "owners" ? "type definition owners or DT maintainers"
+                             : who === "owners" || info.maintainerBlessed ? "type definition owners or DT maintainers"
                              : "DT maintainers")
     });
     if (info.dangerLevel !== "ScopedAndTested" || tooManyOwners(info)) return approvalFor("maintainers");
@@ -324,18 +324,20 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     if (info.anyPackageIsNew) {
         const links = info.packages.map(p => `- [${p} on npm](https://www.npmjs.com/package/${p})\n- [${p} on unpkg](https://unpkg.com/browse/${p}@latest//)`).join("\n");
         reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n${links}`;
-    } else if (info.popularityLevel === "Critical") {
+    } else if (info.popularityLevel === "Critical" && !info.maintainerBlessed) {
         reviewerAdvisory = "Because this is a widely-used package, a DT maintainer will need to review it before it can be merged.";
     } else if (info.dangerLevel === "ScopedAndTested") {
         reviewerAdvisory = "Because you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.";
-    } else if (otherOwners.length === 0) {
+    } else if (otherOwners.length === 0 && !info.maintainerBlessed) {
         reviewerAdvisory = "There aren't any other owners of this package, so a DT maintainer will review it.";
-    } else if (info.dangerLevel === "MultiplePackagesEdited") {
+    } else if (info.dangerLevel === "MultiplePackagesEdited" && !info.maintainerBlessed) {
         reviewerAdvisory = "Because this PR edits multiple packages, it can be merged once it's reviewed by a DT maintainer.";
-    } else if (info.dangerLevel === "ScopedAndConfiguration") {
+    } else if (info.dangerLevel === "ScopedAndConfiguration" && !info.maintainerBlessed) {
         reviewerAdvisory = "Because this PR edits the configuration file, it can be merged once it's reviewed by a DT maintainer.";
-    } else {
+    } else if (!info.maintainerBlessed) {
         reviewerAdvisory = "This PR can be merged once it's reviewed by a DT maintainer.";
+    } else {
+        reviewerAdvisory = "This PR can be merged once it's reviewed.";
     }
 
     if (info.dangerLevel === "ScopedAndUntested") {
@@ -352,7 +354,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     const waitingOnThePRAuthorToMerge =
         !info.hasMergeConflict
         && info.ciResult === CIResult.Pass
-        && info.dangerLevel === "ScopedAndTested"
+        && (info.dangerLevel === "ScopedAndTested" || info.maintainerBlessed)
         && approval.approved;
 
     display(``,
@@ -368,19 +370,21 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     display(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
 
     if (info.anyPackageIsNew) {
-        display(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes when there are new packages added`);
+        display(` * ${emoji(approval.approved)} Only a DT maintainer can approve changes when there are new packages added`);
+    } else if (info.dangerLevel === "Infrastructure") {
+        const infraFiles = info.files.filter(f => f.kind === "infrastructure")
+        const links = infraFiles.map(f => `[\`${f.path}\`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.path})`);
+        display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
     } else if (info.dangerLevel === "ScopedAndTested") {
         display(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
     } else if (otherOwners.length === 0) {
         display(` * ${emoji(approval.approved)} A DT maintainer can merge changes when there are no other reviewers`);
-    } else if (info.files.find(f => f.kind === "infrastructure")) {
-        const infraFiles = info.files.filter(f => f.kind === "infrastructure")
-        const links = infraFiles.map(f => `[${f.path}](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.path})`)
-        display(` * ${emoji(approval.approved)} A DT maintainer needs to merge changes which affect DT infrastructure (${links.join(", ")})`);
+    } else if (info.maintainerBlessed) {
+        display(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
     } else if (info.dangerLevel === "ScopedAndConfiguration") {
-        display(` * ${emoji(approval.approved)} A DT maintainer needs to merge changes which affect module config files`);
+        display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect module config files`);
     } else {
-        display(` * ${emoji(approval.approved)} Only a DT maintainer can merge changes [without tests](${testsLink})`);
+        display(` * ${emoji(approval.approved)} Only a DT maintainer can approve changes [without tests](${testsLink})`);
     }
 
     display(``);

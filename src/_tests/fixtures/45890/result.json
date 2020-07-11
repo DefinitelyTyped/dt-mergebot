@@ -1,0 +1,39 @@
+{
+  "pr_number": 45890,
+  "targetColumn": "Needs Maintainer Review",
+  "labels": {
+    "Has Merge Conflict": false,
+    "The CI failed": false,
+    "Revision needed": false,
+    "New Definition": true,
+    "Where is GH Actions?": false,
+    "Owner Approved": false,
+    "Other Approved": true,
+    "Maintainer Approved": false,
+    "Merge:LGTM": false,
+    "Merge:YSYL": false,
+    "Popular package": false,
+    "Critical package": false,
+    "Edits Infrastructure": false,
+    "Edits multiple packages": false,
+    "Author is Owner": false,
+    "No Other Owners": false,
+    "Too Many Owners": false,
+    "Merge:Auto": false,
+    "Untested Change": false,
+    "Config Edit": false,
+    "Abandoned": false
+  },
+  "responseComments": [
+    {
+      "tag": "welcome",
+      "status": "@dimkirt Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n- [greek-utils on npm](https://www.npmjs.com/package/greek-utils)\n- [greek-utils on unpkg](https://unpkg.com/browse/greek-utils@latest//)\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can approve changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false,
+  "isReadyForAutoMerge": false
+}

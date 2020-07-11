@@ -1,0 +1,40 @@
+[
+  {
+    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWw2OTcwMTg5NzI="
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDQ3NTU0NTEw"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "cardId": "MDExOlByb2plY3RDYXJkNDE2NTQ5NzI=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIz"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDY1Njc5MDQzNw==",
+        "body": "@risingBirdSong Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners or DT maintainers\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NDQ3NTU0NTEw",
+        "body": "@risingBirdSong Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n<!--typescript_bot_merge-offer-->"
+      }
+    }
+  }
+]

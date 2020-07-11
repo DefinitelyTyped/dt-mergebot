@@ -1,6 +1,6 @@
 {
   "pr_number": 44989,
-  "targetColumn": "Needs Maintainer Review",
+  "targetColumn": "Needs Maintainer Action",
   "labels": {
     "Has Merge Conflict": false,
     "The CI failed": false,
