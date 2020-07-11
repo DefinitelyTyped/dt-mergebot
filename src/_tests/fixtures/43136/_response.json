@@ -213,7 +213,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "<!--header {\"slug\":\"welcome\"} headerend-->\r\n@larsrh Thank you for submitting this PR!\n\n🔔 @RReverser - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43136/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n\nIf no reviewer appears after a week, a DefinitelyTyped maintainer will review the PR instead.\r\n<!--footer bot @ 3/18/2020, 1:28:18 PM footerend-->",
+              "body": "<!--header {\"slug\":\"welcome\"} headerend-->\r\n@larsrh Thank you for submitting this PR!\n\n🔔 @RReverser — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43136/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n\nIf no reviewer appears after a week, a DefinitelyTyped maintainer will review the PR instead.\r\n<!--footer bot @ 3/18/2020, 1:28:18 PM footerend-->",
               "createdAt": "2020-03-14T18:22:40Z",
               "reactions": {
                 "nodes": [],

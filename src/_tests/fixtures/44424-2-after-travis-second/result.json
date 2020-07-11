@@ -31,7 +31,7 @@
     },
     {
       "tag": "pinging-reviewers",
-      "status": "🔔 @chrisbarker @rdepena @whyn07m3 @licui3936 - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44424/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on."
+      "status": "🔔 @chrisbarker @rdepena @whyn07m3 @licui3936 — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44424/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on."
     }
   ],
   "shouldClose": false,

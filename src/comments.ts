@@ -57,8 +57,8 @@ export const LGTM = () => ({
 
 export const PingReviewers = (names: readonly string[], reviewLink: string) => ({
     tag: "pinging-reviewers",
-    status: `🔔 ${names.map(n => `@${n}`).join(" ")} - please [review this PR](${reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`
-})
+    status: `🔔 ${names.map(n => `@${n}`).join(" ")} — please [review this PR](${reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`
+});
 
 export const PingReviewersTooMany = (names: readonly string[]) => ({
     tag: "pinging-reviewers-too-many",

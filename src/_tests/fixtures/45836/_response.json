@@ -376,7 +376,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "🔔 @bradleyayers @davidka @timjb @patsimm - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/45836/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
+              "body": "🔔 @bradleyayers @davidka @timjb @patsimm — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/45836/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
               "createdAt": "2020-07-01T23:08:10Z",
               "reactions": {
                 "nodes": [],

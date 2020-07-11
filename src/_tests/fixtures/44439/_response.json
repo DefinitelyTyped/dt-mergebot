@@ -217,7 +217,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "🔔 @lith-light-g - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44439/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
+              "body": "🔔 @lith-light-g — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44439/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
               "createdAt": "2020-05-02T13:48:27Z",
               "reactions": {
                 "nodes": [],

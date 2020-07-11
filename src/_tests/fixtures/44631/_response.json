@@ -183,7 +183,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "🔔 @AyaMorisawa @HitoriSensei - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44631/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
+              "body": "🔔 @AyaMorisawa @HitoriSensei — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44631/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
               "createdAt": "2020-05-10T21:28:11Z",
               "reactions": {
                 "nodes": [],

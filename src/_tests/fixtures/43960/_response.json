@@ -278,7 +278,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "<!--header {\"slug\":\"welcome\"} headerend-->\r\n@aaltepet Thank you for submitting this PR!\n\n🔔 @varju @pietu - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43960/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n\nIf no reviewer appears after a week, a DefinitelyTyped maintainer will review the PR instead.\r\n<!--footer bot @ 4/27/2020, 2:27:40 PM footerend-->",
+              "body": "<!--header {\"slug\":\"welcome\"} headerend-->\r\n@aaltepet Thank you for submitting this PR!\n\n🔔 @varju @pietu — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43960/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n\nIf no reviewer appears after a week, a DefinitelyTyped maintainer will review the PR instead.\r\n<!--footer bot @ 4/27/2020, 2:27:40 PM footerend-->",
               "createdAt": "2020-04-16T18:22:32Z",
               "reactions": {
                 "nodes": [],
