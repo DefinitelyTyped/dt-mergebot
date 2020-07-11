@@ -8,7 +8,7 @@ const GetRecentlyMergedPRsProjectQuery = gql`
       id
       project(number: 5) {
         id
-        columns(first: 5) {
+        columns(first: 100) {
           nodes {
             id
             name
@@ -42,9 +42,9 @@ export async function getRecentlyUpdatedPRProjectBoardCards() {
     throw new Error("No project found");
   }
 
-  const recentlyMergedColumn = project.columns.nodes?.find((c) => c?.name === "Recently Merged");
+  const recentlyMergedColumn = project.columns.nodes?.find(c => c?.name === "Recently Merged");
   if (!recentlyMergedColumn) {
-    throw new Error(`Could not find the column 'Recently Merged' in ${project.columns.nodes?.map((n) => n?.name)}`);
+    throw new Error(`Could not find the 'Recently Merged' column in ${project.columns.nodes?.map((n) => n?.name)}`);
   }
 
   return recentlyMergedColumn.cards.nodes as { id: string; updatedAt: string }[];
