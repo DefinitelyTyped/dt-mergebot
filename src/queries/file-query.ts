@@ -6,6 +6,7 @@ export const GetFileContent = gql`
       object(expression: $expr) {
         ... on Blob {
           text
+          byteSize
         }
       }
     }

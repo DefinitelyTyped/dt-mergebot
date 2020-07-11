@@ -2,6 +2,7 @@
   "pr_number": 43144,
   "targetColumn": "Waiting for Author to Merge",
   "labels": {
+    "Mergebot Error": false,
     "Has Merge Conflict": false,
     "The CI failed": false,
     "Revision needed": false,

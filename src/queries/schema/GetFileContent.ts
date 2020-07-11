@@ -17,6 +17,10 @@ export interface GetFileContent_repository_object_Blob {
    * UTF8 text data or null if the Blob is binary
    */
   text: string | null;
+  /**
+   * Byte size of Blob object
+   */
+  byteSize: number;
 }
 
 export type GetFileContent_repository_object = GetFileContent_repository_object_Commit | GetFileContent_repository_object_Blob;

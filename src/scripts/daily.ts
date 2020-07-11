@@ -35,6 +35,11 @@ const start = async function () {
       continue;
     }
 
+    // Show errors in log but keep processing to show in a comment too
+    if (state.type === "error") {
+      console.error(`  Error: ${state.message}`);
+    }
+
     // Convert the info to a set of actions for the bot
     const actions = compute.process(state);
 

@@ -1,5 +1,5 @@
 import * as Comments from "./comments";
-import { PrInfo, ApprovalFlags, BotEnsureRemovedFromProject, BotNoPackages } from "./pr-info";
+import { PrInfo, ApprovalFlags, BotError, BotEnsureRemovedFromProject, BotNoPackages } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { daysSince } from "./util/util";
 
@@ -13,6 +13,7 @@ type ColumnName =
     | "Waiting for Code Reviews";
 
 type LabelName =
+    | "Mergebot Error"
     | "Has Merge Conflict"
     | "The CI failed"
     | "Revision needed"
@@ -48,11 +49,12 @@ export interface Actions {
     isReadyForAutoMerge: boolean;
 }
 
-function createDefaultActions(prNumber: number): Actions {
+function createDefaultActions(pr_number: number): Actions {
     return {
-        pr_number: prNumber,
+        pr_number,
         targetColumn: "Other",
         labels: {
+            "Mergebot Error": false,
             "Has Merge Conflict": false,
             "The CI failed": false,
             "Revision needed": false,
@@ -102,7 +104,7 @@ function createEmptyActions(prNumber: number): Actions {
 const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package";
 const uriForTestingNewPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#testing";
 
-export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackages): Actions {
+export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackages | BotError ): Actions {
     if (info.type === "remove") {
         return {
             ...createEmptyActions(info.pr_number),
@@ -119,6 +121,13 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     }
 
     const context = createDefaultActions(info.pr_number);
+
+    if (info.type === "error") {
+        context.targetColumn = "Other";
+        context.labels["Mergebot Error"] = true;
+        context.responseComments.push(Comments.HadError(info.author, info.message));
+        return context;
+    }
 
     const now = new Date(info.now);
 

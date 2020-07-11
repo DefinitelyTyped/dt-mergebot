@@ -2,6 +2,7 @@
   "pr_number": 44631,
   "targetColumn": "Needs Author Action",
   "labels": {
+    "Mergebot Error": false,
     "Has Merge Conflict": true,
     "The CI failed": false,
     "Revision needed": false,

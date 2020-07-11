@@ -5,6 +5,13 @@ export type Comment = { tag: string, status: string };
 export const commentApprovalTokens: ReadonlyArray<string> = ["👍", ":+1:", "lgtm", "LGTM", ":shipit:"];
 export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
 
+export const HadError = (user: string | undefined, error: string) => ({
+    tag: "had-error",
+    status: `${user ? `@${user} — ` : ""}There was an error that prevented me from properly processing this PR:
+
+    ${error}`
+});
+
 export const SorryAbandoned = (user: string) => ({
     tag: "abandon-sorry",
     status: `@${user} To keep things tidy, we have to close PRs that aren't mergeable and don't have activity in the last month. No worries, though — please open a new PR if you'd like to continue with this change. Thank you!`
@@ -60,9 +67,9 @@ export const PingReviewers = (names: readonly string[], reviewLink: string) => (
     status: `🔔 ${names.map(n => `@${n}`).join(" ")} — please [review this PR](${reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`
 });
 
-export const PingReviewersOther = (author: string, reviewLink: string) => ({
+export const PingReviewersOther = (user: string, reviewLink: string) => ({
     tag: "pinging-reviewers-others",
-    status: `🔔 @${author} — you're the only owner, but it would still be good if you find someone to [review this PR](${reviewLink}) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)`
+    status: `🔔 @${user} — you're the only owner, but it would still be good if you find someone to [review this PR](${reviewLink}) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)`
 });
 
 export const PingReviewersTooMany = (names: readonly string[]) => ({
@@ -80,9 +87,9 @@ export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) 
     status: `@${reviewers.join(", @")} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
 });
 
-export const AskForAutoMergePermission = (author: string) => ({
+export const AskForAutoMergePermission = (user: string) => ({
     tag: `merge-offer`,
-    status: `@${author} Everything looks good here. Great job! I am ready to merge this PR on your behalf.
+    status: `@${user} Everything looks good here. Great job! I am ready to merge this PR on your behalf.
 
 If you'd like that to happen, please post a comment saying:
 

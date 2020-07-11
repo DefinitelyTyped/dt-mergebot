@@ -1,0 +1,40 @@
+{
+  "pr_number": 45982,
+  "targetColumn": "Other",
+  "labels": {
+    "Mergebot Error": true,
+    "Has Merge Conflict": false,
+    "The CI failed": false,
+    "Revision needed": false,
+    "New Definition": false,
+    "Where is GH Actions?": false,
+    "Owner Approved": false,
+    "Other Approved": false,
+    "Maintainer Approved": false,
+    "Merge:LGTM": false,
+    "Merge:YSYL": false,
+    "Popular package": false,
+    "Critical package": false,
+    "Edits Infrastructure": false,
+    "Edits multiple packages": false,
+    "Author is Owner": false,
+    "No Other Owners": false,
+    "Too Many Owners": false,
+    "Merge:Auto": false,
+    "Untested Change": false,
+    "Config Edit": false,
+    "Abandoned": false
+  },
+  "responseComments": [
+    {
+      "tag": "had-error",
+      "status": "@dasa — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners: At 1:1 : Expected /\\/\\/ Type definitions for (non-npm package )?/"
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false,
+  "isReadyForAutoMerge": false
+}

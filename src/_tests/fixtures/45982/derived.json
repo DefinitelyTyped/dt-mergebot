@@ -1,0 +1,6 @@
+{
+  "type": "error",
+  "message": "error parsing owners: At 1:1 : Expected /\\/\\/ Type definitions for (non-npm package )?/",
+  "pr_number": 45982,
+  "author": "dasa"
+}
