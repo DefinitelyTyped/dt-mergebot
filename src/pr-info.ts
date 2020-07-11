@@ -573,7 +573,7 @@ async function getOwnersForPackage(packageName: string, fetchFile: typeof defaul
       const parsed = HeaderParser.parseHeaderOrFail(indexDtsContent);
       return parsed.contributors.map(c => c.githubUsername).filter(notUndefined);
   } catch(e) {
-      console.error(e);
+      console.error(`  error parsing owners: ${e.message}`);
       return undefined;
   }
 }
