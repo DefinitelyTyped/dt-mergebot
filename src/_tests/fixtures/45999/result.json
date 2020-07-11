@@ -1,0 +1,43 @@
+{
+  "pr_number": 45999,
+  "targetColumn": "Waiting for Author to Merge",
+  "labels": {
+    "Has Merge Conflict": false,
+    "The CI failed": false,
+    "Revision needed": false,
+    "New Definition": false,
+    "Where is GH Actions?": false,
+    "Owner Approved": true,
+    "Other Approved": false,
+    "Maintainer Approved": false,
+    "Merge:LGTM": false,
+    "Merge:YSYL": false,
+    "Popular package": false,
+    "Critical package": true,
+    "Edits Infrastructure": false,
+    "Edits multiple packages": false,
+    "Author is Owner": false,
+    "No Other Owners": false,
+    "Too Many Owners": false,
+    "Merge:Auto": true,
+    "Untested Change": false,
+    "Config Edit": false,
+    "Abandoned": false
+  },
+  "responseComments": [
+    {
+      "tag": "welcome",
+      "status": "@alexpyzhianov Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners or DT maintainers\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ..."
+    },
+    {
+      "tag": "merge-offer",
+      "status": "@alexpyzhianov Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:"
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false,
+  "isReadyForAutoMerge": true
+}

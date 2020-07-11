@@ -1,0 +1,11 @@
+[
+  {
+    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDY1NTMxNzQwNQ==",
+        "body": "@rubensworks Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n This PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect DT infrastructure ([`notNeededPackages.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/a5eb1f19e7a31387e7d7c79b3acc483b0e60b32e/notNeededPackages.json))\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  }
+]

@@ -8,5 +8,5 @@
   "shouldUpdateProjectColumn": true,
   "shouldRemoveFromActiveColumns": false,
   "isReadyForAutoMerge": false,
-  "targetColumn": "Needs Maintainer Review"
+  "targetColumn": "Needs Maintainer Action"
 }

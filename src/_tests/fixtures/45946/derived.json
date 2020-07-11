@@ -1,0 +1,57 @@
+{
+  "type": "info",
+  "now": "2020-07-11T01:46:16.667Z",
+  "pr_number": 45946,
+  "author": "rubensworks",
+  "owners": [
+    "rubensworks"
+  ],
+  "dangerLevel": "Infrastructure",
+  "headCommitAbbrOid": "a5eb1f1",
+  "headCommitOid": "a5eb1f19e7a31387e7d7c79b3acc483b0e60b32e",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastPushDate": "2020-07-08T06:31:29.000Z",
+  "lastCommentDate": "2020-07-10T14:00:47.000Z",
+  "maintainerBlessed": false,
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/45946/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": true,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "asynciterator"
+  ],
+  "files": [
+    {
+      "path": "notNeededPackages.json",
+      "kind": "infrastructure"
+    },
+    {
+      "path": "types/asynciterator/asynciterator-tests.ts",
+      "kind": "test",
+      "package": "asynciterator"
+    },
+    {
+      "path": "types/asynciterator/index.d.ts",
+      "kind": "definition",
+      "package": "asynciterator"
+    },
+    {
+      "path": "types/asynciterator/tsconfig.json",
+      "kind": "package-meta",
+      "package": "asynciterator"
+    },
+    {
+      "path": "types/asynciterator/tslint.json",
+      "kind": "package-meta",
+      "package": "asynciterator"
+    }
+  ],
+  "hasDismissedReview": false,
+  "ciResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}

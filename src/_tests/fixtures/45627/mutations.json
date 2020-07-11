@@ -1,0 +1,42 @@
+[
+  {
+    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWw2OTcwMTg5NzI="
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDM3NTIxMTQ2"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "cardId": "MDExOlByb2plY3RDYXJkNDA0NTk5NzM=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI1"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDY0NzEwNDY2NQ==",
+        "body": "@spamshaker Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners or DT maintainers\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: MergePullRequestInput!) { mergePullRequest(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "commitHeadline": "🤖 Merge PR #45627 [webpack] fix for MultiCompiler doesn't define Multistats for callback/handler of run method by @spamshaker",
+        "expectedHeadOid": "15facc177c957646a1ace95abe5e71326007c721",
+        "mergeMethod": "SQUASH",
+        "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NDM3NTIxMTQ2"
+      }
+    }
+  }
+]

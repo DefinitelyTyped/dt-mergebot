@@ -1,0 +1,66 @@
+{
+  "type": "info",
+  "now": "2020-07-11T02:37:12.780Z",
+  "pr_number": 45999,
+  "author": "alexpyzhianov",
+  "owners": [
+    "johnnyreilly",
+    "bbenezech",
+    "pzavolinsky",
+    "digiguru",
+    "ericanderson",
+    "DovydasNavickas",
+    "theruther4d",
+    "guilhermehubner",
+    "ferdaber",
+    "jrakotoharisoa",
+    "pascaloliv",
+    "hotell",
+    "franklixuefei",
+    "Jessidhia",
+    "saranshkataria",
+    "lukyth",
+    "eps1lon",
+    "zieka",
+    "dancerphil",
+    "dimitropoulos",
+    "disjukr",
+    "vhfmag",
+    "hellatan"
+  ],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "381a2a9",
+  "headCommitOid": "381a2a9d17d14e111f7d002c866debfcac6724e8",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastPushDate": "2020-07-10T13:10:49.000Z",
+  "lastCommentDate": "2020-07-10T14:38:56.000Z",
+  "maintainerBlessed": true,
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/45999/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Critical",
+  "anyPackageIsNew": false,
+  "packages": [
+    "react"
+  ],
+  "files": [
+    {
+      "path": "types/react/index.d.ts",
+      "kind": "definition",
+      "package": "react"
+    },
+    {
+      "path": "types/react/test/elementAttributes.tsx",
+      "kind": "test",
+      "package": "react"
+    }
+  ],
+  "hasDismissedReview": false,
+  "ciResult": "pass",
+  "lastReviewDate": "2020-07-10T14:49:32.000Z",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 2,
+  "isChangesRequested": false
+}

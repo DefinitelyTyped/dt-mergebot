@@ -1902,7 +1902,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@ExE-Boss Thank you for submitting this PR! \n\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n- [es-abstract on npm](https://www.npmjs.com/package/es-abstract)\n - [es-abstract on unpkg](https://unpkg.com/browse/es-abstract@latest//)\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can merge changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
+              "body": "@ExE-Boss Thank you for submitting this PR! \n\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n- [es-abstract on npm](https://www.npmjs.com/package/es-abstract)\n - [es-abstract on unpkg](https://unpkg.com/browse/es-abstract@latest//)\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can approve changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
               "createdAt": "2020-05-12T04:12:41Z",
               "reactions": {
                 "nodes": [],
