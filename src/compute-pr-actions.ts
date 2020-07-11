@@ -154,8 +154,12 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     });
 
     // Ping reviewers when needed
-    if (otherOwners.length > 0 && !info.isChangesRequested && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
-        if (tooManyOwners(info)) {
+    if (!info.isChangesRequested && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
+        if (otherOwners.length === 0) {
+            if (info.popularityLevel !== "Critical") {
+                context.responseComments.push(Comments.PingReviewersOther(info.author, info.reviewLink));
+            }
+        } else if (tooManyOwners(info)) {
             context.responseComments.push(Comments.PingReviewersTooMany(otherOwners));
         } else {
             context.responseComments.push(Comments.PingReviewers(otherOwners, info.reviewLink));
@@ -214,7 +218,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     // CI is green
     else if (info.ciResult === CIResult.Pass) {
         if (!canBeMergedNow(info)) {
-            context.targetColumn = projectBoardForReviewWithLeastAccess(info);
+            context.targetColumn = projectBoardForReviewWithLeastAccess(info, otherOwners.length === 0);
         }
         else if (info.mergeIsRequested) {
             context.shouldMerge = true;
@@ -274,8 +278,9 @@ function hasFinalApproval(info: PrInfo) {
 }
 
 /** E.g. let people review, but fall back to the DT maintainers based on the access rights above */
-function projectBoardForReviewWithLeastAccess(info: PrInfo):  Actions["targetColumn"] {
-    return hasFinalApproval(info).requiredApprovalBy === "DT maintainers"
+function projectBoardForReviewWithLeastAccess(info: PrInfo, noOtherOwners: boolean):  Actions["targetColumn"] {
+    const requiredApprovalBy = hasFinalApproval(info).requiredApprovalBy;
+    return requiredApprovalBy === "DT maintainers" || noOtherOwners && requiredApprovalBy === "type definition owners or DT maintainers"
         ? "Needs Maintainer Review"
         : "Waiting for Code Reviews";
 }

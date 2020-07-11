@@ -60,6 +60,11 @@ export const PingReviewers = (names: readonly string[], reviewLink: string) => (
     status: `🔔 ${names.map(n => `@${n}`).join(" ")} — please [review this PR](${reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`
 });
 
+export const PingReviewersOther = (author: string, reviewLink: string) => ({
+    tag: "pinging-reviewers-others",
+    status: `🔔 @${author} — you're the only owner, but it would still be good if you find someone to [review this PR](${reviewLink}) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)`
+});
+
 export const PingReviewersTooMany = (names: readonly string[]) => ({
     tag: "pinging-reviewers-too-many",
     status: `⚠️ There are too many reviewers for this PR change (${names.length}). Merging can only be handled by a DT maintainer.
