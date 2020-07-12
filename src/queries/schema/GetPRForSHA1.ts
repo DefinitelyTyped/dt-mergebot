@@ -4,14 +4,14 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetPRForStatus
+// GraphQL query operation: GetPRForSHA1
 // ====================================================
 
-export interface GetPRForStatus_search_nodes_App {
+export interface GetPRForSHA1_search_nodes_App {
   __typename: "App" | "Issue" | "MarketplaceListing" | "Organization" | "Repository" | "User";
 }
 
-export interface GetPRForStatus_search_nodes_PullRequest {
+export interface GetPRForSHA1_search_nodes_PullRequest {
   __typename: "PullRequest";
   /**
    * Identifies the pull request title.
@@ -27,23 +27,23 @@ export interface GetPRForStatus_search_nodes_PullRequest {
   closed: boolean;
 }
 
-export type GetPRForStatus_search_nodes = GetPRForStatus_search_nodes_App | GetPRForStatus_search_nodes_PullRequest;
+export type GetPRForSHA1_search_nodes = GetPRForSHA1_search_nodes_App | GetPRForSHA1_search_nodes_PullRequest;
 
-export interface GetPRForStatus_search {
+export interface GetPRForSHA1_search {
   __typename: "SearchResultItemConnection";
   /**
    * A list of nodes.
    */
-  nodes: (GetPRForStatus_search_nodes | null)[] | null;
+  nodes: (GetPRForSHA1_search_nodes | null)[] | null;
 }
 
-export interface GetPRForStatus {
+export interface GetPRForSHA1 {
   /**
    * Perform a search across resources.
    */
-  search: GetPRForStatus_search;
+  search: GetPRForSHA1_search;
 }
 
-export interface GetPRForStatusVariables {
+export interface GetPRForSHA1Variables {
   query: string;
 }
