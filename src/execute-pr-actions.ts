@@ -106,13 +106,11 @@ async function getMutationsForProjectChanges(actions: Actions, pr: PR_repository
   // Create a project card if needed, otherwise move if needed
   if (actions.targetColumn) {
     const extantCard = pr.projectCards.nodes?.find((n) => !!n?.column && n.project.number === ProjectBoardNumber);
-
     const targetColumnId = await getProjectBoardColumnIdByName(actions.targetColumn);
     if (extantCard) {
       if (extantCard.column?.name !== actions.targetColumn) {
         mutations.push( createMutation(moveProjectCard, { input: { cardId: extantCard.id, columnId: targetColumnId } }) );
       }
-
     } else {
       mutations.push( createMutation(addProjectCard, { input: { contentId: pr.id, projectColumnId: targetColumnId } }) );
     }
@@ -125,22 +123,16 @@ function getMutationsForComments(actions: Actions, pr: PR_repository_pullRequest
   for (const wantedComment of actions.responseComments) {
     let exists = false;
     for (const actualComment of pr.comments.nodes ?? []) {
-      if (actualComment?.author?.login === "typescript-bot") {
-        const parsed = parseComment(actualComment.body);
-        if (parsed && parsed.tag === wantedComment.tag) {
-          exists = true;
-          if (parsed.status === wantedComment.status) {
-            // Comment is up-to-date; skip
-          } else {
-            // Edit it
-            const body = makeComment(wantedComment.status, wantedComment.tag);
-            if (body === actualComment.body) break;
-
-            mutations.push( createMutation(editComment, { input: { id: actualComment.id, body, } }) );
-          }
-          break;
-        }
-      }
+      if (actualComment?.author?.login !== "typescript-bot") continue;
+      const parsed = parseComment(actualComment.body);
+      if (parsed?.tag !== wantedComment.tag) continue;
+      exists = true;
+      if (parsed.status === wantedComment.status) continue; // Comment is up-to-date; skip
+      // Edit it
+      const body = makeComment(wantedComment.status, wantedComment.tag);
+      if (body === actualComment.body) break;
+      mutations.push( createMutation(editComment, { input: { id: actualComment.id, body, } }) );
+      break;
     }
 
     if (!exists) {
@@ -154,30 +146,27 @@ function getMutationsForComments(actions: Actions, pr: PR_repository_pullRequest
   return mutations;
 }
 
-
 function getMutationsForCommentRemovals(actions: Actions, pr: PR_repository_pullRequest) {
   const mutations: Mutation[] = [];
 
-  const ciMessageToKeep = actions.responseComments.find(c => c.tag.startsWith("ci-complaint"))
-  const botComments = (pr.comments.nodes ?? []).filter(comment => comment?.author?.login === "typescript-bot")
+  const ciMessageToKeep = actions.responseComments.find(c => c.tag.startsWith("ci-complaint"));
+  const botComments = (pr.comments.nodes ?? []).filter(comment => comment?.author?.login === "typescript-bot");
   for (const comment of botComments) {
-    if (!comment) continue
+    if (!comment) continue;
 
-    const parsed = parseComment(comment.body);    
-    if (!parsed) continue
+    const parsed = parseComment(comment.body);
+    if (!parsed) continue;
 
     // Remove stale CI 'your build is green' notifications
     if (parsed.tag.includes("ci-") && parsed.tag !== ciMessageToKeep?.tag) {
-      mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) )
+      mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) );
     }
 
     // It used to be mergable, but now it is not, remove those comments
     if (parsed.tag === "merge-offer" && !actions.isReadyForAutoMerge) {
-      mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) )
-    } 
+      mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) );
+    }
   }
-
-
 
   return mutations;
 }
