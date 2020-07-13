@@ -2,6 +2,7 @@
   "pr_number": 44299,
   "targetColumn": "Needs Maintainer Review",
   "labels": {
+    "Mergebot Error": false,
     "Has Merge Conflict": false,
     "The CI failed": false,
     "Revision needed": false,

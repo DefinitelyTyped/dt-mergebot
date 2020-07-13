@@ -11,11 +11,14 @@ export async function fetchFile(expr: string, limit?: number): Promise<string | 
           expr: `${expr}`
       }
   });
-  const text = info.data.repository?.object?.__typename !== "Blob" ? undefined
-        : info.data.repository.object.text;
-  if (text && limit && text.length > limit) {
-    return text.substring(0, limit);
+  const obj = info.data.repository?.object;
+  if (!obj || obj.__typename !== "Blob") return undefined;
+  if (!obj) return undefined;
+  if (obj.text && limit && obj.text.length > limit) {
+    return obj.text.substring(0, limit);
+  } else if (obj.byteSize > 3_000_000 && !obj.text) {
+    throw new Error(`Blob too big to fetch: ${expr}`);
   } else {
-    return text ?? undefined;
+    return obj.text ?? undefined;
   }
 }

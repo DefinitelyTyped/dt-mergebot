@@ -40,9 +40,18 @@ export type PopularityLevel =
     | "Popular"
     | "Critical";
 
+// Complete failure, won't be passed to `process` (no PR found)
 export interface BotFail {
     readonly type: "fail";
     readonly message: string;
+}
+
+// Some error found, will be passed to `process` to report in a comment
+export interface BotError {
+    readonly type: "error";
+    readonly pr_number: number;
+    readonly message: string;
+    readonly author: string | undefined;
 }
 
 export interface BotEnsureRemovedFromProject {
@@ -144,6 +153,7 @@ export interface PrInfo {
      * True if the head commit has any failing reviews
      */
     readonly isChangesRequested: boolean;
+
     readonly approvalFlags: ApprovalFlags;
     readonly dangerLevel: DangerLevel;
 
@@ -151,6 +161,7 @@ export interface PrInfo {
      * Integer count of days of inactivity from the author
      */
     readonly stalenessInDays: number;
+
     readonly anyPackageIsNew: boolean;
 
     /**
@@ -162,6 +173,7 @@ export interface PrInfo {
      * True if the author has dismissed any reviews against the head commit
      */
     readonly hasDismissedReview: boolean;
+
     readonly isFirstContribution: boolean;
 
     readonly popularityLevel: PopularityLevel;
@@ -192,14 +204,14 @@ export async function deriveStateForPR(
     fetchFile = defaultFetchFile,
     getDownloads?: (packages: readonly string[]) => Record<string, number> | Promise<Record<string, number>>,
     getNow = () => new Date(),
-): Promise<PrInfo | BotFail | BotEnsureRemovedFromProject | BotNoPackages>  {
+): Promise<PrInfo | BotFail | BotError | BotEnsureRemovedFromProject | BotNoPackages>  {
     const prInfo = info.data.repository?.pullRequest;
 
     if (!prInfo) return botFail("No PR with this number exists");
-    if (prInfo.author == null) return botFail("PR author does not exist");
+    if (prInfo.author == null) return botError(prInfo.number, "PR author does not exist");
 
     const headCommit = getHeadCommit(prInfo);
-    if (headCommit == null) return botFail("No head commit");
+    if (headCommit == null) return botError(prInfo.number, "No head commit found");
 
     if (prInfo.state !== "OPEN") return botEnsureRemovedFromProject(prInfo.number, "PR is not active");
     if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft");
@@ -211,7 +223,9 @@ export async function deriveStateForPR(
 
     if (packages.length === 0) return botNoPackages(prInfo.number)
 
-    const { anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages, fetchFile);
+    const { error, anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages, fetchFile);
+    if (error) return botError(prInfo.number, error);
+
     const authorIsOwner = isOwner(prInfo.author.login);
 
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
@@ -275,12 +289,16 @@ export async function deriveStateForPR(
         return { type: "fail", message };
     }
 
-    function botEnsureRemovedFromProject(prNumber: number, message: string): BotEnsureRemovedFromProject {
-        return { type: "remove", pr_number: prNumber, message };
+    function botError(pr_number: number, message: string): BotError {
+        return { type: "error", message, pr_number, author: prInfo?.author?.login };
     }
 
-    function botNoPackages(prNumber: number): BotNoPackages {
-        return { type: "no_packages", pr_number: prNumber };
+    function botEnsureRemovedFromProject(pr_number: number, message: string): BotEnsureRemovedFromProject {
+        return { type: "remove", pr_number, message };
+    }
+
+    function botNoPackages(pr_number: number): BotNoPackages {
+        return { type: "no_packages", pr_number };
     }
 
     function isOwner(login: string) {
@@ -394,12 +412,6 @@ function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) =
         target.push(el);
     }
     return res;
-}
-
-function noNulls<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined): T[] {
-    if (arr == null) return [];
-
-    return arr.filter(arr => arr != null) as T[];
 }
 
 function authorSaysReadyToMerge(info: PR_repository_pullRequest) {
@@ -548,33 +560,39 @@ function getPopularityLevelFromDownloads(downloadsPerPackage: Record<string, num
 interface OwnerInfo {
     anyPackageIsNew: boolean;
     allOwners: string[];
+    error: string | undefined;
 }
 
 async function getOwnersOfPackages(packages: readonly string[], fetchFile: typeof defaultFetchFile): Promise<OwnerInfo> {
-  const allOwners: Set<string> = new Set();
-  let anyPackageIsNew = false;
-  for (const p of packages) {
-      const owners = await getOwnersForPackage(p, fetchFile);
-      if (owners === undefined) {
-          anyPackageIsNew = true;
-      } else {
-          owners.forEach(o => allOwners.add(o));
-      }
-  }
-    return { allOwners: [...allOwners], anyPackageIsNew };
+    const allOwners: Set<string> = new Set();
+    let anyPackageIsNew = false, error = undefined;
+    for (const p of packages) {
+        let owners;
+        try {
+            owners = await getOwnersForPackage(p, fetchFile);
+        } catch (e) {
+            error = `error parsing owners: ${e.message}`;
+            break;
+        }
+        if (owners === undefined) {
+            anyPackageIsNew = true;
+        } else {
+            owners.forEach(o => allOwners.add(o));
+        }
+    }
+    return { error, allOwners: [...allOwners], anyPackageIsNew };
 }
 
 async function getOwnersForPackage(packageName: string, fetchFile: typeof defaultFetchFile): Promise<string[] | undefined> {
-  const indexDts = `master:types/${packageName}/index.d.ts`;
-  const indexDtsContent = await fetchFile(indexDts, 10240); // grab at most 10k
-  if (indexDtsContent === undefined) return undefined;
-  try {
-      const parsed = HeaderParser.parseHeaderOrFail(indexDtsContent);
-      return parsed.contributors.map(c => c.githubUsername).filter(notUndefined);
-  } catch(e) {
-      console.error(`  error parsing owners: ${e.message}`);
-      return undefined;
-  }
+    const indexDts = `master:types/${packageName}/index.d.ts`;
+    const indexDtsContent = await fetchFile(indexDts, 10240); // grab at most 10k
+    if (indexDtsContent === undefined) return undefined;
+    const parsed = HeaderParser.parseHeaderOrFail(indexDtsContent);
+    return parsed.contributors.map(c => c.githubUsername).filter(notUndefined);
 }
 
+function noNulls<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined): T[] {
+    if (arr == null) return [];
+    return arr.filter(arr => arr != null) as T[];
+}
 function notUndefined<T>(arg: T | undefined): arg is T { return arg !== undefined; }
