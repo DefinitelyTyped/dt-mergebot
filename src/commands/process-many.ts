@@ -1,5 +1,5 @@
 import processSingle from "./process-single";
-import { getRecentlyUpdatedPRs } from "../queries/recently-updated-prs-query";
+import { getProcessManyPRs } from "../queries/process-many-query";
 import { formatMutationRequest } from "../util/formatMutationRequest";
 
 interface ProcessManyOptions {
@@ -11,7 +11,7 @@ interface ProcessManyOptions {
 }
 
 async function main({ dateRange, dry }: ProcessManyOptions) {
-  const prs = await getRecentlyUpdatedPRs(dateRange.startTime, dateRange.endTime);
+  const prs = await getProcessManyPRs(dateRange.startTime, dateRange.endTime);
   const results = [];
 
   try {

@@ -1,8 +1,13 @@
 import { gql } from "apollo-boost";
 import { client } from "../graphql-client";
-import { RecentlyUpdatedPRs, RecentlyUpdatedPRsVariables } from "./schema/RecentlyUpdatedPRs";
+import { ProcessManyPRs, ProcessManyPRsVariables } from "./schema/ProcessManyPRs";
 
-export const GetRecentlyUpdatedPRs = gql`query RecentlyUpdatedPRs($after: String) {
+/*****************************************************************************************/
+/* FIXME: This should be removed and implemented as a function using all-open-prs-query! */
+/*****************************************************************************************/
+
+export const GetProcessManyPRs = gql`
+query ProcessManyPRs($after: String) {
   repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
     pullRequests(orderBy: { field: UPDATED_AT, direction: DESC }, states: [OPEN], first: 100, after: $after) {
       edges {
@@ -16,12 +21,12 @@ export const GetRecentlyUpdatedPRs = gql`query RecentlyUpdatedPRs($after: String
   }
 }`;
 
-export async function getRecentlyUpdatedPRs(startTime: Date, endTime?: Date) {
+export async function getProcessManyPRs(startTime: Date, endTime?: Date) {
   const prNumbers: number[] = [];
   let after: string | undefined;
   while (true) {
-    const results = await client.query<RecentlyUpdatedPRs, RecentlyUpdatedPRsVariables>({
-      query: GetRecentlyUpdatedPRs,
+    const results = await client.query<ProcessManyPRs, ProcessManyPRsVariables>({
+      query: GetProcessManyPRs,
       fetchPolicy: "network-only",
       fetchResults: true,
       variables: { after }
