@@ -224,7 +224,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "🔔 @p5-types @Zalastax - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46008/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
+              "body": "🔔 @p5-types @Zalastax — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46008/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
               "createdAt": "2020-07-10T17:21:17Z",
               "reactions": {
                 "nodes": [],

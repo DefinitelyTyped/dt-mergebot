@@ -31,7 +31,7 @@
     },
     {
       "tag": "pinging-reviewers",
-      "status": "🔔 @joeriks - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44343/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on."
+      "status": "🔔 @joeriks — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44343/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on."
     }
   ],
   "shouldClose": false,

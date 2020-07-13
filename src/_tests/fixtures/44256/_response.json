@@ -351,7 +351,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "<!--header {\"slug\":\"welcome\"} headerend-->\r\n@Miikis Thank you for submitting this PR!\n\n🔔 @marcobeltempo - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44256/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n\nIf no reviewer appears after a week, a DefinitelyTyped maintainer will review the PR instead.\r\n<!--footer bot @ 4/27/2020, 2:23:41 PM footerend-->",
+              "body": "<!--header {\"slug\":\"welcome\"} headerend-->\r\n@Miikis Thank you for submitting this PR!\n\n🔔 @marcobeltempo — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44256/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n\nIf no reviewer appears after a week, a DefinitelyTyped maintainer will review the PR instead.\r\n<!--footer bot @ 4/27/2020, 2:23:41 PM footerend-->",
               "createdAt": "2020-04-27T06:22:41Z",
               "reactions": {
                 "nodes": [],
@@ -407,7 +407,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@Miikis Thank you for submitting this PR!  I see this is your first time submitting to DefinitelyTyped 👋 - keep an eye on this comment as I'll be updating it with information as things progress.\n\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can merge this once someone else signs off on it.\n\n🔔 @marcobeltempo - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44256/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
+              "body": "@Miikis Thank you for submitting this PR!  I see this is your first time submitting to DefinitelyTyped 👋 — keep an eye on this comment as I'll be updating it with information as things progress.\n\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can merge this once someone else signs off on it.\n\n🔔 @marcobeltempo — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44256/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
               "createdAt": "2020-04-28T23:38:36Z",
               "reactions": {
                 "nodes": [],

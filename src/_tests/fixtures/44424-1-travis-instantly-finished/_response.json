@@ -142,7 +142,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "🔔 @chrisbarker @rdepena @whyn07m3 @licui3936 - please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44424/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
+              "body": "🔔 @chrisbarker @rdepena @whyn07m3 @licui3936 — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44424/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
               "createdAt": "2020-05-01T19:23:46Z",
               "reactions": {
                 "nodes": [],
