@@ -1,4 +1,4 @@
-import { GetLabels, GetProjectColumns } from "../queries/label-query";
+import { GetLabels, GetProjectColumns } from "../queries/label-columns-queries";
 import { GetProjectColumns as GetProjectColumnsResult } from "../queries/schema/GetProjectColumns";
 import { GetLabels as GetLabelsResult } from "../queries/schema/GetLabels";
 import { createCache } from "../ttl-cache";

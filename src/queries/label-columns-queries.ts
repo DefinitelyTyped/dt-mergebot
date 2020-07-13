@@ -1,6 +1,7 @@
 import { gql } from "apollo-boost";
 
-export const GetLabels = gql`query GetLabels {
+export const GetLabels = gql`
+query GetLabels {
   repository(name:"DefinitelyTyped", owner:"DefinitelyTyped") {
     labels(first: 100) {
       nodes {
@@ -11,7 +12,8 @@ export const GetLabels = gql`query GetLabels {
   }
 }`;
 
-export const GetProjectColumns = gql`query GetProjectColumns {
+export const GetProjectColumns = gql`
+query GetProjectColumns {
   repository(name:"DefinitelyTyped", owner:"DefinitelyTyped") {
     project(number: 5) {
       id

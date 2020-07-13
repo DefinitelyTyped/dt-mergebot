@@ -1,14 +1,14 @@
 import * as compute from "../compute-pr-actions";
-import { getAllOpenPRs } from "../queries/all-open-prs-query";
+import { getAllOpenPRsAndCardIDs } from "../queries/all-open-prs-query";
 import { queryPRInfo, deriveStateForPR } from "../pr-info";
 import { executePrActions, deleteProjectCard } from "../execute-pr-actions";
-import { getRecentlyUpdatedPRProjectBoardCards } from "../queries/recently-merged-prs-project";
+import { getProjectBoardCards } from "../queries/projectboard-cards";
 import { createMutation, mutate } from "../graphql-client";
 
 const start = async function () {
   console.log(`Getting open PRs.`);
 
-  const prs = await getAllOpenPRs();
+  const { prNumbers: prs, cardIDs } = await getAllOpenPRsAndCardIDs();
 
   for (const pr of prs) {
     console.log(`Processing #${pr} (${prs.indexOf(pr) + 1} of ${prs.length})...`);
@@ -47,14 +47,39 @@ const start = async function () {
     await executePrActions(actions, info.data);
   }
 
-  console.log(`Cutting 'recently merged' projects to the last 50`);
+  console.log("Cleaning up cards");
+  const columns = await getProjectBoardCards();
 
-  const allRecentlyUpdatedPRs = await getRecentlyUpdatedPRProjectBoardCards();
-  const afterFirst50 = allRecentlyUpdatedPRs.sort((l, r) => l.updatedAt.localeCompare(r.updatedAt))
-                                            .filter((_, i) => i > 50);
-  for (const node of afterFirst50) {
-    const mutation =  createMutation(deleteProjectCard, { id: node.id });
+  const deleteObject = async (id: string, dry: boolean = false) => {
+    if (dry) return console.log(`  Should delete "${id}"`);
+    const mutation = createMutation(deleteProjectCard, { input: { cardId: id }});
     await mutate(mutation);
+  }
+
+  {
+    const recentlyMerged = columns.find(c => c.name === "Recently Merged");
+    if (!recentlyMerged) {
+      throw new Error(`Could not find the 'Recently Merged' column in ${columns.map(n => n.name)}`);
+    }
+    const { cards, totalCount } = recentlyMerged;
+    const afterFirst50 = cards.sort((l, r) => l.updatedAt.localeCompare(r.updatedAt))
+                              .slice(50);
+    if (afterFirst50.length > 0) {
+      console.log(`Cutting "Recently Merged" projects to the last 50`);
+      if (cards.length < totalCount) {
+        console.log(`  *** Note: ${totalCount - cards.length} were not seen by this query!`);
+      }
+      for (const card of afterFirst50) await deleteObject(card.id);
+    }
+  }
+
+  for (const column of columns) {
+    if (column.name === "Recently Merged") continue;
+    const ids = column.cards.map(c => c.id).filter(c => !cardIDs.includes(c));
+    if (ids.length === 0) continue;
+    console.log(`Cleaning up closed PRs in "${column.name}"`);
+    // don't actually do the deletions, until I follow this and make sure that it's working fine
+    for (const id of ids) await deleteObject(id, true);
   }
 
   console.log("Done");
