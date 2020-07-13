@@ -23,12 +23,6 @@ const start = async function () {
       continue;
     }
 
-    // Allow the state to declare that nothing should happen
-    if (state.type === "no_packages") {
-      console.error(`  NOOPing because no packages`);
-      continue;
-    }
-
     // Show reason for ignoring PRs
     if (state.type === "remove") {
       console.log(`  Removing because of: ${state.message}`);

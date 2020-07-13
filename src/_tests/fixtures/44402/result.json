@@ -1,10 +1,12 @@
 {
   "pr_number": 44402,
-  "labels": {},
+  "labels": {
+    "Edits Infrastructure": true
+  },
   "responseComments": [],
   "shouldClose": false,
   "shouldMerge": false,
-  "shouldUpdateLabels": false,
+  "shouldUpdateLabels": true,
   "shouldUpdateProjectColumn": true,
   "shouldRemoveFromActiveColumns": false,
   "isReadyForAutoMerge": false,
