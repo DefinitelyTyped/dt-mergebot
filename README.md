@@ -29,7 +29,7 @@ npm test
 There are three main stages once the app has a PR number:
 
 * Query the GitHub GraphQL API for PR metadata ([`pr-info`](src/pr-info.ts))
-* Create a PR Actios metadata object ([`compute-pr-actions`](src/compute-pr-actions.ts))
+* Create a PR actions metadata object ([`compute-pr-actions`](src/compute-pr-actions.ts))
 * Do work based on the resulting actions ([`execute-pr-actions`](src/execute-pr-actions.ts))
 
 # How the bot works
