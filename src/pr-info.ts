@@ -233,20 +233,6 @@ export async function deriveStateForPR(
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
     const approvals = noNulls(freshReviewsByState.APPROVED);
     const hasDismissedReview = !!freshReviewsByState.DISMISSED?.length;
-    const approvalsByRole = partition(approvals, review => { // UNUSED
-        if (review?.author?.login === prInfo.author?.login) {
-            return "self";
-        }
-        if (review?.authorAssociation === "OWNER" || review?.authorAssociation === "MEMBER") {
-            // DefinitelyTyped maintainer
-            return "maintainer";
-        }
-        if (allOwners.indexOf(review?.author?.login || "") >= 0) {
-            // Known package owner
-            return "owner";
-        }
-        return "other";
-    });
 
     const lastPushDate = new Date(headCommit.pushedDate);
     const lastCommentDate = getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastPushDate;
