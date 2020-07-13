@@ -3,11 +3,11 @@ This is the bot which controls the workflow of Definitely Typed PRs.
 ## Meta
 
 * __State:__ Production
-* __Dashboard:__ [Azure](https://ms.portal.azure.com/#@72f988bf-86f1-41af-91ab-2d7cd011db47/resource/subscriptions/57bfeeed-c34a-4ffd-a06b-ccff27ac91b8/resourceGroups/dtmergebot/providers/Microsoft.Web/sites/DTMergeBot) - [Logs](https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot) - [GH Actions](https://github.com/DefinitelyTyped/dt-mergebot/actions) - [GH Webhook](https://github.com/DefinitelyTyped/DefinitelyTyped/settings/hooks/193097250)
+* __Dashboard:__ [Azure](https://ms.portal.azure.com/#@72f988bf-86f1-41af-91ab-2d7cd011db47/resource/subscriptions/57bfeeed-c34a-4ffd-a06b-ccff27ac91b8/resourceGroups/dtmergebot/providers/Microsoft.Web/sites/DTMergeBot) — [Logs](https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot) — [GH Actions](https://github.com/DefinitelyTyped/dt-mergebot/actions) — [GH Webhook](https://github.com/DefinitelyTyped/DefinitelyTyped/settings/hooks/193097250)
 
 It is both a series of command line scripts which you can use to test different states, and an Azure Function App which handles incoming webhooks from the DefinitelyTyped repo.
 
-This repo is deployed to Azure on every push to master. 
+This repo is deployed to Azure on every push to master.
 To ensure we can handle timeouts on older PRs, there is a [nightly](https://github.com/DefinitelyTyped/dt-mergebot/actions) GitHub Action which runs the bot against [all open PRs](./src/scripts/daily.ts).
 
 # Setup
@@ -28,9 +28,9 @@ npm test
 
 There are three main stages once the app has a PR number:
 
- - Query the GitHub GraphQL API for PR metadata (`src/pr-info.ts`)
- - Create a PR Info metadata object (`src/compute-pr-actions.ts`)
- - Do work based on the PR Info (`src/execute-pr-actions.ts`)
+* Query the GitHub GraphQL API for PR metadata ([`pr-info`](src/pr-info.ts))
+* Create a PR Actios metadata object ([`compute-pr-actions`](src/compute-pr-actions.ts))
+* Do work based on the resulting actions ([`execute-pr-actions`](src/execute-pr-actions.ts))
 
 # How the bot works
 
@@ -49,7 +49,7 @@ Don't run the bot under your own auth token as this will generate a bunch of spa
 set BOT_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # *nix
-export BOT_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+export BOT_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 # Development
@@ -60,18 +60,27 @@ npm run build
 
 # Run the CLI to see what would happen to an existing PR
 npm run single-info -- [PR_NUM]
-# Or
+# or
 npm run single-info-debug -- [PR_NUM]
 ```
 
-If you update any queries, running:
+### If you update any queries
+
+Run this to update the generate types:
 
 ```sh
 # Code-gen the schema
 npm run graphql-schema
 ```
 
-Will set up all your types.
+### If you change project columns or labels
+
+Run this to update the cached values:
+
+```sh
+# Regenerate src/_tests/cachedQueries.json
+npm run update-test-data
+```
 
 # Tests
 
@@ -80,8 +89,7 @@ Will set up all your types.
 npm test
 ```
 
-Most of the tests run against a fixtured PR, these are high level integration tests which store the PR info and 
-then re-run the latter two phases of the app.
+Most of the tests run against a fixtured PR, these are high level integration tests which store the PR info and then re-run the latter two phases of the app.
 
 To create fixtures of a current PR:
 
