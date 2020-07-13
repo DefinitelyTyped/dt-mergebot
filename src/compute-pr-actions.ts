@@ -116,7 +116,9 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
         return {
             ...createEmptyActions(info.pr_number),
             targetColumn: "Needs Maintainer Action",
-            shouldUpdateProjectColumn: true
+            shouldUpdateProjectColumn: true,
+            labels: { "Edits Infrastructure": true },
+            shouldUpdateLabels: true,
         };
     }
 
