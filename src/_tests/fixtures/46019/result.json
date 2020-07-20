@@ -32,7 +32,7 @@
     },
     {
       "tag": "merge-offer",
-      "status": "@peterblazejewicz Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:"
+      "status": "@peterblazejewicz Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n"
     }
   ],
   "shouldClose": false,

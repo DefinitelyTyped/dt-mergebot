@@ -236,7 +236,10 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
             context.targetColumn = "Recently Merged";
         }
         else {
-            context.responseComments.push(Comments.AskForAutoMergePermission(info.author));
+            context.responseComments.push(Comments.AskForAutoMergePermission(
+                info.author,
+                (tooManyOwners(info) || !info.dangerLevel.startsWith("Scoped")) ? []
+                    : info.owners.filter(owner => owner !== info.author)));
             context.targetColumn = "Waiting for Author to Merge";
         }
 

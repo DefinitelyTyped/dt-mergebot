@@ -7,7 +7,8 @@ import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest,
          PR_repository_pullRequest_reviews,
          PR_repository_pullRequest_timelineItems_nodes_IssueComment,
          PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent,
-         PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent
+         PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent,
+         PR_repository_pullRequest_comments_nodes
        } from "./queries/schema/PR";
 import { CIResult } from "./util/CIResult";
 import { PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./queries/graphql-global-types";
@@ -99,7 +100,7 @@ export interface PrInfo {
     readonly owners: readonly string[];
 
     /**
-     * True if the author wants us to merge the PR
+     * True if the author or an owner wants us to merge the PR
      */
     readonly mergeIsRequested: boolean;
 
@@ -226,12 +227,12 @@ export async function deriveStateForPR(
     const { error, anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages, fetchFile);
     if (error) return botError(prInfo.number, error);
 
-    const authorIsOwner = isOwner(prInfo.author.login);
+    const author = prInfo.author.login;
+    const authorIsOwner = isOwner(author);
 
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
 
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
-    const approvals = noNulls(freshReviewsByState.APPROVED);
     const hasDismissedReview = !!freshReviewsByState.DISMISSED?.length;
 
     const lastPushDate = new Date(headCommit.pushedDate);
@@ -242,16 +243,20 @@ export async function deriveStateForPR(
 
     const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
 
+    const dangerLevel = getDangerLevel(categorizedFiles);
+
     return {
         type: "info",
         now,
         pr_number: prInfo.number,
-        author: prInfo.author.login,
+        author,
         owners: allOwners,
-        dangerLevel: getDangerLevel(categorizedFiles),
+        dangerLevel,
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
-        mergeIsRequested: authorSaysReadyToMerge(prInfo),
+        mergeIsRequested: !!prInfo.comments.nodes
+            && usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
+                                    dangerLevel.startsWith("Scoped") ? [author, ...allOwners] : [author]),
         stalenessInDays: Math.min(...[lastPushDate, lastCommentDate, reopenedDate, reviewAnalysis.lastReviewDate]
                                      .map(date => daysSince(date || lastPushDate, now))),
         lastPushDate, reopenedDate, lastCommentDate,
@@ -353,7 +358,7 @@ async function categorizeFile(path: string, contents: () => Promise<string | und
     const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
     if (!match) return { path, kind: "infrastructure", package: undefined };
     const [pkg, suffix] = match.slice(1); // `suffix` can be null
-    switch ((suffix || "")) {
+    switch (suffix || "") {
         case "d.ts": return { path, kind: "definition", package: pkg };
         case "ts": case "tsx": return { path, kind: "test", package: pkg };
         case "md": return { path, kind: "markdown", package: pkg };
@@ -400,15 +405,11 @@ function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) =
     return res;
 }
 
-function authorSaysReadyToMerge(info: PR_repository_pullRequest) {
-    return info.comments.nodes?.some(comment => {
-        if (comment?.author?.login === info.author?.login) {
-            if (comment?.body.trim().toLowerCase().startsWith("ready to merge")) {
-                return true;
-            }
-        }
-        return false;
-    }) ?? false;
+function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes[], users: string[]) {
+    return comments.some(comment =>
+        comment
+        && users.includes(comment.author?.login || " ")
+        && comment.body.trim().toLowerCase().startsWith("ready to merge"));
 }
 
 function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: string) => boolean) {
@@ -466,7 +467,7 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     });
 }
 
-function getDangerLevel(categorizedFiles: readonly FileInfo[]) {
+function getDangerLevel(categorizedFiles: readonly FileInfo[]): DangerLevel {
     if (categorizedFiles.some(f => f.kind === "infrastructure")) {
         return "Infrastructure";
     }
