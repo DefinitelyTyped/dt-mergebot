@@ -72,7 +72,7 @@ export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) 
     status: `@${reviewers.join(", @")} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
 });
 
-export const AskForAutoMergePermission = (user: string) => ({
+export const AskForAutoMergePermission = (user: string, otherOwners: string[]) => ({
     tag: `merge-offer`,
     status: `@${user} Everything looks good here. Great job! I am ready to merge this PR on your behalf.
 
@@ -80,7 +80,9 @@ If you'd like that to happen, please post a comment saying:
 
 > Ready to merge
 
-and I'll merge this PR almost instantly. Thanks for helping out! :heart:`});
+and I'll merge this PR almost instantly. Thanks for helping out! :heart:
+${otherOwners.length === 0 ? "" : `
+(${otherOwners.map(o => "@" + o).join(", ")}: you can do this too.)`}`});
 
 function tinyHash(s: string): string {
     return crypto.createHash("sha256").update(s).digest("hex").substr(0, 6);
