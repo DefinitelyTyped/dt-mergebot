@@ -108,7 +108,8 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     if (info.type === "remove") {
         return {
             ...createEmptyActions(info.pr_number),
-            shouldRemoveFromActiveColumns: true,
+            targetColumn: "Needs Author Action",
+            shouldUpdateProjectColumn: true
         };
     }
 

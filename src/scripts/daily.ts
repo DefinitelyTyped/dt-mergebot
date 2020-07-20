@@ -23,15 +23,14 @@ const start = async function () {
       continue;
     }
 
-    // Show reason for ignoring PRs
-    if (state.type === "remove") {
-      console.log(`  Removing because of: ${state.message}`);
-      continue;
-    }
-
     // Show errors in log but keep processing to show in a comment too
     if (state.type === "error") {
       console.error(`  Error: ${state.message}`);
+    }
+
+    // Show other messages too
+    if ("message" in state) {
+      console.log(`  ... ${state.message}`);
     }
 
     // Convert the info to a set of actions for the bot

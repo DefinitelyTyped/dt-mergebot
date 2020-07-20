@@ -5,7 +5,8 @@
   "shouldClose": false,
   "shouldMerge": false,
   "shouldUpdateLabels": false,
-  "shouldUpdateProjectColumn": false,
-  "shouldRemoveFromActiveColumns": true,
-  "isReadyForAutoMerge": false
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false,
+  "isReadyForAutoMerge": false,
+  "targetColumn": "Needs Author Action"
 }

@@ -1,10 +1,1 @@
-[
-  {
-    "query": "mutation($input: DeleteProjectCardInput!) { deleteProjectCard(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "cardId": "MDExOlByb2plY3RDYXJkMzcxNDg1NjU="
-      }
-    }
-  }
-]
+[]
