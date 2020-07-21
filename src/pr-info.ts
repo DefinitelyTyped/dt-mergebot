@@ -18,6 +18,7 @@ import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
 import { findLast, forEachReverse, daysSince, authorNotBot } from "./util/util";
 import * as HeaderParser from "definitelytyped-header-parser";
+import * as jsonDiff from "fast-json-patch";
 
 export enum ApprovalFlags {
     None = 0,
@@ -219,7 +220,7 @@ export async function deriveStateForPR(
 
     const categorizedFiles = await Promise.all(
         noNulls(prInfo.files?.nodes)
-            .map(f => categorizeFile(f.path, async () => fetchFile(`${headCommit.oid}:${f.path}`))));
+            .map(f => categorizeFile(f.path, async (oid: string = headCommit.oid) => fetchFile(`${oid}:${f.path}`))));
     const packages = getPackagesTouched(categorizedFiles);
 
     if (packages.length === 0) return botNoPackages(prInfo.number)
@@ -353,7 +354,7 @@ type FileInfo = {
     package: string | undefined
 };
 
-async function categorizeFile(path: string, contents: () => Promise<string | undefined>): Promise<FileInfo> {
+async function categorizeFile(path: string, contents: (oid?: string) => Promise<string | undefined>): Promise<FileInfo> {
     // https://regex101.com/r/eFvtrz/1
     const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
     if (!match) return { path, kind: "infrastructure", package: undefined };
@@ -369,27 +370,37 @@ async function categorizeFile(path: string, contents: () => Promise<string | und
 }
 
 interface ConfigOK {
-    (path: string, getContents: () => Promise<string | undefined>): Promise<boolean>;
-    [basename: string]: (text: string) => boolean;
+    (path: string, getContents: (oid?: string) => Promise<string | undefined>): Promise<boolean>;
+    [basename: string]: (text: string, oldText?: string) => boolean;
 };
 const configOK = <ConfigOK>(async (path, getContents) => {
     const basename = path.replace(/.*\//, "");
     if (!(basename in configOK)) return false;
     const text = await getContents();
     if (text === undefined) return false;
-    return configOK[basename](text)
+    const tester = configOK[basename];
+    return (tester.length === 1) ? tester(text) : tester(text, await getContents("master"));
 });
 configOK["OTHER_FILES.txt"] = contents => {
     // not empty, all path parts are not empty and not all dots
-    return contents.length > 0 && contents.split(/\n/).every(line =>
-        line === "" || line.split(/\//).every(part =>
-            part.length > 0 && !part.match(/^\.+$/)));
+    return contents.length > 0 && contents.split(/\n/).every(line => line === "" || isRelativePath(line));
 };
 configOK["tslint.json"] = contents => {
     // just the recommended form
     return JSON.stringify(JSON.parse(contents)) === JSON.stringify({ "extends": "dtslint/dt.json" });
 };
-
+configOK["tsconfig.json"] = (contents, oldText) => {
+    // changes only the files array, and all relative paths
+    try {
+        return jsonDiff.compare(JSON.parse(oldText || ""), JSON.parse(contents)).every(op =>
+            op.path.startsWith("/files/") && (!("value" in op) || isRelativePath(op.value)));
+    } catch (e) {
+        return false;
+    }
+};
+function isRelativePath(path: string) {
+    return path.split(/\//).every(part => part.length > 0 && !part.match(/^\.+$|[\\\n\r]/));
+}
 
 export function getPackagesTouched(files: readonly FileInfo[]) {
     return [...new Set(noNulls(files.map(f => "package" in f ? f.package : null)))];

@@ -1,0 +1,49 @@
+{
+  "type": "info",
+  "now": "2020-07-20T22:17:53.067Z",
+  "pr_number": 46191,
+  "author": "jordanoverbye",
+  "owners": [
+    "Slessi"
+  ],
+  "dangerLevel": "ScopedAndConfiguration",
+  "headCommitAbbrOid": "3cc81db",
+  "headCommitOid": "3cc81dbde57a1b0eda6f69f539fa49b8d420adff",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastPushDate": "2020-07-20T06:54:57.000Z",
+  "lastCommentDate": "2020-07-20T06:54:57.000Z",
+  "maintainerBlessed": false,
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46191/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": true,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "apollo-upload-client"
+  ],
+  "files": [
+    {
+      "path": "types/apollo-upload-client/index.d.ts",
+      "kind": "definition",
+      "package": "apollo-upload-client"
+    },
+    {
+      "path": "types/apollo-upload-client/package.json",
+      "kind": "package-meta",
+      "package": "apollo-upload-client"
+    },
+    {
+      "path": "types/apollo-upload-client/tsconfig.json",
+      "kind": "package-meta",
+      "package": "apollo-upload-client"
+    }
+  ],
+  "hasDismissedReview": false,
+  "ciResult": "fail",
+  "ciUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/3cc81dbde57a1b0eda6f69f539fa49b8d420adff/checks?check_suite_id=938074936",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}
