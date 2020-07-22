@@ -32,12 +32,14 @@
     {
       "path": "types/apollo-upload-client/package.json",
       "kind": "package-meta",
-      "package": "apollo-upload-client"
+      "package": "apollo-upload-client",
+      "suspect": "edited"
     },
     {
       "path": "types/apollo-upload-client/tsconfig.json",
       "kind": "package-meta",
-      "package": "apollo-upload-client"
+      "package": "apollo-upload-client",
+      "suspect": "changes outside of \"files\" list"
     }
   ],
   "hasDismissedReview": false,

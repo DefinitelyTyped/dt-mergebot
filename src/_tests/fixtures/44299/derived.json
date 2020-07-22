@@ -35,17 +35,20 @@
     {
       "path": "types/hcaptcha__vue-hcaptcha/package.json",
       "kind": "package-meta",
-      "package": "hcaptcha__vue-hcaptcha"
+      "package": "hcaptcha__vue-hcaptcha",
+      "suspect": "edited"
     },
     {
       "path": "types/hcaptcha__vue-hcaptcha/tsconfig.json",
       "kind": "package-meta",
-      "package": "hcaptcha__vue-hcaptcha"
+      "package": "hcaptcha__vue-hcaptcha",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/hcaptcha__vue-hcaptcha/tslint.json",
       "kind": "package-meta",
-      "package": "hcaptcha__vue-hcaptcha"
+      "package": "hcaptcha__vue-hcaptcha",
+      "suspect": "couldn't fetch contents"
     }
   ],
   "hasDismissedReview": false,

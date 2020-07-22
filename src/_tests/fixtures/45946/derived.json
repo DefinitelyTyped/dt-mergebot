@@ -41,12 +41,14 @@
     {
       "path": "types/asynciterator/tsconfig.json",
       "kind": "package-meta",
-      "package": "asynciterator"
+      "package": "asynciterator",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/asynciterator/tslint.json",
       "kind": "package-meta",
-      "package": "asynciterator"
+      "package": "asynciterator",
+      "suspect": "couldn't fetch contents"
     }
   ],
   "hasDismissedReview": false,

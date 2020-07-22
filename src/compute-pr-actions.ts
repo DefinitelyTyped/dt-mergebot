@@ -347,7 +347,6 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     // Lets the author know who needs to review this
     let reviewerAdvisory: string | undefined;
     // Some kind of extra warning
-    let dangerComment: string | undefined;
     if (info.anyPackageIsNew) {
         const links = info.packages.map(p => `- [${p} on npm](https://www.npmjs.com/package/${p})\n- [${p} on unpkg](https://unpkg.com/browse/${p}@latest//)`).join("\n");
         reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n${links}`;
@@ -368,13 +367,9 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     }
 
     if (info.dangerLevel === "ScopedAndUntested") {
-        dangerComment = `This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`;
+        display(` This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`);
     } else if (info.dangerLevel === "Infrastructure") {
-        dangerComment = "This PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?";
-    }
-
-    if (dangerComment !== undefined) {
-        display(" " + dangerComment);
+        display(" This PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?");
     }
 
     const approval = hasFinalApproval(info);
@@ -387,8 +382,18 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     display(``,
             `## Code Reviews`,
             ``,
-            reviewerAdvisory,
-            ``,
+            reviewerAdvisory);
+
+    // This might be useful, but in this form it will probably be too confusing
+    // (the information is still available in the diagnostics details).
+    // const suspiciousFiles = info.files.filter(f => f.suspect);
+    // if (suspiciousFiles.length > 0) {
+    //     display(``,
+    //             `## Config changes:`,
+    //             suspiciousFiles.map(f => `* \`${f.path.replace(/^types\//, "")}\`: ${f.suspect}`).join("\n"));
+    // }
+
+    display(``,
             `## Status`,
             ``,
             ` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
@@ -399,7 +404,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     if (info.anyPackageIsNew) {
         display(` * ${emoji(approval.approved)} Only a DT maintainer can approve changes when there are new packages added`);
     } else if (info.dangerLevel === "Infrastructure") {
-        const infraFiles = info.files.filter(f => f.kind === "infrastructure")
+        const infraFiles = info.files.filter(f => f.kind === "infrastructure");
         const links = infraFiles.map(f => `[\`${f.path}\`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.path})`);
         display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
     } else if (info.dangerLevel === "ScopedAndTested" || info.maintainerBlessed) {

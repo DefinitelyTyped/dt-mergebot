@@ -31,7 +31,8 @@
     {
       "path": "types/openfin/OTHER_FILES.txt",
       "kind": "package-meta",
-      "package": "openfin"
+      "package": "openfin",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/openfin/_v2/api/application/application.d.ts",
@@ -221,12 +222,14 @@
     {
       "path": "types/openfin/tslint.json",
       "kind": "package-meta",
-      "package": "openfin"
+      "package": "openfin",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/openfin/v49/OTHER_FILES.txt",
       "kind": "package-meta",
-      "package": "openfin"
+      "package": "openfin",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/openfin/v49/_v2/api/application/application.d.ts",

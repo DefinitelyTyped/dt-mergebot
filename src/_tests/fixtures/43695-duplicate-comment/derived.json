@@ -36,12 +36,14 @@
     {
       "path": "types/accedo__accedo-one/tsconfig.json",
       "kind": "package-meta",
-      "package": "accedo__accedo-one"
+      "package": "accedo__accedo-one",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/accedo__accedo-one/tslint.json",
       "kind": "package-meta",
-      "package": "accedo__accedo-one"
+      "package": "accedo__accedo-one",
+      "suspect": "couldn't fetch contents"
     }
   ],
   "hasDismissedReview": false,
