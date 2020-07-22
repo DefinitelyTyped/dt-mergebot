@@ -1,0 +1,31 @@
+[
+  {
+    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "cardId": "MDExOlByb2plY3RDYXJkNDIyNzExODY=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI1"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDY2MTg3MDQ1Mg==",
+        "body": "@simusr2 Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners, DT maintainers or others\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: MergePullRequestInput!) { mergePullRequest(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "commitHeadline": "🤖 Merge PR #46229 [tabulator-tables] findTable returns Tabulator[] instead of single Ta… by @simusr2",
+        "expectedHeadOid": "f6fbc3099e7aed17e6a7c63cc0ff1df3752f67dc",
+        "mergeMethod": "SQUASH",
+        "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NDU0NTE1NjY4"
+      }
+    }
+  }
+]

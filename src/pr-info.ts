@@ -256,7 +256,7 @@ export async function deriveStateForPR(
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
         mergeIsRequested: !!prInfo.comments.nodes
-            && usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
+            && usersSayReadyToMerge(prInfo, noNulls(prInfo.comments.nodes),
                                     dangerLevel.startsWith("Scoped") ? [author, ...allOwners] : [author]),
         stalenessInDays: Math.min(...[lastPushDate, lastCommentDate, reopenedDate, reviewAnalysis.lastReviewDate]
                                      .map(date => daysSince(date || lastPushDate, now))),
@@ -416,10 +416,10 @@ function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) =
     return res;
 }
 
-function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes[], users: string[]) {
+function usersSayReadyToMerge(prInfo: PR_repository_pullRequest, comments: PR_repository_pullRequest_comments_nodes[], users: string[]) {
     return comments.some(comment =>
         comment
-        && users.includes(comment.author?.login || " ")
+        && (users.includes(comment.author?.login || " ") || prInfo.author?.login === comment.author?.login || " ")
         && comment.body.trim().toLowerCase().startsWith("ready to merge"));
 }
 

@@ -1,0 +1,44 @@
+{
+  "type": "info",
+  "now": "2020-07-22T15:34:26.539Z",
+  "pr_number": 46229,
+  "author": "simusr2",
+  "owners": [
+    "jojoshua"
+  ],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "f6fbc30",
+  "headCommitOid": "f6fbc3099e7aed17e6a7c63cc0ff1df3752f67dc",
+  "mergeIsRequested": true,
+  "stalenessInDays": 0,
+  "lastPushDate": "2020-07-21T13:50:22.000Z",
+  "lastCommentDate": "2020-07-22T10:47:29.000Z",
+  "maintainerBlessed": false,
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46229/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "tabulator-tables"
+  ],
+  "files": [
+    {
+      "path": "types/tabulator-tables/index.d.ts",
+      "kind": "definition",
+      "package": "tabulator-tables"
+    },
+    {
+      "path": "types/tabulator-tables/tabulator-tables-tests.ts",
+      "kind": "test",
+      "package": "tabulator-tables"
+    }
+  ],
+  "hasDismissedReview": false,
+  "ciResult": "pass",
+  "lastReviewDate": "2020-07-22T01:57:47.000Z",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 2,
+  "isChangesRequested": false
+}
