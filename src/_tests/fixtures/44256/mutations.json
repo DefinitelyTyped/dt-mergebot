@@ -1,14 +1,5 @@
 [
   {
-    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "cardId": "MDExOlByb2plY3RDYXJkMzcyMDUzOTQ=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI0"
-      }
-    }
-  },
-  {
     "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {

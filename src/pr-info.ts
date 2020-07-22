@@ -60,6 +60,7 @@ export interface BotEnsureRemovedFromProject {
     readonly type: "remove";
     readonly pr_number: number;
     readonly message: string;
+    readonly isDraft: boolean;
 }
 
 export interface BotNoPackages {
@@ -215,8 +216,8 @@ export async function deriveStateForPR(
     const headCommit = getHeadCommit(prInfo);
     if (headCommit == null) return botError(prInfo.number, "No head commit found");
 
-    if (prInfo.state !== "OPEN") return botEnsureRemovedFromProject(prInfo.number, "PR is not active");
-    if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft");
+    if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft", true);
+    if (prInfo.state !== "OPEN") return botEnsureRemovedFromProject(prInfo.number, "PR is not active", false);
 
     const categorizedFiles = await Promise.all(
         noNulls(prInfo.files?.nodes)
@@ -285,8 +286,8 @@ export async function deriveStateForPR(
         return { type: "error", message, pr_number, author: prInfo?.author?.login };
     }
 
-    function botEnsureRemovedFromProject(pr_number: number, message: string): BotEnsureRemovedFromProject {
-        return { type: "remove", pr_number, message };
+    function botEnsureRemovedFromProject(pr_number: number, message: string, isDraft: boolean): BotEnsureRemovedFromProject {
+        return { type: "remove", pr_number, message, isDraft };
     }
 
     function botNoPackages(pr_number: number): BotNoPackages {

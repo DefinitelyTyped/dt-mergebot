@@ -1,11 +1,1 @@
-[
-  {
-    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "cardId": "MDExOlByb2plY3RDYXJkMzcxNDk2MTU=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI0"
-      }
-    }
-  }
-]
+[]

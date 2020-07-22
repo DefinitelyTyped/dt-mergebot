@@ -106,11 +106,9 @@ const uriForTestingNewPackages = "https://github.com/DefinitelyTyped/DefinitelyT
 
 export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackages | BotError ): Actions {
     if (info.type === "remove") {
-        return {
-            ...createEmptyActions(info.pr_number),
-            targetColumn: "Needs Author Action",
-            shouldUpdateProjectColumn: true
-        };
+        const empty = createEmptyActions(info.pr_number);
+        return !info.isDraft ? empty
+            : { ...empty, targetColumn: "Needs Author Action", shouldUpdateProjectColumn: true };
     }
 
     if (info.type === "no_packages") {
