@@ -35,12 +35,14 @@
     {
       "path": "types/gaze/tsconfig.json",
       "kind": "package-meta",
-      "package": "gaze"
+      "package": "gaze",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/gaze/tslint.json",
       "kind": "package-meta",
-      "package": "gaze"
+      "package": "gaze",
+      "suspect": "couldn't fetch contents"
     }
   ],
   "hasDismissedReview": false,

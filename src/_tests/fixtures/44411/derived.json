@@ -48,12 +48,14 @@
     {
       "path": "types/jest-image-snapshot/v2/tsconfig.json",
       "kind": "package-meta",
-      "package": "jest-image-snapshot"
+      "package": "jest-image-snapshot",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/jest-image-snapshot/v2/tslint.json",
       "kind": "package-meta",
-      "package": "jest-image-snapshot"
+      "package": "jest-image-snapshot",
+      "suspect": "couldn't fetch contents"
     }
   ],
   "hasDismissedReview": false,

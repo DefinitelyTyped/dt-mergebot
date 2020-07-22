@@ -35,12 +35,14 @@
     {
       "path": "types/greek-utils/tsconfig.json",
       "kind": "package-meta",
-      "package": "greek-utils"
+      "package": "greek-utils",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/greek-utils/tslint.json",
       "kind": "package-meta",
-      "package": "greek-utils"
+      "package": "greek-utils",
+      "suspect": "couldn't fetch contents"
     }
   ],
   "hasDismissedReview": false,

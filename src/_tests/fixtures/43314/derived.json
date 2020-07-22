@@ -35,12 +35,14 @@
     {
       "path": "types/carbon__icon-helpers/tsconfig.json",
       "kind": "package-meta",
-      "package": "carbon__icon-helpers"
+      "package": "carbon__icon-helpers",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/carbon__icon-helpers/tslint.json",
       "kind": "package-meta",
-      "package": "carbon__icon-helpers"
+      "package": "carbon__icon-helpers",
+      "suspect": "couldn't fetch contents"
     }
   ],
   "hasDismissedReview": false,

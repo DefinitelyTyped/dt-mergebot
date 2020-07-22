@@ -378,12 +378,14 @@
     {
       "path": "types/es-abstract/tsconfig.json",
       "kind": "package-meta",
-      "package": "es-abstract"
+      "package": "es-abstract",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/es-abstract/tslint.json",
       "kind": "package-meta",
-      "package": "es-abstract"
+      "package": "es-abstract",
+      "suspect": "couldn't fetch contents"
     }
   ],
   "hasDismissedReview": true,

@@ -352,7 +352,8 @@ type FileKind = "test" | "definition" | "markdown" | "package-meta" | "package-m
 type FileInfo = {
     path: string,
     kind: FileKind,
-    package: string | undefined
+    package: string | undefined,
+    suspect?: string // reason for a file being "package-meta" rather than "package-meta-ok"
 };
 
 async function categorizeFile(path: string, contents: (oid?: string) => Promise<string | undefined>): Promise<FileInfo> {
@@ -365,38 +366,51 @@ async function categorizeFile(path: string, contents: (oid?: string) => Promise<
         case "ts": case "tsx": return { path, kind: "test", package: pkg };
         case "md": return { path, kind: "markdown", package: pkg };
         default:
-            const ok = await configOK(path, contents);
-            return { path, kind: ok ? "package-meta-ok" : "package-meta", package: pkg };
+            const suspect = await configSuspicious(path, contents);
+            return { path, kind: suspect ? "package-meta" : "package-meta-ok", package: pkg, suspect };
     }
 }
 
-interface ConfigOK {
-    (path: string, getContents: (oid?: string) => Promise<string | undefined>): Promise<boolean>;
-    [basename: string]: (text: string, oldText?: string) => boolean;
+interface ConfigSuspicious {
+    (path: string, getContents: (oid?: string) => Promise<string | undefined>): Promise<string | undefined>;
+    [basename: string]: (text: string, oldText?: string) => string | undefined;
 };
-const configOK = <ConfigOK>(async (path, getContents) => {
+const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     const basename = path.replace(/.*\//, "");
-    if (!(basename in configOK)) return false;
+    if (!(basename in configSuspicious)) return `edited`;
     const text = await getContents();
-    if (text === undefined) return false;
-    const tester = configOK[basename];
-    return (tester.length === 1) ? tester(text) : tester(text, await getContents("master"));
+    if (text === undefined) return `couldn't fetch contents`;
+    const tester = configSuspicious[basename];
+    let suspect: string | undefined;
+    if (tester.length === 1) {
+        suspect = tester(text);
+    } else {
+        const oldText = await getContents("master");
+        if (!oldText) return "created";
+        suspect = tester(text, oldText);
+    }
+    return suspect;
 });
-configOK["OTHER_FILES.txt"] = contents => {
-    // not empty, all path parts are not empty and not all dots
-    return contents.length > 0 && contents.split(/\n/).every(line => line === "" || isRelativePath(line));
-};
-configOK["tslint.json"] = contents => {
-    // just the recommended form
-    return JSON.stringify(JSON.parse(contents)) === JSON.stringify({ "extends": "dtslint/dt.json" });
-};
-configOK["tsconfig.json"] = (contents, oldText) => {
+configSuspicious["OTHER_FILES.txt"] = contents =>
+    // not empty
+    (contents.length === 0) ? "empty"
+    // all path parts are not empty and not all dots
+    : !contents.split(/\n/).every(line => line === "" || isRelativePath(line)) ? "bad path"
+    : undefined;
+configSuspicious["tslint.json"] = contents =>
+    // just the required form
+    JSON.stringify(JSON.parse(contents)) !== JSON.stringify({ "extends": "dtslint/dt.json" })
+    ? "not the required form"
+    : undefined;
+configSuspicious["tsconfig.json"] = (contents, oldText) => {
     // changes only the files array, and all relative paths
     try {
-        return jsonDiff.compare(JSON.parse(oldText || ""), JSON.parse(contents)).every(op =>
-            op.path.startsWith("/files/") && (!("value" in op) || isRelativePath(op.value)));
+        return !jsonDiff.compare(JSON.parse(oldText || ""), JSON.parse(contents)).every(op =>
+            op.path.startsWith("/files/") && (!("value" in op) || isRelativePath(op.value)))
+            ? "changes outside of \"files\" list"
+            : undefined;
     } catch (e) {
-        return false;
+        return "couldn't parse+diff json";
     }
 };
 function isRelativePath(path: string) {

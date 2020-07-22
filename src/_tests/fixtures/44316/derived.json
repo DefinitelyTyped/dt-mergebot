@@ -32,7 +32,8 @@
     {
       "path": "types/vimeo/tsconfig.json",
       "kind": "package-meta",
-      "package": "vimeo"
+      "package": "vimeo",
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/vimeo/vimeo-tests.ts",
