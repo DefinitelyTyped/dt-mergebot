@@ -1,5 +1,6 @@
 {
   "type": "remove",
   "pr_number": 44290,
-  "message": "PR is a draft"
+  "message": "PR is a draft",
+  "isDraft": true
 }
