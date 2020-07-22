@@ -109,13 +109,14 @@ const httpTrigger = async function (context, _req) {
         const repo = webhook.repository.name;
         const sha = webhook.check_suite.head_sha;
         const pr = await runQueryToGetPRMetadataForSHA1(owner, repo, sha);
-        if (!pr) throw new Error(`Could not get PR for the status on ${sha}`);
-        if (pr.closed) {
-            context.log.info(`Skipped webhook, could not find an open PR for the sha referenced in the status (${sha})`);
+        if (!pr || pr.closed) {
+            const whatFailed = !pr ? "a PR" : "an open PR";
+            context.log.info(`Skipped webhook, could not find ${whatFailed} for the sha referenced in the status (${sha})`);
             context.res = {
                 status: 204,
-                body: `NOOPing due to not finding an open PR for the sha ${sha}`
+                body: `NOOPing due to not finding ${whatFailed} for the sha ${sha}`
             };
+            return;
         }
         prNumber = pr.number;
     }
