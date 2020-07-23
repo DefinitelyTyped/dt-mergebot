@@ -131,7 +131,7 @@ const httpTrigger = async function (context, _req) {
 
     // If it didn't work, bail early
     if (state.type === "fail") {
-        const isIssueNotPR = state.message === "No PR with this number exists" && "issue" in webhook;
+        const isIssueNotPR = state.message.startsWith("No PR with this number exists") && "issue" in webhook;
         if (isIssueNotPR) {
             context.res = {
                 status: 204,

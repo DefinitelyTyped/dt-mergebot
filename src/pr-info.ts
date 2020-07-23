@@ -210,7 +210,7 @@ export async function deriveStateForPR(
 ): Promise<PrInfo | BotFail | BotError | BotEnsureRemovedFromProject | BotNoPackages>  {
     const prInfo = info.data.repository?.pullRequest;
 
-    if (!prInfo) return botFail("No PR with this number exists");
+    if (!prInfo) return botFail(`No PR with this number exists, (${JSON.stringify(info)})`);
     if (prInfo.author == null) return botError(prInfo.number, "PR author does not exist");
 
     const headCommit = getHeadCommit(prInfo);
