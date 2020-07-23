@@ -402,7 +402,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
         const infraFiles = info.files.filter(f => f.kind === "infrastructure")
         const links = infraFiles.map(f => `[\`${f.path}\`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.path})`);
         display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
-    } else if (info.dangerLevel === "ScopedAndTested") {
+    } else if (info.dangerLevel === "ScopedAndTested" || info.maintainerBlessed) {
         display(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
     } else if (otherOwners.length === 0) {
         display(` * ${emoji(approval.approved)} A DT maintainer can merge changes when there are no other reviewers`);

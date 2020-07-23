@@ -1,0 +1,38 @@
+{
+  "type": "info",
+  "now": "2020-07-23T18:40:42.000Z",
+  "pr_number": 46279,
+  "author": "pzingg",
+  "owners": [
+    "pzingg"
+  ],
+  "dangerLevel": "ScopedAndUntested",
+  "headCommitAbbrOid": "8032238",
+  "headCommitOid": "80322389c71c13e0fca466b744b35b742a3ee161",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastPushDate": "2020-07-23T01:03:50.000Z",
+  "lastCommentDate": "2020-07-23T01:03:50.000Z",
+  "maintainerBlessed": true,
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46279/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": true,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "anyPackageIsNew": false,
+  "packages": [
+    "phoenix_live_view"
+  ],
+  "files": [
+    {
+      "path": "types/phoenix_live_view/index.d.ts",
+      "kind": "definition",
+      "package": "phoenix_live_view"
+    }
+  ],
+  "hasDismissedReview": false,
+  "ciResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}
