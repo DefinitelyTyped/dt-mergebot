@@ -8,6 +8,8 @@ const verify = require("@octokit/webhooks/verify");
 const sign = require("@octokit/webhooks/sign");
 const { runQueryToGetPRMetadataForSHA1 } = require("../bin/queries/SHA1-to-PR-query");
 
+const prHandlers = new Map();
+
 /** @type {import("@azure/functions").AzureFunction} */
 const httpTrigger = async function (context, _req) {
 
@@ -15,11 +17,12 @@ const httpTrigger = async function (context, _req) {
     const req = _req;
 
     const result = process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"];
-    if (typeof result !== 'string') {
+    if (typeof result !== "string") {
         throw new Error("Set either BOT_AUTH_TOKEN or AUTH_TOKEN to a valid auth token");
     }
 
-    context.log('HTTP trigger function received a request.');
+    context.log("HTTP trigger function received a request.");
+
     const event = req.headers["x-github-event"];
 
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
@@ -122,6 +125,24 @@ const httpTrigger = async function (context, _req) {
     }
 
     if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`);
+
+    if (prHandlers.has(prNumber)) prHandlers.get(prNumber)(); // cancel older handler for the same pr
+    let aborted = await new Promise(res => {
+        const timeout = setTimeout(() => res(false), 30000);
+        prHandlers.set(prNumber, () => {
+            clearTimeout(timeout);
+            res(true);
+        });
+    });
+    if (aborted) {
+        context.log.info(`Skipped webhook, superseded by a newer one for ${prNumber}`);
+        context.res = {
+            status: 204,
+            body: "NOOPing due to a newer webhook"
+        };
+        return;
+    }
+    prHandlers.delete(prNumber);
 
     context.log.info(`Getting info for PR ${prNumber} - ${prTitle}`);
 
