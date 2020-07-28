@@ -407,6 +407,8 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
         const infraFiles = info.files.filter(f => f.kind === "infrastructure");
         const links = infraFiles.map(f => `[\`${f.path}\`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.path})`);
         display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
+    } else if (info.dangerLevel === "MultiplePackagesEdited") {
+        display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect more than one package`);
     } else if (info.dangerLevel === "ScopedAndTested" || info.maintainerBlessed) {
         display(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
     } else if (otherOwners.length === 0) {
