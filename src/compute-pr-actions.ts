@@ -148,6 +148,9 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     const otherOwners = info.owners.filter(o => info.author.toLowerCase() !== o.toLowerCase());
 
     // General labelling and housekeeping
+    context.labels["Has Merge Conflict"] = info.hasMergeConflict;
+    context.labels["The CI failed"] = failedCI;
+    context.labels["Revision needed"] = info.isChangesRequested;
     context.labels["Critical package"] = info.popularityLevel === "Critical";
     context.labels["Popular package"] = info.popularityLevel === "Popular";
     context.labels["Other Approved"] = !!(info.approvalFlags & ApprovalFlags.Other);
@@ -193,15 +196,12 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
         context.targetColumn = "Needs Author Action";
 
         if (info.hasMergeConflict) {
-            context.labels["Has Merge Conflict"] = true;
             context.responseComments.push(Comments.MergeConflicted(info.headCommitAbbrOid, info.author));
         }
         if (failedCI) {
-            context.labels["The CI failed"] = true;
             context.responseComments.push(Comments.CIFailed(info.headCommitAbbrOid, info.author, info.ciUrl!));
         }
         if (info.isChangesRequested) {
-            context.labels["Revision needed"] = true;
             context.responseComments.push(Comments.ChangesRequest(info.headCommitAbbrOid, info.author));
         }
 
