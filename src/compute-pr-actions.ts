@@ -384,15 +384,6 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
             ``,
             reviewerAdvisory);
 
-    // This might be useful, but in this form it will probably be too confusing
-    // (the information is still available in the diagnostics details).
-    // const suspiciousFiles = info.files.filter(f => f.suspect);
-    // if (suspiciousFiles.length > 0) {
-    //     display(``,
-    //             `## Config changes:`,
-    //             suspiciousFiles.map(f => `* \`${f.path.replace(/^types\//, "")}\`: ${f.suspect}`).join("\n"));
-    // }
-
     display(``,
             `## Status`,
             ``,
@@ -417,6 +408,10 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
         display(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
     } else if (info.dangerLevel === "ScopedAndConfiguration") {
         display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect module config files`);
+        for (const file of info.files) {
+            if (!file.suspect) continue;
+            display(`   - \`${file.path.replace(/^types\//, "")}\`: ${file.suspect}`);
+        }
     } else {
         display(` * ${emoji(approval.approved)} Only a DT maintainer can approve changes [without tests](${testsLink})`);
     }
