@@ -421,8 +421,8 @@ export function getPackagesTouched(files: readonly FileInfo[]) {
     return [...new Set(noNulls(files.map(f => "package" in f ? f.package : null)))];
 }
 
-export function getPackagesWithSourceFilesTouched(files: readonly FileInfo[]) {
-    return [...new Set(noNulls(files.map(f => "package" in f && f.kind === "definition" ? f.package : null)))];
+export function getPackagesWithNonTestFilesTouched(files: readonly FileInfo[]) {
+    return [...new Set(noNulls(files.map(f => "package" in f && f.kind !== "test" ? f.package : null)))];
 }
 
 function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) => U) {
@@ -502,11 +502,11 @@ function getDangerLevel(categorizedFiles: readonly FileInfo[]): DangerLevel {
         return "Infrastructure";
     }
     const packagesTouched = getPackagesTouched(categorizedFiles);
-    const sourcePackagesTouched = getPackagesWithSourceFilesTouched(categorizedFiles);
+    const nonTestPackagesTouched = getPackagesWithNonTestFilesTouched(categorizedFiles);
 
     if (packagesTouched.length === 0) {
         return "Infrastructure";
-    } else if (sourcePackagesTouched.length > 1) {
+    } else if (nonTestPackagesTouched.length > 1) {
         return "MultiplePackagesEdited";
     } else if (categorizedFiles.some(f => f.kind === "package-meta")) {
         return "ScopedAndConfiguration";
