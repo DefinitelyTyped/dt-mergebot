@@ -23,7 +23,7 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Popular",
-  "anyPackageIsNew": false,
+  "newPackages": [],
   "packages": [
     "prompts"
   ],

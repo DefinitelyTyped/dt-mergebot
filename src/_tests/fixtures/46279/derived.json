@@ -19,7 +19,7 @@
   "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "anyPackageIsNew": false,
+  "newPackages": [],
   "packages": [
     "phoenix_live_view"
   ],

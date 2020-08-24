@@ -20,7 +20,7 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "anyPackageIsNew": false,
+  "newPackages": [],
   "packages": [
     "arcgis-js-api"
   ],

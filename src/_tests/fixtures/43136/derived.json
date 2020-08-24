@@ -19,7 +19,7 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Critical",
-  "anyPackageIsNew": false,
+  "newPackages": [],
   "packages": [
     "estree"
   ],

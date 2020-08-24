@@ -17,7 +17,9 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "anyPackageIsNew": true,
+  "newPackages": [
+    "gaze"
+  ],
   "packages": [
     "gaze"
   ],

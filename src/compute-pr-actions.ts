@@ -156,14 +156,14 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["Other Approved"] = !!(info.approvalFlags & ApprovalFlags.Other);
     context.labels["Owner Approved"] = !!(info.approvalFlags & ApprovalFlags.Owner);
     context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
-    context.labels["New Definition"] = info.anyPackageIsNew;
+    context.labels["New Definition"] = info.newPackages.length > 0;
     context.labels["Edits Infrastructure"] = info.dangerLevel === "Infrastructure";
     context.labels["Edits multiple packages"] = info.dangerLevel === "MultiplePackagesEdited";
     context.labels["Author is Owner"] = info.authorIsOwner;
-    context.labels["No Other Owners"] = !info.anyPackageIsNew && otherOwners.length === 0;
+    context.labels["No Other Owners"] = info.newPackages.length === 0 && otherOwners.length === 0;
     context.labels["Too Many Owners"] = tooManyOwners(info);
     context.labels["Merge:Auto"] = canBeMergedNow(info);
-    context.labels["Config Edit"] = !info.anyPackageIsNew && info.dangerLevel === "ScopedAndConfiguration";
+    context.labels["Config Edit"] = info.newPackages.length === 0 && info.dangerLevel === "ScopedAndConfiguration";
     context.isReadyForAutoMerge = canBeMergedNow(info);
     context.labels["Untested Change"] = info.dangerLevel === "ScopedAndUntested";
     context.labels["Merge:YSYL"] = staleness === Staleness.YSYL;
@@ -335,7 +335,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     }
 
     const otherOwners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
-    const testsLink = info.anyPackageIsNew ? uriForTestingNewPackages : uriForTestingEditedPackages;
+    const testsLink = info.newPackages.length > 0 ? uriForTestingNewPackages : uriForTestingEditedPackages;
 
     const specialWelcome = !info.isFirstContribution ? `` :
         ` I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.`;
@@ -347,9 +347,8 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     // Lets the author know who needs to review this
     let reviewerAdvisory: string | undefined;
     // Some kind of extra warning
-    if (info.anyPackageIsNew) {
-        const links = info.packages.map(p => `- [${p} on npm](https://www.npmjs.com/package/${p})\n- [${p} on unpkg](https://unpkg.com/browse/${p}@latest//)`).join("\n");
-        reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n${links}`;
+    if (info.newPackages.length > 0) {
+        reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.`;
     } else if (info.popularityLevel === "Critical" && !info.maintainerBlessed) {
         reviewerAdvisory = "Because this is a widely-used package, a DT maintainer will need to review it before it can be merged.";
     } else if (info.dangerLevel === "ScopedAndTested") {
@@ -367,9 +366,9 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     }
 
     if (info.dangerLevel === "ScopedAndUntested") {
-        display(` This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`);
+        display(`This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`);
     } else if (info.dangerLevel === "Infrastructure") {
-        display(" This PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?");
+        display("This PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?");
     }
 
     const approval = hasFinalApproval(info);
@@ -379,6 +378,17 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
         && (info.dangerLevel === "ScopedAndTested" || info.maintainerBlessed)
         && approval.approved;
 
+    if (info.packages.length > 0) {
+        const links = info.packages.map(p => {
+            const maybeNew = info.newPackages.includes(p) ? " (*new!*)" : "";
+            const urlPart = p.replace(/^(.*?)__(.)/, "@$1/$2");
+            return [`- \`${p}\`${maybeNew}`,
+                    `[on npm](https://www.npmjs.com/package/${urlPart}),`,
+                    `[on unpkg](https://unpkg.com/browse/${urlPart}@latest)`
+                   ].join(" ");
+        }).join("\n");
+        display(`## ${info.packages.length} package${info.packages.length > 1 ? "s" : ""} in this PR\n\n${links}`);
+    }
     display(``,
             `## Code Reviews`,
             ``,
@@ -392,7 +402,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     const expectedResults = info.ciResult === CIResult.Pending ? "finished" : "passed";
     display(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
 
-    if (info.anyPackageIsNew) {
+    if (info.newPackages.length > 0) {
         display(` * ${emoji(approval.approved)} Only a DT maintainer can approve changes when there are new packages added`);
     } else if (info.dangerLevel === "Infrastructure") {
         const infraFiles = info.files.filter(f => f.kind === "infrastructure");

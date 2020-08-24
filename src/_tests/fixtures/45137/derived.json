@@ -48,7 +48,7 @@
   "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Popular",
-  "anyPackageIsNew": false,
+  "newPackages": [],
   "packages": [
     "mongodb"
   ],

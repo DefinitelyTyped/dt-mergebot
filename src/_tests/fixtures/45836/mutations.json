@@ -24,7 +24,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDY1MjY4ODU2Nw==",
-        "body": "@mmorearty Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n\n## Code Reviews\n\nBecause this PR edits multiple packages, it can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect more than one package\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@mmorearty Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 2 packages in this PR\n\n- `prosemirror-commands` [on npm](https://www.npmjs.com/package/prosemirror-commands), [on unpkg](https://unpkg.com/browse/prosemirror-commands@latest)\n- `prosemirror-keymap` [on npm](https://www.npmjs.com/package/prosemirror-keymap), [on unpkg](https://unpkg.com/browse/prosemirror-keymap@latest)\n\n## Code Reviews\n\nBecause this PR edits multiple packages, it can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect more than one package\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   }

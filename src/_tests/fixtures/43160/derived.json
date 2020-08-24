@@ -22,7 +22,7 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
-  "anyPackageIsNew": false,
+  "newPackages": [],
   "packages": [
     "dagre"
   ],
