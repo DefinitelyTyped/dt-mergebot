@@ -474,9 +474,9 @@ export interface PR_repository_pullRequest {
    */
   title: string;
   /**
-   * The moment the editor made the last edit
+   * Identifies the date and time when the object was created.
    */
-  lastEditedAt: any | null;
+  createdAt: any;
   /**
    * The actor who authored the comment.
    */
@@ -493,10 +493,6 @@ export interface PR_repository_pullRequest {
    * The number of changed files in this pull request.
    */
   changedFiles: number;
-  /**
-   * Identifies the date and time when the object was created.
-   */
-  createdAt: any;
   /**
    * A list of labels associated with the object.
    */
