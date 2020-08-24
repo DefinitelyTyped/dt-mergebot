@@ -3,6 +3,7 @@ import { getAllOpenPRsAndCardIDs } from "../queries/all-open-prs-query";
 import { queryPRInfo, deriveStateForPR } from "../pr-info";
 import { executePrActions, deleteProjectCard } from "../execute-pr-actions";
 import { getProjectBoardCards } from "../queries/projectboard-cards";
+import { runQueryToGetPRForCardId } from "../queries/card-id-to-pr-query";
 import { createMutation, mutate } from "../graphql-client";
 
 const start = async function () {
@@ -43,8 +44,10 @@ const start = async function () {
   console.log("Cleaning up cards");
   const columns = await getProjectBoardCards();
 
-  const deleteObject = async (id: string, dry: boolean = false) => {
-    if (dry) return console.log(`  Should delete "${id}"`);
+  const deleteObject = async (id: string, shoulda?: string) => {
+    if (shoulda) {
+        return console.log(`  Should delete "${id}" (#${shoulda})`);
+    }
     const mutation = createMutation(deleteProjectCard, { input: { cardId: id }});
     await mutate(mutation);
   }
@@ -72,7 +75,12 @@ const start = async function () {
     if (ids.length === 0) continue;
     console.log(`Cleaning up closed PRs in "${column.name}"`);
     // don't actually do the deletions, until I follow this and make sure that it's working fine
-    for (const id of ids) await deleteObject(id, true);
+    for (const id of ids) {
+      const info = await runQueryToGetPRForCardId(id);
+      await deleteObject(id, info === undefined ? "???"
+                             : info.state === "CLOSED" ? undefined
+                             : "#" + info.number);
+    }
   }
 
   console.log("Done");
