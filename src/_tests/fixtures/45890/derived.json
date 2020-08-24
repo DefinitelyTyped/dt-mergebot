@@ -17,7 +17,9 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
-  "anyPackageIsNew": true,
+  "newPackages": [
+    "greek-utils"
+  ],
   "packages": [
     "greek-utils"
   ],

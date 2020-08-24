@@ -28,7 +28,7 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Popular",
-  "anyPackageIsNew": false,
+  "newPackages": [],
   "packages": [
     "chrome"
   ],

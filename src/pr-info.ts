@@ -165,7 +165,7 @@ export interface PrInfo {
      */
     readonly stalenessInDays: number;
 
-    readonly anyPackageIsNew: boolean;
+    readonly newPackages: string[];
 
     /**
      * True if a maintainer blessed this PR
@@ -226,7 +226,7 @@ export async function deriveStateForPR(
 
     if (packages.length === 0) return botNoPackages(prInfo.number)
 
-    const { error, anyPackageIsNew, allOwners } = await getOwnersOfPackages(packages, fetchFile);
+    const { error, newPackages, allOwners } = await getOwnersOfPackages(packages, fetchFile);
     if (error) return botError(prInfo.number, error);
 
     const author = prInfo.author.login;
@@ -270,7 +270,7 @@ export async function deriveStateForPR(
         popularityLevel: getDownloads
             ? getPopularityLevelFromDownloads(await getDownloads(packages))
             : await getPopularityLevel(packages),
-        anyPackageIsNew,
+        newPackages,
         packages,
         files: categorizedFiles,
         hasDismissedReview,
@@ -577,14 +577,14 @@ function getPopularityLevelFromDownloads(downloadsPerPackage: Record<string, num
 }
 
 interface OwnerInfo {
-    anyPackageIsNew: boolean;
+    newPackages: string[];
     allOwners: string[];
     error: string | undefined;
 }
 
 async function getOwnersOfPackages(packages: readonly string[], fetchFile: typeof defaultFetchFile): Promise<OwnerInfo> {
     const allOwners: Set<string> = new Set();
-    let anyPackageIsNew = false, error = undefined;
+    let newPackages = [], error = undefined;
     for (const p of packages) {
         let owners;
         try {
@@ -594,12 +594,12 @@ async function getOwnersOfPackages(packages: readonly string[], fetchFile: typeo
             break;
         }
         if (owners === undefined) {
-            anyPackageIsNew = true;
+            newPackages.push(p);
         } else {
             owners.forEach(o => allOwners.add(o));
         }
     }
-    return { error, allOwners: [...allOwners], anyPackageIsNew };
+    return { error, allOwners: [...allOwners], newPackages };
 }
 
 async function getOwnersForPackage(packageName: string, fetchFile: typeof defaultFetchFile): Promise<string[] | undefined> {

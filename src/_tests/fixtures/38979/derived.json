@@ -20,7 +20,7 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Critical",
-  "anyPackageIsNew": false,
+  "newPackages": [],
   "packages": [
     "es-abstract"
   ],
