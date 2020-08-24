@@ -237,6 +237,7 @@ export async function deriveStateForPR(
     const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
     const hasDismissedReview = !!freshReviewsByState.DISMISSED?.length;
 
+    const createdDate = new Date(prInfo.createdAt);
     const lastPushDate = new Date(headCommit.pushedDate);
     const lastCommentDate = getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastPushDate;
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
@@ -259,7 +260,7 @@ export async function deriveStateForPR(
         mergeIsRequested: !!prInfo.comments.nodes
             && usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
                                     dangerLevel.startsWith("Scoped") ? [author, ...allOwners] : [author]),
-        stalenessInDays: Math.min(...[lastPushDate, lastCommentDate, reopenedDate, reviewAnalysis.lastReviewDate]
+        stalenessInDays: Math.min(...[createdDate, lastPushDate, lastCommentDate, reopenedDate, reviewAnalysis.lastReviewDate]
                                      .map(date => daysSince(date || lastPushDate, now))),
         lastPushDate, reopenedDate, lastCommentDate,
         maintainerBlessed: lastBlessing ? lastBlessing.getTime() > lastPushDate.getTime() : false,

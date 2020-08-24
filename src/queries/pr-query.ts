@@ -15,7 +15,7 @@ query PR($pr_number: Int!) {
       pullRequest(number: $pr_number) {
         id
         title
-        lastEditedAt
+        createdAt
         author {
           login
         }
@@ -24,7 +24,6 @@ query PR($pr_number: Int!) {
           name
         }
         changedFiles
-        createdAt
         labels(first: 100) {
           nodes {
             name
