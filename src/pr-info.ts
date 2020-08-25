@@ -240,11 +240,11 @@ export async function deriveStateForPR(
     const createdDate = new Date(prInfo.createdAt);
     const lastPushDate = new Date(headCommit.pushedDate);
     const lastCommentDate = getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastPushDate;
+    const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
     const now = getNow().toISOString();
     const reviewAnalysis = analyzeReviews(prInfo, isOwner);
-
-    const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
+    const activityDates = [createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, reviewAnalysis.lastReviewDate];
 
     const dangerLevel = getDangerLevel(categorizedFiles);
 
@@ -260,8 +260,7 @@ export async function deriveStateForPR(
         mergeIsRequested: !!prInfo.comments.nodes
             && usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
                                     dangerLevel.startsWith("Scoped") ? [author, ...allOwners] : [author]),
-        stalenessInDays: Math.min(...[createdDate, lastPushDate, lastCommentDate, reopenedDate, reviewAnalysis.lastReviewDate]
-                                     .map(date => daysSince(date || lastPushDate, now))),
+        stalenessInDays: Math.min(...activityDates.map(date => daysSince(date || lastPushDate, now))),
         lastPushDate, reopenedDate, lastCommentDate,
         maintainerBlessed: lastBlessing ? lastBlessing.getTime() > lastPushDate.getTime() : false,
         reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,

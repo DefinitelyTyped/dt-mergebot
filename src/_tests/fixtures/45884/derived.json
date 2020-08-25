@@ -19,7 +19,7 @@
   "headCommitAbbrOid": "1dcf44a",
   "headCommitOid": "1dcf44a05908783324ca99231837267af495cdb7",
   "mergeIsRequested": false,
-  "stalenessInDays": 1,
+  "stalenessInDays": 0,
   "lastPushDate": "2020-07-04T08:33:11.000Z",
   "lastCommentDate": "2020-07-04T08:40:23.000Z",
   "maintainerBlessed": true,
