@@ -1,6 +1,6 @@
 {
   "pr_number": 46279,
-  "targetColumn": "Needs Maintainer Review",
+  "targetColumn": "Needs Maintainer Action",
   "labels": {
     "Mergebot Error": false,
     "Has Merge Conflict": false,
