@@ -145,7 +145,6 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     const failedCI = info.ciResult === CIResult.Fail;
     const needsAuthorAttention = failedCI || info.hasMergeConflict || info.isChangesRequested;
     const staleness = getStaleness(info, needsAuthorAttention);
-    const otherOwners = info.owners.filter(o => info.author.toLowerCase() !== o.toLowerCase());
 
     // General labelling and housekeeping
     context.labels["Has Merge Conflict"] = info.hasMergeConflict;
@@ -160,7 +159,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     context.labels["Edits Infrastructure"] = info.dangerLevel === "Infrastructure";
     context.labels["Edits multiple packages"] = info.dangerLevel === "MultiplePackagesEdited";
     context.labels["Author is Owner"] = info.authorIsOwner;
-    context.labels["No Other Owners"] = info.newPackages.length === 0 && otherOwners.length === 0;
+    context.labels["No Other Owners"] = info.newPackages.length === 0 && noOtherOwners(info);
     context.labels["Too Many Owners"] = tooManyOwners(info);
     context.labels["Merge:Auto"] = canBeMergedNow(info);
     context.labels["Config Edit"] = info.newPackages.length === 0 && info.dangerLevel === "ScopedAndConfiguration";
@@ -177,14 +176,14 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
 
     // Ping reviewers when needed
     if (!info.isChangesRequested && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
-        if (otherOwners.length === 0) {
+        if (noOtherOwners(info)) {
             if (info.popularityLevel !== "Critical") {
                 context.responseComments.push(Comments.PingReviewersOther(info.author, info.reviewLink));
             }
         } else if (tooManyOwners(info)) {
-            context.responseComments.push(Comments.PingReviewersTooMany(otherOwners));
+            context.responseComments.push(Comments.PingReviewersTooMany(otherOwners(info)));
         } else {
-            context.responseComments.push(Comments.PingReviewers(otherOwners, info.reviewLink));
+            context.responseComments.push(Comments.PingReviewers(otherOwners(info), info.reviewLink));
         }
     }
 
@@ -237,7 +236,7 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
     // CI is green
     else if (info.ciResult === CIResult.Pass) {
         if (!canBeMergedNow(info)) {
-            context.targetColumn = projectBoardForReviewWithLeastAccess(info, otherOwners.length === 0);
+            context.targetColumn = projectBoardForReviewWithLeastAccess(info);
         }
         else if (info.mergeIsRequested) {
             context.shouldMerge = true;
@@ -274,24 +273,33 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
 function tooManyOwners(info: PrInfo): boolean {
     return info.owners.length > 50;
 }
+function otherOwners(info: PrInfo): string[] {
+    return info.owners.filter(o => info.author.toLowerCase() !== o.toLowerCase());
+}
+function noOtherOwners(info: PrInfo): boolean {
+    return !info.owners.some(o => o.toLowerCase() !== info.author.toLowerCase());
+}
 
 function canBeMergedNow(info: PrInfo): boolean {
     return info.ciResult === CIResult.Pass
         && !info.hasMergeConflict
-        && hasFinalApproval(info).approved;
+        && getApproval(info).approved;
 }
 
 type ApproverKinds = "maintainers" | "owners" | "others";
-function hasFinalApproval(info: PrInfo) {
-    const approvalFor = (who: ApproverKinds) => ({
-        approved: !!(info.approvalFlags &
-                     (who === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
-                      : who === "owners" || info.maintainerBlessed ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
-                      : (ApprovalFlags.Maintainer))),
-        requiredApprovalBy: (who === "others" ? "type definition owners, DT maintainers or others"
-                             : who === "owners" || info.maintainerBlessed ? "type definition owners or DT maintainers"
-                             : "DT maintainers")
-    });
+function getApproval(info: PrInfo) {
+    const blessed = info.maintainerBlessed;
+    const approvalFor = (who: ApproverKinds) => {
+        const approved = !!(info.approvalFlags &
+                            (who === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
+                             : who === "owners" || blessed ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
+                             : (ApprovalFlags.Maintainer)));
+        const requiredApprovalBy = who === "others" ? "type definition owners, DT maintainers or others"
+                                   : who === "owners" || blessed ? "type definition owners or DT maintainers"
+                                   : "DT maintainers";
+        const blessable = !(info.newPackages.length > 0 || info.dangerLevel === "Infrastructure" || noOtherOwners(info))
+        return { approved, requiredApprovalBy, blessable };
+    };
     if (info.dangerLevel !== "ScopedAndTested" || tooManyOwners(info)) return approvalFor("maintainers");
     if (info.popularityLevel === "Well-liked by everyone") return approvalFor("others");
     if (info.popularityLevel === "Popular") return approvalFor("owners");
@@ -300,10 +308,11 @@ function hasFinalApproval(info: PrInfo) {
 }
 
 /** E.g. let people review, but fall back to the DT maintainers based on the access rights above */
-function projectBoardForReviewWithLeastAccess(info: PrInfo, noOtherOwners: boolean):  Actions["targetColumn"] {
-    const requiredApprovalBy = hasFinalApproval(info).requiredApprovalBy;
-    return requiredApprovalBy === "DT maintainers" || noOtherOwners && requiredApprovalBy === "type definition owners or DT maintainers"
-        ? "Needs Maintainer Review"
+function projectBoardForReviewWithLeastAccess(info: PrInfo): ColumnName {
+    const { requiredApprovalBy, blessable } = getApproval(info);
+    return (requiredApprovalBy === "DT maintainers"
+            || noOtherOwners(info) && requiredApprovalBy === "type definition owners or DT maintainers")
+        ? (blessable ? "Needs Maintainer Review" : "Needs Maintainer Action")
         : "Waiting for Code Reviews";
 }
 
@@ -334,7 +343,6 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
         lines.forEach(line => content += line + "\n");
     }
 
-    const otherOwners = info.owners.filter(a => a.toLowerCase() !== info.author.toLowerCase());
     const testsLink = info.newPackages.length > 0 ? uriForTestingNewPackages : uriForTestingEditedPackages;
 
     const specialWelcome = !info.isFirstContribution ? `` :
@@ -353,7 +361,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
         reviewerAdvisory = "Because this is a widely-used package, a DT maintainer will need to review it before it can be merged.";
     } else if (info.dangerLevel === "ScopedAndTested") {
         reviewerAdvisory = "Because you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.";
-    } else if (otherOwners.length === 0 && !info.maintainerBlessed) {
+    } else if (noOtherOwners(info) && !info.maintainerBlessed) {
         reviewerAdvisory = "There aren't any other owners of this package, so a DT maintainer will review it.";
     } else if (info.dangerLevel === "MultiplePackagesEdited" && !info.maintainerBlessed) {
         reviewerAdvisory = "Because this PR edits multiple packages, it can be merged once it's reviewed by a DT maintainer.";
@@ -371,7 +379,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
         display("This PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?");
     }
 
-    const approval = hasFinalApproval(info);
+    const approval = getApproval(info);
     const waitingOnThePRAuthorToMerge =
         !info.hasMergeConflict
         && info.ciResult === CIResult.Pass
@@ -412,7 +420,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
         display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect more than one package`);
     } else if (info.dangerLevel === "ScopedAndTested" || info.maintainerBlessed) {
         display(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
-    } else if (otherOwners.length === 0) {
+    } else if (noOtherOwners(info)) {
         display(` * ${emoji(approval.approved)} A DT maintainer can merge changes when there are no other reviewers`);
     } else if (info.maintainerBlessed) {
         display(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
