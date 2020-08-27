@@ -288,17 +288,20 @@ function canBeMergedNow(info: PrInfo): boolean {
 
 type ApproverKinds = "maintainers" | "owners" | "others";
 function getApproval(info: PrInfo) {
-    const blessed = info.maintainerBlessed;
+    const noOther = noOtherOwners(info);
+    const blessable = !(info.newPackages.length > 0 || info.dangerLevel === "Infrastructure" || noOther)
+    const blessed = blessable && info.maintainerBlessed;
     const approvalFor = (who: ApproverKinds) => {
-        const approved = !!(info.approvalFlags &
-                            (who === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
-                             : who === "owners" || blessed ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
-                             : (ApprovalFlags.Maintainer)));
-        const requiredApprovalBy = who === "others" ? "type definition owners, DT maintainers or others"
-                                   : who === "owners" || blessed ? "type definition owners or DT maintainers"
-                                   : "DT maintainers";
-        const blessable = !(info.newPackages.length > 0 || info.dangerLevel === "Infrastructure" || noOtherOwners(info))
-        return { approved, requiredApprovalBy, blessable };
+        const approverKind: ApproverKinds =
+            who === "maintainers" && blessed ? "owners"
+            : who === "owners" && noOther ? "maintainers"
+            : who;
+        const approved =
+            !!(info.approvalFlags &
+               (approverKind === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
+                : approverKind === "owners" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
+                : (ApprovalFlags.Maintainer)));
+        return { approved, approverKind, blessable };
     };
     if (info.dangerLevel !== "ScopedAndTested" || tooManyOwners(info)) return approvalFor("maintainers");
     if (info.popularityLevel === "Well-liked by everyone") return approvalFor("others");
@@ -309,11 +312,10 @@ function getApproval(info: PrInfo) {
 
 /** E.g. let people review, but fall back to the DT maintainers based on the access rights above */
 function projectBoardForReviewWithLeastAccess(info: PrInfo): ColumnName {
-    const { requiredApprovalBy, blessable } = getApproval(info);
-    return (requiredApprovalBy === "DT maintainers"
-            || noOtherOwners(info) && requiredApprovalBy === "type definition owners or DT maintainers")
-        ? (blessable ? "Needs Maintainer Review" : "Needs Maintainer Action")
-        : "Waiting for Code Reviews";
+    const { approverKind, blessable } = getApproval(info);
+    return approverKind !== "maintainers" ? "Waiting for Code Reviews"
+        : blessable ? "Needs Maintainer Review"
+        : "Needs Maintainer Action";
 }
 
 const enum Staleness {
@@ -352,23 +354,32 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
             `***This is a live comment which I will keep updated.***`,
             ``);
 
+    const { approved, approverKind } = getApproval(info);
+    const requiredApprovers = approverKind === "others" ? "type definition owners, DT maintainers or others"
+        : approverKind === "owners" ? "type definition owners or DT maintainers"
+        : "DT maintainers";
+    const aRequiredApprover = approverKind === "others" ? "someone"
+        : approverKind === "owners" ? "an owner or a DT maintainer"
+        : "a DT maintainer";
+    const ARequiredApprover = aRequiredApprover[0].toUpperCase() + aRequiredApprover.substring(1);
+
     // Lets the author know who needs to review this
     let reviewerAdvisory: string | undefined;
     // Some kind of extra warning
     if (info.newPackages.length > 0) {
-        reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.`;
+        reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by ${aRequiredApprover} before it can be merged.`;
     } else if (info.popularityLevel === "Critical" && !info.maintainerBlessed) {
-        reviewerAdvisory = "Because this is a widely-used package, a DT maintainer will need to review it before it can be merged.";
+        reviewerAdvisory = `Because this is a widely-used package, ${aRequiredApprover} will need to review it before it can be merged.`;
     } else if (info.dangerLevel === "ScopedAndTested") {
         reviewerAdvisory = "Because you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.";
     } else if (noOtherOwners(info) && !info.maintainerBlessed) {
-        reviewerAdvisory = "There aren't any other owners of this package, so a DT maintainer will review it.";
+        reviewerAdvisory = `There aren't any other owners of this package, so ${aRequiredApprover} will review it.`;
     } else if (info.dangerLevel === "MultiplePackagesEdited" && !info.maintainerBlessed) {
-        reviewerAdvisory = "Because this PR edits multiple packages, it can be merged once it's reviewed by a DT maintainer.";
+        reviewerAdvisory = `Because this PR edits multiple packages, it can be merged once it's reviewed by ${aRequiredApprover}.`;
     } else if (info.dangerLevel === "ScopedAndConfiguration" && !info.maintainerBlessed) {
-        reviewerAdvisory = "Because this PR edits the configuration file, it can be merged once it's reviewed by a DT maintainer.";
+        reviewerAdvisory = `Because this PR edits the configuration file, it can be merged once it's reviewed by ${aRequiredApprover}.`;
     } else if (!info.maintainerBlessed) {
-        reviewerAdvisory = "This PR can be merged once it's reviewed by a DT maintainer.";
+        reviewerAdvisory = `This PR can be merged once it's reviewed by ${aRequiredApprover}.`;
     } else {
         reviewerAdvisory = "This PR can be merged once it's reviewed.";
     }
@@ -376,15 +387,14 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     if (info.dangerLevel === "ScopedAndUntested") {
         display(`This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`);
     } else if (info.dangerLevel === "Infrastructure") {
-        display("This PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?");
+        display(`This PR touches some part of DefinitelyTyped infrastructure, so ${aRequiredApprover} will need to review it. This is rare — did you mean to do this?`);
     }
 
-    const approval = getApproval(info);
     const waitingOnThePRAuthorToMerge =
         !info.hasMergeConflict
         && info.ciResult === CIResult.Pass
         && (info.dangerLevel === "ScopedAndTested" || info.maintainerBlessed)
-        && approval.approved;
+        && approved;
 
     if (info.packages.length > 0) {
         const links = info.packages.map(p => {
@@ -411,27 +421,27 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     display(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
 
     if (info.newPackages.length > 0) {
-        display(` * ${emoji(approval.approved)} Only a DT maintainer can approve changes when there are new packages added`);
+        display(` * ${emoji(approved)} Only ${aRequiredApprover} can approve changes when there are new packages added`);
     } else if (info.dangerLevel === "Infrastructure") {
         const infraFiles = info.files.filter(f => f.kind === "infrastructure");
         const links = infraFiles.map(f => `[\`${f.path}\`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.path})`);
-        display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
+        display(` * ${emoji(approved)} ${ARequiredApprover} needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
     } else if (info.dangerLevel === "MultiplePackagesEdited") {
-        display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect more than one package`);
+        display(` * ${emoji(approved)} ${ARequiredApprover} needs to approve changes which affect more than one package`);
     } else if (info.dangerLevel === "ScopedAndTested" || info.maintainerBlessed) {
-        display(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
+        display(` * ${emoji(approved)} Most recent commit is approved by ${requiredApprovers}`);
     } else if (noOtherOwners(info)) {
-        display(` * ${emoji(approval.approved)} A DT maintainer can merge changes when there are no other reviewers`);
+        display(` * ${emoji(approved)} ${ARequiredApprover} can merge changes when there are no other reviewers`);
     } else if (info.maintainerBlessed) {
-        display(` * ${emoji(approval.approved)} Most recent commit is approved by ${approval.requiredApprovalBy}`);
+        display(` * ${emoji(approved)} Most recent commit is approved by ${requiredApprovers}`);
     } else if (info.dangerLevel === "ScopedAndConfiguration") {
-        display(` * ${emoji(approval.approved)} A DT maintainer needs to approve changes which affect module config files`);
+        display(` * ${emoji(approved)} ${ARequiredApprover} needs to approve changes which affect module config files`);
         for (const file of info.files) {
             if (!file.suspect) continue;
             display(`   - \`${file.path.replace(/^types\//, "")}\`: ${file.suspect}`);
         }
     } else {
-        display(` * ${emoji(approval.approved)} Only a DT maintainer can approve changes [without tests](${testsLink})`);
+        display(` * ${emoji(approved)} Only ${aRequiredApprover} can approve changes [without tests](${testsLink})`);
     }
 
     display(``);
