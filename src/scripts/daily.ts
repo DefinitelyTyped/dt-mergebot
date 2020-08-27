@@ -46,7 +46,7 @@ const start = async function () {
 
   const deleteObject = async (id: string, shoulda?: string) => {
     if (shoulda) {
-        return console.log(`  Should delete "${id}" (#${shoulda})`);
+        return console.log(`  Should delete "${id}" (${shoulda})`);
     }
     const mutation = createMutation(deleteProjectCard, { input: { cardId: id }});
     await mutate(mutation);
