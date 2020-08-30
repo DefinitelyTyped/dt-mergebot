@@ -221,11 +221,9 @@ export function process(info: PrInfo | BotEnsureRemovedFromProject | BotNoPackag
                 break;
         }
     }
-    else if (staleness === Staleness.Abandoned) {
-        throw new Error("Internal Error: unexpected Staleness.Abandoned");
-    }
     // Stale & doesn't need author attention => move to maintainer queue
-    else if (staleness === Staleness.YSYL) {
+    // ("Abandoned" can happen here for a PR that is not broken, but didn't get any supporting reviews for a long time)
+    else if (staleness === Staleness.YSYL || staleness === Staleness.Abandoned) {
         context.targetColumn = "Needs Maintainer Action";
     }
     // CI is running; default column is Waiting for Reviewers
