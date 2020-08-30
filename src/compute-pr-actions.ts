@@ -391,12 +391,6 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
         display(`This PR touches some part of DefinitelyTyped infrastructure, so ${aRequiredApprover} will need to review it. This is rare — did you mean to do this?`);
     }
 
-    const waitingOnThePRAuthorToMerge =
-        !info.hasMergeConflict
-        && info.ciResult === CIResult.Pass
-        && (info.dangerLevel === "ScopedAndTested" || info.maintainerBlessed)
-        && approved;
-
     if (info.packages.length > 0) {
         const links = info.packages.map(p => {
             const maybeNew = info.newPackages.includes(p) ? " (*new!*)" : "";
@@ -446,7 +440,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
     }
 
     display(``);
-    if (!waitingOnThePRAuthorToMerge) {
+    if (!canBeMergedNow(info)) {
         display(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`);
     } else {
         display(`All of the items on the list are green. **To merge, you need to post a comment including the string "Ready to merge"** to bring in your changes.`);
