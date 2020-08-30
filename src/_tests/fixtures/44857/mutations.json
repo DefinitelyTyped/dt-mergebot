@@ -1,0 +1,11 @@
+[
+  {
+    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYzMDQwNjQ0NA==",
+        "body": "@ExE-Boss Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n- `node` [on npm](https://www.npmjs.com/package/node), [on unpkg](https://unpkg.com/browse/node@latest)\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by DT maintainers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 31 days — it is considered abandoned!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  }
+]
