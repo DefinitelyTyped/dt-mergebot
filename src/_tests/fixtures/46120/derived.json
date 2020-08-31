@@ -1,0 +1,52 @@
+{
+  "type": "info",
+  "now": "2020-07-20T11:47:54.872Z",
+  "pr_number": 46120,
+  "author": "reubenrybnik",
+  "owners": [
+    "borisyankov",
+    "jbaldwin",
+    "ccurrens",
+    "confususs",
+    "jgonggrijp",
+    "ffflorian",
+    "regevbr",
+    "peterblazejewicz",
+    "reubenrybnik"
+  ],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "5ef8fe2",
+  "headCommitOid": "5ef8fe2907257beac41e27c3dc2399a087eddb67",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastPushDate": "2020-07-17T14:12:06.000Z",
+  "lastCommentDate": "2020-07-19T22:33:41.000Z",
+  "maintainerBlessed": false,
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46120/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": true,
+  "isFirstContribution": false,
+  "popularityLevel": "Popular",
+  "newPackages": [],
+  "packages": [
+    "underscore"
+  ],
+  "files": [
+    {
+      "path": "types/underscore/index.d.ts",
+      "kind": "definition",
+      "package": "underscore"
+    },
+    {
+      "path": "types/underscore/underscore-tests.ts",
+      "kind": "test",
+      "package": "underscore"
+    }
+  ],
+  "hasDismissedReview": false,
+  "ciResult": "pass",
+  "lastReviewDate": "2020-07-19T20:19:03.000Z",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 2,
+  "isChangesRequested": false
+}

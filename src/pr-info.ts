@@ -19,6 +19,7 @@ import { fetchFile as defaultFetchFile } from "./util/fetchFile";
 import { findLast, forEachReverse, daysSince, authorNotBot } from "./util/util";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
+import { PullRequestState } from "./schema/graphql-global-types";
 
 export enum ApprovalFlags {
     None = 0,
@@ -217,7 +218,7 @@ export async function deriveStateForPR(
     if (headCommit == null) return botError(prInfo.number, "No head commit found");
 
     if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft", true);
-    if (prInfo.state !== "OPEN") return botEnsureRemovedFromProject(prInfo.number, "PR is not active", false);
+    if (prInfo.state !== PullRequestState.OPEN) return botEnsureRemovedFromProject(prInfo.number, "PR is not active", false);
 
     const categorizedFiles = await Promise.all(
         noNulls(prInfo.files?.nodes)
@@ -259,7 +260,8 @@ export async function deriveStateForPR(
         headCommitOid: headCommit.oid,
         mergeIsRequested: !!prInfo.comments.nodes
             && usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
-                                    dangerLevel.startsWith("Scoped") ? [author, ...allOwners] : [author]),
+                                    dangerLevel.startsWith("Scoped") ? [author, ...allOwners] : [author],
+                                    [createdDate, lastPushDate, reopenedDate, reviewAnalysis.lastReviewDate]),
         stalenessInDays: Math.min(...activityDates.map(date => daysSince(date || lastPushDate, now))),
         lastPushDate, reopenedDate, lastCommentDate,
         maintainerBlessed: lastBlessing ? lastBlessing.getTime() > lastPushDate.getTime() : false,
@@ -435,11 +437,13 @@ function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) =
     return res;
 }
 
-function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes[], users: string[]) {
+function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes[], users: string[], sinceDates: (Date|undefined)[]) {
+    const sinceDate = Math.max(...sinceDates.map(date => date?.getTime() || 0));
     return comments.some(comment =>
         comment
         && users.includes(comment.author?.login || " ")
-        && comment.body.trim().toLowerCase().startsWith("ready to merge"));
+        && comment.body.trim().toLowerCase().startsWith("ready to merge")
+        && (new Date(comment.createdAt)).getTime() > sinceDate);
 }
 
 function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: string) => boolean) {
