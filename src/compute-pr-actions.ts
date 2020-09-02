@@ -397,7 +397,7 @@ function createWelcomeComment(info: PrInfo, staleness: Staleness) {
             const urlPart = p.replace(/^(.*?)__(.)/, "@$1/$2");
             return [`- \`${p}\`${maybeNew}`,
                     `[on npm](https://www.npmjs.com/package/${urlPart}),`,
-                    `[on unpkg](https://unpkg.com/browse/${urlPart}@latest)`
+                    `[on unpkg](https://unpkg.com/browse/${urlPart}@latest/)`
                    ].join(" ");
         }).join("\n");
         display(`## ${info.packages.length} package${info.packages.length > 1 ? "s" : ""} in this PR\n\n${links}`);
