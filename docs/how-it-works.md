@@ -1,5 +1,8 @@
 _Disclaimer: This could be out of date, the source of truth is always [compute-pr-actions.ts](https://github.com/DefinitelyTyped/dt-mergebot/blob/master/src/compute-pr-actions.ts)_
 
+<img src="./dt-mergebot-lifecycle.png" />
+<!-- https://www.figma.com/file/qE7BDiEucqI55Q9u0yZO3b/dt-pr-lifecycle?node-id=6%3A7 -->
+
 ### What PRs does the bot ignore
 
 - Draft PRs
