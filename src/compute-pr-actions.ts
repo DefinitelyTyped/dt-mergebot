@@ -1,7 +1,6 @@
 import * as Comments from "./comments";
 import { PrInfo, ApprovalFlags, BotError, BotEnsureRemovedFromProject, BotNoPackages } from "./pr-info";
 import { CIResult } from "./util/CIResult";
-import { daysSince } from "./util/util";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -23,7 +22,6 @@ type LabelName =
     | "Other Approved"
     | "Maintainer Approved"
     | "Merge:Auto"
-    | "Merge:LGTM" // UNUSED
     | "Merge:YSYL"
     | "Popular package"
     | "Critical package"
@@ -63,7 +61,6 @@ function createDefaultActions(pr_number: number): Actions {
             "Owner Approved": false,
             "Other Approved": false,
             "Maintainer Approved": false,
-            "Merge:LGTM": false,
             "Merge:YSYL": false,
             "Popular package": false,
             "Critical package": false,

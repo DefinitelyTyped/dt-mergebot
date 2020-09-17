@@ -11,7 +11,6 @@
     "Owner Approved": true,
     "Other Approved": false,
     "Maintainer Approved": false,
-    "Merge:LGTM": false,
     "Merge:YSYL": false,
     "Popular package": false,
     "Critical package": true,
