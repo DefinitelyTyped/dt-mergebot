@@ -2,9 +2,6 @@ import crypto = require("crypto");
 
 export type Comment = { tag: string, status: string };
 
-export const commentApprovalTokens: ReadonlyArray<string> = ["👍", ":+1:", "lgtm", "LGTM", ":shipit:"];
-export const commentDisapprovalTokens: ReadonlyArray<string> = ["👎", ":-1:"];
-
 export const HadError = (user: string | undefined, error: string) => ({
     tag: "had-error",
     status: `${user ? `@${user} — ` : ""}There was an error that prevented me from properly processing this PR:
