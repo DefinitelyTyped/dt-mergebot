@@ -388,7 +388,6 @@ const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
         suspect = tester(text);
     } else {
         const oldText = await getContents("master");
-        if (!oldText) return "created";
         suspect = tester(text, oldText);
     }
     return suspect;
@@ -399,21 +398,34 @@ configSuspicious["OTHER_FILES.txt"] = contents =>
     // all path parts are not empty and not all dots
     : !contents.split(/\n/).every(line => line === "" || isRelativePath(line)) ? "bad path"
     : undefined;
-configSuspicious["tslint.json"] = contents =>
-    // just the required form
-    JSON.stringify(JSON.parse(contents)) !== JSON.stringify({ "extends": "dtslint/dt.json" })
-    ? "not the required form"
-    : undefined;
+configSuspicious["tslint.json"] = (contents, oldText) => {
+    // either the required form or deletions that get closer to it
+    const requiredForm = { extends: "dtslint/dt.json" };
+    try {
+        const newDiff = jsonDiff.compare(requiredForm, JSON.parse(contents));
+        if (newDiff.length === 0) return undefined;
+        if (!oldText) return "not the required form";
+        const oldDiff = jsonDiff.compare(requiredForm, JSON.parse(oldText));
+        if (!jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) {
+            return "not the required form and not moving towards it";
+        }
+    } catch (e) {
+        return "couldn't parse+diff json";
+    }
+    return undefined;
+};
 configSuspicious["tsconfig.json"] = (contents, oldText) => {
     // changes only the files array, and all relative paths
     // or any changes to paths
     try {
-        return !jsonDiff.compare(JSON.parse(oldText || ""), JSON.parse(contents)).every(op =>
-            (op.path.startsWith("/files/") && (!("value" in op) || isRelativePath(op.value)))
-            || op.path === "/compilerOptions/paths"
-            || op.path.startsWith("/compilerOptions/paths/"))
-            ? "changes outside of \"files\" or \"paths\" lists"
-            : undefined;
+        return oldText
+            ? !jsonDiff.compare(JSON.parse(oldText), JSON.parse(contents)).every(op =>
+                (op.path.startsWith("/files/") && (!("value" in op) || isRelativePath(op.value))
+                 || op.path === "/compilerOptions/paths"
+                 || op.path.startsWith("/compilerOptions/paths/")))
+                ? "changes outside of \"files\" or \"paths\" lists"
+                : undefined
+            : "created";
     } catch (e) {
         return "couldn't parse+diff json";
     }
