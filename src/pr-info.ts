@@ -406,10 +406,13 @@ configSuspicious["tslint.json"] = contents =>
     : undefined;
 configSuspicious["tsconfig.json"] = (contents, oldText) => {
     // changes only the files array, and all relative paths
+    // or any changes to paths
     try {
         return !jsonDiff.compare(JSON.parse(oldText || ""), JSON.parse(contents)).every(op =>
-            op.path.startsWith("/files/") && (!("value" in op) || isRelativePath(op.value)))
-            ? "changes outside of \"files\" list"
+            (op.path.startsWith("/files/") && (!("value" in op) || isRelativePath(op.value)))
+            || op.path === "/compilerOptions/paths"
+            || op.path.startsWith("/compilerOptions/paths/"))
+            ? "changes outside of \"files\" or \"paths\" lists"
             : undefined;
     } catch (e) {
         return "couldn't parse+diff json";

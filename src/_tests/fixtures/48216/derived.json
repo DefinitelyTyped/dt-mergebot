@@ -1,0 +1,45 @@
+{
+  "type": "info",
+  "now": "2020-09-27T19:02:30.338Z",
+  "pr_number": 48216,
+  "author": "jablko",
+  "owners": [
+    "innovation-team",
+    "rlbaxter"
+  ],
+  "dangerLevel": "ScopedAndTested",
+  "headCommitAbbrOid": "3f689bf",
+  "headCommitOid": "3f689bfb9d310612cdaf7c52c7ead41d1181b52f",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastPushDate": "2020-09-27T17:23:58.000Z",
+  "reopenedDate": "2020-09-27T19:01:23.000Z",
+  "lastCommentDate": "2020-09-27T17:23:58.000Z",
+  "maintainerBlessed": false,
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/48216/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "newPackages": [],
+  "packages": [
+    "apptimize__apptimize-web-sdk"
+  ],
+  "files": [
+    {
+      "path": "types/apptimize__apptimize-web-sdk/apptimize__apptimize-web-sdk-tests.ts",
+      "kind": "test",
+      "package": "apptimize__apptimize-web-sdk"
+    },
+    {
+      "path": "types/apptimize__apptimize-web-sdk/tsconfig.json",
+      "kind": "package-meta-ok",
+      "package": "apptimize__apptimize-web-sdk"
+    }
+  ],
+  "hasDismissedReview": false,
+  "ciResult": "pass",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 0,
+  "isChangesRequested": false
+}
