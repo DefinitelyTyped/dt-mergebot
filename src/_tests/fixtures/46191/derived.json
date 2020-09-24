@@ -37,9 +37,8 @@
     },
     {
       "path": "types/apollo-upload-client/tsconfig.json",
-      "kind": "package-meta",
-      "package": "apollo-upload-client",
-      "suspect": "changes outside of \"files\" list"
+      "kind": "package-meta-ok",
+      "package": "apollo-upload-client"
     }
   ],
   "hasDismissedReview": false,
