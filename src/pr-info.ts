@@ -214,11 +214,11 @@ export async function deriveStateForPR(
     if (!prInfo) return botFail(`No PR with this number exists, (${JSON.stringify(info)})`);
     if (prInfo.author == null) return botError(prInfo.number, "PR author does not exist");
 
-    const headCommit = getHeadCommit(prInfo);
-    if (headCommit == null) return botError(prInfo.number, "No head commit found");
-
     if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft", true);
     if (prInfo.state !== PullRequestState.OPEN) return botEnsureRemovedFromProject(prInfo.number, "PR is not active", false);
+    
+    const headCommit = getHeadCommit(prInfo);
+    if (headCommit == null) return botError(prInfo.number, "No head commit found");
 
     const categorizedFiles = await Promise.all(
         noNulls(prInfo.files?.nodes)
