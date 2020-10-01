@@ -415,19 +415,40 @@ configSuspicious["tslint.json"] = (contents, oldText) => {
     return undefined;
 };
 configSuspicious["tsconfig.json"] = (contents, oldText) => {
-    // changes only the files array, and all relative paths
-    // or any changes to paths
+    // either the required form or deletions that get closer to it
+    const requiredForm = {
+        compilerOptions: {
+            module: "commonjs",
+            lib: ["es6"],
+            noImplicitAny: true,
+            noImplicitThis: true,
+            strictFunctionTypes: true,
+            strictNullChecks: true,
+            types: [],
+            noEmit: true,
+            forceConsistentCasingInFileNames: true
+        }
+    };
+    function diffFromReq(text: string) {
+        const json = JSON.parse(text);
+        delete json.compilerOptions.paths;
+        delete json.compilerOptions.baseUrl;
+        delete json.compilerOptions.typeRoots;
+        delete json.files;
+        return jsonDiff.compare(requiredForm, json);
+    }
     try {
-        return !oldText ? "created"
-            : !jsonDiff.compare(JSON.parse(oldText), JSON.parse(contents)).every(op =>
-                (op.path.startsWith("/files/") && (!("value" in op) || isRelativePath(op.value)))
-                || op.path === "/compilerOptions/paths"
-                || op.path.startsWith("/compilerOptions/paths/"))
-                ? "changes outside of \"files\" or \"paths\" lists"
-            : undefined;
+        const newDiff = diffFromReq(contents);
+        if (newDiff.length === 0) return undefined;
+        if (!oldText) return "created";
+        const oldDiff = diffFromReq(oldText);
+        if (!jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) {
+            return "not the required form and not moving towards it";
+        }
     } catch (e) {
         return "couldn't parse+diff json";
     }
+    return undefined;
 };
 function isRelativePath(path: string) {
     return path.split(/\//).every(part => part.length > 0 && !part.match(/^\.+$|[\\\n\r]/));
