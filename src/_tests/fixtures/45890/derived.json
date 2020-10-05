@@ -52,5 +52,6 @@
   "lastReviewDate": "2020-07-05T08:20:29.000Z",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 1,
-  "isChangesRequested": false
+  "isChangesRequested": false,
+  "firstApprovalDate": "2020-07-05T08:20:29.000Z"
 }

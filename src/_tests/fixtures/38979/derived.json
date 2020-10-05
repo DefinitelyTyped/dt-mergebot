@@ -404,5 +404,6 @@
     }
   ],
   "approvalFlags": 1,
-  "isChangesRequested": false
+  "isChangesRequested": false,
+  "firstApprovalDate": "2020-05-12T04:51:52.000Z"
 }
