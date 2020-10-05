@@ -261,7 +261,7 @@ export async function deriveStateForPR(
         mergeIsRequested: !!prInfo.comments.nodes
             && usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
                                     dangerLevel.startsWith("Scoped") ? [author, ...allOwners] : [author],
-                                    [createdDate, lastPushDate, reopenedDate, reviewAnalysis.lastReviewDate]),
+                                    [createdDate, lastPushDate, reopenedDate, reviewAnalysis.firstApprovalDate]),
         stalenessInDays: Math.min(...activityDates.map(date => daysSince(date || lastPushDate, now))),
         lastPushDate, reopenedDate, lastCommentDate,
         maintainerBlessed: lastBlessing ? lastBlessing.getTime() > lastPushDate.getTime() : false,
@@ -489,6 +489,7 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     let lastReviewDate;
     let isChangesRequested = false;
     let approvalFlags = ApprovalFlags.None;
+    let firstApprovalDate;
 
     // Do this in reverse order so we can detect up-to-date-reviews correctly
     const reviews = [...prInfo.reviews?.nodes ?? []].reverse();
@@ -513,6 +514,7 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
             if (r.state === PullRequestReviewState.CHANGES_REQUESTED) {
                 isChangesRequested = true;
             } else if (r.state === PullRequestReviewState.APPROVED) {
+                firstApprovalDate = reviewDate;
                 if ((r.authorAssociation === CommentAuthorAssociation.MEMBER) || (r.authorAssociation === CommentAuthorAssociation.OWNER)) {
                     approvalFlags |= ApprovalFlags.Maintainer;
                 } else if (isOwner(r.author.login)) {
@@ -532,7 +534,8 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
             date: info.date
         })),
         approvalFlags,
-        isChangesRequested
+        isChangesRequested,
+        firstApprovalDate
     });
 }
 
