@@ -398,6 +398,29 @@ configSuspicious["OTHER_FILES.txt"] = contents =>
     // all path parts are not empty and not all dots
     : !contents.split(/\n/).every(line => line === "" || isRelativePath(line)) ? "bad path"
     : undefined;
+configSuspicious["package.json"] = (contents, oldText) => {
+    // either the required form or deletions that get closer to it
+    const requiredForm = { private: true };
+    function diffFromReq(text: string) {
+        const json = JSON.parse(text);
+        for (const k of ["dependencies", "types", "typesVersions"]) {
+            delete json[k];
+        }
+        return jsonDiff.compare(requiredForm, json);
+    }
+    try {
+        const newDiff = diffFromReq(contents);
+        if (newDiff.length === 0) return undefined;
+        if (!oldText) return "not the required form";
+        const oldDiff = diffFromReq(oldText);
+        if (!jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) {
+            return "not the required form and not moving towards it";
+        }
+    } catch (e) {
+        return "couldn't parse+diff json";
+    }
+    return undefined;
+};
 configSuspicious["tslint.json"] = (contents, oldText) => {
     // either the required form or deletions that get closer to it
     const requiredForm = { extends: "dtslint/dt.json" };
