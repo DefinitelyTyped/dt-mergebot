@@ -6,7 +6,7 @@
   "owners": [
     "Slessi"
   ],
-  "dangerLevel": "ScopedAndConfiguration",
+  "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "3cc81db",
   "headCommitOid": "3cc81dbde57a1b0eda6f69f539fa49b8d420adff",
   "mergeIsRequested": false,
@@ -31,9 +31,8 @@
     },
     {
       "path": "types/apollo-upload-client/package.json",
-      "kind": "package-meta",
-      "package": "apollo-upload-client",
-      "suspect": "edited"
+      "kind": "package-meta-ok",
+      "package": "apollo-upload-client"
     },
     {
       "path": "types/apollo-upload-client/tsconfig.json",

@@ -38,7 +38,7 @@
       "path": "types/hcaptcha__vue-hcaptcha/package.json",
       "kind": "package-meta",
       "package": "hcaptcha__vue-hcaptcha",
-      "suspect": "edited"
+      "suspect": "couldn't fetch contents"
     },
     {
       "path": "types/hcaptcha__vue-hcaptcha/tsconfig.json",
