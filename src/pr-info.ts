@@ -395,8 +395,6 @@ const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
 configSuspicious["OTHER_FILES.txt"] = contents =>
     // not empty
     (contents.length === 0) ? "empty"
-    // all path parts are not empty and not all dots
-    : !contents.split(/\n/).every(line => line === "" || isRelativePath(line)) ? "bad path"
     : undefined;
 configSuspicious["package.json"] = makeJsonCheckerFromCore(
     { private: true },
@@ -422,10 +420,6 @@ configSuspicious["tsconfig.json"] = makeJsonCheckerFromCore(
     },
     [ "files", "compilerOptions.paths", "compilerOptions.baseUrl", "compilerOptions.typeRoots" ]
 );
-
-function isRelativePath(path: string) {
-    return path.split(/\//).every(part => part.length > 0 && !part.match(/^\.+$|[\\\n\r]/));
-}
 
 // helper for json file testers: allow either a given "requiredForm", or any edits that get closer
 // to it, ignoring some keys (sub-values can be specified using dots).  The ignored properties are
