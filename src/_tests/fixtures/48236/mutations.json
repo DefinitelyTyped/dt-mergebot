@@ -5,7 +5,7 @@
       "input": {
         "labelIds": [
           "MDU6TGFiZWwxNjA4NTUyNDEw",
-          "MDU6TGFiZWw2OTcwMTg5NzI="
+          "MDU6TGFiZWwyMTU0ODE2NTQ5"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDkzNjEyMTI3"
       }
@@ -16,7 +16,7 @@
     "variables": {
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkNDYyMzUxMDY=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI1"
       }
     }
   },
@@ -25,15 +25,18 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDY5OTY3NDc5MQ==",
-        "body": "@jablko Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n- `woocommerce__woocommerce-rest-api` [on npm](https://www.npmjs.com/package/@woocommerce/woocommerce-rest-api), [on unpkg](https://unpkg.com/browse/@woocommerce/woocommerce-rest-api@latest/)\n\n## Code Reviews\n\nBecause this PR edits the configuration file, it can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect module config files\n   - `woocommerce__woocommerce-rest-api/tsconfig.json`: changes outside of \"files\" list\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@jablko Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n- `woocommerce__woocommerce-rest-api` [on npm](https://www.npmjs.com/package/@woocommerce/woocommerce-rest-api), [on unpkg](https://unpkg.com/browse/@woocommerce/woocommerce-rest-api@latest/)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners, DT maintainers or others\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },
   {
-    "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "query": "mutation($input: MergePullRequestInput!) { mergePullRequest(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
-        "id": "MDEyOklzc3VlQ29tbWVudDcwMTA1ODc1Nw=="
+        "commitHeadline": "🤖 Merge PR #48236 [woocommerce__woocommerce-rest-api] Unmangle scoped package names by @jablko",
+        "expectedHeadOid": "b4d71f672f0f204a514002348ebc2025d18866ca",
+        "mergeMethod": "SQUASH",
+        "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NDkzNjEyMTI3"
       }
     }
   }

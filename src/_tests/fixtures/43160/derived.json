@@ -37,8 +37,8 @@
   "ciResult": "fail",
   "ciUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
   "lastReviewDate": "2020-03-17T14:33:47.000Z",
+  "firstApprovalDate": "2020-03-17T14:33:47.000Z",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 2,
-  "isChangesRequested": false,
-  "firstApprovalDate": "2020-03-17T14:33:47.000Z"
+  "isChangesRequested": false
 }
