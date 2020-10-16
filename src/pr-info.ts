@@ -486,10 +486,9 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     const headCommitOid: string = prInfo.headRefOid;
     /** Key: commit id. Value: review info. */
     const staleReviewAuthorsByCommit = new Map<string, { reviewer: string, date: string }>();
-    let lastReviewDate;
+    let lastReviewDate, firstApprovalDate;
     let isChangesRequested = false;
     let approvalFlags = ApprovalFlags.None;
-    let firstApprovalDate;
 
     // Do this in reverse order so we can detect up-to-date-reviews correctly
     const reviews = [...prInfo.reviews?.nodes ?? []].reverse();
@@ -511,11 +510,12 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
             hasUpToDateReview.add(r.author.login);
             const reviewDate = new Date(r.submittedAt);
             lastReviewDate = lastReviewDate && lastReviewDate > reviewDate ? lastReviewDate : reviewDate;
+            firstApprovalDate = firstApprovalDate && firstApprovalDate < reviewDate ? firstApprovalDate : reviewDate;
             if (r.state === PullRequestReviewState.CHANGES_REQUESTED) {
                 isChangesRequested = true;
             } else if (r.state === PullRequestReviewState.APPROVED) {
-                firstApprovalDate = reviewDate;
-                if ((r.authorAssociation === CommentAuthorAssociation.MEMBER) || (r.authorAssociation === CommentAuthorAssociation.OWNER)) {
+                if ((r.authorAssociation === CommentAuthorAssociation.MEMBER)
+                    || (r.authorAssociation === CommentAuthorAssociation.OWNER)) {
                     approvalFlags |= ApprovalFlags.Maintainer;
                 } else if (isOwner(r.author.login)) {
                     approvalFlags |= ApprovalFlags.Owner;
@@ -528,14 +528,14 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
 
     return ({
         lastReviewDate,
+        firstApprovalDate,
         reviewersWithStaleReviews: Array.from(staleReviewAuthorsByCommit.entries()).map(([commit, info]) => ({
             reviewedAbbrOid: commit,
             reviewer: info.reviewer,
             date: info.date
         })),
         approvalFlags,
-        isChangesRequested,
-        firstApprovalDate
+        isChangesRequested
     });
 }
 

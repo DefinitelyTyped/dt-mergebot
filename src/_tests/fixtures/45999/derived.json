@@ -60,8 +60,8 @@
   "hasDismissedReview": false,
   "ciResult": "pass",
   "lastReviewDate": "2020-07-10T14:49:32.000Z",
+  "firstApprovalDate": "2020-07-10T13:34:29.000Z",
   "reviewersWithStaleReviews": [],
   "approvalFlags": 2,
-  "isChangesRequested": false,
-  "firstApprovalDate": "2020-07-10T13:34:29.000Z"
+  "isChangesRequested": false
 }

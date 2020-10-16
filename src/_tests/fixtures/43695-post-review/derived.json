@@ -50,6 +50,7 @@
   "hasDismissedReview": false,
   "ciResult": "pass",
   "lastReviewDate": "2020-04-30T23:07:49.000Z",
+  "firstApprovalDate": "2020-04-30T23:07:49.000Z",
   "reviewersWithStaleReviews": [
     {
       "reviewedAbbrOid": "a5285cd",

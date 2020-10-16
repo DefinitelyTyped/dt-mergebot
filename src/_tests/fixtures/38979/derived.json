@@ -391,6 +391,7 @@
   "hasDismissedReview": true,
   "ciResult": "pass",
   "lastReviewDate": "2020-05-12T04:51:52.000Z",
+  "firstApprovalDate": "2020-05-12T04:51:52.000Z",
   "reviewersWithStaleReviews": [
     {
       "reviewedAbbrOid": "3aba5ac",
@@ -404,6 +405,5 @@
     }
   ],
   "approvalFlags": 1,
-  "isChangesRequested": false,
-  "firstApprovalDate": "2020-05-12T04:51:52.000Z"
+  "isChangesRequested": false
 }
