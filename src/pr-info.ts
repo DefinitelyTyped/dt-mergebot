@@ -398,48 +398,16 @@ configSuspicious["OTHER_FILES.txt"] = contents =>
     // all path parts are not empty and not all dots
     : !contents.split(/\n/).every(line => line === "" || isRelativePath(line)) ? "bad path"
     : undefined;
-configSuspicious["package.json"] = (contents, oldText) => {
-    // either the required form or deletions that get closer to it
-    const requiredForm = { private: true };
-    function diffFromReq(text: string) {
-        const json = JSON.parse(text);
-        for (const k of ["dependencies", "types", "typesVersions"]) {
-            delete json[k];
-        }
-        return jsonDiff.compare(requiredForm, json);
-    }
-    try {
-        const newDiff = diffFromReq(contents);
-        if (newDiff.length === 0) return undefined;
-        if (!oldText) return "not the required form";
-        const oldDiff = diffFromReq(oldText);
-        if (!jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) {
-            return "not the required form and not moving towards it";
-        }
-    } catch (e) {
-        return "couldn't parse+diff json";
-    }
-    return undefined;
-};
-configSuspicious["tslint.json"] = (contents, oldText) => {
-    // either the required form or deletions that get closer to it
-    const requiredForm = { extends: "dtslint/dt.json" };
-    try {
-        const newDiff = jsonDiff.compare(requiredForm, JSON.parse(contents));
-        if (newDiff.length === 0) return undefined;
-        if (!oldText) return "not the required form";
-        const oldDiff = jsonDiff.compare(requiredForm, JSON.parse(oldText));
-        if (!jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) {
-            return "not the required form and not moving towards it";
-        }
-    } catch (e) {
-        return "couldn't parse+diff json";
-    }
-    return undefined;
-};
-configSuspicious["tsconfig.json"] = (contents, oldText) => {
-    // either the required form or deletions that get closer to it
-    const requiredForm = {
+configSuspicious["package.json"] = makeJsonCheckerFromCore(
+    { private: true },
+    [ "dependencies", "types", "typesVersions" ]
+);
+configSuspicious["tslint.json"] = makeJsonCheckerFromCore(
+    { extends: "dtslint/dt.json" },
+    []
+);
+configSuspicious["tsconfig.json"] = makeJsonCheckerFromCore(
+    {
         compilerOptions: {
             module: "commonjs",
             lib: ["es6"],
@@ -451,30 +419,37 @@ configSuspicious["tsconfig.json"] = (contents, oldText) => {
             noEmit: true,
             forceConsistentCasingInFileNames: true
         }
-    };
-    function diffFromReq(text: string) {
-        const json = JSON.parse(text);
-        delete json.compilerOptions.paths;
-        delete json.compilerOptions.baseUrl;
-        delete json.compilerOptions.typeRoots;
-        delete json.files;
-        return jsonDiff.compare(requiredForm, json);
-    }
-    try {
-        const newDiff = diffFromReq(contents);
-        if (newDiff.length === 0) return undefined;
-        if (!oldText) return "created";
-        const oldDiff = diffFromReq(oldText);
-        if (!jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) {
-            return "not the required form and not moving towards it";
-        }
-    } catch (e) {
-        return "couldn't parse+diff json";
-    }
-    return undefined;
-};
+    },
+    [ "files", "compilerOptions.paths", "compilerOptions.baseUrl", "compilerOptions.typeRoots" ]
+);
+
 function isRelativePath(path: string) {
     return path.split(/\//).every(part => part.length > 0 && !part.match(/^\.+$|[\\\n\r]/));
+}
+
+// helper for json file testers: allow either a given "requiredForm", or any edits that get closer
+// to it, ignoring some keys (sub-values can be specified using dots).  The ignored properties are
+// in most cases checked elsewhere (dtslint), and in some cases they are irrelevant.
+function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[]) {
+    const diffFromReq = (text: string) => {
+        let json: any;
+        try { json = JSON.parse(text); } catch (e) { return "couldn't parse json"; }
+        // allow dotted keys in ignoredKeys
+        ignoredKeys.map(k => k.split(".")).forEach(keys =>
+            delete keys.slice(0, -1).reduce((a,b) => a?.[b], json)
+                   ?.[keys[keys.length - 1]]);
+        try { return jsonDiff.compare(requiredForm, json); } catch (e) { return "couldn't diff json" };
+    };
+    return (contents: string, oldText?: string) => {
+        const newDiff = diffFromReq(contents);
+        if (typeof newDiff === "string") return newDiff;
+        if (newDiff.length === 0) return undefined;
+        if (!oldText) return "not the required form";
+        const oldDiff = diffFromReq(oldText);
+        if (typeof oldDiff === "string") return oldDiff;
+        if (jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) return undefined;
+        return "not the required form and not moving towards it";
+    };
 }
 
 export function getPackagesTouched(files: readonly FileInfo[]) {
