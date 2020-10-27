@@ -3,9 +3,6 @@
   "now": "2020-07-20T22:17:53.067Z",
   "pr_number": 46191,
   "author": "jordanoverbye",
-  "owners": [
-    "Slessi"
-  ],
   "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "3cc81db",
   "headCommitOid": "3cc81dbde57a1b0eda6f69f539fa49b8d420adff",
@@ -19,25 +16,31 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "apollo-upload-client"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/apollo-upload-client/index.d.ts",
-      "kind": "definition",
-      "package": "apollo-upload-client"
-    },
-    {
-      "path": "types/apollo-upload-client/package.json",
-      "kind": "package-meta-ok",
-      "package": "apollo-upload-client"
-    },
-    {
-      "path": "types/apollo-upload-client/tsconfig.json",
-      "kind": "package-meta-ok",
-      "package": "apollo-upload-client"
+      "name": "apollo-upload-client",
+      "files": [
+        {
+          "path": "types/apollo-upload-client/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/apollo-upload-client/package.json",
+          "kind": "package-meta-ok"
+        },
+        {
+          "path": "types/apollo-upload-client/tsconfig.json",
+          "kind": "package-meta-ok"
+        }
+      ],
+      "owners": [
+        "Slessi"
+      ],
+      "addedOwners": [
+        "jordanoverbye"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

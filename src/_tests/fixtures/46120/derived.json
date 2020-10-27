@@ -3,17 +3,6 @@
   "now": "2020-07-20T11:47:54.872Z",
   "pr_number": 46120,
   "author": "reubenrybnik",
-  "owners": [
-    "borisyankov",
-    "jbaldwin",
-    "ccurrens",
-    "confususs",
-    "jgonggrijp",
-    "ffflorian",
-    "regevbr",
-    "peterblazejewicz",
-    "reubenrybnik"
-  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "5ef8fe2",
   "headCommitOid": "5ef8fe2907257beac41e27c3dc2399a087eddb67",
@@ -27,20 +16,33 @@
   "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Popular",
-  "newPackages": [],
-  "packages": [
-    "underscore"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/underscore/index.d.ts",
-      "kind": "definition",
-      "package": "underscore"
-    },
-    {
-      "path": "types/underscore/underscore-tests.ts",
-      "kind": "test",
-      "package": "underscore"
+      "name": "underscore",
+      "files": [
+        {
+          "path": "types/underscore/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/underscore/underscore-tests.ts",
+          "kind": "test"
+        }
+      ],
+      "owners": [
+        "borisyankov",
+        "jbaldwin",
+        "ccurrens",
+        "confususs",
+        "jgonggrijp",
+        "ffflorian",
+        "regevbr",
+        "peterblazejewicz",
+        "reubenrybnik"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Popular"
     }
   ],
   "hasDismissedReview": false,

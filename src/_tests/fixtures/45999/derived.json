@@ -3,31 +3,6 @@
   "now": "2020-07-11T02:37:12.780Z",
   "pr_number": 45999,
   "author": "alexpyzhianov",
-  "owners": [
-    "johnnyreilly",
-    "bbenezech",
-    "pzavolinsky",
-    "digiguru",
-    "ericanderson",
-    "DovydasNavickas",
-    "theruther4d",
-    "guilhermehubner",
-    "ferdaber",
-    "jrakotoharisoa",
-    "pascaloliv",
-    "hotell",
-    "franklixuefei",
-    "Jessidhia",
-    "saranshkataria",
-    "lukyth",
-    "eps1lon",
-    "zieka",
-    "dancerphil",
-    "dimitropoulos",
-    "disjukr",
-    "vhfmag",
-    "hellatan"
-  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "381a2a9",
   "headCommitOid": "381a2a9d17d14e111f7d002c866debfcac6724e8",
@@ -41,20 +16,47 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Critical",
-  "newPackages": [],
-  "packages": [
-    "react"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/react/index.d.ts",
-      "kind": "definition",
-      "package": "react"
-    },
-    {
-      "path": "types/react/test/elementAttributes.tsx",
-      "kind": "test",
-      "package": "react"
+      "name": "react",
+      "files": [
+        {
+          "path": "types/react/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/react/test/elementAttributes.tsx",
+          "kind": "test"
+        }
+      ],
+      "owners": [
+        "johnnyreilly",
+        "bbenezech",
+        "pzavolinsky",
+        "digiguru",
+        "ericanderson",
+        "DovydasNavickas",
+        "theruther4d",
+        "guilhermehubner",
+        "ferdaber",
+        "jrakotoharisoa",
+        "pascaloliv",
+        "hotell",
+        "franklixuefei",
+        "Jessidhia",
+        "saranshkataria",
+        "lukyth",
+        "eps1lon",
+        "zieka",
+        "dancerphil",
+        "dimitropoulos",
+        "disjukr",
+        "vhfmag",
+        "hellatan"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
     }
   ],
   "hasDismissedReview": false,

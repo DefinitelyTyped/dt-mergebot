@@ -3,10 +3,6 @@
   "now": "2020-05-15T15:43:58.396Z",
   "pr_number": 44631,
   "author": "mAAdhaTTah",
-  "owners": [
-    "AyaMorisawa",
-    "HitoriSensei"
-  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "96d6582",
   "headCommitOid": "96d6582f60431d273c179dcf6816426b4f1e37ac",
@@ -20,20 +16,26 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "kefir"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/kefir/index.d.ts",
-      "kind": "definition",
-      "package": "kefir"
-    },
-    {
-      "path": "types/kefir/kefir-tests.ts",
-      "kind": "test",
-      "package": "kefir"
+      "name": "kefir",
+      "files": [
+        {
+          "path": "types/kefir/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/kefir/kefir-tests.ts",
+          "kind": "test"
+        }
+      ],
+      "owners": [
+        "AyaMorisawa",
+        "HitoriSensei"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

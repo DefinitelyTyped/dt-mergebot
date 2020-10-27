@@ -3,13 +3,6 @@
   "now": "2020-05-02T15:44:09.276Z",
   "pr_number": 44437,
   "author": "johnnyreilly",
-  "owners": [
-    "Berkays",
-    "unindented",
-    "kamontat",
-    "theweirdone",
-    "whoaa512"
-  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "eb92456",
   "headCommitOid": "eb92456861d4537c6e96dd7865e715aa4812aae0",
@@ -23,20 +16,31 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Popular",
-  "newPackages": [],
-  "packages": [
-    "prompts"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/prompts/index.d.ts",
-      "kind": "definition",
-      "package": "prompts"
-    },
-    {
-      "path": "types/prompts/prompts-tests.ts",
-      "kind": "test",
-      "package": "prompts"
+      "name": "prompts",
+      "files": [
+        {
+          "path": "types/prompts/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/prompts/prompts-tests.ts",
+          "kind": "test"
+        }
+      ],
+      "owners": [
+        "Berkays",
+        "unindented",
+        "kamontat",
+        "theweirdone",
+        "whoaa512"
+      ],
+      "addedOwners": [
+        "johnnyreilly"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Popular"
     }
   ],
   "hasDismissedReview": false,

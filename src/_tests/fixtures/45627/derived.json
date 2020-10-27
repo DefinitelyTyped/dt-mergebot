@@ -3,29 +3,6 @@
   "now": "2020-07-06T08:47:17.001Z",
   "pr_number": 45627,
   "author": "spamshaker",
-  "owners": [
-    "tkqubo",
-    "bumbleblym",
-    "bcherny",
-    "tommytroylin",
-    "mohsen1",
-    "jcreamer898",
-    "alan-agius4",
-    "dennispg",
-    "christophehurpeau",
-    "ZSkycat",
-    "johnnyreilly",
-    "rwaskiewicz",
-    "kuehlein",
-    "grgur",
-    "rubenspgcavalcante",
-    "andersk",
-    "ofhouse",
-    "danielthank",
-    "sasurau4",
-    "dionshihk",
-    "peterblazejewicz"
-  ],
   "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "15facc1",
   "headCommitOid": "15facc177c957646a1ace95abe5e71326007c721",
@@ -39,15 +16,43 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Critical",
-  "newPackages": [],
-  "packages": [
-    "webpack"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/webpack/index.d.ts",
-      "kind": "definition",
-      "package": "webpack"
+      "name": "webpack",
+      "files": [
+        {
+          "path": "types/webpack/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "tkqubo",
+        "bumbleblym",
+        "bcherny",
+        "tommytroylin",
+        "mohsen1",
+        "jcreamer898",
+        "alan-agius4",
+        "dennispg",
+        "christophehurpeau",
+        "ZSkycat",
+        "johnnyreilly",
+        "rwaskiewicz",
+        "kuehlein",
+        "grgur",
+        "rubenspgcavalcante",
+        "andersk",
+        "ofhouse",
+        "danielthank",
+        "sasurau4",
+        "dionshihk",
+        "peterblazejewicz"
+      ],
+      "addedOwners": [
+        "spamshaker"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
     }
   ],
   "hasDismissedReview": false,

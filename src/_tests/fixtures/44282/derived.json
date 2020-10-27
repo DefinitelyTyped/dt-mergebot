@@ -3,7 +3,6 @@
   "now": "2020-04-28T04:46:24.000Z",
   "pr_number": 44282,
   "author": "fishcharlie",
-  "owners": [],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "2579430",
   "headCommitOid": "25794304acf8c1fd70712bd068beb07b0e09755e",
@@ -17,20 +16,25 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "benchmark"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/benchmark/benchmark-tests.ts",
-      "kind": "test",
-      "package": "benchmark"
-    },
-    {
-      "path": "types/benchmark/index.d.ts",
-      "kind": "definition",
-      "package": "benchmark"
+      "name": "benchmark",
+      "files": [
+        {
+          "path": "types/benchmark/benchmark-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/benchmark/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [],
+      "addedOwners": [
+        "fishcharlie"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

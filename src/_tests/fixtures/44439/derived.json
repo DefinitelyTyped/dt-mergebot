@@ -3,9 +3,6 @@
   "now": "2020-05-02T14:37:15.529Z",
   "pr_number": 44439,
   "author": "ivandevp",
-  "owners": [
-    "lith-light-g"
-  ],
   "dangerLevel": "Infrastructure",
   "headCommitAbbrOid": "f8b1612",
   "headCommitOid": "f8b161266a38186c3d7ab715ea63f68d5ef542ed",
@@ -19,24 +16,40 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "detect-port"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/detect-port-1.1.4.tgz",
-      "kind": "infrastructure"
+      "name": null,
+      "files": [
+        {
+          "path": "types/detect-port-1.1.4.tgz",
+          "kind": "infrastructure"
+        }
+      ],
+      "owners": null,
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
     },
     {
-      "path": "types/detect-port/detect-port-tests.ts",
-      "kind": "test",
-      "package": "detect-port"
-    },
-    {
-      "path": "types/detect-port/index.d.ts",
-      "kind": "definition",
-      "package": "detect-port"
+      "name": "detect-port",
+      "files": [
+        {
+          "path": "types/detect-port/detect-port-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/detect-port/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "lith-light-g"
+      ],
+      "addedOwners": [
+        "ivandevp"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

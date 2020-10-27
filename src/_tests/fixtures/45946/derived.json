@@ -3,9 +3,6 @@
   "now": "2020-07-11T01:46:16.667Z",
   "pr_number": 45946,
   "author": "rubensworks",
-  "owners": [
-    "rubensworks"
-  ],
   "dangerLevel": "Infrastructure",
   "headCommitAbbrOid": "a5eb1f1",
   "headCommitOid": "a5eb1f19e7a31387e7d7c79b3acc483b0e60b32e",
@@ -19,36 +16,50 @@
   "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "asynciterator"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "notNeededPackages.json",
-      "kind": "infrastructure"
+      "name": null,
+      "files": [
+        {
+          "path": "notNeededPackages.json",
+          "kind": "infrastructure"
+        }
+      ],
+      "owners": null,
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
     },
     {
-      "path": "types/asynciterator/asynciterator-tests.ts",
-      "kind": "test",
-      "package": "asynciterator"
-    },
-    {
-      "path": "types/asynciterator/index.d.ts",
-      "kind": "definition",
-      "package": "asynciterator"
-    },
-    {
-      "path": "types/asynciterator/tsconfig.json",
-      "kind": "package-meta",
-      "package": "asynciterator",
-      "suspect": "couldn't fetch contents"
-    },
-    {
-      "path": "types/asynciterator/tslint.json",
-      "kind": "package-meta",
-      "package": "asynciterator",
-      "suspect": "couldn't fetch contents"
+      "name": "asynciterator",
+      "files": [
+        {
+          "path": "types/asynciterator/asynciterator-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/asynciterator/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/asynciterator/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        },
+        {
+          "path": "types/asynciterator/tslint.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        }
+      ],
+      "owners": [
+        "rubensworks"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [
+        "rubensworks"
+      ],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

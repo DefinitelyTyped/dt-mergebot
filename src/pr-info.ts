@@ -16,7 +16,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { findLast, forEachReverse, daysSince, authorNotBot } from "./util/util";
+import { noNulls, notUndefined, findLast, forEachReverse, daysSince, authorNotBot } from "./util/util";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
 import { PullRequestState } from "./schema/graphql-global-types";
@@ -69,6 +69,23 @@ export interface BotNoPackages {
     readonly pr_number: number;
 }
 
+type PackageInfo = {
+    name: string | null; // null => not in a package (= infra files)
+    files: FileInfo[];
+    owners: string[] | null; // null => not a package or new package
+    addedOwners: string[],
+    deletedOwners: string[],
+    popularityLevel: PopularityLevel;
+};
+
+type FileKind = "test" | "definition" | "markdown" | "package-meta" | "package-meta-ok"| "infrastructure";
+
+type FileInfo = {
+    path: string,
+    kind: FileKind,
+    suspect?: string // reason for a file being "package-meta" rather than "package-meta-ok"
+};
+
 export interface PrInfo {
     readonly type: "info";
 
@@ -96,11 +113,6 @@ export interface PrInfo {
      * The GitHub login of the PR author
      */
     readonly author: string;
-
-    /**
-     * The current list of owners of packages affected by this PR
-     */
-    readonly owners: readonly string[];
 
     /**
      * True if the author or an owner wants us to merge the PR
@@ -166,8 +178,6 @@ export interface PrInfo {
      */
     readonly stalenessInDays: number;
 
-    readonly newPackages: string[];
-
     /**
      * True if a maintainer blessed this PR
      */
@@ -182,8 +192,7 @@ export interface PrInfo {
 
     readonly popularityLevel: PopularityLevel;
 
-    readonly packages: readonly string[];
-    readonly files: readonly FileInfo[];
+    readonly pkgInfo: readonly PackageInfo[];
 }
 
 function getHeadCommit(pr: GraphqlPullRequest) {
@@ -206,7 +215,7 @@ export async function queryPRInfo(prNumber: number) {
 export async function deriveStateForPR(
     info: ApolloQueryResult<PRQueryResult>,
     fetchFile = defaultFetchFile,
-    getDownloads?: (packages: readonly string[]) => Record<string, number> | Promise<Record<string, number>>,
+    getDownloads = getMonthlyDownloadCount,
     getNow = () => new Date(),
 ): Promise<PrInfo | BotFail | BotError | BotEnsureRemovedFromProject | BotNoPackages>  {
     const prInfo = info.data.repository?.pullRequest;
@@ -216,19 +225,18 @@ export async function deriveStateForPR(
 
     if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft", true);
     if (prInfo.state !== PullRequestState.OPEN) return botEnsureRemovedFromProject(prInfo.number, "PR is not active", false);
-    
+
     const headCommit = getHeadCommit(prInfo);
     if (headCommit == null) return botError(prInfo.number, "No head commit found");
 
-    const categorizedFiles = await Promise.all(
-        noNulls(prInfo.files?.nodes)
-            .map(f => categorizeFile(f.path, async (oid: string = headCommit.oid) => fetchFile(`${oid}:${f.path}`))));
-    const packages = getPackagesTouched(categorizedFiles);
+    const pkgInfoEtc = await getPackageInfosEtc(
+        noNulls(prInfo.files?.nodes).map(f => f.path).sort(),
+        headCommit.oid, fetchFile, getDownloads);
+    if (pkgInfoEtc instanceof Error) return botError(prInfo.number, pkgInfoEtc.message);
+    const { pkgInfo, popularityLevel } = pkgInfoEtc;
+    if (!pkgInfo.some(p => p.name)) return botNoPackages(prInfo.number);
 
-    if (packages.length === 0) return botNoPackages(prInfo.number)
-
-    const { error, newPackages, allOwners } = await getOwnersOfPackages(packages, fetchFile);
-    if (error) return botError(prInfo.number, error);
+    const allOwners = pkgInfoAllOwners(pkgInfo);
 
     const author = prInfo.author.login;
     const authorIsOwner = isOwner(author);
@@ -247,14 +255,13 @@ export async function deriveStateForPR(
     const reviewAnalysis = analyzeReviews(prInfo, isOwner);
     const activityDates = [createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, reviewAnalysis.lastReviewDate];
 
-    const dangerLevel = getDangerLevel(categorizedFiles);
+    const dangerLevel = getDangerLevel(pkgInfo);
 
     return {
         type: "info",
         now,
         pr_number: prInfo.number,
         author,
-        owners: allOwners,
         dangerLevel,
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
@@ -269,12 +276,8 @@ export async function deriveStateForPR(
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         authorIsOwner,
         isFirstContribution,
-        popularityLevel: getDownloads
-            ? getPopularityLevelFromDownloads(await getDownloads(packages))
-            : await getPopularityLevel(packages),
-        newPackages,
-        packages,
-        files: categorizedFiles,
+        popularityLevel,
+        pkgInfo,
         hasDismissedReview,
         ...getCIResult(headCommit),
         ...reviewAnalysis
@@ -339,7 +342,7 @@ function getLastMaintainerBlessingDate(timelineItems: PR_repository_pullRequest_
         return item?.__typename === "MovedColumnsInProjectEvent" && authorNotBot(item!);
     });
     // ------------------------------ TODO ------------------------------
-    // Should add and used the `previousProjectColumnName` field to
+    // Should add and use the `previousProjectColumnName` field to
     // verify that the move was away from "Needs Maintainer Review", but
     // that is still in beta ATM.
     // ------------------------------ TODO ------------------------------
@@ -349,27 +352,55 @@ function getLastMaintainerBlessingDate(timelineItems: PR_repository_pullRequest_
     return undefined;
 }
 
-type FileKind = "test" | "definition" | "markdown" | "package-meta" | "package-meta-ok"| "infrastructure";
+async function getPackageInfosEtc(
+    paths: string[], headId: string, fetchFile: typeof defaultFetchFile, getDownloads: typeof getMonthlyDownloadCount
+): Promise<{pkgInfo: PackageInfo[], popularityLevel: PopularityLevel} | Error> {
+    const infos = new Map<string|null, FileInfo[]>();
+    for (const path of paths) {
+        const [pkg, fileInfo] = await categorizeFile(path, async (oid: string = headId) => fetchFile(`${oid}:${path}`));
+        if (!infos.has(pkg)) infos.set(pkg, []);
+        infos.get(pkg)!.push(fileInfo);
+    }
+    let result = [], maxDownloads = 0;
+    for (const [name, files] of infos) {
+        const owners = !name ? null : await getOwnersOfPackage(name, "master", fetchFile);
+        const newOwners = !name ? null
+            : !paths.includes(`types/${name}/index.d.ts`) ? owners
+            : await getOwnersOfPackage(name, headId, fetchFile);
+        if (owners instanceof Error) return owners;
+        if (newOwners instanceof Error) return newOwners;
+        const addedOwners = owners === null ? (newOwners || [])
+            : newOwners === null ? []
+            : newOwners.filter(o => !owners.includes(o));
+        const deletedOwners = newOwners === null ? (owners || [])
+            : owners === null ? []
+            : owners.filter(o => !newOwners.includes(o));
+        // null name => infra => ensure critical (even though it's unused atm)
+        const downloads = name ? await getDownloads(name) : Infinity;
+        if (name && downloads > maxDownloads) maxDownloads = downloads;
+        // keep the popularity level and not the downloads since that can change often
+        const popularityLevel = downloadsToPopularityLevel(downloads);
+        result.push({ name, files, owners, addedOwners, deletedOwners, popularityLevel });
+    }
+    return { pkgInfo: result, popularityLevel: downloadsToPopularityLevel(maxDownloads) };
+}
 
-type FileInfo = {
-    path: string,
-    kind: FileKind,
-    package: string | undefined,
-    suspect?: string // reason for a file being "package-meta" rather than "package-meta-ok"
-};
+export function pkgInfoAllOwners(pkgInfo: readonly PackageInfo[]): string[] {
+    return [...new Set(noNulls(pkgInfo.map(p => p.owners)).flat(1))];
+}
 
-async function categorizeFile(path: string, contents: (oid?: string) => Promise<string | undefined>): Promise<FileInfo> {
+async function categorizeFile(path: string, contents: (oid?: string) => Promise<string | undefined>): Promise<[string|null, FileInfo]> {
     // https://regex101.com/r/eFvtrz/1
     const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
-    if (!match) return { path, kind: "infrastructure", package: undefined };
+    if (!match) return [null, { path, kind: "infrastructure" }];
     const [pkg, suffix] = match.slice(1); // `suffix` can be null
     switch (suffix || "") {
-        case "d.ts": return { path, kind: "definition", package: pkg };
-        case "ts": case "tsx": return { path, kind: "test", package: pkg };
-        case "md": return { path, kind: "markdown", package: pkg };
+        case "d.ts": return [pkg, { path, kind: "definition" }];
+        case "ts": case "tsx": return [pkg, { path, kind: "test" }];
+        case "md": return [pkg, { path, kind: "markdown" }];
         default:
             const suspect = await configSuspicious(path, contents);
-            return { path, kind: suspect ? "package-meta" : "package-meta-ok", package: pkg, suspect };
+            return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", suspect }];
     }
 }
 
@@ -444,14 +475,6 @@ function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[]) {
         if (jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) return undefined;
         return "not the required form and not moving towards it";
     };
-}
-
-export function getPackagesTouched(files: readonly FileInfo[]) {
-    return [...new Set(noNulls(files.map(f => "package" in f ? f.package : null)))];
-}
-
-export function getPackagesWithNonTestFilesTouched(files: readonly FileInfo[]) {
-    return [...new Set(noNulls(files.map(f => "package" in f && f.kind !== "test" ? f.package : null)))];
 }
 
 function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) => U) {
@@ -531,20 +554,18 @@ function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: strin
     });
 }
 
-function getDangerLevel(categorizedFiles: readonly FileInfo[]): DangerLevel {
-    if (categorizedFiles.some(f => f.kind === "infrastructure")) {
-        return "Infrastructure";
+function getDangerLevel(pkgInfo: readonly PackageInfo[]): DangerLevel {
+    if (pkgInfo.find(p => p.name === null)) return "Infrastructure";
+    if (pkgInfo.length === 0) {
+        throw new Error("Internal Error: not infrastructure but no packages touched too");
     }
-    const packagesTouched = getPackagesTouched(categorizedFiles);
-    const nonTestPackagesTouched = getPackagesWithNonTestFilesTouched(categorizedFiles);
-
-    if (packagesTouched.length === 0) {
-        return "Infrastructure";
-    } else if (nonTestPackagesTouched.length > 1) {
+    const nonTestPackagesTouched =
+        noNulls(pkgInfo.map(p => (p.name === null || !p.files.some(f => f.kind === "test"))));
+    if (nonTestPackagesTouched.length > 1) {
         return "MultiplePackagesEdited";
-    } else if (categorizedFiles.some(f => f.kind === "package-meta")) {
+    } else if (pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"))) {
         return "ScopedAndConfiguration";
-    } else if (categorizedFiles.some(f => f.kind === "test")) {
+    } else if (pkgInfo.some(p => p.files.some(f => f.kind === "test"))) {
         return "ScopedAndTested";
     } else {
         return "ScopedAndUntested";
@@ -582,70 +603,21 @@ function getCIResult(headCommit: PR_repository_pullRequest_commits_nodes_commit)
     return { ciResult, ciUrl };
 }
 
-async function getPopularityLevel(packagesTouched: string[]): Promise<PopularityLevel> {
-    let popularityLevel: PopularityLevel = "Well-liked by everyone";
-    for (const p of packagesTouched) {
-        const downloads = await getMonthlyDownloadCount(p);
-        if (downloads > CriticalPopularityThreshold) {
-            // Can short-circuit
-            return "Critical";
-        } else if (downloads > NormalPopularityThreshold) {
-            popularityLevel = "Popular";
-        }
-    }
-    return popularityLevel;
+function downloadsToPopularityLevel(monthlyDownloads: number): PopularityLevel {
+    return monthlyDownloads > CriticalPopularityThreshold ? "Critical"
+        : monthlyDownloads > NormalPopularityThreshold ? "Popular"
+        : "Well-liked by everyone";
 }
 
-function getPopularityLevelFromDownloads(downloadsPerPackage: Record<string, number>) {
-    let popularityLevel: PopularityLevel = "Well-liked by everyone";
-    for (const packageName in downloadsPerPackage) {
-        const downloads = downloadsPerPackage[packageName];
-        if (downloads > CriticalPopularityThreshold) {
-            // Can short-circuit
-            return "Critical";
-        } else if (downloads > NormalPopularityThreshold) {
-            popularityLevel = "Popular";
-        }
-    }
-    return popularityLevel;
-}
-
-interface OwnerInfo {
-    newPackages: string[];
-    allOwners: string[];
-    error: string | undefined;
-}
-
-async function getOwnersOfPackages(packages: readonly string[], fetchFile: typeof defaultFetchFile): Promise<OwnerInfo> {
-    const allOwners: Set<string> = new Set();
-    let newPackages = [], error = undefined;
-    for (const p of packages) {
-        let owners;
-        try {
-            owners = await getOwnersForPackage(p, fetchFile);
-        } catch (e) {
-            error = `error parsing owners: ${e.message}`;
-            break;
-        }
-        if (owners === undefined) {
-            newPackages.push(p);
-        } else {
-            owners.forEach(o => allOwners.add(o));
-        }
-    }
-    return { error, allOwners: [...allOwners], newPackages };
-}
-
-async function getOwnersForPackage(packageName: string, fetchFile: typeof defaultFetchFile): Promise<string[] | undefined> {
-    const indexDts = `master:types/${packageName}/index.d.ts`;
+async function getOwnersOfPackage(packageName: string, version: string, fetchFile: typeof defaultFetchFile): Promise<string[] | null | Error> {
+    const indexDts = `${version}:types/${packageName}/index.d.ts`;
     const indexDtsContent = await fetchFile(indexDts, 10240); // grab at most 10k
-    if (indexDtsContent === undefined) return undefined;
-    const parsed = HeaderParser.parseHeaderOrFail(indexDtsContent);
-    return parsed.contributors.map(c => c.githubUsername).filter(notUndefined);
+    if (indexDtsContent === undefined) return null;
+    let parsed: HeaderParser.Header;
+    try {
+        parsed = HeaderParser.parseHeaderOrFail(indexDtsContent);
+    } catch (e) {
+        if (e instanceof Error) return new Error(`error parsing owners: ${e.message}`);
+    }
+    return parsed!.contributors.map(c => c.githubUsername).filter(notUndefined);
 }
-
-function noNulls<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined): T[] {
-    if (arr == null) return [];
-    return arr.filter(arr => arr != null) as T[];
-}
-function notUndefined<T>(arg: T | undefined): arg is T { return arg !== undefined; }

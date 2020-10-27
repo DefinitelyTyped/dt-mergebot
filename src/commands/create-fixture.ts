@@ -27,6 +27,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   const filesJSONPath = join(fixturePath, "_files.json");
   const filesFetched: {[expr: string]: string | undefined} = {};
   const downloadsJSONPath = join(fixturePath, "_downloads.json");
+  const downloadsFetched: {[packageName: string]: number} = {};
   const derivedFixturePath = join(fixturePath, "derived.json");
 
   const shouldOverwrite = (file: string) => overwriteInfo || !existsSync(file);
@@ -34,7 +35,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   const derivedInfo = await deriveStateForPR(
     response,
     shouldOverwrite(filesJSONPath) ? initFetchFilesAndWriteToFile() : getFilesFromFile,
-    shouldOverwrite(downloadsJSONPath) ? fetchDownloadsAndWriteToFile : getDownloadsFromFile,
+    shouldOverwrite(downloadsJSONPath) ? initGetDownloadsAndWriteToFile() : getDownloadsFromFile,
     shouldOverwrite(derivedFixturePath) ? undefined : getTimeFromFile,
   );
 
@@ -65,20 +66,17 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     return JSON.parse(readFileSync(filesJSONPath, "utf8"))[expr];
   }
 
-  async function fetchDownloadsAndWriteToFile(packages: readonly string[]) {
-    const downloadsPerPackage: Record<string, number> = {};
-    for (const packageName of packages) {
-      downloadsPerPackage[packageName] = await getMonthlyDownloadCount(packageName);
-    }
-    writeFileSync(downloadsJSONPath, JSON.stringify(downloadsPerPackage, null, "  "));
-    return downloadsPerPackage;
+  function initGetDownloadsAndWriteToFile() {
+    writeFileSync(downloadsJSONPath, "{}"); // one-time initialization of an empty storage
+    return getDownloadsAndWriteToFile;
   }
-  function getDownloadsFromFile(packages: readonly string[]) {
-    const downloadsPerPackage = JSON.parse(readFileSync(downloadsJSONPath, "utf8"));
-    for (const packageName of packages) {
-      assert(packageName in downloadsPerPackage);
-    }
-    return downloadsPerPackage;
+  async function getDownloadsAndWriteToFile(packageName: string) {
+    downloadsFetched[packageName] = await getMonthlyDownloadCount(packageName);
+    writeFileSync(downloadsJSONPath, JSON.stringify(downloadsFetched, null, "  "));
+    return downloadsFetched[packageName];
+  }
+  function getDownloadsFromFile(packageName: string) {
+    return JSON.parse(readFileSync(downloadsJSONPath, "utf8"))[packageName];
   }
 
   function getTimeFromFile() {

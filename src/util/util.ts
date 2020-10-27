@@ -1,5 +1,10 @@
 import moment = require("moment");
 
+export function noNulls<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined): T[] {
+    if (arr == null) return [];
+    return arr.filter(arr => arr != null) as T[];
+}
+export function notUndefined<T>(arg: T | undefined): arg is T { return arg !== undefined; }
 
 export async function someAsync<T>(arr: ReadonlyArray<T>, f: (t: T) => Promise<boolean>): Promise<boolean> {
     for (const x of arr) {

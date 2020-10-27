@@ -3,10 +3,6 @@
   "now": "2020-05-01T16:17:25.774Z",
   "pr_number": 44411,
   "author": "peterblazejewicz",
-  "owners": [
-    "dawnmist",
-    "erbridge"
-  ],
   "dangerLevel": "ScopedAndConfiguration",
   "headCommitAbbrOid": "d0d51a0",
   "headCommitOid": "d0d51a062525a6a4b83b297cd0e75adb4d5628f6",
@@ -20,42 +16,46 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "jest-image-snapshot"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/jest-image-snapshot/index.d.ts",
-      "kind": "definition",
-      "package": "jest-image-snapshot"
-    },
-    {
-      "path": "types/jest-image-snapshot/jest-image-snapshot-tests.ts",
-      "kind": "test",
-      "package": "jest-image-snapshot"
-    },
-    {
-      "path": "types/jest-image-snapshot/v2/index.d.ts",
-      "kind": "definition",
-      "package": "jest-image-snapshot"
-    },
-    {
-      "path": "types/jest-image-snapshot/v2/jest-image-snapshot-tests.ts",
-      "kind": "test",
-      "package": "jest-image-snapshot"
-    },
-    {
-      "path": "types/jest-image-snapshot/v2/tsconfig.json",
-      "kind": "package-meta",
-      "package": "jest-image-snapshot",
-      "suspect": "couldn't fetch contents"
-    },
-    {
-      "path": "types/jest-image-snapshot/v2/tslint.json",
-      "kind": "package-meta",
-      "package": "jest-image-snapshot",
-      "suspect": "couldn't fetch contents"
+      "name": "jest-image-snapshot",
+      "files": [
+        {
+          "path": "types/jest-image-snapshot/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/jest-image-snapshot/jest-image-snapshot-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/jest-image-snapshot/v2/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/jest-image-snapshot/v2/jest-image-snapshot-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/jest-image-snapshot/v2/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        },
+        {
+          "path": "types/jest-image-snapshot/v2/tslint.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        }
+      ],
+      "owners": [
+        "dawnmist",
+        "erbridge"
+      ],
+      "addedOwners": [
+        "peterblazejewicz"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

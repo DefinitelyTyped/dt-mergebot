@@ -3,9 +3,6 @@
   "now": "2020-04-29T21:07:21.000Z",
   "pr_number": 44343,
   "author": "sandersn",
-  "owners": [
-    "joeriks"
-  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "abd65c3",
   "headCommitOid": "abd65c3bbbf3463b41127be203c37fe64f717a7e",
@@ -19,15 +16,21 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "amplify"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/amplify/amplify-tests.ts",
-      "kind": "test",
-      "package": "amplify"
+      "name": "amplify",
+      "files": [
+        {
+          "path": "types/amplify/amplify-tests.ts",
+          "kind": "test"
+        }
+      ],
+      "owners": [
+        "joeriks"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

@@ -3,51 +3,6 @@
   "now": "2020-08-30T10:52:28.076Z",
   "pr_number": 44857,
   "author": "ExE-Boss",
-  "owners": [
-    "Microsoft",
-    "DefinitelyTyped",
-    "jkomyno",
-    "a-tarasyuk",
-    "alvis",
-    "r3nya",
-    "btoueg",
-    "brunoscheufler",
-    "smac89",
-    "touffy",
-    "DeividasBakanas",
-    "eyqs",
-    "Flarna",
-    "Hannes-Magnusson-CK",
-    "KSXGitHub",
-    "hoo29",
-    "kjin",
-    "ajafff",
-    "islishude",
-    "mwiktorczyk",
-    "mohsen1",
-    "n-e",
-    "galkin",
-    "parambirs",
-    "eps1lon",
-    "SimonSchick",
-    "ThomasdenH",
-    "WilcoBakker",
-    "wwwy3y3",
-    "samuela",
-    "kuehlein",
-    "j-oliveras",
-    "bhongy",
-    "chyzwar",
-    "trivikr",
-    "nguymin4",
-    "yoursunny",
-    "qwelias",
-    "ExE-Boss",
-    "Ryan-Willpower",
-    "peterblazejewicz",
-    "addaleax",
-    "JasonHK"
-  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "4aff18f",
   "headCommitOid": "4aff18f9b99fdfc26209485631ba429f5d3d29ba",
@@ -61,110 +16,139 @@
   "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Critical",
-  "newPackages": [],
-  "packages": [
-    "node"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/node/child_process.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/cluster.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/dgram.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/fs.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/http.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/http2.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/inspector.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/net.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/process.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/readline.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/repl.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/stream.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/test/child_process.ts",
-      "kind": "test",
-      "package": "node"
-    },
-    {
-      "path": "types/node/test/dgram.ts",
-      "kind": "test",
-      "package": "node"
-    },
-    {
-      "path": "types/node/test/net.ts",
-      "kind": "test",
-      "package": "node"
-    },
-    {
-      "path": "types/node/test/tls.ts",
-      "kind": "test",
-      "package": "node"
-    },
-    {
-      "path": "types/node/test/worker_threads.ts",
-      "kind": "test",
-      "package": "node"
-    },
-    {
-      "path": "types/node/tls.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/tty.d.ts",
-      "kind": "definition",
-      "package": "node"
-    },
-    {
-      "path": "types/node/worker_threads.d.ts",
-      "kind": "definition",
-      "package": "node"
+      "name": "node",
+      "files": [
+        {
+          "path": "types/node/child_process.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/cluster.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/dgram.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/fs.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/http.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/http2.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/inspector.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/net.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/process.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/readline.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/repl.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/stream.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/test/child_process.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/node/test/dgram.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/node/test/net.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/node/test/tls.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/node/test/worker_threads.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/node/tls.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/tty.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/worker_threads.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "Microsoft",
+        "DefinitelyTyped",
+        "jkomyno",
+        "a-tarasyuk",
+        "alvis",
+        "r3nya",
+        "btoueg",
+        "brunoscheufler",
+        "smac89",
+        "touffy",
+        "DeividasBakanas",
+        "eyqs",
+        "Flarna",
+        "Hannes-Magnusson-CK",
+        "KSXGitHub",
+        "hoo29",
+        "kjin",
+        "ajafff",
+        "islishude",
+        "mwiktorczyk",
+        "mohsen1",
+        "n-e",
+        "galkin",
+        "parambirs",
+        "eps1lon",
+        "SimonSchick",
+        "ThomasdenH",
+        "WilcoBakker",
+        "wwwy3y3",
+        "samuela",
+        "kuehlein",
+        "j-oliveras",
+        "bhongy",
+        "chyzwar",
+        "trivikr",
+        "nguymin4",
+        "yoursunny",
+        "qwelias",
+        "ExE-Boss",
+        "Ryan-Willpower",
+        "peterblazejewicz",
+        "addaleax",
+        "JasonHK"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
     }
   ],
   "hasDismissedReview": false,

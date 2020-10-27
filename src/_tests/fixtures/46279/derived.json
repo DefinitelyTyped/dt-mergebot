@@ -3,9 +3,6 @@
   "now": "2020-07-23T18:40:42.000Z",
   "pr_number": 46279,
   "author": "pzingg",
-  "owners": [
-    "pzingg"
-  ],
   "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "8032238",
   "headCommitOid": "80322389c71c13e0fca466b744b35b742a3ee161",
@@ -19,15 +16,21 @@
   "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "phoenix_live_view"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/phoenix_live_view/index.d.ts",
-      "kind": "definition",
-      "package": "phoenix_live_view"
+      "name": "phoenix_live_view",
+      "files": [
+        {
+          "path": "types/phoenix_live_view/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "pzingg"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

@@ -3,20 +3,6 @@
   "now": "2020-08-27T20:15:58.001Z",
   "pr_number": 47017,
   "author": "mastermatt",
-  "owners": [
-    "borisyankov",
-    "19majkel94",
-    "kacepe",
-    "micksatana",
-    "samijaber",
-    "aereal",
-    "JoseLion",
-    "dwrss",
-    "andoshin11",
-    "CMUH",
-    "puneetar",
-    "dfrankland"
-  ],
   "dangerLevel": "MultiplePackagesEdited",
   "headCommitAbbrOid": "dbe687d",
   "headCommitOid": "dbe687d30362e4f887e88048a3646c13c0c4d907",
@@ -30,31 +16,55 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Critical",
-  "newPackages": [],
-  "packages": [
-    "express-serve-static-core",
-    "express"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/express-serve-static-core/express-serve-static-core-tests.ts",
-      "kind": "test",
-      "package": "express-serve-static-core"
+      "name": "express-serve-static-core",
+      "files": [
+        {
+          "path": "types/express-serve-static-core/express-serve-static-core-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/express-serve-static-core/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "borisyankov",
+        "19majkel94",
+        "kacepe",
+        "micksatana",
+        "samijaber",
+        "aereal",
+        "JoseLion",
+        "dwrss",
+        "andoshin11"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
     },
     {
-      "path": "types/express-serve-static-core/index.d.ts",
-      "kind": "definition",
-      "package": "express-serve-static-core"
-    },
-    {
-      "path": "types/express/express-tests.ts",
-      "kind": "test",
-      "package": "express"
-    },
-    {
-      "path": "types/express/index.d.ts",
-      "kind": "definition",
-      "package": "express"
+      "name": "express",
+      "files": [
+        {
+          "path": "types/express/express-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/express/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "borisyankov",
+        "CMUH",
+        "puneetar",
+        "dfrankland"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
     }
   ],
   "hasDismissedReview": false,

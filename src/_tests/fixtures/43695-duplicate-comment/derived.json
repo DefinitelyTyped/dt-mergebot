@@ -3,7 +3,6 @@
   "now": "2020-05-01T17:11:04.885Z",
   "pr_number": 43695,
   "author": "alexandercerutti",
-  "owners": [],
   "dangerLevel": "ScopedAndConfiguration",
   "headCommitAbbrOid": "3e83617",
   "headCommitOid": "3e836178b736e5512361ffda46e84a5c668d7a90",
@@ -18,34 +17,35 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [
-    "accedo__accedo-one"
-  ],
-  "packages": [
-    "accedo__accedo-one"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/accedo__accedo-one/accedo__accedo-one-tests.ts",
-      "kind": "test",
-      "package": "accedo__accedo-one"
-    },
-    {
-      "path": "types/accedo__accedo-one/index.d.ts",
-      "kind": "definition",
-      "package": "accedo__accedo-one"
-    },
-    {
-      "path": "types/accedo__accedo-one/tsconfig.json",
-      "kind": "package-meta",
-      "package": "accedo__accedo-one",
-      "suspect": "couldn't fetch contents"
-    },
-    {
-      "path": "types/accedo__accedo-one/tslint.json",
-      "kind": "package-meta",
-      "package": "accedo__accedo-one",
-      "suspect": "couldn't fetch contents"
+      "name": "accedo__accedo-one",
+      "files": [
+        {
+          "path": "types/accedo__accedo-one/accedo__accedo-one-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/accedo__accedo-one/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/accedo__accedo-one/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        },
+        {
+          "path": "types/accedo__accedo-one/tslint.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        }
+      ],
+      "owners": null,
+      "addedOwners": [
+        "alexandercerutti"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,
