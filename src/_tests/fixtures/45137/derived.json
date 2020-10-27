@@ -3,38 +3,6 @@
   "now": "2020-05-29T11:17:01.368Z",
   "pr_number": 45137,
   "author": "lirbank",
-  "owners": [
-    "CaselIT",
-    "alanmarcell",
-    "dante-101",
-    "mcortesi",
-    "EnricoPicci",
-    "AJCStriker",
-    "julien-c",
-    "daprahamian",
-    "denys-bushulyak",
-    "BastienAr",
-    "sindbach",
-    "geraldinelemeur",
-    "various89",
-    "angela-1",
-    "lirbank",
-    "hector7",
-    "floric",
-    "erikc5000",
-    "Manc",
-    "jloveridge",
-    "ranguna",
-    "HosseinAgha",
-    "albertossilva",
-    "peterblazejewicz",
-    "LinusU",
-    "taxilian",
-    "xamgore",
-    "avaly",
-    "HitkoDev",
-    "jtassin"
-  ],
   "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "22c73c8",
   "headCommitOid": "22c73c88cc9c09efd4c2998ec360607dd4c36c2e",
@@ -48,15 +16,52 @@
   "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Popular",
-  "newPackages": [],
-  "packages": [
-    "mongodb"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/mongodb/index.d.ts",
-      "kind": "definition",
-      "package": "mongodb"
+      "name": "mongodb",
+      "files": [
+        {
+          "path": "types/mongodb/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "CaselIT",
+        "alanmarcell",
+        "dante-101",
+        "mcortesi",
+        "EnricoPicci",
+        "AJCStriker",
+        "julien-c",
+        "daprahamian",
+        "denys-bushulyak",
+        "BastienAr",
+        "sindbach",
+        "geraldinelemeur",
+        "various89",
+        "angela-1",
+        "lirbank",
+        "hector7",
+        "floric",
+        "erikc5000",
+        "Manc",
+        "jloveridge",
+        "ranguna",
+        "HosseinAgha",
+        "albertossilva",
+        "peterblazejewicz",
+        "LinusU",
+        "taxilian",
+        "xamgore",
+        "avaly",
+        "HitkoDev",
+        "jtassin"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [
+        "lirbank"
+      ],
+      "popularityLevel": "Popular"
     }
   ],
   "hasDismissedReview": false,

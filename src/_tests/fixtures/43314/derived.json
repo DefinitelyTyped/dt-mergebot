@@ -3,7 +3,6 @@
   "now": "2020-03-22T21:36:44.000Z",
   "pr_number": 43314,
   "author": "metonym",
-  "owners": [],
   "dangerLevel": "ScopedAndConfiguration",
   "headCommitAbbrOid": "432f23f",
   "headCommitOid": "432f23fe1b87b12fe58bb1a8958f77ee3242741e",
@@ -17,34 +16,35 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [
-    "carbon__icon-helpers"
-  ],
-  "packages": [
-    "carbon__icon-helpers"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/carbon__icon-helpers/carbon__icon-helpers-tests.ts",
-      "kind": "test",
-      "package": "carbon__icon-helpers"
-    },
-    {
-      "path": "types/carbon__icon-helpers/index.d.ts",
-      "kind": "definition",
-      "package": "carbon__icon-helpers"
-    },
-    {
-      "path": "types/carbon__icon-helpers/tsconfig.json",
-      "kind": "package-meta",
-      "package": "carbon__icon-helpers",
-      "suspect": "couldn't fetch contents"
-    },
-    {
-      "path": "types/carbon__icon-helpers/tslint.json",
-      "kind": "package-meta",
-      "package": "carbon__icon-helpers",
-      "suspect": "couldn't fetch contents"
+      "name": "carbon__icon-helpers",
+      "files": [
+        {
+          "path": "types/carbon__icon-helpers/carbon__icon-helpers-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/carbon__icon-helpers/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/carbon__icon-helpers/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        },
+        {
+          "path": "types/carbon__icon-helpers/tslint.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        }
+      ],
+      "owners": null,
+      "addedOwners": [
+        "metonym"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

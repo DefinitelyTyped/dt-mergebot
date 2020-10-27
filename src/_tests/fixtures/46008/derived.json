@@ -3,10 +3,6 @@
   "now": "2020-07-11T02:09:32.239Z",
   "pr_number": 46008,
   "author": "risingBirdSong",
-  "owners": [
-    "p5-types",
-    "Zalastax"
-  ],
   "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "3e19cb9",
   "headCommitOid": "3e19cb9cae4689fb736fd6682f7f76d8efafcaa2",
@@ -20,15 +16,22 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "p5"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/p5/lib/addons/p5.dom.d.ts",
-      "kind": "definition",
-      "package": "p5"
+      "name": "p5",
+      "files": [
+        {
+          "path": "types/p5/lib/addons/p5.dom.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "p5-types",
+        "Zalastax"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

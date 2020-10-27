@@ -3,10 +3,6 @@
   "now": "2020-04-29T22:09:53.999Z",
   "pr_number": 43960,
   "author": "aaltepet",
-  "owners": [
-    "varju",
-    "pietu"
-  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "129f84e",
   "headCommitOid": "129f84e4492a76e7cd5af9d946c4583a60e6eb88",
@@ -21,20 +17,26 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Popular",
-  "newPackages": [],
-  "packages": [
-    "supertest"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/supertest/index.d.ts",
-      "kind": "definition",
-      "package": "supertest"
-    },
-    {
-      "path": "types/supertest/supertest-tests.ts",
-      "kind": "test",
-      "package": "supertest"
+      "name": "supertest",
+      "files": [
+        {
+          "path": "types/supertest/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/supertest/supertest-tests.ts",
+          "kind": "test"
+        }
+      ],
+      "owners": [
+        "varju",
+        "pietu"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Popular"
     }
   ],
   "hasDismissedReview": false,

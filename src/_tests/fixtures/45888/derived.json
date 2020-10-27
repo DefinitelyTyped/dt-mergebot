@@ -3,12 +3,6 @@
   "now": "2020-07-06T07:40:37.670Z",
   "pr_number": 45888,
   "author": "gstvds",
-  "owners": [
-    "sampsonjoliver",
-    "andipaetzold",
-    "JiriBalcar",
-    "CodeLenny"
-  ],
   "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "8a7a2fc",
   "headCommitOid": "8a7a2fc1cdbfe1d3a7af7d1f7a346977fdf47b0d",
@@ -22,15 +16,24 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "mailgun-js"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/mailgun-js/index.d.ts",
-      "kind": "definition",
-      "package": "mailgun-js"
+      "name": "mailgun-js",
+      "files": [
+        {
+          "path": "types/mailgun-js/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "sampsonjoliver",
+        "andipaetzold",
+        "JiriBalcar",
+        "CodeLenny"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

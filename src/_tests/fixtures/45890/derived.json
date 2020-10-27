@@ -3,7 +3,6 @@
   "now": "2020-07-06T08:21:55.751Z",
   "pr_number": 45890,
   "author": "dimkirt",
-  "owners": [],
   "dangerLevel": "ScopedAndConfiguration",
   "headCommitAbbrOid": "146c312",
   "headCommitOid": "146c312eac4c4ac8931b4ec6b2762457f8f4b6e6",
@@ -17,34 +16,35 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [
-    "greek-utils"
-  ],
-  "packages": [
-    "greek-utils"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/greek-utils/greek-utils-tests.ts",
-      "kind": "test",
-      "package": "greek-utils"
-    },
-    {
-      "path": "types/greek-utils/index.d.ts",
-      "kind": "definition",
-      "package": "greek-utils"
-    },
-    {
-      "path": "types/greek-utils/tsconfig.json",
-      "kind": "package-meta",
-      "package": "greek-utils",
-      "suspect": "couldn't fetch contents"
-    },
-    {
-      "path": "types/greek-utils/tslint.json",
-      "kind": "package-meta",
-      "package": "greek-utils",
-      "suspect": "couldn't fetch contents"
+      "name": "greek-utils",
+      "files": [
+        {
+          "path": "types/greek-utils/greek-utils-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/greek-utils/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/greek-utils/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        },
+        {
+          "path": "types/greek-utils/tslint.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        }
+      ],
+      "owners": null,
+      "addedOwners": [
+        "dimkirt"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

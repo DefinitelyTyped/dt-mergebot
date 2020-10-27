@@ -3,9 +3,6 @@
   "now": "2020-05-01T15:22:22.898Z",
   "pr_number": 44316,
   "author": "mattleff",
-  "owners": [
-    "mattleff"
-  ],
   "dangerLevel": "ScopedAndConfiguration",
   "headCommitAbbrOid": "55357f7",
   "headCommitOid": "55357f7d60d059b5c84a23bd92854276a8f9a419",
@@ -19,26 +16,30 @@
   "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "vimeo"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/vimeo/index.d.ts",
-      "kind": "definition",
-      "package": "vimeo"
-    },
-    {
-      "path": "types/vimeo/tsconfig.json",
-      "kind": "package-meta",
-      "package": "vimeo",
-      "suspect": "couldn't fetch contents"
-    },
-    {
-      "path": "types/vimeo/vimeo-tests.ts",
-      "kind": "test",
-      "package": "vimeo"
+      "name": "vimeo",
+      "files": [
+        {
+          "path": "types/vimeo/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/vimeo/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        },
+        {
+          "path": "types/vimeo/vimeo-tests.ts",
+          "kind": "test"
+        }
+      ],
+      "owners": [
+        "mattleff"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

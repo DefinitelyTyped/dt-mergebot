@@ -3,7 +3,6 @@
   "now": "2020-07-12T04:13:43.404Z",
   "pr_number": 46019,
   "author": "peterblazejewicz",
-  "owners": [],
   "dangerLevel": "ScopedAndConfiguration",
   "headCommitAbbrOid": "ceca9f7",
   "headCommitOid": "ceca9f768be945932c692d7dd48fa14b6ff38096",
@@ -17,33 +16,35 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [
-    "is-secret"
-  ],
-  "packages": [
-    "is-secret"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/is-secret/index.d.ts",
-      "kind": "definition",
-      "package": "is-secret"
-    },
-    {
-      "path": "types/is-secret/is-secret-tests.ts",
-      "kind": "test",
-      "package": "is-secret"
-    },
-    {
-      "path": "types/is-secret/tsconfig.json",
-      "kind": "package-meta",
-      "package": "is-secret",
-      "suspect": "couldn't fetch contents"
-    },
-    {
-      "path": "types/is-secret/tslint.json",
-      "kind": "package-meta-ok",
-      "package": "is-secret"
+      "name": "is-secret",
+      "files": [
+        {
+          "path": "types/is-secret/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/is-secret/is-secret-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/is-secret/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": "couldn't fetch contents"
+        },
+        {
+          "path": "types/is-secret/tslint.json",
+          "kind": "package-meta-ok"
+        }
+      ],
+      "owners": null,
+      "addedOwners": [
+        "wrumsby",
+        "peterblazejewicz"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

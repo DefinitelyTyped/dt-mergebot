@@ -3,11 +3,6 @@
   "now": "2020-08-25T19:30:48.988Z",
   "pr_number": 46804,
   "author": "ETHANTALJAFFE",
-  "owners": [
-    "hrngoode",
-    "adina-todoran",
-    "BreadAndRoses95"
-  ],
   "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "3e3524f",
   "headCommitOid": "3e3524f41de19cd97d5c32a531eab3f0e9206f75",
@@ -21,15 +16,23 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "react-d3-graph"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/react-d3-graph/index.d.ts",
-      "kind": "definition",
-      "package": "react-d3-graph"
+      "name": "react-d3-graph",
+      "files": [
+        {
+          "path": "types/react-d3-graph/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "hrngoode",
+        "adina-todoran",
+        "BreadAndRoses95"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

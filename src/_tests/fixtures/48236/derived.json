@@ -3,9 +3,6 @@
   "now": "2020-10-05T00:43:22.594Z",
   "pr_number": 48236,
   "author": "jablko",
-  "owners": [
-    "climba03003"
-  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "b4d71f6",
   "headCommitOid": "b4d71f672f0f204a514002348ebc2025d18866ca",
@@ -20,20 +17,25 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "woocommerce__woocommerce-rest-api"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/woocommerce__woocommerce-rest-api/tsconfig.json",
-      "kind": "package-meta-ok",
-      "package": "woocommerce__woocommerce-rest-api"
-    },
-    {
-      "path": "types/woocommerce__woocommerce-rest-api/woocommerce__woocommerce-rest-api-tests.ts",
-      "kind": "test",
-      "package": "woocommerce__woocommerce-rest-api"
+      "name": "woocommerce__woocommerce-rest-api",
+      "files": [
+        {
+          "path": "types/woocommerce__woocommerce-rest-api/tsconfig.json",
+          "kind": "package-meta-ok"
+        },
+        {
+          "path": "types/woocommerce__woocommerce-rest-api/woocommerce__woocommerce-rest-api-tests.ts",
+          "kind": "test"
+        }
+      ],
+      "owners": [
+        "climba03003"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,

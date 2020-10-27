@@ -3,18 +3,6 @@
   "now": "2020-03-19T18:39:37.000Z",
   "pr_number": 43175,
   "author": "ankhler",
-  "owners": [
-    "matthewkimber",
-    "otiai10",
-    "couven92",
-    "rreverser",
-    "sreimer15",
-    "MatCarlson",
-    "ekinsol",
-    "tregagnon",
-    "echoabstract",
-    "spasma"
-  ],
   "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "b4b3bc8",
   "headCommitOid": "b4b3bc8a617e2e0810d60e389415818d903e6362",
@@ -28,15 +16,30 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Popular",
-  "newPackages": [],
-  "packages": [
-    "chrome"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/chrome/index.d.ts",
-      "kind": "definition",
-      "package": "chrome"
+      "name": "chrome",
+      "files": [
+        {
+          "path": "types/chrome/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "matthewkimber",
+        "otiai10",
+        "couven92",
+        "rreverser",
+        "sreimer15",
+        "MatCarlson",
+        "ekinsol",
+        "tregagnon",
+        "echoabstract",
+        "spasma"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Popular"
     }
   ],
   "hasDismissedReview": false,

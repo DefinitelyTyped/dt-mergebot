@@ -3,9 +3,6 @@
   "now": "2020-03-19T19:14:42.000Z",
   "pr_number": 43136,
   "author": "larsrh",
-  "owners": [
-    "RReverser"
-  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "e686353",
   "headCommitOid": "e6863537248bbfee8f0ef8c636bb00c25cf40b96",
@@ -19,20 +16,25 @@
   "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Critical",
-  "newPackages": [],
-  "packages": [
-    "estree"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/estree/estree-tests.ts",
-      "kind": "test",
-      "package": "estree"
-    },
-    {
-      "path": "types/estree/index.d.ts",
-      "kind": "definition",
-      "package": "estree"
+      "name": "estree",
+      "files": [
+        {
+          "path": "types/estree/estree-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/estree/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "RReverser"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
     }
   ],
   "hasDismissedReview": false,

@@ -3,37 +3,6 @@
   "now": "2020-05-29T16:28:19.013Z",
   "pr_number": 44989,
   "author": "petr-motejlek",
-  "owners": [
-    "TheHandsomeCoder",
-    "donnut",
-    "mdekrey",
-    "sbking",
-    "afharo",
-    "teves-castro",
-    "1M0reBug",
-    "hojberg",
-    "samsonkeung",
-    "angeloocana",
-    "raynerd",
-    "moshensky",
-    "ethanresnick",
-    "deftomat",
-    "blimusiek",
-    "biern",
-    "rayhaneh",
-    "rgm",
-    "drewwyatt",
-    "jottenlips",
-    "minitesh",
-    "krantisinh",
-    "pirix-gh",
-    "brekk",
-    "nemo108",
-    "jituanlin",
-    "Philippe-mills",
-    "Saul-Mirone",
-    "Nicholaiii"
-  ],
   "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "9ca6086",
   "headCommitOid": "9ca60862ea56c9ff8d6b0f26c28b7e0bdaef4b34",
@@ -47,20 +16,53 @@
   "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Popular",
-  "newPackages": [],
-  "packages": [
-    "ramda"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/ramda/index.d.ts",
-      "kind": "definition",
-      "package": "ramda"
-    },
-    {
-      "path": "types/ramda/test/paths-tests.ts",
-      "kind": "test",
-      "package": "ramda"
+      "name": "ramda",
+      "files": [
+        {
+          "path": "types/ramda/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/ramda/test/paths-tests.ts",
+          "kind": "test"
+        }
+      ],
+      "owners": [
+        "TheHandsomeCoder",
+        "donnut",
+        "mdekrey",
+        "sbking",
+        "afharo",
+        "teves-castro",
+        "1M0reBug",
+        "hojberg",
+        "samsonkeung",
+        "angeloocana",
+        "raynerd",
+        "moshensky",
+        "ethanresnick",
+        "deftomat",
+        "blimusiek",
+        "biern",
+        "rayhaneh",
+        "rgm",
+        "drewwyatt",
+        "jottenlips",
+        "minitesh",
+        "krantisinh",
+        "pirix-gh",
+        "brekk",
+        "nemo108",
+        "jituanlin",
+        "Philippe-mills",
+        "Saul-Mirone",
+        "Nicholaiii"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Popular"
     }
   ],
   "hasDismissedReview": false,

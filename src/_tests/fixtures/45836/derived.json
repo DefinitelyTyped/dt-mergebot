@@ -3,13 +3,6 @@
   "now": "2020-07-08T18:57:14.868Z",
   "pr_number": 45836,
   "author": "mmorearty",
-  "owners": [
-    "bradleyayers",
-    "davidka",
-    "timjb",
-    "patsimm",
-    "mmorearty"
-  ],
   "dangerLevel": "MultiplePackagesEdited",
   "headCommitAbbrOid": "6c7735e",
   "headCommitOid": "6c7735e2b8f39640cb73e40ae04cb6642a8ab2cd",
@@ -23,26 +16,49 @@
   "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
-  "newPackages": [],
-  "packages": [
-    "prosemirror-commands",
-    "prosemirror-keymap"
-  ],
-  "files": [
+  "pkgInfo": [
     {
-      "path": "types/prosemirror-commands/index.d.ts",
-      "kind": "definition",
-      "package": "prosemirror-commands"
+      "name": "prosemirror-commands",
+      "files": [
+        {
+          "path": "types/prosemirror-commands/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/prosemirror-commands/prosemirror-commands-tests.ts",
+          "kind": "test"
+        }
+      ],
+      "owners": [
+        "bradleyayers",
+        "davidka",
+        "timjb",
+        "patsimm"
+      ],
+      "addedOwners": [
+        "mmorearty"
+      ],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     },
     {
-      "path": "types/prosemirror-commands/prosemirror-commands-tests.ts",
-      "kind": "test",
-      "package": "prosemirror-commands"
-    },
-    {
-      "path": "types/prosemirror-keymap/index.d.ts",
-      "kind": "definition",
-      "package": "prosemirror-keymap"
+      "name": "prosemirror-keymap",
+      "files": [
+        {
+          "path": "types/prosemirror-keymap/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "bradleyayers",
+        "davidka",
+        "timjb",
+        "patsimm",
+        "mmorearty"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
     }
   ],
   "hasDismissedReview": false,
