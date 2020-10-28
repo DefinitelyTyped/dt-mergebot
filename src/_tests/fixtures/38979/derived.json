@@ -3,7 +3,6 @@
   "now": "2020-05-12T19:14:42.000Z",
   "pr_number": 38979,
   "author": "ExE-Boss",
-  "dangerLevel": "ScopedAndConfiguration",
   "headCommitAbbrOid": "2223341",
   "headCommitOid": "222334139e52fc16369464cfb5dc95c82f71192f",
   "mergeIsRequested": false,
@@ -12,9 +11,7 @@
   "reopenedDate": "2019-10-18T22:52:06.000Z",
   "lastCommentDate": "2020-05-12T15:13:19.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/38979/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Critical",
   "pkgInfo": [
@@ -320,22 +317,25 @@
       "popularityLevel": "Critical"
     }
   ],
-  "hasDismissedReview": true,
-  "ciResult": "pass",
-  "lastReviewDate": "2020-05-12T04:51:52.000Z",
-  "firstApprovalDate": "2020-05-12T04:51:52.000Z",
-  "reviewersWithStaleReviews": [
+  "reviews": [
     {
-      "reviewedAbbrOid": "3aba5ac",
-      "reviewer": "sandersn",
-      "date": "2019-10-22T22:56:09Z"
+      "type": "approved",
+      "reviewer": "ljharb",
+      "date": "2020-05-12T04:51:52.000Z",
+      "isMaintainer": false
     },
     {
-      "reviewedAbbrOid": "0e6e7f4",
+      "type": "stale",
+      "reviewer": "sandersn",
+      "date": "2019-10-22T22:56:09.000Z",
+      "abbrOid": "3aba5ac"
+    },
+    {
+      "type": "stale",
       "reviewer": "weswigham",
-      "date": "2019-10-22T21:43:25Z"
+      "date": "2019-10-22T22:20:55.000Z",
+      "abbrOid": "0e6e7f4"
     }
   ],
-  "approvalFlags": 1,
-  "isChangesRequested": false
+  "ciResult": "pass"
 }

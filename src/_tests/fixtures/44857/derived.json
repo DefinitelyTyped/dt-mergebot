@@ -3,7 +3,6 @@
   "now": "2020-08-30T10:52:28.076Z",
   "pr_number": 44857,
   "author": "ExE-Boss",
-  "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "4aff18f",
   "headCommitOid": "4aff18f9b99fdfc26209485631ba429f5d3d29ba",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-07-28T16:54:29.000Z",
   "lastCommentDate": "2020-07-29T16:31:48.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44857/files",
   "hasMergeConflict": false,
-  "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Critical",
   "pkgInfo": [
@@ -151,15 +148,13 @@
       "popularityLevel": "Critical"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "reviewersWithStaleReviews": [
+  "reviews": [
     {
-      "reviewedAbbrOid": "b0cfd18",
+      "type": "stale",
       "reviewer": "SimonSchick",
-      "date": "2020-05-19T23:20:53Z"
+      "date": "2020-05-19T23:20:53.000Z",
+      "abbrOid": "b0cfd18"
     }
   ],
-  "approvalFlags": 0,
-  "isChangesRequested": false
+  "ciResult": "pass"
 }

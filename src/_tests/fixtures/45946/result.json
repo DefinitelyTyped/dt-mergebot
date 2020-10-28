@@ -16,7 +16,7 @@
     "Critical package": false,
     "Edits Infrastructure": true,
     "Edits multiple packages": false,
-    "Author is Owner": true,
+    "Author is Owner": false,
     "No Other Owners": true,
     "Too Many Owners": false,
     "Merge:Auto": false,

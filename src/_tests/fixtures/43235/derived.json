@@ -3,7 +3,6 @@
   "now": "2020-03-19T19:25:52.000Z",
   "pr_number": 43235,
   "author": "Favna",
-  "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "933d8d8",
   "headCommitOid": "933d8d81859cea3cb2df640bd099ef80bee3d691",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-03-19T14:37:52.000Z",
   "lastCommentDate": "2020-03-19T14:37:52.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43235/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -38,9 +35,6 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 0,
-  "isChangesRequested": false
+  "reviews": [],
+  "ciResult": "pass"
 }

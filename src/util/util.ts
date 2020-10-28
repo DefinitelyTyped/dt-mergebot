@@ -51,6 +51,15 @@ export function forEachReverse<T, U>(arr: readonly T[] | null | undefined, actio
     return undefined;
 }
 
+export function earliestDate(...dates: (Date | undefined)[]) {
+    return dates.reduce((d1,d2) => d1 && d2 && d2.getTime() < d1.getTime() ? d2 : d1 || d2,
+                        undefined);
+}
+export function latestDate(...dates: (Date | undefined)[]) {
+    return dates.reduce((d1,d2) => d1 && d2 && d2.getTime() > d1.getTime() ? d2 : d1 || d2,
+                        undefined);
+}
+
 export function daysSince(date: Date, now: Date | string): number {
     return Math.floor(moment(now).diff(moment(date), "days"));
 }

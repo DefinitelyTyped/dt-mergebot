@@ -3,7 +3,6 @@
   "now": "2020-03-19T04:59:48.000Z",
   "pr_number": 43144,
   "author": "jeffreymeng",
-  "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "f1f5c4b",
   "headCommitOid": "f1f5c4bb0ae553f56766882f6458d2e22baa87c7",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-03-15T00:11:48.000Z",
   "lastCommentDate": "2020-03-15T00:11:48.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43144/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -37,11 +34,13 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "lastReviewDate": "2020-03-15T01:29:09.000Z",
-  "firstApprovalDate": "2020-03-15T01:29:09.000Z",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 2,
-  "isChangesRequested": false
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "pocesar",
+      "date": "2020-03-15T01:29:09.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }

@@ -16,27 +16,14 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNulls, notUndefined, flatten, unique, findLast, forEachReverse, daysSince, authorNotBot } from "./util/util";
+import { noNulls, notUndefined, findLast, forEachReverse, daysSince, authorNotBot, latestDate, earliestDate
+       } from "./util/util";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
 import { PullRequestState } from "./schema/graphql-global-types";
 
-export enum ApprovalFlags {
-    None = 0,
-    Other = 1 << 0,
-    Owner = 1 << 1,
-    Maintainer = 1 << 2
-}
-
 const CriticalPopularityThreshold = 5_000_000;
 const NormalPopularityThreshold = 200_000;
-
-export type DangerLevel =
-    | "ScopedAndTested"
-    | "ScopedAndUntested"
-    | "ScopedAndConfiguration"
-    | "MultiplePackagesEdited"
-    | "Infrastructure";
 
 export type PopularityLevel =
     | "Well-liked by everyone"
@@ -69,7 +56,7 @@ export interface BotNoPackages {
     readonly pr_number: number;
 }
 
-type PackageInfo = {
+export type PackageInfo = {
     name: string | null; // null => not in a package (= infra files)
     files: FileInfo[];
     owners: string[] | null; // null => not a package or new package
@@ -80,11 +67,21 @@ type PackageInfo = {
 
 type FileKind = "test" | "definition" | "markdown" | "package-meta" | "package-meta-ok"| "infrastructure";
 
-type FileInfo = {
+export type FileInfo = {
     path: string,
     kind: FileKind,
     suspect?: string // reason for a file being "package-meta" rather than "package-meta-ok"
 };
+
+export type ReviewInfo = {
+    type: string,
+    reviewer: string,
+    date: Date
+} & (
+    | { type: "approved", isMaintainer: boolean }
+    | { type: "changereq" }
+    | { type: "stale", abbrOid: string }
+);
 
 export interface PrInfo {
     readonly type: "info";
@@ -105,11 +102,6 @@ export interface PrInfo {
     readonly headCommitAbbrOid: string;
 
     /**
-     * True if the author of the PR is already a listed owner
-     */
-    readonly authorIsOwner: boolean;
-
-    /**
      * The GitHub login of the PR author
      */
     readonly author: string;
@@ -127,7 +119,7 @@ export interface PrInfo {
     /**
      * A link to the log for the failing CI if it exists
      */
-    readonly ciUrl: string | undefined;
+    readonly ciUrl?: string;
 
     /**
      * True if the PR has a merge conflict
@@ -145,33 +137,9 @@ export interface PrInfo {
     readonly lastCommentDate: Date;
 
     /**
-     * The date of the most recent review on the head commit
-     */
-    readonly lastReviewDate?: Date;
-
-    /**
      * The date the PR was last reopened by a maintainer
      */
     readonly reopenedDate?: Date;
-
-    /**
-     * A list of people who have reviewed this PR in the past, but for
-     * a prior commit.
-     */
-    readonly reviewersWithStaleReviews: ReadonlyArray<{ reviewer: string, reviewedAbbrOid: string, date: string }>;
-
-    /**
-     * A link to the Review tab to provide reviewers with
-     */
-    readonly reviewLink: string;
-
-    /**
-     * True if the head commit has any failing reviews
-     */
-    readonly isChangesRequested: boolean;
-
-    readonly approvalFlags: ApprovalFlags;
-    readonly dangerLevel: DangerLevel;
 
     /**
      * Integer count of days of inactivity from the author
@@ -183,16 +151,13 @@ export interface PrInfo {
      */
     readonly maintainerBlessed: boolean;
 
-    /**
-     * True if the author has dismissed any reviews against the head commit
-     */
-    readonly hasDismissedReview: boolean;
-
     readonly isFirstContribution: boolean;
 
     readonly popularityLevel: PopularityLevel;
 
     readonly pkgInfo: readonly PackageInfo[];
+
+    readonly reviews: readonly ReviewInfo[];
 }
 
 function getHeadCommit(pr: GraphqlPullRequest) {
@@ -236,15 +201,9 @@ export async function deriveStateForPR(
     const { pkgInfo, popularityLevel } = pkgInfoEtc;
     if (!pkgInfo.some(p => p.name)) return botNoPackages(prInfo.number);
 
-    const allOwners = pkgInfoAllOwners(pkgInfo);
-
     const author = prInfo.author.login;
-    const authorIsOwner = isOwner(author);
 
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
-
-    const freshReviewsByState = partition(noNulls(prInfo.reviews?.nodes), r => r.state);
-    const hasDismissedReview = !!freshReviewsByState.DISMISSED?.length;
 
     const createdDate = new Date(prInfo.createdAt);
     const lastPushDate = new Date(headCommit.pushedDate);
@@ -252,35 +211,31 @@ export async function deriveStateForPR(
     const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
     const now = getNow().toISOString();
-    const reviewAnalysis = analyzeReviews(prInfo, isOwner);
-    const activityDates = [createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, reviewAnalysis.lastReviewDate];
-
-    const dangerLevel = getDangerLevel(pkgInfo);
+    const reviews = getReviews(prInfo, isOwner);
+    const latestReview = latestDate(...reviews.map(r => r.date));
+    const firstApprovalDate = earliestDate(...reviews.map(r => r.type === "approved" ? r.date : undefined));
+    const stalenessInDays = daysSince(latestDate(createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview) || lastPushDate, now);
 
     return {
         type: "info",
         now,
         pr_number: prInfo.number,
         author,
-        dangerLevel,
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
         mergeIsRequested: !!prInfo.comments.nodes
             && usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
-                                    dangerLevel.startsWith("Scoped") ? [author, ...allOwners] : [author],
-                                    [createdDate, lastPushDate, reopenedDate, reviewAnalysis.firstApprovalDate]),
-        stalenessInDays: Math.min(...activityDates.map(date => daysSince(date || lastPushDate, now))),
+                                    pkgInfo.length === 1 ? [author, ...(pkgInfo[0].owners || [])] : [author],
+                                    latestDate(createdDate, lastPushDate, reopenedDate, firstApprovalDate) || lastPushDate),
+        stalenessInDays,
         lastPushDate, reopenedDate, lastCommentDate,
         maintainerBlessed: lastBlessing ? lastBlessing.getTime() > lastPushDate.getTime() : false,
-        reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
-        authorIsOwner,
         isFirstContribution,
         popularityLevel,
         pkgInfo,
-        hasDismissedReview,
-        ...getCIResult(headCommit),
-        ...reviewAnalysis
+        reviews,
+        ...getCIResult(headCommit)
     };
 
     function botFail(message: string): BotFail {
@@ -300,7 +255,7 @@ export async function deriveStateForPR(
     }
 
     function isOwner(login: string) {
-        return allOwners.some(k => k.toLowerCase() === login.toLowerCase());
+        return pkgInfo.some(p => p.owners?.some(k => k.toLowerCase() === login.toLowerCase()));
     }
 }
 
@@ -383,10 +338,6 @@ async function getPackageInfosEtc(
         result.push({ name, files, owners, addedOwners, deletedOwners, popularityLevel });
     }
     return { pkgInfo: result, popularityLevel: downloadsToPopularityLevel(maxDownloads) };
-}
-
-export function pkgInfoAllOwners(pkgInfo: readonly PackageInfo[]): string[] {
-    return unique(flatten(pkgInfo.map(p => p.owners || [])));
 }
 
 async function categorizeFile(path: string, contents: (oid?: string) => Promise<string | undefined>): Promise<[string|null, FileInfo]> {
@@ -477,130 +428,58 @@ function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[]) {
     };
 }
 
-function partition<T, U extends string>(arr: ReadonlyArray<T>, sorter: (el: T) => U) {
-    const res: { [K in U]?: T[] } = {};
-    for (const el of arr) {
-        const key = sorter(el);
-        const target: T[] = res[key] ?? (res[key] = []);
-        target.push(el);
-    }
-    return res;
-}
-
-function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes[], users: string[], sinceDates: (Date|undefined)[]) {
-    const sinceDate = Math.max(...sinceDates.map(date => date?.getTime() || 0));
+function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes[], users: string[], sinceDate: Date) {
     return comments.some(comment =>
         comment
         && users.includes(comment.author?.login || " ")
         && comment.body.trim().toLowerCase().startsWith("ready to merge")
-        && (new Date(comment.createdAt)).getTime() > sinceDate);
+        && (new Date(comment.createdAt)).getTime() > sinceDate.getTime());
 }
 
-function analyzeReviews(prInfo: PR_repository_pullRequest, isOwner: (name: string) => boolean) {
-    const hasUpToDateReview: Set<string> = new Set();
+function getReviews(prInfo: PR_repository_pullRequest, isOwner: (name: string) => boolean) {
+    if (!prInfo.reviews?.nodes) return [];
     const headCommitOid: string = prInfo.headRefOid;
-    /** Key: commit id. Value: review info. */
-    const staleReviewAuthorsByCommit = new Map<string, { reviewer: string, date: string }>();
-    let lastReviewDate, firstApprovalDate;
-    let isChangesRequested = false;
-    let approvalFlags = ApprovalFlags.None;
-
+    const reviews: ReviewInfo[] = [];
     // Do this in reverse order so we can detect up-to-date-reviews correctly
-    const reviews = [...prInfo.reviews?.nodes ?? []].reverse();
-
-    for (const r of reviews) {
+    for (const r of noNulls(prInfo.reviews.nodes).reverse()) {
+        const [reviewer, date] = [r?.author?.login, new Date(r.submittedAt)];
         // Skip nulls
-        if (!r?.commit || !r?.author?.login) continue;
+        if (!(r?.commit && reviewer)) continue;
         // Skip self-reviews
-        if (r.author.login === prInfo.author!.login) continue;
-
+        if (reviewer === prInfo.author!.login) continue;
+        // Only look at the most recent review per person (ignoring pending/commented)
+        if (reviews.find(r => r.reviewer.toLowerCase() === reviewer.toLowerCase())) continue;
+        // collect reviews by type
         if (r.commit.oid !== headCommitOid) {
-            // Stale review
-            // Reviewers with reviews of the current commit are not stale
-            if (!hasUpToDateReview.has(r.author.login)) {
-                staleReviewAuthorsByCommit.set(r.commit.abbreviatedOid, { reviewer: r.author.login, date: r.submittedAt });
-            }
-        } else if (!hasUpToDateReview.has(r.author.login)) {
-            // Most recent review of head commit for this author
-            hasUpToDateReview.add(r.author.login);
-            const reviewDate = new Date(r.submittedAt);
-            lastReviewDate = lastReviewDate && lastReviewDate > reviewDate ? lastReviewDate : reviewDate;
-            firstApprovalDate = firstApprovalDate && firstApprovalDate < reviewDate ? firstApprovalDate : reviewDate;
-            if (r.state === PullRequestReviewState.CHANGES_REQUESTED) {
-                isChangesRequested = true;
-            } else if (r.state === PullRequestReviewState.APPROVED) {
-                if ((r.authorAssociation === CommentAuthorAssociation.MEMBER)
-                    || (r.authorAssociation === CommentAuthorAssociation.OWNER)) {
-                    approvalFlags |= ApprovalFlags.Maintainer;
-                } else if (isOwner(r.author.login)) {
-                    approvalFlags |= ApprovalFlags.Owner;
-                } else {
-                    approvalFlags |= ApprovalFlags.Other;
-                }
-            }
+            reviews.push({ type: "stale", reviewer, date, abbrOid: r.commit.abbreviatedOid });
+            continue;
         }
+        if (r.state === PullRequestReviewState.CHANGES_REQUESTED) {
+            reviews.push({ type: "changereq", reviewer, date });
+            continue;
+        }
+        if (r.state !== PullRequestReviewState.APPROVED) continue;
+        const isMaintainer =
+            (r.authorAssociation === CommentAuthorAssociation.MEMBER)
+            || (r.authorAssociation === CommentAuthorAssociation.OWNER);
+        reviews.push({ type: "approved", reviewer, date, isMaintainer });
     }
-
-    return ({
-        lastReviewDate,
-        firstApprovalDate,
-        reviewersWithStaleReviews: Array.from(staleReviewAuthorsByCommit.entries()).map(([commit, info]) => ({
-            reviewedAbbrOid: commit,
-            reviewer: info.reviewer,
-            date: info.date
-        })),
-        approvalFlags,
-        isChangesRequested
-    });
+    return reviews;
 }
 
-function getDangerLevel(pkgInfo: readonly PackageInfo[]): DangerLevel {
-    if (pkgInfo.find(p => p.name === null)) return "Infrastructure";
-    if (pkgInfo.length === 0) {
-        throw new Error("Internal Error: not infrastructure but no packages touched too");
+function getCIResult(headCommit: PR_repository_pullRequest_commits_nodes_commit): { ciResult: CIResult, ciUrl?: string } {
+    const totalStatusChecks = headCommit.checkSuites?.nodes?.find(check => check?.app?.name?.includes("GitHub Actions"));
+    if (!totalStatusChecks) return { ciResult: CIResult.Missing, ciUrl: undefined };
+    switch (totalStatusChecks.conclusion) {
+        case CheckConclusionState.SUCCESS:
+            return { ciResult: CIResult.Pass };
+        case CheckConclusionState.FAILURE:
+        case CheckConclusionState.SKIPPED:
+        case CheckConclusionState.TIMED_OUT:
+            return { ciResult: CIResult.Fail, ciUrl: totalStatusChecks.url };
+        default:
+            return { ciResult: CIResult.Pending };
     }
-    const nonTestPackagesTouched =
-        noNulls(pkgInfo.map(p => (p.name === null || !p.files.some(f => f.kind === "test"))));
-    if (nonTestPackagesTouched.length > 1) {
-        return "MultiplePackagesEdited";
-    } else if (pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"))) {
-        return "ScopedAndConfiguration";
-    } else if (pkgInfo.some(p => p.files.some(f => f.kind === "test"))) {
-        return "ScopedAndTested";
-    } else {
-        return "ScopedAndUntested";
-    }
-}
-
-function getCIResult(headCommit: PR_repository_pullRequest_commits_nodes_commit) {
-    let ciUrl: string | undefined = undefined;
-    let ciResult: CIResult = undefined!;
-
-    const totalStatusChecks = headCommit.checkSuites?.nodes?.find(check => check?.app?.name?.includes("GitHub Actions"))
-    if (totalStatusChecks) {
-        switch (totalStatusChecks.conclusion) {
-            case CheckConclusionState.SUCCESS:
-                ciResult = CIResult.Pass;
-                break;
-
-            case CheckConclusionState.FAILURE:
-            case CheckConclusionState.SKIPPED:
-            case CheckConclusionState.TIMED_OUT:
-                ciResult = CIResult.Fail;
-                ciUrl = totalStatusChecks.url;
-                break;
-
-            default:
-                ciResult = CIResult.Pending;
-                break;
-        }
-    }
-
-    if (!ciResult) {
-        return { ciResult: CIResult.Missing, ciUrl: undefined };
-    }
-
-    return { ciResult, ciUrl };
 }
 
 function downloadsToPopularityLevel(monthlyDownloads: number): PopularityLevel {

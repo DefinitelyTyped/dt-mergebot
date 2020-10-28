@@ -3,7 +3,6 @@
   "now": "2020-07-11T02:09:32.239Z",
   "pr_number": 46008,
   "author": "risingBirdSong",
-  "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "3e19cb9",
   "headCommitOid": "3e19cb9cae4689fb736fd6682f7f76d8efafcaa2",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-07-10T00:44:49.000Z",
   "lastCommentDate": "2020-07-10T18:58:06.000Z",
   "maintainerBlessed": true,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46008/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -34,11 +31,13 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "lastReviewDate": "2020-07-10T18:53:03.000Z",
-  "firstApprovalDate": "2020-07-10T18:53:03.000Z",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 2,
-  "isChangesRequested": false
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "Zalastax",
+      "date": "2020-07-10T18:53:03.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }

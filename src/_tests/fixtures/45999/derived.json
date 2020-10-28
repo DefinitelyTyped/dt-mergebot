@@ -3,7 +3,6 @@
   "now": "2020-07-11T02:37:12.780Z",
   "pr_number": 45999,
   "author": "alexpyzhianov",
-  "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "381a2a9",
   "headCommitOid": "381a2a9d17d14e111f7d002c866debfcac6724e8",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-07-10T13:10:49.000Z",
   "lastCommentDate": "2020-07-10T14:38:56.000Z",
   "maintainerBlessed": true,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/45999/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Critical",
   "pkgInfo": [
@@ -59,11 +56,19 @@
       "popularityLevel": "Critical"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "lastReviewDate": "2020-07-10T14:49:32.000Z",
-  "firstApprovalDate": "2020-07-10T13:34:29.000Z",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 2,
-  "isChangesRequested": false
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "ferdaber",
+      "date": "2020-07-10T14:49:32.000Z",
+      "isMaintainer": false
+    },
+    {
+      "type": "approved",
+      "reviewer": "eps1lon",
+      "date": "2020-07-10T13:34:29.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }
