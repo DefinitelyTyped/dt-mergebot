@@ -3,7 +3,6 @@
   "now": "2020-07-08T18:57:14.868Z",
   "pr_number": 45836,
   "author": "mmorearty",
-  "dangerLevel": "MultiplePackagesEdited",
   "headCommitAbbrOid": "6c7735e",
   "headCommitOid": "6c7735e2b8f39640cb73e40ae04cb6642a8ab2cd",
   "mergeIsRequested": true,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-07-01T23:06:38.000Z",
   "lastCommentDate": "2020-07-08T18:13:23.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/45836/files",
   "hasMergeConflict": false,
-  "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -61,11 +58,13 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "lastReviewDate": "2020-07-03T22:31:28.000Z",
-  "firstApprovalDate": "2020-07-03T22:31:28.000Z",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 2,
-  "isChangesRequested": false
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "timjb",
+      "date": "2020-07-03T22:31:28.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }

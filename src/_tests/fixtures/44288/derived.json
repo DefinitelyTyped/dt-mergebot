@@ -3,7 +3,6 @@
   "now": "2020-04-28T09:34:31.000Z",
   "pr_number": 44288,
   "author": "nomatteus",
-  "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "05ee6f2",
   "headCommitOid": "05ee6f2784d694258f61e7a93a95e758ea29ad9d",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-04-28T04:46:31.000Z",
   "lastCommentDate": "2020-04-28T04:46:31.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44288/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -37,9 +34,6 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 0,
-  "isChangesRequested": false
+  "reviews": [],
+  "ciResult": "pass"
 }

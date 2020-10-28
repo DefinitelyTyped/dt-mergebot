@@ -3,7 +3,6 @@
   "now": "2020-08-27T20:15:58.001Z",
   "pr_number": 47017,
   "author": "mastermatt",
-  "dangerLevel": "MultiplePackagesEdited",
   "headCommitAbbrOid": "dbe687d",
   "headCommitOid": "dbe687d30362e4f887e88048a3646c13c0c4d907",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-08-25T05:47:26.000Z",
   "lastCommentDate": "2020-08-25T05:54:37.000Z",
   "maintainerBlessed": true,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/47017/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Critical",
   "pkgInfo": [
@@ -67,9 +64,6 @@
       "popularityLevel": "Critical"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 0,
-  "isChangesRequested": false
+  "reviews": [],
+  "ciResult": "pass"
 }

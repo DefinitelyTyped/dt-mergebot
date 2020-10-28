@@ -3,7 +3,6 @@
   "now": "2020-05-01T19:27:22.014Z",
   "pr_number": 44424,
   "author": "tomer-openfin",
-  "dangerLevel": "ScopedAndConfiguration",
   "headCommitAbbrOid": "af63694",
   "headCommitOid": "af636941dac21c0752befa1617297dfdac3e0a52",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-05-01T19:20:22.000Z",
   "lastCommentDate": "2020-05-01T19:20:22.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44424/files",
   "hasMergeConflict": false,
-  "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -436,9 +433,6 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 0,
-  "isChangesRequested": false
+  "reviews": [],
+  "ciResult": "pass"
 }

@@ -3,7 +3,6 @@
   "now": "2020-03-19T17:38:20.000Z",
   "pr_number": 43151,
   "author": "adamzerella",
-  "dangerLevel": "ScopedAndConfiguration",
   "headCommitAbbrOid": "bb6d315",
   "headCommitOid": "bb6d3150b485cd203d265e06ca910262256e523e",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-03-15T12:50:20.000Z",
   "lastCommentDate": "2020-03-15T12:50:20.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43151/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -47,9 +44,6 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 0,
-  "isChangesRequested": false
+  "reviews": [],
+  "ciResult": "pass"
 }

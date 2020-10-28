@@ -3,7 +3,6 @@
   "now": "2020-05-02T15:44:09.276Z",
   "pr_number": 44437,
   "author": "johnnyreilly",
-  "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "eb92456",
   "headCommitOid": "eb92456861d4537c6e96dd7865e715aa4812aae0",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-05-02T12:17:06.000Z",
   "lastCommentDate": "2020-05-02T12:17:06.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44437/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Popular",
   "pkgInfo": [
@@ -43,11 +40,13 @@
       "popularityLevel": "Popular"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "lastReviewDate": "2020-05-02T12:17:22.000Z",
-  "firstApprovalDate": "2020-05-02T12:17:22.000Z",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 2,
-  "isChangesRequested": false
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "kamontat",
+      "date": "2020-05-02T12:17:22.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }

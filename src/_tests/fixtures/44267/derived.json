@@ -3,7 +3,6 @@
   "now": "2020-04-30T22:04:05.517Z",
   "pr_number": 44267,
   "author": "ErikMartensson",
-  "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "ceb74b3",
   "headCommitOid": "ceb74b3471454b2f57cbe671e130028c680ffb88",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-04-27T14:15:25.000Z",
   "lastCommentDate": "2020-04-27T14:15:25.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44267/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -41,11 +38,13 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "lastReviewDate": "2020-04-28T06:48:36.000Z",
-  "firstApprovalDate": "2020-04-28T06:48:36.000Z",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 2,
-  "isChangesRequested": false
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "malithrw",
+      "date": "2020-04-28T06:48:36.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }

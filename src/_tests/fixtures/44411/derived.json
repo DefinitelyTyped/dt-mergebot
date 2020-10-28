@@ -3,7 +3,6 @@
   "now": "2020-05-01T16:17:25.774Z",
   "pr_number": 44411,
   "author": "peterblazejewicz",
-  "dangerLevel": "ScopedAndConfiguration",
   "headCommitAbbrOid": "d0d51a0",
   "headCommitOid": "d0d51a062525a6a4b83b297cd0e75adb4d5628f6",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-05-01T10:24:23.000Z",
   "lastCommentDate": "2020-05-01T10:24:23.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44411/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -58,9 +55,6 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 0,
-  "isChangesRequested": false
+  "reviews": [],
+  "ciResult": "pass"
 }

@@ -3,7 +3,6 @@
   "now": "2020-05-29T11:17:01.368Z",
   "pr_number": 45137,
   "author": "lirbank",
-  "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "22c73c8",
   "headCommitOid": "22c73c88cc9c09efd4c2998ec360607dd4c36c2e",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-05-29T04:38:59.000Z",
   "lastCommentDate": "2020-05-29T04:43:45.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/45137/files",
   "hasMergeConflict": false,
-  "authorIsOwner": true,
   "isFirstContribution": false,
   "popularityLevel": "Popular",
   "pkgInfo": [
@@ -64,11 +61,13 @@
       "popularityLevel": "Popular"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "lastReviewDate": "2020-05-29T07:13:24.000Z",
-  "firstApprovalDate": "2020-05-29T07:13:24.000Z",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 2,
-  "isChangesRequested": false
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "LinusU",
+      "date": "2020-05-29T07:13:24.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }

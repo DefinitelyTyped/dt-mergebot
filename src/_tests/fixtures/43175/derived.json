@@ -3,7 +3,6 @@
   "now": "2020-03-19T18:39:37.000Z",
   "pr_number": 43175,
   "author": "ankhler",
-  "dangerLevel": "ScopedAndUntested",
   "headCommitAbbrOid": "b4b3bc8",
   "headCommitOid": "b4b3bc8a617e2e0810d60e389415818d903e6362",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-03-17T13:51:37.000Z",
   "lastCommentDate": "2020-03-17T13:51:37.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43175/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": true,
   "popularityLevel": "Popular",
   "pkgInfo": [
@@ -42,15 +39,13 @@
       "popularityLevel": "Popular"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "reviewersWithStaleReviews": [
+  "reviews": [
     {
-      "reviewedAbbrOid": "767a750",
+      "type": "stale",
       "reviewer": "couven92",
-      "date": "2020-03-17T13:29:17Z"
+      "date": "2020-03-17T13:29:17.000Z",
+      "abbrOid": "767a750"
     }
   ],
-  "approvalFlags": 0,
-  "isChangesRequested": false
+  "ciResult": "pass"
 }

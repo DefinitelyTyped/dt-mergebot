@@ -3,7 +3,6 @@
   "now": "2020-04-29T21:07:21.000Z",
   "pr_number": 44343,
   "author": "sandersn",
-  "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "abd65c3",
   "headCommitOid": "abd65c3bbbf3463b41127be203c37fe64f717a7e",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-04-29T16:19:21.000Z",
   "lastCommentDate": "2020-04-29T16:19:21.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44343/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -33,9 +30,6 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "unknown",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 0,
-  "isChangesRequested": false
+  "reviews": [],
+  "ciResult": "unknown"
 }

@@ -3,7 +3,6 @@
   "now": "2020-05-29T16:28:19.013Z",
   "pr_number": 44989,
   "author": "petr-motejlek",
-  "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "9ca6086",
   "headCommitOid": "9ca60862ea56c9ff8d6b0f26c28b7e0bdaef4b34",
   "mergeIsRequested": false,
@@ -11,9 +10,7 @@
   "lastPushDate": "2020-05-23T08:41:39.000Z",
   "lastCommentDate": "2020-05-23T08:45:20.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44989/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Popular",
   "pkgInfo": [
@@ -65,11 +62,13 @@
       "popularityLevel": "Popular"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "lastReviewDate": "2020-05-23T10:05:48.000Z",
-  "firstApprovalDate": "2020-05-23T10:05:48.000Z",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 2,
-  "isChangesRequested": false
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "Nicholaiii",
+      "date": "2020-05-23T10:05:48.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }

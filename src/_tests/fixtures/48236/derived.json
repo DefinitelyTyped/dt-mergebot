@@ -3,7 +3,6 @@
   "now": "2020-10-05T00:43:22.594Z",
   "pr_number": 48236,
   "author": "jablko",
-  "dangerLevel": "ScopedAndTested",
   "headCommitAbbrOid": "b4d71f6",
   "headCommitOid": "b4d71f672f0f204a514002348ebc2025d18866ca",
   "mergeIsRequested": true,
@@ -12,9 +11,7 @@
   "reopenedDate": "2020-09-27T19:03:37.000Z",
   "lastCommentDate": "2020-10-02T18:45:57.000Z",
   "maintainerBlessed": false,
-  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/48236/files",
   "hasMergeConflict": false,
-  "authorIsOwner": false,
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
@@ -38,11 +35,19 @@
       "popularityLevel": "Well-liked by everyone"
     }
   ],
-  "hasDismissedReview": false,
-  "ciResult": "pass",
-  "lastReviewDate": "2020-10-02T19:13:08.000Z",
-  "firstApprovalDate": "2020-09-30T00:07:50.000Z",
-  "reviewersWithStaleReviews": [],
-  "approvalFlags": 1,
-  "isChangesRequested": false
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "peterblazejewicz",
+      "date": "2020-10-02T19:13:08.000Z",
+      "isMaintainer": false
+    },
+    {
+      "type": "approved",
+      "reviewer": "amcasey",
+      "date": "2020-09-30T00:07:50.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }

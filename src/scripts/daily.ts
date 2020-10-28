@@ -46,6 +46,8 @@ const start = async function () {
 
   const deleteObject = async (id: string, shoulda?: string) => {
     if (shoulda) {
+        // don't automatically delete these, eg, PRs that were created
+        // during the scan would end up here.
         return console.log(`  Should delete "${id}" (${shoulda})`);
     }
     const mutation = createMutation(deleteProjectCard, { input: { cardId: id }});
