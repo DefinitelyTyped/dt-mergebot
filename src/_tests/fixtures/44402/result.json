@@ -1,6 +1,13 @@
 {
   "pr_number": 44402,
+  "targetColumn": "Needs Maintainer Action",
   "labels": [
+    "Other Approved",
+    "Maintainer Approved",
+    "Edits Infrastructure",
+    "No Other Owners",
+    "Self Merge",
+    "Untested Change",
     "Edits Infrastructure"
   ],
   "responseComments": [],
@@ -8,6 +15,5 @@
   "shouldMerge": false,
   "shouldUpdateLabels": true,
   "shouldUpdateProjectColumn": true,
-  "shouldRemoveFromActiveColumns": false,
-  "targetColumn": "Needs Maintainer Action"
+  "shouldRemoveFromActiveColumns": false
 }

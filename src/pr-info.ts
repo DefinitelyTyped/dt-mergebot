@@ -53,11 +53,6 @@ export interface BotEnsureRemovedFromProject {
     readonly isDraft: boolean;
 }
 
-export interface BotNoPackages {
-    readonly type: "no_packages";
-    readonly pr_number: number;
-}
-
 export type PackageInfo = {
     name: string | null; // null => not in a package (= infra files)
     kind: "edit" | "add" | "delete";
@@ -196,7 +191,7 @@ export async function deriveStateForPR(
     fetchFile = defaultFetchFile,
     getDownloads = getMonthlyDownloadCount,
     now = new Date().toISOString(),
-): Promise<PrInfo | BotFail | BotError | BotEnsureRemovedFromProject | BotNoPackages>  {
+): Promise<PrInfo | BotFail | BotError | BotEnsureRemovedFromProject>  {
     const prInfo = info.data.repository?.pullRequest;
 
     if (!prInfo) return botFail(`No PR with this number exists, (${JSON.stringify(info)})`);
@@ -224,7 +219,6 @@ export async function deriveStateForPR(
         headCommit.oid, fetchFile, async name => await getDownloads(name, lastPushDate));
     if (pkgInfoEtc instanceof Error) return botError(prInfo.number, pkgInfoEtc.message);
     const { pkgInfo, popularityLevel } = pkgInfoEtc;
-    if (!pkgInfo.some(p => p.name)) return botNoPackages(prInfo.number);
 
     const reviews = getReviews(prInfo);
     const latestReview = latestDate(...reviews.map(r => r.date));
@@ -263,10 +257,6 @@ export async function deriveStateForPR(
 
     function botEnsureRemovedFromProject(pr_number: number, message: string, isDraft: boolean): BotEnsureRemovedFromProject {
         return { type: "remove", pr_number, message, isDraft };
-    }
-
-    function botNoPackages(pr_number: number): BotNoPackages {
-        return { type: "no_packages", pr_number };
     }
 }
 
