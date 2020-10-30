@@ -66,6 +66,7 @@ export interface BotEnsureRemovedFromProject {
 
 export interface BotNoPackages {
     readonly type: "no_packages";
+    readonly now: string;
     readonly pr_number: number;
 }
 
@@ -234,7 +235,6 @@ export async function deriveStateForPR(
         headCommit.oid, fetchFile, getDownloads);
     if (pkgInfoEtc instanceof Error) return botError(prInfo.number, pkgInfoEtc.message);
     const { pkgInfo, popularityLevel } = pkgInfoEtc;
-    if (!pkgInfo.some(p => p.name)) return botNoPackages(prInfo.number);
 
     const allOwners = pkgInfoAllOwners(pkgInfo);
 
@@ -256,6 +256,8 @@ export async function deriveStateForPR(
     const activityDates = [createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, reviewAnalysis.lastReviewDate];
 
     const dangerLevel = getDangerLevel(pkgInfo);
+
+    if (!pkgInfo.some(p => p.name)) return { type: "no_packages", now, pr_number: prInfo.number, ...reviewAnalysis };
 
     return {
         type: "info",
@@ -293,10 +295,6 @@ export async function deriveStateForPR(
 
     function botEnsureRemovedFromProject(pr_number: number, message: string, isDraft: boolean): BotEnsureRemovedFromProject {
         return { type: "remove", pr_number, message, isDraft };
-    }
-
-    function botNoPackages(pr_number: number): BotNoPackages {
-        return { type: "no_packages", pr_number };
     }
 
     function isOwner(login: string) {
