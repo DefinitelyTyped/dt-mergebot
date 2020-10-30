@@ -4,19 +4,10 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWwxNjA4MjA4ODM1"
-        ],
-        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDExODkwMDY5"
-      }
-    }
-  },
-  {
-    "query": "mutation($input: RemoveLabelsFromLabelableInput!) { removeLabelsFromLabelable(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "labelIds": [
-          "MDU6TGFiZWw1ODYxNzcwNjM=",
-          "MDU6TGFiZWwxNjA4NTUyNDEw"
+          "MDU6TGFiZWw2OTcwMTg5NzI=",
+          "MDU6TGFiZWwxNjA4MjA4ODM1",
+          "MDU6TGFiZWwyMTU0ODU3ODAw",
+          "MDU6TGFiZWwyMTU0NzUwNDcz"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDExODkwMDY5"
       }

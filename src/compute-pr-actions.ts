@@ -1,6 +1,6 @@
 import * as Comments from "./comments";
 import * as urls from "./urls";
-import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages, FileInfo } from "./pr-info";
+import { PrInfo, BotError, BotEnsureRemovedFromProject, FileInfo } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
 import { noNullish, flatten, unique, sameUser, daysSince, sha256 } from "./util/util";
@@ -228,7 +228,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
 
 }
 
-export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPackages | BotError,
+export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotError,
                         extendedCallback: (info: ExtendedPrInfo) => void = _i => {}): Actions {
     if (prInfo.type === "remove") {
         if (prInfo.isDraft) {
@@ -243,16 +243,6 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
                 shouldRemoveFromActiveColumns: true
             };
         }
-    }
-
-    if (prInfo.type === "no_packages") {
-        return {
-            ...createEmptyActions(prInfo.pr_number),
-            targetColumn: "Needs Maintainer Action",
-            shouldUpdateProjectColumn: true,
-            labels: ["Edits Infrastructure"],
-            shouldUpdateLabels: true,
-        };
     }
 
     const context = createDefaultActions(prInfo.pr_number);
@@ -296,6 +286,12 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     label("Config Edit", !info.hasNewPackages && info.editsConfig);
     label("Untested Change", !info.hasTests);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
+
+    if (!info.pkgInfo.some(p => p.name)) {
+        context.targetColumn = "Needs Maintainer Action";
+        context.labels.push("Edits Infrastructure");
+        return context;
+    }
 
     // Update intro comment
     post({ tag: "welcome", status: createWelcomeComment(info) });

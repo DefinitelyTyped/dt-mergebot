@@ -1,4 +1,67 @@
 {
-  "type": "no_packages",
-  "pr_number": 44402
+  "type": "info",
+  "now": "2020-05-01T15:14:44.000Z",
+  "pr_number": 44402,
+  "author": "sandersn",
+  "headCommitAbbrOid": "5dfb994",
+  "headCommitOid": "5dfb9945fc5c243f011a9436cbcc12d1ad12b012",
+  "lastPushDate": "2020-04-30T23:17:43.000Z",
+  "lastActivityDate": "2020-05-01T05:46:07.000Z",
+  "maintainerBlessed": false,
+  "hasMergeConflict": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "pkgInfo": [
+    {
+      "name": null,
+      "kind": "edit",
+      "files": [
+        {
+          "path": "README.cn.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.es.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.ko.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.ru.md",
+          "kind": "infrastructure"
+        }
+      ],
+      "owners": [],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
+    }
+  ],
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "galkin",
+      "date": "2020-05-01T05:46:07.000Z",
+      "isMaintainer": false
+    },
+    {
+      "type": "approved",
+      "reviewer": "armanio123",
+      "date": "2020-04-30T23:37:36.000Z",
+      "isMaintainer": true
+    },
+    {
+      "type": "approved",
+      "reviewer": "saschanaz",
+      "date": "2020-04-30T23:29:02.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }
