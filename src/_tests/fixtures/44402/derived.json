@@ -1,5 +1,10 @@
 {
   "type": "no_packages",
   "now": "2020-05-01T15:14:44.000Z",
-  "pr_number": 44402
+  "pr_number": 44402,
+  "lastReviewDate": "2020-05-01T05:46:07.000Z",
+  "firstApprovalDate": "2020-04-30T23:29:02.000Z",
+  "reviewersWithStaleReviews": [],
+  "approvalFlags": 5,
+  "isChangesRequested": false
 }
