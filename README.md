@@ -104,7 +104,7 @@ Then you can work against these fixtures offline with:
 # Watch mode for all tests
 npm test -- --watch
 # Just run fixtures for one PR
-npm test --testNamePattern 44299
+npm test -- --testNamePattern 44299
 ```
 
 Run a test with the debugger:
