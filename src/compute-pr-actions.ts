@@ -2,7 +2,7 @@ import * as Comments from "./comments";
 import { PrInfo, ApprovalFlags, BotError, BotEnsureRemovedFromProject, BotNoPackages } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { pkgInfoAllOwners } from "./pr-info";
-import { noNulls } from "./util/util";
+import { noNulls, unique } from "./util/util";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -293,7 +293,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
         // Ping stale reviewers if any
         if (info.reviewersWithStaleReviews.length) {
             const mostRecentReview = [...info.reviewersWithStaleReviews].sort((l, r) => l.date.localeCompare(r.date))[0];
-            const reviewersDeDuped = [...new Set(info.reviewersWithStaleReviews.map(r => r.reviewer))];
+            const reviewersDeDuped = unique(info.reviewersWithStaleReviews.map(r => r.reviewer));
             context.responseComments.push(Comments.PingStaleReviewer(mostRecentReview.reviewedAbbrOid, reviewersDeDuped));
         }
     }
