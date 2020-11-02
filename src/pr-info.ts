@@ -64,12 +64,6 @@ export interface BotEnsureRemovedFromProject {
     readonly isDraft: boolean;
 }
 
-export interface BotNoPackages {
-    readonly type: "no_packages";
-    readonly now: string;
-    readonly pr_number: number;
-}
-
 type PackageInfo = {
     name: string | null; // null => not in a package (= infra files)
     files: FileInfo[];
@@ -218,7 +212,7 @@ export async function deriveStateForPR(
     fetchFile = defaultFetchFile,
     getDownloads = getMonthlyDownloadCount,
     getNow = () => new Date(),
-): Promise<PrInfo | BotFail | BotError | BotEnsureRemovedFromProject | BotNoPackages>  {
+): Promise<PrInfo | BotFail | BotError | BotEnsureRemovedFromProject>  {
     const prInfo = info.data.repository?.pullRequest;
 
     if (!prInfo) return botFail(`No PR with this number exists, (${JSON.stringify(info)})`);
@@ -256,8 +250,6 @@ export async function deriveStateForPR(
     const activityDates = [createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, reviewAnalysis.lastReviewDate];
 
     const dangerLevel = getDangerLevel(pkgInfo);
-
-    if (!pkgInfo.some(p => p.name)) return { type: "no_packages", now, pr_number: prInfo.number, ...reviewAnalysis };
 
     return {
         type: "info",

@@ -1,5 +1,5 @@
 import * as Comments from "./comments";
-import { PrInfo, ApprovalFlags, BotError, BotEnsureRemovedFromProject, BotNoPackages } from "./pr-info";
+import { PrInfo, ApprovalFlags, BotError, BotEnsureRemovedFromProject } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { pkgInfoAllOwners } from "./pr-info";
 import { noNulls } from "./util/util";
@@ -151,7 +151,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     };
 }
 
-export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPackages | BotError ): Actions {
+export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotError ): Actions {
     if (prInfo.type === "remove") {
         if (prInfo.isDraft) {
             return {
@@ -164,16 +164,6 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
                 ...createEmptyActions(prInfo.pr_number),
                 shouldRemoveFromActiveColumns: true
             };
-        };
-    }
-
-    if (prInfo.type === "no_packages") {
-        return {
-            ...createEmptyActions(prInfo.pr_number),
-            targetColumn: "Needs Maintainer Action",
-            shouldUpdateProjectColumn: true,
-            labels: { "Edits Infrastructure": true },
-            shouldUpdateLabels: true,
         };
     }
 
@@ -210,6 +200,12 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     context.labels["Untested Change"] = info.dangerLevel === "ScopedAndUntested";
     context.labels["Merge:YSYL"] = info.staleness === Staleness.YSYL;
     context.labels["Abandoned"] = info.staleness === Staleness.Abandoned;
+
+    if (!info.pkgInfo.some(p => p.name)) {
+        context.targetColumn = "Needs Maintainer Action";
+        context.labels["Edits Infrastructure"] = true;
+        return context;
+    }
 
     // Update intro comment
     context.responseComments.push({
