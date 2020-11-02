@@ -16,7 +16,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNulls, notUndefined, findLast, forEachReverse, daysSince, authorNotBot } from "./util/util";
+import { noNulls, notUndefined, flatten, unique, findLast, forEachReverse, daysSince, authorNotBot } from "./util/util";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
 import { PullRequestState } from "./schema/graphql-global-types";
@@ -386,7 +386,7 @@ async function getPackageInfosEtc(
 }
 
 export function pkgInfoAllOwners(pkgInfo: readonly PackageInfo[]): string[] {
-    return [...new Set(noNulls(pkgInfo.map(p => p.owners)).flat(1))];
+    return unique(flatten(pkgInfo.map(p => p.owners || [])));
 }
 
 async function categorizeFile(path: string, contents: (oid?: string) => Promise<string | undefined>): Promise<[string|null, FileInfo]> {
