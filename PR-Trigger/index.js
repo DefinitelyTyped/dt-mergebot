@@ -12,6 +12,7 @@ const prHandlers = new Map();
 
 /** @type {import("@azure/functions").AzureFunction} */
 const httpTrigger = async function (context, _req) {
+    context.log(process.version)
 
     /** @type {import("@azure/functions").HttpRequest} */
     const req = _req;
