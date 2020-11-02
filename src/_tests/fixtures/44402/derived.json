@@ -1,7 +1,54 @@
 {
-  "type": "no_packages",
+  "type": "info",
   "now": "2020-05-01T15:14:44.000Z",
   "pr_number": 44402,
+  "author": "sandersn",
+  "dangerLevel": "Infrastructure",
+  "headCommitAbbrOid": "5dfb994",
+  "headCommitOid": "5dfb9945fc5c243f011a9436cbcc12d1ad12b012",
+  "mergeIsRequested": false,
+  "stalenessInDays": 0,
+  "lastPushDate": "2020-04-30T23:17:43.000Z",
+  "lastCommentDate": "2020-04-30T23:21:44.000Z",
+  "maintainerBlessed": false,
+  "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44402/files",
+  "hasMergeConflict": false,
+  "authorIsOwner": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "pkgInfo": [
+    {
+      "name": null,
+      "files": [
+        {
+          "path": "README.cn.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.es.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.ko.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.ru.md",
+          "kind": "infrastructure"
+        }
+      ],
+      "owners": null,
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
+    }
+  ],
+  "hasDismissedReview": false,
+  "ciResult": "pass",
   "lastReviewDate": "2020-05-01T05:46:07.000Z",
   "firstApprovalDate": "2020-04-30T23:29:02.000Z",
   "reviewersWithStaleReviews": [],

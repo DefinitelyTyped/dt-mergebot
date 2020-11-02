@@ -4,7 +4,9 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWwxNjA4MjA4ODM1"
+          "MDU6TGFiZWwxNjA4MjA4ODM1",
+          "MDU6TGFiZWwyMTU0ODU3ODAw",
+          "MDU6TGFiZWw2OTcwMTg5NzI="
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDExODkwMDY5"
       }
@@ -16,14 +18,6 @@
       "input": {
         "contentId": "MDExOlB1bGxSZXF1ZXN0NDExODkwMDY5",
         "projectColumnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
-      }
-    }
-  },
-  {
-    "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "id": "MDEyOklzc3VlQ29tbWVudDYyMjE3NTQ3NA=="
       }
     }
   }

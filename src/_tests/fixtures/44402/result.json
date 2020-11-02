@@ -1,7 +1,28 @@
 {
   "pr_number": 44402,
+  "targetColumn": "Needs Maintainer Action",
   "labels": {
-    "Edits Infrastructure": true
+    "Mergebot Error": false,
+    "Has Merge Conflict": false,
+    "The CI failed": false,
+    "Revision needed": false,
+    "New Definition": false,
+    "Where is GH Actions?": false,
+    "Owner Approved": false,
+    "Other Approved": true,
+    "Maintainer Approved": true,
+    "Merge:YSYL": false,
+    "Popular package": false,
+    "Critical package": false,
+    "Edits Infrastructure": true,
+    "Edits multiple packages": false,
+    "Author is Owner": false,
+    "No Other Owners": true,
+    "Too Many Owners": false,
+    "Merge:Auto": true,
+    "Untested Change": false,
+    "Config Edit": false,
+    "Abandoned": false
   },
   "responseComments": [],
   "shouldClose": false,
@@ -9,6 +30,5 @@
   "shouldUpdateLabels": true,
   "shouldUpdateProjectColumn": true,
   "shouldRemoveFromActiveColumns": false,
-  "isReadyForAutoMerge": false,
-  "targetColumn": "Needs Maintainer Action"
+  "isReadyForAutoMerge": true
 }
