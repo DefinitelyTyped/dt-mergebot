@@ -111,42 +111,21 @@ export enum ApprovalFlags {
     Maintainer = 1 << 2
 }
 
-export type DangerLevel =
-    | "ScopedAndTested"
-    | "ScopedAndUntested"
-    | "ScopedAndConfiguration"
-    | "MultiplePackagesEdited"
-    | "Infrastructure";
-function getDangerLevel(pkgInfo: readonly PackageInfo[]): DangerLevel {
-    if (pkgInfo.find(p => p.name === null)) return "Infrastructure";
-    if (pkgInfo.length === 0) {
-        throw new Error("Internal Error: not infrastructure but no packages touched too");
-    }
-    if (pkgInfo.length > 1) {
-        return "MultiplePackagesEdited";
-    } else if (pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"))) {
-        return "ScopedAndConfiguration";
-    } else if (pkgInfo.some(p => p.files.some(f => f.kind === "test"))) {
-        return "ScopedAndTested";
-    } else {
-        return "ScopedAndUntested";
-    }
-}
-
 // used to pass around pr info with additional values
 interface ExtendedPrInfo extends PrInfo {
     readonly orig: PrInfo;
     readonly reviewLink: string;
     readonly editsInfra: boolean;
+    readonly editsConfig: boolean;
     readonly authorIsOwner: boolean;
     readonly allOwners: string[];
     readonly otherOwners: string[];
     readonly noOtherOwners: boolean;
     readonly tooManyOwners: boolean;
     readonly canBeMerged: boolean;
-    readonly dangerLevel: DangerLevel;
     readonly approved: boolean;
-    readonly approverKind: ApproverKinds;
+    readonly approverKind: ApproverKind;
+    readonly requireMaintainer: boolean;
     readonly blessable: boolean;
     readonly approvedReviews: (ReviewInfo & { type: "approved" })[];
     readonly changereqReviews: (ReviewInfo & { type: "changereq" })[];
@@ -156,6 +135,8 @@ interface ExtendedPrInfo extends PrInfo {
     readonly failedCI: boolean;
     readonly staleness: Staleness;
     readonly packages: readonly string[];
+    readonly hasMultiplePackages: boolean; // not counting infra files
+    readonly hasTests: boolean;
     readonly newPackages: readonly string[];
     readonly hasNewPackages: boolean;
 }
@@ -163,32 +144,35 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const reviewLink = uriForReview.replace(/{}/, ""+info.pr_number);
     const authorIsOwner = info.pkgInfo.every(p => p.owners && p.owners.map(o => o.toLowerCase()).includes(info.author.toLowerCase()));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
+    const editsConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
     const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners || [])));
     const otherOwners = allOwners.filter(o => info.author.toLowerCase() !== o.toLowerCase());
     const noOtherOwners = !allOwners.some(o => o.toLowerCase() !== info.author.toLowerCase());
     const tooManyOwners = allOwners.length > 50;
     const packages = noNulls(info.pkgInfo.map(p => p.name));
+    const hasMultiplePackages = packages.length > 1;
+    const hasTests = info.pkgInfo.some(p => p.files.some(f => f.kind === "test"));
     const newPackages = noNulls(info.pkgInfo.map(p => p.owners ? null : p.name));
     const hasNewPackages = newPackages.length > 0;
+    const requireMaintainer = editsInfra || editsConfig || hasMultiplePackages || !hasTests || hasNewPackages || tooManyOwners;
     const blessable = !(hasNewPackages || editsInfra || noOtherOwners);
     const approvedReviews = info.reviews.filter(r => r.type === "approved") as ExtendedPrInfo["approvedReviews"];
     const changereqReviews = info.reviews.filter(r => r.type === "changereq") as ExtendedPrInfo["changereqReviews"];
     const staleReviews = info.reviews.filter(r => r.type === "stale") as ExtendedPrInfo["staleReviews"];
-    const approvalFlags = approvedReviews.reduce((flags, r) => flags | (r.isMaintainer ? ApprovalFlags.Maintainer
-                                                                        : allOwners.includes(r.reviewer) ? ApprovalFlags.Owner
-                                                                        : ApprovalFlags.Other),
+    const approvalFlags = approvedReviews.reduce(
+        (flags, r) => flags | (r.isMaintainer ? ApprovalFlags.Maintainer : allOwners.includes(r.reviewer) ? ApprovalFlags.Owner : ApprovalFlags.Other),
         ApprovalFlags.None);
     const hasChangereqs = changereqReviews.length > 0;
-    const dangerLevel = getDangerLevel(info.pkgInfo);
-    const { approved, approverKind } = getApproval(info, approvalFlags, dangerLevel, blessable, noOtherOwners, hasNewPackages);
+    const approverKind = getApproverKind(info, requireMaintainer, blessable, noOtherOwners);
+    const approved = getApproval(approvalFlags, approverKind);
     const canBeMerged = info.ciResult === CIResult.Pass && !info.hasMergeConflict && approved;;
     const failedCI = info.ciResult === CIResult.Fail;
     const staleness = getStaleness(info, canBeMerged);
     return {
         ...info, orig: info, reviewLink,
-        authorIsOwner, editsInfra, allOwners, otherOwners, noOtherOwners, tooManyOwners,
-        canBeMerged, dangerLevel, approved, approverKind, blessable, failedCI, staleness,
-        packages, newPackages, hasNewPackages,
+        authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners,
+        canBeMerged, approved, approverKind, requireMaintainer, blessable, failedCI, staleness,
+        packages, hasMultiplePackages, hasTests, newPackages, hasNewPackages,
         approvedReviews, changereqReviews, staleReviews, approvalFlags, hasChangereqs
     };
 }
@@ -242,14 +226,14 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
     context.labels["New Definition"] = info.hasNewPackages;
     context.labels["Edits Infrastructure"] = info.editsInfra;
-    context.labels["Edits multiple packages"] = info.dangerLevel === "MultiplePackagesEdited";
+    context.labels["Edits multiple packages"] = info.hasMultiplePackages;
     context.labels["Author is Owner"] = info.authorIsOwner;
     context.labels["No Other Owners"] = !info.hasNewPackages && info.noOtherOwners;
     context.labels["Too Many Owners"] = info.tooManyOwners;
     context.labels["Merge:Auto"] = info.canBeMerged;
     context.isReadyForAutoMerge = info.canBeMerged;
-    context.labels["Config Edit"] = !info.hasNewPackages && info.dangerLevel === "ScopedAndConfiguration";
-    context.labels["Untested Change"] = info.dangerLevel === "ScopedAndUntested";
+    context.labels["Config Edit"] = !info.hasNewPackages && info.editsConfig;
+    context.labels["Untested Change"] = !info.hasTests;
     context.labels["Merge:YSYL"] = info.staleness === Staleness.YSYL;
     context.labels["Abandoned"] = info.staleness === Staleness.Abandoned;
 
@@ -328,7 +312,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
         else {
             context.responseComments.push(Comments.AskForAutoMergePermission(
                 info.author,
-                (info.tooManyOwners || !info.dangerLevel.startsWith("Scoped")) ? [] : info.otherOwners));
+                (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners));
             context.targetColumn = "Waiting for Author to Merge";
         }
 
@@ -352,26 +336,27 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     return context;
 }
 
-type ApproverKinds = "maintainers" | "owners" | "others";
-function getApproval(info: PrInfo, approvalFlags: number, dangerLevel: DangerLevel, blessable: boolean, noOtherOwners: boolean, tooManyOwners: boolean) {
+type ApproverKind = "maintainers" | "owners" | "others";
+
+function getApproverKind(info: PrInfo, requireMaintainer: boolean, blessable: boolean, noOtherOwners: boolean) {
     const blessed = blessable && info.maintainerBlessed;
-    const approvalFor = (who: ApproverKinds) => {
-        const approverKind: ApproverKinds =
-            who === "maintainers" && blessed ? "owners"
-            : who === "owners" && noOtherOwners ? "maintainers"
-            : who;
-        const approved =
-            !!(approvalFlags &
-               (approverKind === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
-                : approverKind === "owners" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
-                : (ApprovalFlags.Maintainer)));
-        return { approved, approverKind };
-    };
-    if (dangerLevel !== "ScopedAndTested" || tooManyOwners) return approvalFor("maintainers");
-    if (info.popularityLevel === "Well-liked by everyone") return approvalFor("others");
-    if (info.popularityLevel === "Popular") return approvalFor("owners");
-    if (info.popularityLevel === "Critical") return approvalFor("maintainers");
-    throw new Error("Unknown popularity level " + info.popularityLevel);
+    const who: ApproverKind | undefined =
+        requireMaintainer ? "maintainers"
+        : info.popularityLevel === "Well-liked by everyone" ? "others"
+        : info.popularityLevel === "Popular" ? "owners"
+        : info.popularityLevel === "Critical" ? "maintainers"
+        : undefined;
+    if (!who) throw new Error("Unknown popularity level " + info.popularityLevel);
+    return who === "maintainers" && blessed && !noOtherOwners ? "owners"
+        : who === "owners" && noOtherOwners ? "maintainers"
+        : who;
+}
+
+function getApproval(approvalFlags: number, approverKind: ApproverKind) {
+    return !!(approvalFlags &
+              (approverKind === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
+               : approverKind === "owners" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
+               : (ApprovalFlags.Maintainer)));
 }
 
 /** E.g. let people review, but fall back to the DT maintainers based on the access rights above */
@@ -417,13 +402,10 @@ function createWelcomeComment(info: ExtendedPrInfo) {
             `***This is a live comment which I will keep updated.***`,
             ``);
 
-    const { approved, approverKind } = info;
-    const requiredApprovers = approverKind === "others" ? "type definition owners, DT maintainers or others"
-        : approverKind === "owners" ? "type definition owners or DT maintainers"
-        : "DT maintainers";
-    const aRequiredApprover = approverKind === "others" ? "someone"
-        : approverKind === "owners" ? "an owner or a DT maintainer"
-        : "a DT maintainer";
+    const [ aRequiredApprover, requiredApprovers ] =
+        info.approverKind === "others" ? ["someone", "type definition owners, DT maintainers or others"]
+        : info.approverKind === "owners" ? ["an owner or a DT maintainer", "type definition owners or DT maintainers"]
+        : ["a DT maintainer", "DT maintainers"];
     const ARequiredApprover = aRequiredApprover[0].toUpperCase() + aRequiredApprover.substring(1);
 
     // Lets the author know who needs to review this
@@ -433,13 +415,13 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by ${aRequiredApprover} before it can be merged.`;
     } else if (info.popularityLevel === "Critical" && !info.maintainerBlessed) {
         reviewerAdvisory = `Because this is a widely-used package, ${aRequiredApprover} will need to review it before it can be merged.`;
-    } else if (info.dangerLevel === "ScopedAndTested") {
+    } else if (!info.requireMaintainer) {
         reviewerAdvisory = "Because you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.";
     } else if (info.noOtherOwners && !info.maintainerBlessed) {
         reviewerAdvisory = `There aren't any other owners of this package, so ${aRequiredApprover} will review it.`;
-    } else if (info.dangerLevel === "MultiplePackagesEdited" && !info.maintainerBlessed) {
+    } else if (info.hasMultiplePackages && !info.maintainerBlessed) {
         reviewerAdvisory = `Because this PR edits multiple packages, it can be merged once it's reviewed by ${aRequiredApprover}.`;
-    } else if (info.dangerLevel === "ScopedAndConfiguration" && !info.maintainerBlessed) {
+    } else if (info.editsConfig && !info.maintainerBlessed) {
         reviewerAdvisory = `Because this PR edits the configuration file, it can be merged once it's reviewed by ${aRequiredApprover}.`;
     } else if (!info.maintainerBlessed) {
         reviewerAdvisory = `This PR can be merged once it's reviewed by ${aRequiredApprover}.`;
@@ -447,7 +429,7 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         reviewerAdvisory = "This PR can be merged once it's reviewed.";
     }
 
-    if (info.dangerLevel === "ScopedAndUntested") {
+    if (!info.hasTests) {
         display(`This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`);
     } else if (info.editsInfra) {
         display(`This PR touches some part of DefinitelyTyped infrastructure, so ${aRequiredApprover} will need to review it. This is rare — did you mean to do this?`);
@@ -477,22 +459,23 @@ function createWelcomeComment(info: ExtendedPrInfo) {
     const expectedResults = info.ciResult === CIResult.Pending ? "finished" : "passed";
     display(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
 
+    const approved = emoji(info.approved);
     if (info.hasNewPackages) {
-        display(` * ${emoji(approved)} Only ${aRequiredApprover} can approve changes when there are new packages added`);
+        display(` * ${approved} Only ${aRequiredApprover} can approve changes when there are new packages added`);
     } else if (info.editsInfra) {
         const infraFiles = info.pkgInfo.find(p => p.name === null)!.files;
         const links = infraFiles.map(f => `[\`${f.path}\`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.path})`);
-        display(` * ${emoji(approved)} ${ARequiredApprover} needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
-    } else if (info.dangerLevel === "MultiplePackagesEdited") {
-        display(` * ${emoji(approved)} ${ARequiredApprover} needs to approve changes which affect more than one package`);
-    } else if (info.dangerLevel === "ScopedAndTested" || info.maintainerBlessed) {
-        display(` * ${emoji(approved)} Most recent commit is approved by ${requiredApprovers}`);
+        display(` * ${approved} ${ARequiredApprover} needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
+    } else if (info.hasMultiplePackages) {
+        display(` * ${approved} ${ARequiredApprover} needs to approve changes which affect more than one package`);
+    } else if (!info.requireMaintainer || info.maintainerBlessed) {
+        display(` * ${approved} Most recent commit is approved by ${requiredApprovers}`);
     } else if (info.noOtherOwners) {
-        display(` * ${emoji(approved)} ${ARequiredApprover} can merge changes when there are no other reviewers`);
+        display(` * ${approved} ${ARequiredApprover} can merge changes when there are no other reviewers`);
     } else if (info.maintainerBlessed) {
-        display(` * ${emoji(approved)} Most recent commit is approved by ${requiredApprovers}`);
-    } else if (info.dangerLevel === "ScopedAndConfiguration") {
-        display(` * ${emoji(approved)} ${ARequiredApprover} needs to approve changes which affect module config files`);
+        display(` * ${approved} Most recent commit is approved by ${requiredApprovers}`);
+    } else if (info.editsConfig) {
+        display(` * ${approved} ${ARequiredApprover} needs to approve changes which affect module config files`);
         for (const pkg of info.pkgInfo) {
             for (const file of pkg.files) {
                 if (!file.suspect) continue;
@@ -500,7 +483,7 @@ function createWelcomeComment(info: ExtendedPrInfo) {
             }
         }
     } else {
-        display(` * ${emoji(approved)} Only ${aRequiredApprover} can approve changes [without tests](${testsLink})`);
+        display(` * ${approved} Only ${aRequiredApprover} can approve changes [without tests](${testsLink})`);
     }
 
     display(``);
