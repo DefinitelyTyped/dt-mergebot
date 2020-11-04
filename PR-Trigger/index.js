@@ -12,8 +12,6 @@ const prHandlers = new Map();
 
 /** @type {import("@azure/functions").AzureFunction} */
 const httpTrigger = async function (context, _req) {
-    context.log(process.version)
-
     /** @type {import("@azure/functions").HttpRequest} */
     const req = _req;
 
@@ -22,7 +20,7 @@ const httpTrigger = async function (context, _req) {
         throw new Error("Set either BOT_AUTH_TOKEN or AUTH_TOKEN to a valid auth token");
     }
 
-    context.log("HTTP trigger function received a request.");
+    context.log(`[${process.version}] HTTP trigger function received a request.`);
 
     const event = req.headers["x-github-event"];
 
