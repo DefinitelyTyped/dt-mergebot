@@ -8,15 +8,19 @@ const cache = createCache();
 
 export async function getProjectBoardColumns() {
   return cache.getAsync("project board colum names", Infinity, async () => {
-      const res = await query<GetProjectColumnsResult>(GetProjectColumns);
-      return res.repository?.project?.columns.nodes ?? [];
+      const res = (await query<GetProjectColumnsResult>(GetProjectColumns))
+          .repository?.project?.columns.nodes?.filter(defined)
+          ?? [];
+      return res.sort((a,b) => a.name.localeCompare(b.name));
   });
 }
 
 export async function getLabels() {
   return await cache.getAsync("label ids", Infinity, async () => {
-      const res = await query<GetLabelsResult>(GetLabels);
-      return res.repository?.labels?.nodes?.filter(defined) ?? [];
+      const res = (await query<GetLabelsResult>(GetLabels))
+          .repository?.labels?.nodes?.filter(defined)
+          ?? [];
+      return res.sort((a,b) => a.name.localeCompare(b.name));
   });
 }
 
