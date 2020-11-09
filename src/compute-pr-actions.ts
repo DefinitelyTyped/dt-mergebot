@@ -1,8 +1,8 @@
 import * as Comments from "./comments";
 import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages } from "./pr-info";
 import { CIResult } from "./util/CIResult";
-import { PackageInfo, ReviewInfo } from "./pr-info";
-import { noNulls, flatten, unique } from "./util/util";
+import { ReviewInfo } from "./pr-info";
+import { noNulls, flatten, unique, sameUser } from "./util/util";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -142,12 +142,12 @@ interface ExtendedPrInfo extends PrInfo {
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const reviewLink = uriForReview.replace(/{}/, ""+info.pr_number);
-    const authorIsOwner = info.pkgInfo.every(p => p.owners && p.owners.map(o => o.toLowerCase()).includes(info.author.toLowerCase()));
+    const authorIsOwner = info.pkgInfo.every(p => p.owners && p.owners.some(o => sameUser(o, info.author)));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
     const editsConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
     const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners || [])));
-    const otherOwners = allOwners.filter(o => info.author.toLowerCase() !== o.toLowerCase());
-    const noOtherOwners = !allOwners.some(o => o.toLowerCase() !== info.author.toLowerCase());
+    const otherOwners = allOwners.filter(o => !sameUser(o, info.author));
+    const noOtherOwners = !allOwners.some(o => !sameUser(o, info.author));
     const tooManyOwners = allOwners.length > 50;
     const packages = noNulls(info.pkgInfo.map(p => p.name));
     const hasMultiplePackages = packages.length > 1;
