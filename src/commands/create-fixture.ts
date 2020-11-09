@@ -70,8 +70,8 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     writeFileSync(downloadsJSONPath, "{}"); // one-time initialization of an empty storage
     return getDownloadsAndWriteToFile;
   }
-  async function getDownloadsAndWriteToFile(packageName: string) {
-    downloadsFetched[packageName] = await getMonthlyDownloadCount(packageName);
+  async function getDownloadsAndWriteToFile(packageName: string, until?: Date) {
+      downloadsFetched[packageName] = await getMonthlyDownloadCount(packageName, until);
     writeFileSync(downloadsJSONPath, JSON.stringify(downloadsFetched, null, "  "));
     return downloadsFetched[packageName];
   }

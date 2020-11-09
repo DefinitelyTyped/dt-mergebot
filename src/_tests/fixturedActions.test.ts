@@ -37,7 +37,7 @@ async function testFixture(dir: string) {
   const derived = await deriveStateForPR(
     response,
     (expr: string) => Promise.resolve(files[expr] as string),
-    (name: string) => name in downloads ? downloads[name] : 0,
+    (name: string, _until?: Date) => name in downloads ? downloads[name] : 0,
     () => new Date(readJSON(derivedPath).now)
   );
 

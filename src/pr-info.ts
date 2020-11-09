@@ -194,15 +194,7 @@ export async function deriveStateForPR(
     const headCommit = getHeadCommit(prInfo);
     if (headCommit == null) return botError(prInfo.number, "No head commit found");
 
-    const pkgInfoEtc = await getPackageInfosEtc(
-        noNulls(prInfo.files?.nodes).map(f => f.path).sort(),
-        headCommit.oid, fetchFile, getDownloads);
-    if (pkgInfoEtc instanceof Error) return botError(prInfo.number, pkgInfoEtc.message);
-    const { pkgInfo, popularityLevel } = pkgInfoEtc;
-    if (!pkgInfo.some(p => p.name)) return botNoPackages(prInfo.number);
-
     const author = prInfo.author.login;
-
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
 
     const createdDate = new Date(prInfo.createdAt);
@@ -210,6 +202,14 @@ export async function deriveStateForPR(
     const lastCommentDate = getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastPushDate;
     const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
+
+    const pkgInfoEtc = await getPackageInfosEtc(
+        noNulls(prInfo.files?.nodes).map(f => f.path).sort(),
+        headCommit.oid, fetchFile, async name => await getDownloads(name, lastPushDate));
+    if (pkgInfoEtc instanceof Error) return botError(prInfo.number, pkgInfoEtc.message);
+    const { pkgInfo, popularityLevel } = pkgInfoEtc;
+    if (!pkgInfo.some(p => p.name)) return botNoPackages(prInfo.number);
+
     const now = getNow().toISOString();
     const reviews = getReviews(prInfo);
     const latestReview = latestDate(...reviews.map(r => r.date));
