@@ -64,6 +64,10 @@ export function daysSince(date: Date, now: Date | string): number {
     return Math.floor(moment(now).diff(moment(date), "days"));
 }
 
+export function sameUser(u1: string, u2: string) {
+    return u1.toLowerCase() === u2.toLowerCase();
+}
+
 export function authorNotBot(node: { login: string } | { author?: { login: string } | null} | { actor?: { login: string } | null}): boolean {
     return ("author" in node && node.author!.login !== "typescript-bot")
         || ("actor" in node && node.actor!.login !== "typescript-bot")

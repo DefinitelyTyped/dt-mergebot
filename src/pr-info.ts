@@ -16,7 +16,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNulls, notUndefined, findLast, forEachReverse, daysSince, authorNotBot, latestDate, earliestDate
+import { noNulls, notUndefined, findLast, forEachReverse, daysSince, sameUser, authorNotBot, latestDate, earliestDate
        } from "./util/util";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
@@ -211,7 +211,7 @@ export async function deriveStateForPR(
     const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
     const now = getNow().toISOString();
-    const reviews = getReviews(prInfo, isOwner);
+    const reviews = getReviews(prInfo);
     const latestReview = latestDate(...reviews.map(r => r.date));
     const firstApprovalDate = earliestDate(...reviews.map(r => r.type === "approved" ? r.date : undefined));
     const stalenessInDays = daysSince(latestDate(createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview) || lastPushDate, now);
@@ -252,10 +252,6 @@ export async function deriveStateForPR(
 
     function botNoPackages(pr_number: number): BotNoPackages {
         return { type: "no_packages", pr_number };
-    }
-
-    function isOwner(login: string) {
-        return pkgInfo.some(p => p.owners?.some(k => k.toLowerCase() === login.toLowerCase()));
     }
 }
 
@@ -436,7 +432,7 @@ function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes
         && (new Date(comment.createdAt)).getTime() > sinceDate.getTime());
 }
 
-function getReviews(prInfo: PR_repository_pullRequest, isOwner: (name: string) => boolean) {
+function getReviews(prInfo: PR_repository_pullRequest) {
     if (!prInfo.reviews?.nodes) return [];
     const headCommitOid: string = prInfo.headRefOid;
     const reviews: ReviewInfo[] = [];
@@ -448,7 +444,7 @@ function getReviews(prInfo: PR_repository_pullRequest, isOwner: (name: string) =
         // Skip self-reviews
         if (reviewer === prInfo.author!.login) continue;
         // Only look at the most recent review per person (ignoring pending/commented)
-        if (reviews.find(r => r.reviewer.toLowerCase() === reviewer.toLowerCase())) continue;
+        if (reviews.find(r => sameUser(r.reviewer, reviewer))) continue;
         // collect reviews by type
         if (r.commit.oid !== headCommitOid) {
             reviews.push({ type: "stale", reviewer, date, abbrOid: r.commit.abbreviatedOid });
