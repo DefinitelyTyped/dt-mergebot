@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "greek-utils",
+      "kind": "add",
       "files": [
         {
           "path": "types/greek-utils/greek-utils-tests.ts",
@@ -36,7 +37,7 @@
           "suspect": "couldn't fetch contents"
         }
       ],
-      "owners": null,
+      "owners": [],
       "addedOwners": [
         "dimkirt"
       ],

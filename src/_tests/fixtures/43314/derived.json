@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "carbon__icon-helpers",
+      "kind": "add",
       "files": [
         {
           "path": "types/carbon__icon-helpers/carbon__icon-helpers-tests.ts",
@@ -36,7 +37,7 @@
           "suspect": "couldn't fetch contents"
         }
       ],
-      "owners": null,
+      "owners": [],
       "addedOwners": [
         "metonym"
       ],

@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "hcaptcha__vue-hcaptcha",
+      "kind": "add",
       "files": [
         {
           "path": "types/hcaptcha__vue-hcaptcha/hcaptcha__vue-hcaptcha-tests.ts",
@@ -40,7 +41,7 @@
           "kind": "package-meta-ok"
         }
       ],
-      "owners": null,
+      "owners": [],
       "addedOwners": [
         "geopic"
       ],

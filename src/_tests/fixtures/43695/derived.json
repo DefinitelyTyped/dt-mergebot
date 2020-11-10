@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "accedo__accedo-one",
+      "kind": "add",
       "files": [
         {
           "path": "types/accedo__accedo-one/accedo__accedo-one-tests.ts",
@@ -36,7 +37,7 @@
           "suspect": "couldn't fetch contents"
         }
       ],
-      "owners": null,
+      "owners": [],
       "addedOwners": [
         "alexandercerutti"
       ],

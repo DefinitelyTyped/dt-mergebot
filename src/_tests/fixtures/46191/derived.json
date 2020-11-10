@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "apollo-upload-client",
+      "kind": "edit",
       "files": [
         {
           "path": "types/apollo-upload-client/index.d.ts",

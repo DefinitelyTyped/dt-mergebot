@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "chrome",
+      "kind": "edit",
       "files": [
         {
           "path": "types/chrome/index.d.ts",

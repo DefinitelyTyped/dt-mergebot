@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "date-arithmetic",
+      "kind": "edit",
       "files": [
         {
           "path": "types/date-arithmetic/date-arithmetic-tests.ts",

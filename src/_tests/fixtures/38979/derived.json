@@ -17,6 +17,7 @@
   "pkgInfo": [
     {
       "name": "es-abstract",
+      "kind": "edit",
       "files": [
         {
           "path": "types/es-abstract/GetIntrinsic.d.ts",

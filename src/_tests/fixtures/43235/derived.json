@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "arcgis-js-api",
+      "kind": "edit",
       "files": [
         {
           "path": "types/arcgis-js-api/arcgis-js-api-tests.ts",

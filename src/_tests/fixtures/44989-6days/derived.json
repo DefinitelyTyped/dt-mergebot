@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "ramda",
+      "kind": "edit",
       "files": [
         {
           "path": "types/ramda/index.d.ts",

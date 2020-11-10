@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "hcaptcha__vue-hcaptcha",
+      "kind": "add",
       "files": [
         {
           "path": "types/hcaptcha__vue-hcaptcha/hcaptcha__vue-hcaptcha-tests.ts",
@@ -41,8 +42,10 @@
           "suspect": "couldn't fetch contents"
         }
       ],
-      "owners": null,
-      "addedOwners": [],
+      "owners": [],
+      "addedOwners": [
+        "geopic"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

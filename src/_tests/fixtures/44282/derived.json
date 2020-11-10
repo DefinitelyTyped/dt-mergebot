@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "benchmark",
+      "kind": "edit",
       "files": [
         {
           "path": "types/benchmark/benchmark-tests.ts",

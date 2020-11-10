@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "react-bootstrap-table2-paginator",
+      "kind": "edit",
       "files": [
         {
           "path": "types/react-bootstrap-table2-paginator/index.d.ts",

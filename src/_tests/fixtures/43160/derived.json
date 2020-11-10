@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "dagre",
+      "kind": "edit",
       "files": [
         {
           "path": "types/dagre/index.d.ts",

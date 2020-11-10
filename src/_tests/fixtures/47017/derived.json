@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "express-serve-static-core",
+      "kind": "edit",
       "files": [
         {
           "path": "types/express-serve-static-core/express-serve-static-core-tests.ts",
@@ -43,6 +44,7 @@
     },
     {
       "name": "express",
+      "kind": "edit",
       "files": [
         {
           "path": "types/express/express-tests.ts",

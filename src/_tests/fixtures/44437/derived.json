@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "prompts",
+      "kind": "edit",
       "files": [
         {
           "path": "types/prompts/index.d.ts",

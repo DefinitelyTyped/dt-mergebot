@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "underscore",
+      "kind": "edit",
       "files": [
         {
           "path": "types/underscore/index.d.ts",

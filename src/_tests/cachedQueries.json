@@ -119,6 +119,11 @@
       "__typename": "Label"
     },
     {
+      "id": "MDU6TGFiZWwyNDk1OTc2ODI5",
+      "name": "Edits Owners",
+      "__typename": "Label"
+    },
+    {
       "id": "MDU6TGFiZWw1ODMyOTQ0NzQ=",
       "name": "Has Merge Conflict",
       "__typename": "Label"
