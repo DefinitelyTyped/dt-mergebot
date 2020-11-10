@@ -16,19 +16,21 @@
   "pkgInfo": [
     {
       "name": null,
+      "kind": "edit",
       "files": [
         {
           "path": "types/detect-port-1.1.4.tgz",
           "kind": "infrastructure"
         }
       ],
-      "owners": null,
+      "owners": [],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"
     },
     {
       "name": "detect-port",
+      "kind": "edit",
       "files": [
         {
           "path": "types/detect-port/detect-port-tests.ts",

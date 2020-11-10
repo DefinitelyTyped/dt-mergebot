@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "estree",
+      "kind": "edit",
       "files": [
         {
           "path": "types/estree/estree-tests.ts",

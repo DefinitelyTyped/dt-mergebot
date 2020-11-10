@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "vimeo",
+      "kind": "edit",
       "files": [
         {
           "path": "types/vimeo/index.d.ts",

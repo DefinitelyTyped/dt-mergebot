@@ -58,10 +58,11 @@ export interface BotNoPackages {
 
 export type PackageInfo = {
     name: string | null; // null => not in a package (= infra files)
+    kind: "edit" | "add" | "delete";
     files: FileInfo[];
-    owners: string[] | null; // null => not a package or new package
-    addedOwners: string[],
-    deletedOwners: string[],
+    owners: string[]; // existing owners on master
+    addedOwners: string[];
+    deletedOwners: string[];
     popularityLevel: PopularityLevel;
 };
 
@@ -225,7 +226,7 @@ export async function deriveStateForPR(
         headCommitOid: headCommit.oid,
         mergeIsRequested: !!prInfo.comments.nodes
             && usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
-                                    pkgInfo.length === 1 ? [author, ...(pkgInfo[0].owners || [])] : [author],
+                                    pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
                                     latestDate(createdDate, lastPushDate, reopenedDate, firstApprovalDate) || lastPushDate),
         stalenessInDays,
         lastPushDate, reopenedDate, lastCommentDate,
@@ -312,26 +313,29 @@ async function getPackageInfosEtc(
         if (!infos.has(pkg)) infos.set(pkg, []);
         infos.get(pkg)!.push(fileInfo);
     }
-    let result = [], maxDownloads = 0;
+    let result: PackageInfo[] = [], maxDownloads = 0;
     for (const [name, files] of infos) {
-        const owners = !name ? null : await getOwnersOfPackage(name, "master", fetchFile);
+        const oldOwners = !name ? null : await getOwnersOfPackage(name, "master", fetchFile);
         const newOwners = !name ? null
-            : !paths.includes(`types/${name}/index.d.ts`) ? owners
+            : !paths.includes(`types/${name}/index.d.ts`) ? oldOwners
             : await getOwnersOfPackage(name, headId, fetchFile);
-        if (owners instanceof Error) return owners;
+        if (oldOwners instanceof Error) return oldOwners;
         if (newOwners instanceof Error) return newOwners;
-        const addedOwners = owners === null ? (newOwners || [])
+        if (name && !oldOwners && !newOwners) return new Error("could not get either old or new owners");
+        const kind = !name ? "edit" : oldOwners && newOwners ? "edit" : newOwners ? "add" : "delete";
+        const owners = oldOwners || [];
+        const addedOwners = oldOwners === null ? (newOwners || [])
             : newOwners === null ? []
-            : newOwners.filter(o => !owners.includes(o));
-        const deletedOwners = newOwners === null ? (owners || [])
-            : owners === null ? []
-            : owners.filter(o => !newOwners.includes(o));
+            : newOwners.filter(o => !oldOwners.includes(o));
+        const deletedOwners = newOwners === null ? owners
+            : oldOwners === null ? []
+            : oldOwners.filter(o => !newOwners.includes(o));
         // null name => infra => ensure critical (even though it's unused atm)
         const downloads = name ? await getDownloads(name) : Infinity;
         if (name && downloads > maxDownloads) maxDownloads = downloads;
         // keep the popularity level and not the downloads since that can change often
         const popularityLevel = downloadsToPopularityLevel(downloads);
-        result.push({ name, files, owners, addedOwners, deletedOwners, popularityLevel });
+        result.push({ name, kind, files, owners, addedOwners, deletedOwners, popularityLevel });
     }
     return { pkgInfo: result, popularityLevel: downloadsToPopularityLevel(maxDownloads) };
 }

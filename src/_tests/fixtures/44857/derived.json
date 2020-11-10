@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "node",
+      "kind": "edit",
       "files": [
         {
           "path": "types/node/child_process.d.ts",

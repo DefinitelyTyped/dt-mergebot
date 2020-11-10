@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "mongodb",
+      "kind": "edit",
       "files": [
         {
           "path": "types/mongodb/index.d.ts",

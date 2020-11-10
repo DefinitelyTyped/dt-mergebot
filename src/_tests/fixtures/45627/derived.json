@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "webpack",
+      "kind": "edit",
       "files": [
         {
           "path": "types/webpack/index.d.ts",

@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "kefir",
+      "kind": "edit",
       "files": [
         {
           "path": "types/kefir/index.d.ts",

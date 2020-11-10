@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "gaze",
+      "kind": "add",
       "files": [
         {
           "path": "types/gaze/gaze-tests.ts",
@@ -36,7 +37,7 @@
           "suspect": "couldn't fetch contents"
         }
       ],
-      "owners": null,
+      "owners": [],
       "addedOwners": [
         "adamzerella"
       ],

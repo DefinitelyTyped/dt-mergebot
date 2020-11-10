@@ -16,19 +16,21 @@
   "pkgInfo": [
     {
       "name": null,
+      "kind": "edit",
       "files": [
         {
           "path": "notNeededPackages.json",
           "kind": "infrastructure"
         }
       ],
-      "owners": null,
+      "owners": [],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"
     },
     {
       "name": "asynciterator",
+      "kind": "delete",
       "files": [
         {
           "path": "types/asynciterator/asynciterator-tests.ts",

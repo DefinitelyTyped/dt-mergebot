@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "amplify",
+      "kind": "edit",
       "files": [
         {
           "path": "types/amplify/amplify-tests.ts",

@@ -3,6 +3,7 @@ import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages } from "./
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
 import { noNulls, flatten, unique, sameUser } from "./util/util";
+import { userInfo } from "os";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -19,6 +20,7 @@ type LabelName =
     | "The CI failed"
     | "Revision needed"
     | "New Definition"
+    | "Edits Owners"
     | "Where is GH Actions?"
     | "Owner Approved"
     | "Other Approved"
@@ -59,6 +61,7 @@ function createDefaultActions(pr_number: number): Actions {
             "The CI failed": false,
             "Revision needed": false,
             "New Definition": false,
+            "Edits Owners": false,
             "Where is GH Actions?": false,
             "Owner Approved": false,
             "Other Approved": false,
@@ -103,6 +106,7 @@ function createEmptyActions(prNumber: number): Actions {
 const uriForReview = "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/{}/files";
 const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package";
 const uriForTestingNewPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#testing";
+const uriForDefinitionOwners = "https://github.com/DefinitelyTyped/DefinitelyTyped#definition-owners";
 
 export enum ApprovalFlags {
     None = 0,
@@ -122,6 +126,7 @@ interface ExtendedPrInfo extends PrInfo {
     readonly otherOwners: string[];
     readonly noOtherOwners: boolean;
     readonly tooManyOwners: boolean;
+    readonly editsOwners: boolean;
     readonly canBeMerged: boolean;
     readonly approved: boolean;
     readonly approverKind: ApproverKind;
@@ -139,20 +144,23 @@ interface ExtendedPrInfo extends PrInfo {
     readonly hasTests: boolean;
     readonly newPackages: readonly string[];
     readonly hasNewPackages: boolean;
+    readonly isAuthor: (user: string) => boolean; // specialized version of sameUser
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
+    const isAuthor = (user: string) => sameUser(user, info.author);
     const reviewLink = uriForReview.replace(/{}/, ""+info.pr_number);
-    const authorIsOwner = info.pkgInfo.every(p => p.owners && p.owners.some(o => sameUser(o, info.author)));
+    const authorIsOwner = info.pkgInfo.every(p => p.owners.some(isAuthor));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
     const editsConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
-    const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners || [])));
-    const otherOwners = allOwners.filter(o => !sameUser(o, info.author));
-    const noOtherOwners = !allOwners.some(o => !sameUser(o, info.author));
+    const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners)));
+    const otherOwners = allOwners.filter(o => !isAuthor(o));
+    const noOtherOwners = allOwners.every(isAuthor);
     const tooManyOwners = allOwners.length > 50;
+    const editsOwners = info.pkgInfo.some(p => p.kind === "edit" && p.addedOwners.length + p.deletedOwners.length > 0);
     const packages = noNulls(info.pkgInfo.map(p => p.name));
     const hasMultiplePackages = packages.length > 1;
     const hasTests = info.pkgInfo.some(p => p.files.some(f => f.kind === "test"));
-    const newPackages = noNulls(info.pkgInfo.map(p => p.owners ? null : p.name));
+    const newPackages = noNulls(info.pkgInfo.map(p => p.kind === "add" ? p.name : null));
     const hasNewPackages = newPackages.length > 0;
     const requireMaintainer = editsInfra || editsConfig || hasMultiplePackages || !hasTests || hasNewPackages || tooManyOwners;
     const blessable = !(hasNewPackages || editsInfra || noOtherOwners);
@@ -170,10 +178,11 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const staleness = getStaleness(info, canBeMerged);
     return {
         ...info, orig: info, reviewLink,
-        authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners,
+        authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeMerged, approved, approverKind, requireMaintainer, blessable, failedCI, staleness,
         packages, hasMultiplePackages, hasTests, newPackages, hasNewPackages,
-        approvedReviews, changereqReviews, staleReviews, approvalFlags, hasChangereqs
+        approvedReviews, changereqReviews, staleReviews, approvalFlags, hasChangereqs,
+        isAuthor
     };
 }
 
@@ -225,6 +234,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     context.labels["Owner Approved"] = !!(info.approvalFlags & ApprovalFlags.Owner);
     context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
     context.labels["New Definition"] = info.hasNewPackages;
+    context.labels["Edits Owners"] = info.editsOwners;
     context.labels["Edits Infrastructure"] = info.editsInfra;
     context.labels["Edits multiple packages"] = info.hasMultiplePackages;
     context.labels["Author is Owner"] = info.authorIsOwner;
@@ -399,8 +409,7 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         ` I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.`;
     display(`@${info.author} Thank you for submitting this PR!${specialWelcome}`,
             ``,
-            `***This is a live comment which I will keep updated.***`,
-            ``);
+            `***This is a live comment which I will keep updated.***`);
 
     const [ aRequiredApprover, requiredApprovers ] =
         info.approverKind === "others" ? ["someone", "type definition owners, DT maintainers or others"]
@@ -408,48 +417,66 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         : ["a DT maintainer", "DT maintainers"];
     const ARequiredApprover = aRequiredApprover[0].toUpperCase() + aRequiredApprover.substring(1);
 
-    // Lets the author know who needs to review this
-    let reviewerAdvisory: string | undefined;
-    // Some kind of extra warning
-    if (info.hasNewPackages) {
-        reviewerAdvisory = `This PR adds a new definition, so it needs to be reviewed by ${aRequiredApprover} before it can be merged.`;
-    } else if (info.popularityLevel === "Critical" && !info.maintainerBlessed) {
-        reviewerAdvisory = `Because this is a widely-used package, ${aRequiredApprover} will need to review it before it can be merged.`;
-    } else if (!info.requireMaintainer) {
-        reviewerAdvisory = "Because you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.";
-    } else if (info.noOtherOwners && !info.maintainerBlessed) {
-        reviewerAdvisory = `There aren't any other owners of this package, so ${aRequiredApprover} will review it.`;
-    } else if (info.hasMultiplePackages && !info.maintainerBlessed) {
-        reviewerAdvisory = `Because this PR edits multiple packages, it can be merged once it's reviewed by ${aRequiredApprover}.`;
-    } else if (info.editsConfig && !info.maintainerBlessed) {
-        reviewerAdvisory = `Because this PR edits the configuration file, it can be merged once it's reviewed by ${aRequiredApprover}.`;
-    } else if (!info.maintainerBlessed) {
-        reviewerAdvisory = `This PR can be merged once it's reviewed by ${aRequiredApprover}.`;
-    } else {
-        reviewerAdvisory = "This PR can be merged once it's reviewed.";
-    }
-
     if (!info.hasTests) {
-        display(`This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`);
+        display(``,
+                `This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`);
     } else if (info.editsInfra) {
-        display(`This PR touches some part of DefinitelyTyped infrastructure, so ${aRequiredApprover} will need to review it. This is rare — did you mean to do this?`);
+        display(``,
+                `This PR touches some part of DefinitelyTyped infrastructure, so ${aRequiredApprover} will need to review it. This is rare — did you mean to do this?`);
     }
 
-    if (info.packages.length > 0) {
-        const links = info.packages.map(p => {
-            const maybeNew = info.newPackages.includes(p) ? " (*new!*)" : "";
-            const urlPart = p.replace(/^(.*?)__(.)/, "@$1/$2");
-            return [`- \`${p}\`${maybeNew}`,
-                    `[on npm](https://www.npmjs.com/package/${urlPart}),`,
-                    `[on unpkg](https://unpkg.com/browse/${urlPart}@latest/)`
-                   ].join(" ");
-        }).join("\n");
-        display(`## ${info.packages.length} package${info.packages.length > 1 ? "s" : ""} in this PR\n\n${links}`);
+    const announceList = (what: string, xs: readonly string[]) => `${xs.length} ${what}${xs.length > 1 ? "s" : ""}`
+    if (info.packages.length === 0) { // should not happen atm
+        display(``,
+                `## ?? Infrastructure-only PR ??`);
+    } else {
+        display(``,
+                `## ${announceList("package", info.packages)} in this PR`,
+                ``);
+        let addedSelfToManyOwners = 0;
+        for (const p of info.pkgInfo) {
+            if (p.name === null) continue;
+            const kind = p.kind === "add" ? " (*new!*)" : p.kind === "delete" ? " (*probably deleted!*)" : "";
+            const urlPart = p.name.replace(/^(.*?)__(.)/, "@$1/$2");
+            display([`- \`${p.name}\`${kind}`,
+                     `[on npm](https://www.npmjs.com/package/${urlPart}),`,
+                     `[on unpkg](https://unpkg.com/browse/${urlPart}@latest/)`
+                    ].join(" "));
+            const displayOwners = (what: string, owners: string[]) => {
+                if (owners.length === 0) return;
+                display(`  **${announceList(`${what} owner`, owners)}:** ${owners.map(o => (info.isAuthor(o) ? "✎" : "") + "@"+o).join(", ")}`);
+            };
+            displayOwners("added", p.addedOwners);
+            displayOwners("removed", p.deletedOwners);
+            if (!info.authorIsOwner && p.owners.length >= 4 && p.addedOwners.some(info.isAuthor)) addedSelfToManyOwners++;
+        }
+        if (addedSelfToManyOwners) {
+            display(``,
+                    `@${info.author}: I see that you have added yourself as an owner${addedSelfToManyOwners > 1 ? " to several packages" : ""}, are you sure you want to [become an owner](${uriForDefinitionOwners})?`);
+        }
     }
+
+    // Lets the author know who needs to review this
     display(``,
             `## Code Reviews`,
-            ``,
-            reviewerAdvisory);
+            ``);
+    if (info.hasNewPackages) {
+        display(`This PR adds a new definition, so it needs to be reviewed by ${aRequiredApprover} before it can be merged.`);
+    } else if (info.popularityLevel === "Critical" && !info.maintainerBlessed) {
+        display(`Because this is a widely-used package, ${aRequiredApprover} will need to review it before it can be merged.`);
+    } else if (!info.requireMaintainer) {
+        display("Because you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.");
+    } else if (info.noOtherOwners && !info.maintainerBlessed) {
+        display(`There aren't any other owners of this package, so ${aRequiredApprover} will review it.`);
+    } else if (info.hasMultiplePackages && !info.maintainerBlessed) {
+        display(`Because this PR edits multiple packages, it can be merged once it's reviewed by ${aRequiredApprover}.`);
+    } else if (info.editsConfig && !info.maintainerBlessed) {
+        display(`Because this PR edits the configuration file, it can be merged once it's reviewed by ${aRequiredApprover}.`);
+    } else if (!info.maintainerBlessed) {
+        display(`This PR can be merged once it's reviewed by ${aRequiredApprover}.`);
+    } else {
+        display("This PR can be merged once it's reviewed.");
+    }
 
     display(``,
             `## Status`,

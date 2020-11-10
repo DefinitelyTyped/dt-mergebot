@@ -17,6 +17,7 @@
   "pkgInfo": [
     {
       "name": "supertest",
+      "kind": "edit",
       "files": [
         {
           "path": "types/supertest/index.d.ts",

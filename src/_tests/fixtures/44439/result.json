@@ -7,6 +7,7 @@
     "The CI failed": false,
     "Revision needed": false,
     "New Definition": false,
+    "Edits Owners": true,
     "Where is GH Actions?": false,
     "Owner Approved": false,
     "Other Approved": false,
@@ -27,7 +28,7 @@
   "responseComments": [
     {
       "tag": "welcome",
-      "status": "@ivandevp Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\nThis PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n## 1 package in this PR\n\n- `detect-port` [on npm](https://www.npmjs.com/package/detect-port), [on unpkg](https://unpkg.com/browse/detect-port@latest/)\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect DT infrastructure ([`types/detect-port-1.1.4.tgz`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/f8b161266a38186c3d7ab715ea63f68d5ef542ed/types/detect-port-1.1.4.tgz))\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+      "status": "@ivandevp Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\nThis PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n\n## 1 package in this PR\n\n- `detect-port` [on npm](https://www.npmjs.com/package/detect-port), [on unpkg](https://unpkg.com/browse/detect-port@latest/)\n  **1 added owner:** ✎@ivandevp\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect DT infrastructure ([`types/detect-port-1.1.4.tgz`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/f8b161266a38186c3d7ab715ea63f68d5ef542ed/types/detect-port-1.1.4.tgz))\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
     },
     {
       "tag": "pinging-reviewers",

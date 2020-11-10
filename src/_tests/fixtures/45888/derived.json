@@ -16,6 +16,7 @@
   "pkgInfo": [
     {
       "name": "mailgun-js",
+      "kind": "edit",
       "files": [
         {
           "path": "types/mailgun-js/index.d.ts",

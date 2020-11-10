@@ -7,6 +7,7 @@
     "The CI failed": false,
     "Revision needed": false,
     "New Definition": false,
+    "Edits Owners": false,
     "Where is GH Actions?": false,
     "Owner Approved": false,
     "Other Approved": false,
@@ -27,7 +28,7 @@
   "responseComments": [
     {
       "tag": "welcome",
-      "status": "@rubensworks Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\nThis PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n## 1 package in this PR\n\n- `asynciterator` [on npm](https://www.npmjs.com/package/asynciterator), [on unpkg](https://unpkg.com/browse/asynciterator@latest/)\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect DT infrastructure ([`notNeededPackages.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/a5eb1f19e7a31387e7d7c79b3acc483b0e60b32e/notNeededPackages.json))\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+      "status": "@rubensworks Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\nThis PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n\n## 1 package in this PR\n\n- `asynciterator` (*probably deleted!*) [on npm](https://www.npmjs.com/package/asynciterator), [on unpkg](https://unpkg.com/browse/asynciterator@latest/)\n  **1 removed owner:** ✎@rubensworks\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect DT infrastructure ([`notNeededPackages.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/a5eb1f19e7a31387e7d7c79b3acc483b0e60b32e/notNeededPackages.json))\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
     },
     {
       "tag": "pinging-reviewers-others",
