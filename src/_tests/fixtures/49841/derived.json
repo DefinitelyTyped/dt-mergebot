@@ -27,7 +27,7 @@
         {
           "path": "types/react-native-sha1/tsconfig.json",
           "kind": "package-meta",
-          "suspect": "not the required form"
+          "suspect": "not [the required form](https://github.com/DefinitelyTyped/DefinitelyTyped#tsconfigjson)"
         },
         {
           "path": "types/react-native-sha1/tslint.json",

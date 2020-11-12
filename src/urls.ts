@@ -6,3 +6,4 @@ export const definitionOwners = `${baseURL}#definition-owners`;
 export const workflow = `${baseURL}#make-a-pull-request`;
 export const packageJson = `${baseURL}#packagejson`;
 export const linterJson = `${baseURL}#linter-tslintjson`;
+export const tsconfigJson = `${baseURL}#tsconfigjson`;
