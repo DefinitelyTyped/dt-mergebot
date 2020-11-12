@@ -1,0 +1,48 @@
+{
+  "pr_number": 48708,
+  "targetColumn": "Needs Author Action",
+  "labels": {
+    "Mergebot Error": false,
+    "Has Merge Conflict": false,
+    "The CI failed": false,
+    "Revision needed": true,
+    "New Definition": false,
+    "Edits Owners": false,
+    "Where is GH Actions?": false,
+    "Owner Approved": false,
+    "Other Approved": false,
+    "Maintainer Approved": false,
+    "Merge:YSYL": false,
+    "Popular package": false,
+    "Critical package": true,
+    "Edits Infrastructure": false,
+    "Edits multiple packages": false,
+    "Author is Owner": true,
+    "No Other Owners": false,
+    "Too Many Owners": false,
+    "Merge:Auto": false,
+    "Untested Change": false,
+    "Config Edit": false,
+    "Abandoned": false
+  },
+  "responseComments": [
+    {
+      "tag": "welcome",
+      "status": "@martin-badin Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n- `jquery` [on npm](https://www.npmjs.com/package/jquery), [on unpkg](https://unpkg.com/browse/jquery@latest/)\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by DT maintainers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 28 days — it is considered nearly abandoned!\n\n----------------------\n... diagnostics scrubbed ..."
+    },
+    {
+      "tag": "reviewer-complaint-eb13547",
+      "status": "@martin-badin One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can \"dismiss\" the review using GitHub's review UI. Thank you!"
+    },
+    {
+      "tag": "abandon-warn",
+      "status": "@martin-badin I haven't seen any activity on this PR in more than 3 weeks, and this PR currently has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed."
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false,
+  "isReadyForAutoMerge": false
+}

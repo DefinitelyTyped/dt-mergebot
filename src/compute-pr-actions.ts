@@ -3,7 +3,6 @@ import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages } from "./
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
 import { noNulls, flatten, unique, sameUser } from "./util/util";
-import { userInfo } from "os";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -108,6 +107,17 @@ const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/Definite
 const uriForTestingNewPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#testing";
 const uriForDefinitionOwners = "https://github.com/DefinitelyTyped/DefinitelyTyped#definition-owners";
 
+const enum Staleness {
+    Fresh,
+    PayAttention,
+    NearlyYSYL,
+    YSYL,
+    NearlyAbandoned,
+    Abandoned,
+}
+
+type ApproverKind = "maintainers" | "owners" | "others";
+
 export enum ApprovalFlags {
     None = 0,
     Other = 1 << 0,
@@ -144,6 +154,7 @@ interface ExtendedPrInfo extends PrInfo {
     readonly hasTests: boolean;
     readonly newPackages: readonly string[];
     readonly hasNewPackages: boolean;
+    readonly reviewColumn: ColumnName;
     readonly isAuthor: (user: string) => boolean; // specialized version of sameUser
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
@@ -167,23 +178,73 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const approvedReviews = info.reviews.filter(r => r.type === "approved") as ExtendedPrInfo["approvedReviews"];
     const changereqReviews = info.reviews.filter(r => r.type === "changereq") as ExtendedPrInfo["changereqReviews"];
     const staleReviews = info.reviews.filter(r => r.type === "stale") as ExtendedPrInfo["staleReviews"];
-    const approvalFlags = approvedReviews.reduce(
-        (flags, r) => flags | (r.isMaintainer ? ApprovalFlags.Maintainer : allOwners.includes(r.reviewer) ? ApprovalFlags.Owner : ApprovalFlags.Other),
-        ApprovalFlags.None);
     const hasChangereqs = changereqReviews.length > 0;
-    const approverKind = getApproverKind(info, requireMaintainer, blessable, noOtherOwners);
-    const approved = getApproval(approvalFlags, approverKind);
+    const approvalFlags = getApprovalFlags();
+    const approverKind = getApproverKind();
+    const approved = getApproval();
     const canBeMerged = info.ciResult === CIResult.Pass && !info.hasMergeConflict && approved;;
     const failedCI = info.ciResult === CIResult.Fail;
-    const staleness = getStaleness(info, canBeMerged);
+    const staleness = getStaleness();
+    const reviewColumn = getReviewColumn();
     return {
         ...info, orig: info, reviewLink,
         authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeMerged, approved, approverKind, requireMaintainer, blessable, failedCI, staleness,
         packages, hasMultiplePackages, hasTests, newPackages, hasNewPackages,
         approvedReviews, changereqReviews, staleReviews, approvalFlags, hasChangereqs,
-        isAuthor
+        reviewColumn, isAuthor
     };
+
+    function getStaleness() {
+        return canBeMerged
+            ? (info.stalenessInDays <= 2 ? Staleness.Fresh
+               : info.stalenessInDays <= 4 ? Staleness.PayAttention
+               : info.stalenessInDays <= 8 ? Staleness.NearlyYSYL
+               : Staleness.YSYL)
+            : (info.stalenessInDays <= 6 ? Staleness.Fresh
+               : info.stalenessInDays <= 22 ? Staleness.PayAttention
+               : info.stalenessInDays <= 30 ? Staleness.NearlyAbandoned
+               : Staleness.Abandoned);
+    };
+
+    function getApprovalFlags() {
+        if (hasChangereqs) return ApprovalFlags.None;
+        return approvedReviews.reduce(
+            (flags, r) => flags | (r.isMaintainer ? ApprovalFlags.Maintainer
+                                   : allOwners.includes(r.reviewer) ? ApprovalFlags.Owner
+                                   : ApprovalFlags.Other),
+            ApprovalFlags.None)
+    }
+
+    function getApproverKind() {
+        const blessed = blessable && info.maintainerBlessed;
+        const who: ApproverKind | undefined =
+            requireMaintainer ? "maintainers"
+            : info.popularityLevel === "Well-liked by everyone" ? "others"
+            : info.popularityLevel === "Popular" ? "owners"
+            : info.popularityLevel === "Critical" ? "maintainers"
+            : undefined;
+        if (!who) throw new Error("Unknown popularity level " + info.popularityLevel);
+        return who === "maintainers" && blessed && !noOtherOwners ? "owners"
+            : who === "owners" && noOtherOwners ? "maintainers"
+            : who;
+    }
+
+    function getApproval() {
+        return !!(approvalFlags &
+                  (approverKind === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
+                   : approverKind === "owners" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
+                   : (ApprovalFlags.Maintainer)));
+    }
+
+    function getReviewColumn(): ColumnName {
+        // Get the project column for review with least access
+        // E.g. let people review, but fall back to the DT maintainers based on the access rights above
+        return approverKind !== "maintainers" ? "Waiting for Code Reviews"
+            : blessable ? "Needs Maintainer Review"
+            : "Needs Maintainer Action";
+    }
+
 }
 
 export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPackages | BotError ): Actions {
@@ -313,7 +374,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     // CI is green
     else if (info.ciResult === CIResult.Pass) {
         if (!info.canBeMerged) {
-            context.targetColumn = projectBoardForReviewWithLeastAccess(info);
+            context.targetColumn = info.reviewColumn;
         }
         else if (info.mergeIsRequested) {
             context.shouldMerge = true;
@@ -344,57 +405,6 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     context.shouldUpdateProjectColumn = tooEarlyForLabelsOrProjects;
 
     return context;
-}
-
-type ApproverKind = "maintainers" | "owners" | "others";
-
-function getApproverKind(info: PrInfo, requireMaintainer: boolean, blessable: boolean, noOtherOwners: boolean) {
-    const blessed = blessable && info.maintainerBlessed;
-    const who: ApproverKind | undefined =
-        requireMaintainer ? "maintainers"
-        : info.popularityLevel === "Well-liked by everyone" ? "others"
-        : info.popularityLevel === "Popular" ? "owners"
-        : info.popularityLevel === "Critical" ? "maintainers"
-        : undefined;
-    if (!who) throw new Error("Unknown popularity level " + info.popularityLevel);
-    return who === "maintainers" && blessed && !noOtherOwners ? "owners"
-        : who === "owners" && noOtherOwners ? "maintainers"
-        : who;
-}
-
-function getApproval(approvalFlags: number, approverKind: ApproverKind) {
-    return !!(approvalFlags &
-              (approverKind === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
-               : approverKind === "owners" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
-               : (ApprovalFlags.Maintainer)));
-}
-
-/** E.g. let people review, but fall back to the DT maintainers based on the access rights above */
-function projectBoardForReviewWithLeastAccess(info: ExtendedPrInfo): ColumnName {
-    return info.approverKind !== "maintainers" ? "Waiting for Code Reviews"
-        : info.blessable ? "Needs Maintainer Review"
-        : "Needs Maintainer Action";
-}
-
-const enum Staleness {
-    Fresh,
-    PayAttention,
-    NearlyYSYL,
-    YSYL,
-    NearlyAbandoned,
-    Abandoned,
-}
-
-function getStaleness(info: PrInfo, canBeMerged: boolean) {
-    return canBeMerged
-        ? (info.stalenessInDays <= 2 ? Staleness.Fresh
-           : info.stalenessInDays <= 4 ? Staleness.PayAttention
-           : info.stalenessInDays <= 8 ? Staleness.NearlyYSYL
-           : Staleness.YSYL)
-        : (info.stalenessInDays <= 6 ? Staleness.Fresh
-           : info.stalenessInDays <= 22 ? Staleness.PayAttention
-           : info.stalenessInDays <= 30 ? Staleness.NearlyAbandoned
-           : Staleness.Abandoned);
 }
 
 function createWelcomeComment(info: ExtendedPrInfo) {

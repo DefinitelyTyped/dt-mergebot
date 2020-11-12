@@ -1,4 +1,3 @@
-import * as assert from "assert";
 import * as computeActions from "../compute-pr-actions";
 import { deriveStateForPR, queryPRInfo } from "../pr-info";
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
