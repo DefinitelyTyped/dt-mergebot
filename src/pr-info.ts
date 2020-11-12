@@ -400,11 +400,12 @@ configSuspicious["OTHER_FILES.txt"] = contents =>
 configSuspicious["package.json"] = makeJsonCheckerFromCore(
     { private: true },
     [ "/dependencies", "/types", "/typesVersions" ],
-    urls.packageJson
+    { requiredFormUrl: urls.packageJson }
 );
 configSuspicious["tslint.json"] = makeJsonCheckerFromCore(
     { extends: "dtslint/dt.json" },
-    []
+    [],
+    { suspect: `[should contain](${urls.tslintJson}) \`{ "extends": "dtslint/dt.json" }\`, and no additional rules` }
 );
 configSuspicious["tsconfig.json"] = makeJsonCheckerFromCore(
     {
@@ -420,13 +421,14 @@ configSuspicious["tsconfig.json"] = makeJsonCheckerFromCore(
             forceConsistentCasingInFileNames: true
         }
     },
-    [ "/files", "/compilerOptions/paths", "/compilerOptions/baseUrl", "/compilerOptions/typeRoots" ]
+    [ "/files", "/compilerOptions/paths", "/compilerOptions/baseUrl", "/compilerOptions/typeRoots" ],
+    { requiredFormUrl: urls.tsconfigJson }
 );
 
 // helper for json file testers: allow either a given "requiredForm", or any edits that get closer
 // to it, ignoring some keys (JSON Patch paths).  The ignored properties are in most cases checked
 // elsewhere (dtslint), and in some cases they are irrelevant.
-function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[], requiredFormUrl?: string) {
+function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[], { requiredFormUrl, suspect }: { requiredFormUrl?: string, suspect?: string }) {
     const diffFromReq = (text: string) => {
         let json: any;
         try { json = JSON.parse(text); } catch (e) { return "couldn't parse json"; }
@@ -434,17 +436,14 @@ function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[], requi
         try { return jsonDiff.compare(requiredForm, json); } catch (e) { return "couldn't diff json" }
     };
     return (contents: string, oldText?: string) => {
-        const theRequiredForm = requiredFormUrl
-            ? `[the required form](${requiredFormUrl})`
-            : "the required form";
         const newDiff = diffFromReq(contents);
         if (typeof newDiff === "string") return newDiff;
         if (newDiff.length === 0) return undefined;
-        if (!oldText) return `not ${theRequiredForm}`;
+        if (!oldText) return suspect || `not [the required form](${requiredFormUrl})`;
         const oldDiff = diffFromReq(oldText);
         if (typeof oldDiff === "string") return oldDiff;
         if (jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) return undefined;
-        return `not ${theRequiredForm} and not moving towards it`;
+        return suspect || `not [the required form](${requiredFormUrl}) and not moving towards it`;
     };
 }
 
