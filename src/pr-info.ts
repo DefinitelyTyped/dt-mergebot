@@ -199,7 +199,9 @@ export async function deriveStateForPR(
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
 
     const createdDate = new Date(prInfo.createdAt);
-    const lastPushDate = new Date(headCommit.pushedDate);
+    // apparently `headCommit.pushedDate` can be null in some cases (see #48708), use the PR creation time for that
+    // (it would be bad to use `committedDate`/`authoredDate`, since these can be set to arbitrary values)
+    const lastPushDate = new Date(headCommit.pushedDate || prInfo.createdAt);
     const lastCommentDate = getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastPushDate;
     const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
