@@ -1,0 +1,41 @@
+[
+  {
+    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWw5MDUzMzQwOTU=",
+          "MDU6TGFiZWw2OTcwMTg5NzI="
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDcyOTQ5NjQ1"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "cardId": "MDExOlByb2plY3RDYXJkNDQyNTE2ODU=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIz"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDY3OTcyNjE5OQ==",
+        "body": "@mastermatt Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 2 packages in this PR\n\n- `express-serve-static-core` [on npm](https://www.npmjs.com/package/express-serve-static-core), [on unpkg](https://unpkg.com/browse/express-serve-static-core@latest/)\n- `express` [on npm](https://www.npmjs.com/package/express), [on unpkg](https://unpkg.com/browse/express@latest/)\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ All owners or a DT maintainer needs to approve changes which affect more than one package\n   - ✅ express-serve-static-core\n   - ✅ express\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NDcyOTQ5NjQ1",
+        "body": "@mastermatt Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n<!--typescript_bot_merge-offer-->"
+      }
+    }
+  }
+]
