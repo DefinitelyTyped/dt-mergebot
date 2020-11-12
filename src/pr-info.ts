@@ -412,11 +412,18 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
         const newDiff = diffFromExpected(contents);
         if (typeof newDiff === "string") return newDiff;
         if (newDiff.length === 0) return undefined;
-        if (!oldText) return `not ${theExpectedForm}`;
+        if (!oldText) return `not ${theExpectedForm}
+\`\`\`JSON
+${JSON.stringify(newDiff)}
+\`\`\``;
         const oldDiff = diffFromExpected(oldText);
         if (typeof oldDiff === "string") return oldDiff;
-        if (jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) return undefined;
-        return `not ${theExpectedForm} and not moving towards it`;
+        const notRemove = jsonDiff.compare(oldDiff, newDiff).filter(({ op }) => op !== "remove");
+        if (notRemove.length === 0) return undefined;
+        return `not ${theExpectedForm} and not moving towards it
+\`\`\`JSON
+${JSON.stringify(notRemove.map(({ path }) => newDiff[Number(path.slice(1))]))}
+\`\`\``;
     };
 }
 
