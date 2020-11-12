@@ -419,11 +419,18 @@ function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[]) {
         const newDiff = diffFromReq(contents);
         if (typeof newDiff === "string") return newDiff;
         if (newDiff.length === 0) return undefined;
-        if (!oldText) return "not the required form";
+        if (!oldText) return `not the required form
+\`\`\`JSON
+${JSON.stringify(newDiff)}
+\`\`\``;
         const oldDiff = diffFromReq(oldText);
         if (typeof oldDiff === "string") return oldDiff;
-        if (jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) return undefined;
-        return "not the required form and not moving towards it";
+        const notRemove = jsonDiff.compare(oldDiff, newDiff).filter(({ op }) => op !== "remove");
+        if (notRemove.length === 0) return undefined;
+        return `not the required form and not moving towards it
+\`\`\`JSON
+${JSON.stringify(notRemove.map(({ path }) => newDiff[Number(path.slice(1))]))}
+\`\`\``;
     };
 }
 
