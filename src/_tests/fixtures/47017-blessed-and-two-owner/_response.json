@@ -94,12 +94,41 @@
                 "__typename": "User"
               },
               "createdAt": "2020-08-25T06:27:02Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "login": "elibarzilay",
+                "__typename": "User"
+              },
+              "createdAt": "2020-08-26T20:01:58Z"
             }
           ],
           "__typename": "PullRequestTimelineItemsConnection"
         },
         "reviews": {
-          "nodes": [],
+          "nodes": [
+            {
+              "author": {
+                "login": "borisyankov",
+                "__typename": "User"
+              },
+              "commit": {
+                "oid": "dbe687d30362e4f887e88048a3646c13c0c4d907",
+                "abbreviatedOid": "dbe687d",
+                "__typename": "Commit"
+              },
+              "comments": {
+                "nodes": [],
+                "__typename": "PullRequestReviewCommentConnection"
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "APPROVED",
+              "submittedAt": "2020-07-16T23:49:46Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46120#pullrequestreview-450281043",
+              "__typename": "PullRequestReview"
+            }
+          ],
           "__typename": "PullRequestReviewConnection"
         },
         "commits": {

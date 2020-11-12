@@ -1,0 +1,48 @@
+{
+  "pr_number": 49417,
+  "targetColumn": "Waiting for Author to Merge",
+  "labels": {
+    "Mergebot Error": false,
+    "Has Merge Conflict": false,
+    "The CI failed": false,
+    "Revision needed": false,
+    "New Definition": false,
+    "Edits Owners": false,
+    "Where is GH Actions?": false,
+    "Owner Approved": true,
+    "Other Approved": false,
+    "Maintainer Approved": false,
+    "Merge:YSYL": false,
+    "Popular package": false,
+    "Critical package": false,
+    "Edits Infrastructure": false,
+    "Edits multiple packages": false,
+    "Author is Owner": true,
+    "No Other Owners": false,
+    "Too Many Owners": false,
+    "Merge:Auto": true,
+    "Untested Change": false,
+    "Config Edit": false,
+    "Abandoned": false
+  },
+  "responseComments": [
+    {
+      "tag": "welcome",
+      "status": "@Methuselah96 Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n- `d3-array` [on npm](https://www.npmjs.com/package/d3-array), [on unpkg](https://unpkg.com/browse/d3-array@latest/)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners, DT maintainers or others\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ..."
+    },
+    {
+      "tag": "merge-offer",
+      "status": "@Methuselah96 Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@gustavderdrache, @borisyankov, @tomwanzek, @denisname, @ledragon: you can do this too.)"
+    },
+    {
+      "tag": "stale-ping-98aca3-525f75c",
+      "status": "@tuuling Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?"
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false,
+  "isReadyForAutoMerge": true
+}

@@ -94,6 +94,14 @@
                 "__typename": "User"
               },
               "createdAt": "2020-08-25T06:27:02Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "login": "elibarzilay",
+                "__typename": "User"
+              },
+              "createdAt": "2020-08-26T20:01:58Z"
             }
           ],
           "__typename": "PullRequestTimelineItemsConnection"

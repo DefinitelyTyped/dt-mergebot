@@ -1,0 +1,40 @@
+{
+  "pr_number": 47017,
+  "targetColumn": "Waiting for Code Reviews",
+  "labels": {
+    "Mergebot Error": false,
+    "Has Merge Conflict": false,
+    "The CI failed": false,
+    "Revision needed": false,
+    "New Definition": false,
+    "Edits Owners": false,
+    "Where is GH Actions?": false,
+    "Owner Approved": false,
+    "Other Approved": false,
+    "Maintainer Approved": false,
+    "Merge:YSYL": false,
+    "Popular package": false,
+    "Critical package": true,
+    "Edits Infrastructure": false,
+    "Edits multiple packages": true,
+    "Author is Owner": false,
+    "No Other Owners": false,
+    "Too Many Owners": false,
+    "Merge:Auto": false,
+    "Untested Change": false,
+    "Config Edit": false,
+    "Abandoned": false
+  },
+  "responseComments": [
+    {
+      "tag": "welcome",
+      "status": "@mastermatt Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 2 packages in this PR\n\n- `express-serve-static-core` [on npm](https://www.npmjs.com/package/express-serve-static-core), [on unpkg](https://unpkg.com/browse/express-serve-static-core@latest/)\n- `express` [on npm](https://www.npmjs.com/package/express), [on unpkg](https://unpkg.com/browse/express@latest/)\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ All owners or a DT maintainer needs to approve changes which affect more than one package\n   - ✅ express-serve-static-core\n   - ❌ express\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false,
+  "isReadyForAutoMerge": false
+}
