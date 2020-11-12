@@ -404,7 +404,8 @@ configSuspicious["package.json"] = makeJsonCheckerFromCore(
 );
 configSuspicious["tslint.json"] = makeJsonCheckerFromCore(
     { extends: "dtslint/dt.json" },
-    []
+    [],
+    urls.linterJson
 );
 configSuspicious["tsconfig.json"] = makeJsonCheckerFromCore(
     {
