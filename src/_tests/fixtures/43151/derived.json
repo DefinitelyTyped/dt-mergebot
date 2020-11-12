@@ -26,13 +26,11 @@
         },
         {
           "path": "types/gaze/tsconfig.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/gaze/tslint.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         }
       ],
       "owners": [],

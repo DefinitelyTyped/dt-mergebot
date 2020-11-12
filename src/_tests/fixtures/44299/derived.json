@@ -26,18 +26,15 @@
         },
         {
           "path": "types/hcaptcha__vue-hcaptcha/package.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/hcaptcha__vue-hcaptcha/tsconfig.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/hcaptcha__vue-hcaptcha/tslint.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         }
       ],
       "owners": [],

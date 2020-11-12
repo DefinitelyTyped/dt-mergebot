@@ -27,8 +27,7 @@
         },
         {
           "path": "types/is-secret/tsconfig.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/is-secret/tslint.json",

@@ -26,13 +26,11 @@
         },
         {
           "path": "types/greek-utils/tsconfig.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/greek-utils/tslint.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         }
       ],
       "owners": [],
