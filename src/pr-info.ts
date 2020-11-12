@@ -382,7 +382,7 @@ configSuspicious["OTHER_FILES.txt"] = contents =>
     : undefined;
 configSuspicious["package.json"] = makeJsonCheckerFromCore(
     { private: true },
-    [ "dependencies", "types", "typesVersions" ]
+    [ "/dependencies", "/types", "/typesVersions" ]
 );
 configSuspicious["tslint.json"] = makeJsonCheckerFromCore(
     { extends: "dtslint/dt.json" },
@@ -402,20 +402,17 @@ configSuspicious["tsconfig.json"] = makeJsonCheckerFromCore(
             forceConsistentCasingInFileNames: true
         }
     },
-    [ "files", "compilerOptions.paths", "compilerOptions.baseUrl", "compilerOptions.typeRoots" ]
+    [ "/files", "/compilerOptions/paths", "/compilerOptions/baseUrl", "/compilerOptions/typeRoots" ]
 );
 
 // helper for json file testers: allow either a given "requiredForm", or any edits that get closer
-// to it, ignoring some keys (sub-values can be specified using dots).  The ignored properties are
-// in most cases checked elsewhere (dtslint), and in some cases they are irrelevant.
+// to it, ignoring some keys (JSON Patch paths).  The ignored properties are in most cases checked
+// elsewhere (dtslint), and in some cases they are irrelevant.
 function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[]) {
     const diffFromReq = (text: string) => {
         let json: any;
         try { json = JSON.parse(text); } catch (e) { return "couldn't parse json"; }
-        // allow dotted keys in ignoredKeys
-        ignoredKeys.map(k => k.split(".")).forEach(keys =>
-            delete keys.slice(0, -1).reduce((a,b) => a?.[b], json)
-                   ?.[keys[keys.length - 1]]);
+        jsonDiff.applyPatch(json, ignoredKeys.map(path => ({ op: "remove", path })));
         try { return jsonDiff.compare(requiredForm, json); } catch (e) { return "couldn't diff json" };
     };
     return (contents: string, oldText?: string) => {
