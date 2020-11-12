@@ -382,7 +382,10 @@ const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     const basename = path.replace(/.*\//, "");
     if (!(basename in configSuspicious)) return `edited`;
     const text = await getContents();
-    if (text === undefined) return `couldn't fetch contents`;
+    // Removing tslint.json, tsconfig.json, package.json and
+    // OTHER_FILES.txt is checked by the CI. Specifics are in my commit
+    // message.
+    if (text === undefined) return undefined;
     const tester = configSuspicious[basename];
     let suspect: string | undefined;
     if (tester.length <= 1) {

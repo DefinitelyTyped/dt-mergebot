@@ -40,13 +40,11 @@
         },
         {
           "path": "types/asynciterator/tsconfig.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/asynciterator/tslint.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         }
       ],
       "owners": [

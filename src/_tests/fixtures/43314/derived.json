@@ -26,13 +26,11 @@
         },
         {
           "path": "types/carbon__icon-helpers/tsconfig.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/carbon__icon-helpers/tslint.json",
-          "kind": "package-meta",
-          "suspect": "couldn't fetch contents"
+          "kind": "package-meta-ok"
         }
       ],
       "owners": [],

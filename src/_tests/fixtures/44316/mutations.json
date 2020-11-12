@@ -1,10 +1,12 @@
 [
   {
-    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
+    "query": "mutation($input: RemoveLabelsFromLabelableInput!) { removeLabelsFromLabelable(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
-        "cardId": "MDExOlByb2plY3RDYXJkMzcyMDMzMzU=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
+        "labelIds": [
+          "MDU6TGFiZWwyMTU0ODE2NTQ5"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDEwMzk4NzAw"
       }
     }
   },
@@ -13,7 +15,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYyMDg5MzUyMA==",
-        "body": "@mattleff Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `vimeo` [on npm](https://www.npmjs.com/package/vimeo), [on unpkg](https://unpkg.com/browse/vimeo@latest/) (author is owner)\n  - Config files to check:\n    - [`vimeo/tsconfig.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44316/files/55357f7d60d059b5c84a23bd92854276a8f9a419#diff-2b7f4c3a0b1cb5a892e62dacc9c3d0caa20601673c8d00380be51ba66708f2d1): couldn't fetch contents\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer can merge changes when there are no other reviewers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@mattleff Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `vimeo` [on npm](https://www.npmjs.com/package/vimeo), [on unpkg](https://unpkg.com/browse/vimeo@latest/) (author is owner)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },
