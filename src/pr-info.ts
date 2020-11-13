@@ -16,7 +16,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNulls, notUndefined, findLast, forEachReverse, daysSince, sameUser, authorNotBot, latestDate, earliestDate
+import { noNulls, notUndefined, findLast, forEachReverse, daysSince, sameUser, authorNotBot, latestDate
        } from "./util/util";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
@@ -108,9 +108,9 @@ export interface PrInfo {
     readonly author: string;
 
     /**
-     * True if the author or an owner wants us to merge the PR
+     * The last date the author or an owner asked us to merge the PR
      */
-    readonly mergeIsRequested: boolean;
+    readonly lastMergeRequestDate?: Date;
 
     /**
      * The CI status of the head commit
@@ -216,7 +216,6 @@ export async function deriveStateForPR(
     const now = getNow().toISOString();
     const reviews = getReviews(prInfo);
     const latestReview = latestDate(...reviews.map(r => r.date));
-    const firstApprovalDate = earliestDate(...reviews.map(r => r.type === "approved" ? r.date : undefined));
     const stalenessInDays = daysSince(latestDate(createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview) || lastPushDate, now);
 
     return {
@@ -226,10 +225,8 @@ export async function deriveStateForPR(
         author,
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
-        mergeIsRequested: !!prInfo.comments.nodes
-            && usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
-                                    pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
-                                    latestDate(createdDate, lastPushDate, reopenedDate, firstApprovalDate) || lastPushDate),
+        lastMergeRequestDate: usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
+                                    pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author]),
         stalenessInDays,
         lastPushDate, reopenedDate, lastCommentDate,
         maintainerBlessed: lastBlessing ? lastBlessing.getTime() > lastPushDate.getTime() : false,
@@ -430,12 +427,11 @@ function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[]) {
     };
 }
 
-function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes[], users: string[], sinceDate: Date) {
-    return comments.some(comment =>
-        comment
-        && users.includes(comment.author?.login || " ")
+function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes[], users: string[]) {
+    return latestDate(...comments.map(comment =>
+        users.includes(comment.author?.login || " ")
         && comment.body.trim().toLowerCase().startsWith("ready to merge")
-        && (new Date(comment.createdAt)).getTime() > sinceDate.getTime());
+            ? new Date(comment.createdAt) : undefined));
 }
 
 function getReviews(prInfo: PR_repository_pullRequest) {

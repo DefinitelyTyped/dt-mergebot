@@ -2,7 +2,7 @@ import * as Comments from "./comments";
 import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
-import { noNulls, flatten, unique, sameUser } from "./util/util";
+import { noNulls, flatten, unique, sameUser, earliestDate, latestDate } from "./util/util";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -156,6 +156,11 @@ interface ExtendedPrInfo extends PrInfo {
     readonly hasNewPackages: boolean;
     readonly reviewColumn: ColumnName;
     readonly isAuthor: (user: string) => boolean; // specialized version of sameUser
+
+    /**
+     * True if the author or an owner wants us to merge the PR
+     */
+    readonly mergeIsRequested: boolean;
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isAuthor = (user: string) => sameUser(user, info.author);
@@ -181,15 +186,21 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const hasChangereqs = changereqReviews.length > 0;
     const approvalFlags = getApprovalFlags();
     const approverKind = getApproverKind();
-    const approved = getApproval();
+    const firstApprovalDate = hasChangereqs ? undefined : earliestDate(...approvedReviews.map(r =>
+        r.isMaintainer
+        || approverKind === "owners" && allOwners.includes(r.reviewer)
+        || approverKind === "others"
+            ? r.date : undefined));
+    const approved = !!firstApprovalDate;
     const canBeMerged = info.ciResult === CIResult.Pass && !info.hasMergeConflict && approved;;
+    const mergeIsRequested = !!info.lastMergeRequestDate && !!firstApprovalDate && info.lastMergeRequestDate > latestDate(info.lastPushDate, info.reopenedDate, firstApprovalDate)!;
     const failedCI = info.ciResult === CIResult.Fail;
     const staleness = getStaleness();
     const reviewColumn = getReviewColumn();
     return {
         ...info, orig: info, reviewLink,
         authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
-        canBeMerged, approved, approverKind, requireMaintainer, blessable, failedCI, staleness,
+        canBeMerged, mergeIsRequested, approved, approverKind, requireMaintainer, blessable, failedCI, staleness,
         packages, hasMultiplePackages, hasTests, newPackages, hasNewPackages,
         approvedReviews, changereqReviews, staleReviews, approvalFlags, hasChangereqs,
         reviewColumn, isAuthor
@@ -228,13 +239,6 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
         return who === "maintainers" && blessed && !noOtherOwners ? "owners"
             : who === "owners" && noOtherOwners ? "maintainers"
             : who;
-    }
-
-    function getApproval() {
-        return !!(approvalFlags &
-                  (approverKind === "others" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other)
-                   : approverKind === "owners" ? (ApprovalFlags.Maintainer | ApprovalFlags.Owner)
-                   : (ApprovalFlags.Maintainer)));
     }
 
     function getReviewColumn(): ColumnName {
