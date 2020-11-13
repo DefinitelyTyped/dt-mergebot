@@ -368,7 +368,7 @@ const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     if (text === undefined) return `couldn't fetch contents`;
     const tester = configSuspicious[basename];
     let suspect: string | undefined;
-    if (tester.length === 1) {
+    if (tester.length <= 1) {
         suspect = tester(text);
     } else {
         const oldText = await getContents("master");
@@ -376,10 +376,7 @@ const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     }
     return suspect;
 });
-configSuspicious["OTHER_FILES.txt"] = contents =>
-    // not empty
-    (contents.length === 0) ? "empty"
-    : undefined;
+configSuspicious["OTHER_FILES.txt"] = () => undefined;
 configSuspicious["package.json"] = makeJsonCheckerFromCore(
     { private: true },
     [ "/dependencies", "/types", "/typesVersions" ]
