@@ -462,13 +462,20 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         if (p.name === null) continue;
         const kind = p.kind === "add" ? " (*new!*)" : p.kind === "delete" ? " (*probably deleted!*)" : "";
         const urlPart = p.name.replace(/^(.*?)__(.)/, "@$1/$2");
-        display([`- \`${p.name}\`${kind}`,
+        const authorIsOwner = !p.owners.some(info.isAuthor) ? [] : [`(author is owner)`];
+        display([`* \`${p.name}\`${kind}`,
                  `[on npm](https://www.npmjs.com/package/${urlPart}),`,
-                 `[on unpkg](https://unpkg.com/browse/${urlPart}@latest/)`
+                 `[on unpkg](https://unpkg.com/browse/${urlPart}@latest/)`,
+                 ...authorIsOwner
                 ].join(" "));
+
+        const approvers = info.approvedReviews.filter(r => p.owners.some(o => sameUser(o, r.reviewer))).map(r => r.reviewer);
+        if (approvers.length) {
+            display(`  - owner-approval: ${usersToString(approvers)}`);
+        }
         const displayOwners = (what: string, owners: string[]) => {
             if (owners.length === 0) return;
-            display(`  **${announceList(`${what} owner`, owners)}:** ${usersToString(owners)}`);
+            display(`  - ${announceList(`${what} owner`, owners)}: ${usersToString(owners)}`);
         };
         displayOwners("added", p.addedOwners);
         displayOwners("removed", p.deletedOwners);

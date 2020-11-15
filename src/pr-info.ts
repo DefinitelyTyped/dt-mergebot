@@ -232,7 +232,7 @@ export async function deriveStateForPR(
                                     latestDate(createdDate, lastPushDate, reopenedDate, firstApprovalDate) || lastPushDate),
         stalenessInDays,
         lastPushDate, reopenedDate, lastCommentDate,
-        maintainerBlessed: lastBlessing ? lastBlessing.getTime() > lastPushDate.getTime() : false,
+        maintainerBlessed: lastBlessing ? lastBlessing > lastPushDate : false,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         isFirstContribution,
         popularityLevel,
@@ -432,7 +432,7 @@ function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes
         comment
         && users.includes(comment.author?.login || " ")
         && comment.body.trim().toLowerCase().startsWith("ready to merge")
-        && (new Date(comment.createdAt)).getTime() > sinceDate.getTime());
+        && (new Date(comment.createdAt)) > sinceDate);
 }
 
 function getReviews(prInfo: PR_repository_pullRequest) {
