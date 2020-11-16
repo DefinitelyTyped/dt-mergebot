@@ -225,7 +225,7 @@ export async function deriveStateForPR(
         author,
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
-        lastMergeRequestDate: usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
+        lastMergeRequestDate: getLastMergeRequestDate(noNulls(prInfo.comments.nodes),
                                     pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author]),
         stalenessInDays,
         lastPushDate, reopenedDate, lastCommentDate,
@@ -427,7 +427,7 @@ function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[]) {
     };
 }
 
-function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes[], users: string[]) {
+function getLastMergeRequestDate(comments: PR_repository_pullRequest_comments_nodes[], users: string[]) {
     return latestDate(...comments.map(comment =>
         users.includes(comment.author?.login || " ")
         && comment.body.trim().toLowerCase().startsWith("ready to merge")

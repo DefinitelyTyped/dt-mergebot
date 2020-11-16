@@ -138,6 +138,7 @@ interface ExtendedPrInfo extends PrInfo {
     readonly tooManyOwners: boolean;
     readonly editsOwners: boolean;
     readonly canBeMerged: boolean;
+    readonly mergeIsRequested: boolean;
     readonly approved: boolean;
     readonly approverKind: ApproverKind;
     readonly requireMaintainer: boolean;
@@ -156,11 +157,6 @@ interface ExtendedPrInfo extends PrInfo {
     readonly hasNewPackages: boolean;
     readonly reviewColumn: ColumnName;
     readonly isAuthor: (user: string) => boolean; // specialized version of sameUser
-
-    /**
-     * True if the author or an owner wants us to merge the PR
-     */
-    readonly mergeIsRequested: boolean;
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isAuthor = (user: string) => sameUser(user, info.author);
@@ -186,11 +182,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const hasChangereqs = changereqReviews.length > 0;
     const approvalFlags = getApprovalFlags();
     const approverKind = getApproverKind();
-    const firstApprovalDate = hasChangereqs ? undefined : earliestDate(...approvedReviews.map(r =>
-        r.isMaintainer
-        || approverKind === "owners" && allOwners.includes(r.reviewer)
-        || approverKind === "others"
-            ? r.date : undefined));
+    const firstApprovalDate = getFirstApprovalDate();
     const approved = !!firstApprovalDate;
     const canBeMerged = info.ciResult === CIResult.Pass && !info.hasMergeConflict && approved;;
     const mergeIsRequested = !!info.lastMergeRequestDate && !!firstApprovalDate && info.lastMergeRequestDate > latestDate(info.lastPushDate, info.reopenedDate, firstApprovalDate)!;
@@ -239,6 +231,14 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
         return who === "maintainers" && blessed && !noOtherOwners ? "owners"
             : who === "owners" && noOtherOwners ? "maintainers"
             : who;
+    }
+
+    function getFirstApprovalDate() {
+        return hasChangereqs ? undefined : earliestDate(...approvedReviews.map(r =>
+            r.isMaintainer
+            || approverKind === "owners" && allOwners.includes(r.reviewer)
+            || approverKind === "others"
+                ? r.date : undefined));
     }
 
     function getReviewColumn(): ColumnName {
