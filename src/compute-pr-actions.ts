@@ -138,6 +138,7 @@ interface ExtendedPrInfo extends PrInfo {
     readonly tooManyOwners: boolean;
     readonly editsOwners: boolean;
     readonly canBeSelfMerged: boolean;
+    readonly mergeIsRequested: boolean;
     readonly pendingCriticalPackages: readonly string[]; // critical packages that need owner approval
     readonly approved: boolean;
     readonly approverKind: ApproverKind;
@@ -185,13 +186,15 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const approverKind = getApproverKind();
     const approved = getApproval();
     const canBeSelfMerged = info.ciResult === CIResult.Pass && !info.hasMergeConflict && approved;;
+    const mergeIsRequested = !!(info.mergeOfferDate && info.mergeRequestDate && info.mergeRequestDate > info.mergeOfferDate);
     const failedCI = info.ciResult === CIResult.Fail;
     const staleness = getStaleness();
     const reviewColumn = getReviewColumn();
     return {
         ...info, orig: info, reviewLink,
         authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
-        canBeSelfMerged, pendingCriticalPackages, approved, approverKind, requireMaintainer, blessable, failedCI, staleness,
+        canBeSelfMerged, mergeIsRequested, pendingCriticalPackages, approved, approverKind,
+        requireMaintainer, blessable, failedCI, staleness,
         packages, hasMultiplePackages, hasTests, newPackages, hasNewPackages,
         approvedReviews, changereqReviews, staleReviews, approvalFlags, hasChangereqs,
         reviewColumn, isAuthor
@@ -393,7 +396,8 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
         else {
             context.responseComments.push(Comments.AskForAutoMergePermission(
                 info.author,
-                (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners));
+                (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners,
+                info.headCommitAbbrOid));
             context.targetColumn = "Waiting for Author to Merge";
         }
 

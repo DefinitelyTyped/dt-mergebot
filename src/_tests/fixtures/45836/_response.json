@@ -441,6 +441,20 @@
               "__typename": "IssueComment"
             },
             {
+              "id": "MDEyOklzc3VlQ29tbWVudDYyMTU1OTExNA==",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "body": "@mmorearty Everything looks good here. Great job! I am ready to merge this PR (at 6c7735e) on your behalf.\nIf you'd like that to happen, please post a comment with the exact text\n\n> Ready to merge\n\nand I'll merge it the next time I look at this PR.\n<!--typescript_bot_merge-offer-->",
+              "createdAt": "2020-04-30T01:31:41Z",
+              "reactions": {
+                "nodes": [],
+                "__typename": "ReactionConnection"
+              },
+              "__typename": "IssueComment"
+            },
+            {
               "id": "MDEyOklzc3VlQ29tbWVudDY1NTY2NDE5NA==",
               "author": {
                 "login": "mmorearty",

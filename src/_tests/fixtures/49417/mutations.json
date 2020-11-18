@@ -37,7 +37,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTE3MTkwNTIz",
-        "body": "@Methuselah96 Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@gustavderdrache, @borisyankov, @tomwanzek, @denisname, @ledragon: you can do this too.)\n<!--typescript_bot_merge-offer-->"
+        "body": "@Methuselah96 Everything looks good here. Great job! I am ready to merge this PR (at 2b9d098) on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@gustavderdrache, @borisyankov, @tomwanzek, @denisname, @ledragon: you can do this too.)\n<!--typescript_bot_merge-offer-->"
       }
     }
   }

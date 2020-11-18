@@ -211,7 +211,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@mAAdhaTTah Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n<!--typescript_bot_merge-offer-->",
+              "body": "@mAAdhaTTah Everything looks good here. Great job! I am ready to merge this PR (at 96d6582) on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n<!--typescript_bot_merge-offer-->",
               "createdAt": "2020-05-15T15:41:43Z",
               "reactions": {
                 "nodes": [],

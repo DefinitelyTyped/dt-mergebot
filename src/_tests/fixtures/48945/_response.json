@@ -249,7 +249,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@google-api-typings-generator Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@Maxim-Mazurok, @namoscato, @declanvong: you can do this too.)\n<!--typescript_bot_merge-offer-->",
+              "body": "@google-api-typings-generator Everything looks good here. Great job! I am ready to merge this PR (at 759b4cb) on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@Maxim-Mazurok, @namoscato, @declanvong: you can do this too.)\n<!--typescript_bot_merge-offer-->",
               "createdAt": "2020-10-20T11:35:45Z",
               "reactions": {
                 "nodes": [],

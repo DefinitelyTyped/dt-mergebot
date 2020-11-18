@@ -69,9 +69,10 @@ export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) 
     status: `@${reviewers.join(", @")} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
 });
 
-export const AskForAutoMergePermission = (user: string, otherOwners: string[]) => ({
+export const AskForAutoMergePermission = (user: string, otherOwners: string[], abbrOid: string) => ({
     tag: `merge-offer`,
-    status: `@${user} Everything looks good here. Great job! I am ready to merge this PR on your behalf.
+    // Note: pr-info.ts searches for the `(at ${abbrOid})`
+    status: `@${user} Everything looks good here. Great job! I am ready to merge this PR (at ${abbrOid}) on your behalf.
 
 If you'd like that to happen, please post a comment saying:
 
