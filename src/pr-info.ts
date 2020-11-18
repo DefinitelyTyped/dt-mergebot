@@ -18,6 +18,7 @@ import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
 import { noNulls, notUndefined, findLast, forEachReverse, daysSince, sameUser, authorNotBot, latestDate, earliestDate
        } from "./util/util";
+import * as Comment from "./util/comment";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
 import { PullRequestState } from "./schema/graphql-global-types";
@@ -108,11 +109,6 @@ export interface PrInfo {
     readonly author: string;
 
     /**
-     * True if the author or an owner wants us to merge the PR
-     */
-    readonly mergeIsRequested: boolean;
-
-    /**
      * The CI status of the head commit
      */
     readonly ciResult: CIResult;
@@ -151,6 +147,17 @@ export interface PrInfo {
      * True if a maintainer blessed this PR
      */
     readonly maintainerBlessed: boolean;
+
+    /**
+     * The time we posted a merge offer, if any (required for merge request in addition to passing CI and a review)
+     */
+    readonly mergeOfferDate?: Date;
+
+    /*
+     * Time of a "ready to merge" request and the requestor
+     */
+    readonly mergeRequestDate?: Date;
+    readonly mergeRequestUser?: string;
 
     readonly isFirstContribution: boolean;
 
@@ -216,8 +223,13 @@ export async function deriveStateForPR(
     const now = getNow().toISOString();
     const reviews = getReviews(prInfo);
     const latestReview = latestDate(...reviews.map(r => r.date));
-    const firstApprovalDate = earliestDate(...reviews.map(r => r.type === "approved" ? r.date : undefined));
-    const stalenessInDays = daysSince(latestDate(createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview) || lastPushDate, now);
+    const comments = noNulls(prInfo.comments.nodes || []);
+    const mergeOfferDate = getMergeOfferDate(comments, headCommit.abbreviatedOid);
+    const mergeRequest = getMergeRequest(comments,
+                                         pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
+                                         latestDate(createdDate, reopenedDate, lastPushDate)!);
+    const stalenessInDays =
+        daysSince(latestDate(createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview)!, now);
 
     return {
         type: "info",
@@ -226,13 +238,10 @@ export async function deriveStateForPR(
         author,
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
-        mergeIsRequested: !!prInfo.comments.nodes
-            && usersSayReadyToMerge(noNulls(prInfo.comments.nodes),
-                                    pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
-                                    latestDate(createdDate, lastPushDate, reopenedDate, firstApprovalDate) || lastPushDate),
         stalenessInDays,
         lastPushDate, reopenedDate, lastCommentDate,
         maintainerBlessed: lastBlessing ? lastBlessing > lastPushDate : false,
+        mergeOfferDate, mergeRequestDate: mergeRequest?.date, mergeRequestUser: mergeRequest?.user,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         isFirstContribution,
         popularityLevel,
@@ -281,8 +290,7 @@ function getLastCommentishActivityDate(timelineItems: PR_repository_pullRequest_
     });
 
     if (lastIssueComment && lastReviewComment) {
-        const latestDate = [lastIssueComment.createdAt, lastReviewComment.createdAt].sort()[1]
-        return new Date(latestDate);
+        return latestDate(new Date(lastIssueComment.createdAt), new Date(lastReviewComment.createdAt));
     }
     if (lastIssueComment || lastReviewComment) {
         return new Date((lastIssueComment || lastReviewComment)?.createdAt);
@@ -427,12 +435,26 @@ function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[]) {
     };
 }
 
-function usersSayReadyToMerge(comments: PR_repository_pullRequest_comments_nodes[], users: string[], sinceDate: Date) {
-    return comments.some(comment =>
-        comment
-        && users.includes(comment.author?.login || " ")
-        && comment.body.trim().toLowerCase().startsWith("ready to merge")
-        && (new Date(comment.createdAt)) > sinceDate);
+function latestComment(comments: PR_repository_pullRequest_comments_nodes[]) {
+    if (comments.length === 0) return undefined;
+    return comments.reduce((r, c) => r && Date.parse(r.createdAt) > Date.parse(c.createdAt) ? r : c);
+}
+
+function getMergeOfferDate(comments: PR_repository_pullRequest_comments_nodes[], abbrOid: string) {
+    const offer = latestComment(comments.filter(comment =>
+        sameUser("typescript-bot", comment.author?.login || "-")
+        && Comment.parse(comment.body)?.tag === "merge-offer"
+        && comment.body.includes(`(at ${abbrOid})`)));
+    return offer && new Date(offer.createdAt);
+}
+
+function getMergeRequest(comments: PR_repository_pullRequest_comments_nodes[], users: string[], sinceDate: Date) {
+    const request = latestComment(comments.filter(comment =>
+        users.some(u => comment.author && sameUser(u, comment.author.login))
+        && comment.body.trim().toLowerCase().startsWith("ready to merge")));
+    if (!request) return request;
+    const date = new Date(request.createdAt);
+    return date > sinceDate ? { date, user: request.author!.login  } : undefined;
 }
 
 function getReviews(prInfo: PR_repository_pullRequest) {

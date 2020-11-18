@@ -2,6 +2,7 @@ import { PR as PRQueryResult, PR_repository_pullRequest } from "./queries/schema
 import { Actions } from "./compute-pr-actions";
 import { createMutation, mutate, Mutation } from "./graphql-client";
 import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
+import * as Comment from "./util/comment";
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/projects/5
 const ProjectBoardNumber = 5;
@@ -47,9 +48,6 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
 
   return mutations.map((m) => m.body);
 }
-
-const prefix = "\n<!--typescript_bot_";
-const suffix = "-->";
 
 async function getMutationsForLabels(actions: Actions, pr: PR_repository_pullRequest) {
 const labels = pr.labels?.nodes!;
@@ -124,12 +122,12 @@ function getMutationsForComments(actions: Actions, pr: PR_repository_pullRequest
     let exists = false;
     for (const actualComment of pr.comments.nodes ?? []) {
       if (actualComment?.author?.login !== "typescript-bot") continue;
-      const parsed = parseComment(actualComment.body);
+      const parsed = Comment.parse(actualComment.body);
       if (parsed?.tag !== wantedComment.tag) continue;
       exists = true;
       if (parsed.status === wantedComment.status) continue; // Comment is up-to-date; skip
       // Edit it
-      const body = makeComment(wantedComment.status, wantedComment.tag);
+      const body = Comment.make(wantedComment.status, wantedComment.tag);
       if (body === actualComment.body) break;
       mutations.push( createMutation(editComment, { input: { id: actualComment.id, body, } }) );
       break;
@@ -137,7 +135,7 @@ function getMutationsForComments(actions: Actions, pr: PR_repository_pullRequest
 
     if (!exists) {
       mutations.push( createMutation(addComment, {
-          input: { subjectId: pr.id, body: makeComment(wantedComment.status, wantedComment.tag) },
+          input: { subjectId: pr.id, body: Comment.make(wantedComment.status, wantedComment.tag) },
         })
       );
     }
@@ -154,7 +152,7 @@ function getMutationsForCommentRemovals(actions: Actions, pr: PR_repository_pull
   for (const comment of botComments) {
     if (!comment) continue;
 
-    const parsed = parseComment(comment.body);
+    const parsed = Comment.parse(comment.body);
     if (!parsed) continue;
 
     // Remove stale CI 'your build is green' notifications
@@ -191,20 +189,6 @@ function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pull
     mutations.push( createMutation(closePr, { input: { pullRequestId: pr.id } }) );
   }
   return mutations;
-}
-
-function parseComment(body: string): undefined | { status: string; tag: string } {
-  const start = body.lastIndexOf(prefix);
-  const end = body.lastIndexOf(suffix);
-  return start < 0 || end < 0 || end + suffix.length != body.length
-    ? undefined
-    : { status: body.substr(0, start),
-        tag: body.substr(start + prefix.length, end - start - prefix.length),
-      };
-}
-
-function makeComment(body: string, tag: string) {
-  return `${body}${prefix}${tag}${suffix}`;
 }
 
 async function getProjectBoardColumnIdByName(name: string): Promise<string> {

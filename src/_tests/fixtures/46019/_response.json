@@ -220,7 +220,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@peterblazejewicz Everything looks good here. Great job! I am ready to merge this PR on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n<!--typescript_bot_merge-offer-->",
+              "body": "@peterblazejewicz Everything looks good here. Great job! I am ready to merge this PR (at ceca9f7) on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n<!--typescript_bot_merge-offer-->",
               "createdAt": "2020-07-12T04:07:31Z",
               "reactions": {
                 "nodes": [],
