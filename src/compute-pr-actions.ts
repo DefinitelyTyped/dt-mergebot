@@ -24,8 +24,8 @@ type LabelName =
     | "Owner Approved"
     | "Other Approved"
     | "Maintainer Approved"
-    | "Merge:Auto"
-    | "Merge:YSYL"
+    | "Self Merge"
+    | "YSYL"
     | "Popular package"
     | "Critical package"
     | "Edits Infrastructure"
@@ -65,7 +65,7 @@ function createDefaultActions(pr_number: number): Actions {
             "Owner Approved": false,
             "Other Approved": false,
             "Maintainer Approved": false,
-            "Merge:YSYL": false,
+            "YSYL": false,
             "Popular package": false,
             "Critical package": false,
             "Edits Infrastructure": false,
@@ -73,7 +73,7 @@ function createDefaultActions(pr_number: number): Actions {
             "Author is Owner": false,
             "No Other Owners": false,
             "Too Many Owners": false,
-            "Merge:Auto": false,
+            "Self Merge": false,
             "Untested Change": false,
             "Config Edit": false,
             "Abandoned": false
@@ -317,11 +317,11 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     context.labels["Author is Owner"] = info.authorIsOwner;
     context.labels["No Other Owners"] = !info.hasNewPackages && info.noOtherOwners;
     context.labels["Too Many Owners"] = info.tooManyOwners;
-    context.labels["Merge:Auto"] = info.canBeSelfMerged;
+    context.labels["Self Merge"] = info.canBeSelfMerged;
     context.isReadyForAutoMerge = info.canBeSelfMerged;
     context.labels["Config Edit"] = !info.hasNewPackages && info.editsConfig;
     context.labels["Untested Change"] = !info.hasTests;
-    context.labels["Merge:YSYL"] = info.staleness === Staleness.YSYL;
+    context.labels["YSYL"] = info.staleness === Staleness.YSYL;
     context.labels["Abandoned"] = info.staleness === Staleness.Abandoned;
 
     // Update intro comment

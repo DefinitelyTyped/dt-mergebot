@@ -19,7 +19,7 @@
         "labels": {
           "nodes": [
             {
-              "name": "Merge:Auto",
+              "name": "Self Merge",
               "__typename": "Label"
             },
             {
