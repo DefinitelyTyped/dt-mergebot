@@ -160,7 +160,7 @@
     },
     {
       "id": "MDU6TGFiZWw2OTcwMTg5NzI=",
-      "name": "Merge:Auto",
+      "name": "Self Merge",
       "__typename": "Label"
     },
     {
@@ -175,7 +175,7 @@
     },
     {
       "id": "MDU6TGFiZWw2NDQwOTU4ODI=",
-      "name": "Merge:YSYL",
+      "name": "YSYL",
       "__typename": "Label"
     },
     {

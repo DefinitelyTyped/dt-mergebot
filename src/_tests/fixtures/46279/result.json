@@ -12,7 +12,7 @@
     "Owner Approved": false,
     "Other Approved": false,
     "Maintainer Approved": false,
-    "Merge:YSYL": false,
+    "YSYL": false,
     "Popular package": false,
     "Critical package": false,
     "Edits Infrastructure": false,
@@ -20,7 +20,7 @@
     "Author is Owner": true,
     "No Other Owners": true,
     "Too Many Owners": false,
-    "Merge:Auto": false,
+    "Self Merge": false,
     "Untested Change": true,
     "Config Edit": false,
     "Abandoned": false
