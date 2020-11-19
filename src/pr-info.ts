@@ -16,6 +16,7 @@ import * as comment from "./util/comment";
 import * as urls from "./urls";
 import * as HeaderParser from "@definitelytyped/header-parser";
 import * as jsonDiff from "fast-json-patch";
+import * as prettier from "prettier";
 
 const CriticalPopularityThreshold = 5_000_000;
 const NormalPopularityThreshold = 200_000;
@@ -55,8 +56,15 @@ type FileKind = "test" | "definition" | "markdown" | "package-meta" | "package-m
 export type FileInfo = {
     path: string,
     kind: FileKind,
-    suspect?: string // reason for a file being "package-meta" rather than "package-meta-ok"
+    suspect?: string, // reason for a file being "package-meta" rather than "package-meta-ok"
+    suggestion?: Suggestion,
 };
+
+export interface Suggestion {
+    readonly startLine: number;
+    readonly line: number;
+    readonly suggestion: string;
+}
 
 export type ReviewInfo = {
     type: string,
@@ -330,19 +338,19 @@ async function categorizeFile(path: string, contents: (oid?: string) => Promise<
         case "md": return [pkg, { path, kind: "markdown" }];
         default: {
             const suspect = await configSuspicious(path, contents);
-            return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", suspect }];
+            return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", ...suspect }];
         }
     }
 }
 
 interface ConfigSuspicious {
-    (path: string, getContents: (oid?: string) => Promise<string | undefined>): Promise<string | undefined>;
-    [basename: string]: (text: string, oldText?: string) => string | undefined;
+    (path: string, getContents: (oid?: string) => Promise<string | undefined>): Promise<{ suspect: string, sugestion?: Suggestion } | undefined>;
+    [basename: string]: (text: string, oldText?: string) => { suspect: string, suggestion?: Suggestion } | undefined;
 }
 const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     const basename = path.replace(/.*\//, "");
     const checker = configSuspicious[basename];
-    if (!checker) return `edited`;
+    if (!checker) return { suspect: `edited` };
     const text = await getContents();
     // Removing tslint.json, tsconfig.json, package.json and
     // OTHER_FILES.txt is checked by the CI. Specifics are in my commit
@@ -397,27 +405,57 @@ configSuspicious["tsconfig.json"] = makeChecker(
 // to it, ignoring some keys.  The ignored properties are in most cases checked
 // elsewhere (dtslint), and in some cases they are irrelevant.
 function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { parse: (text: string) => unknown } | { ignore: (data: any) => void }) {
-    const diffFromExpected = (text: string) => {
-        let data: any;
-        if (options && "parse" in options) {
-            data = options.parse(text);
-        } else {
-            try { data = JSON.parse(text); } catch (e) { return "couldn't parse json"; }
-        }
-        if (options && "ignore" in options) options.ignore(data);
-        try { return jsonDiff.compare(expectedForm, data); } catch (e) { return "couldn't diff json"; }
-    };
     return (contents: string, oldText?: string) => {
         const theExpectedForm = `[the expected form](${expectedFormUrl})`;
-        const newDiff = diffFromExpected(contents);
-        if (typeof newDiff === "string") return newDiff;
+        const diffFromExpected = (data: any) => {
+            if (options && "ignore" in options) options.ignore(data);
+            return jsonDiff.compare(expectedForm, data);
+        };
+        let newData;
+        if (options && "parse" in options) {
+            newData = options.parse(contents);
+        } else {
+            try { newData = JSON.parse(contents); } catch (e) { if (e instanceof SyntaxError) return { suspect: `couldn't parse json: ${e.message}` }; }
+        }
+        const suggestion = jsonDiff.deepClone(newData);
+        const newDiff = diffFromExpected(newData);
         if (newDiff.length === 0) return undefined;
-        if (!oldText) return `not ${theExpectedForm} \`${JSON.stringify(newDiff)}\``;
-        const oldDiff = diffFromExpected(oldText);
-        if (typeof oldDiff === "string") return oldDiff;
-        const notRemove = jsonDiff.compare(oldDiff, newDiff).filter(({ op }) => op !== "remove");
-        if (notRemove.length === 0) return undefined;
-        return `not ${theExpectedForm} and not moving towards it \`${JSON.stringify(notRemove.map(({ path }) => newDiff[Number(path.slice(1))]))}\``;
+        const towardsIt = jsonDiff.deepClone(expectedForm);
+        if (oldText) {
+            let oldData;
+            if (options && "parse" in options) {
+                oldData = options.parse(oldText);
+            } else {
+                try { oldData = JSON.parse(oldText); } catch (e) { if (e instanceof SyntaxError) return { suspect: `couldn't parse json: ${e.message}` }; }
+            }
+            const oldDiff = diffFromExpected(oldData);
+            const notRemove = jsonDiff.compare(oldDiff, newDiff).filter(({ op }) => op !== "remove");
+            if (notRemove.length === 0) return undefined;
+            jsonDiff.applyPatch(newDiff, notRemove.map(({ path }) => ({ op: "remove", path })));
+            jsonDiff.applyPatch(towardsIt, newDiff.filter(({ op }: { op?: typeof newDiff[number]["op"] }) => op));
+        }
+        jsonDiff.applyPatch(suggestion, jsonDiff.compare(newData, towardsIt));
+        // Suggest the different lines to the author
+        const suggestionLines = (
+            Object.keys(suggestion).length <= 1
+                ? prettier.format(JSON.stringify(suggestion), { tabWidth: 4, filepath: ".json" })
+                : JSON.stringify(suggestion, undefined, 4) + "\n"
+        ).split(/^/m);
+        const lines = contents.split(/^/m);
+        let i = 0;
+        while (suggestionLines[i]!.trim() === lines[i]!.trim()) i++;
+        let j = 1;
+        while (suggestionLines[suggestionLines.length - j]!.trim() === lines[lines.length - j]!.trim()) j++;
+        return {
+            suspect: oldText
+                ? `not ${theExpectedForm} and not moving towards it`
+                : `not ${theExpectedForm}`,
+            suggestion: {
+                startLine: i + 1,
+                line: lines.length - j + 1,
+                suggestion: suggestionLines.slice(i, 1 - j || undefined).join(""),
+            },
+        };
     };
 }
 

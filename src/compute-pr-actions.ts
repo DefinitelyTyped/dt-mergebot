@@ -1,7 +1,7 @@
 import * as Comments from "./comments";
 import * as urls from "./urls";
 import { PrInfo, BotResult, FileInfo } from "./pr-info";
-import { ReviewInfo } from "./pr-info";
+import { ReviewInfo, Suggestion } from "./pr-info";
 import { noNullish, flatten, unique, sameUser, min, sha256, abbrOid } from "./util/util";
 import * as dayjs from "dayjs";
 import * as advancedFormat from "dayjs/plugin/advancedFormat";
@@ -52,6 +52,7 @@ export interface Actions {
     targetColumn?: ColumnName;
     labels: LabelName[];
     responseComments: Comments.Comment[];
+    suggestions: { [path: string]: Suggestion };
     shouldClose: boolean;
     shouldMerge: boolean;
     shouldUpdateLabels: boolean;
@@ -64,6 +65,7 @@ function createDefaultActions(): Actions {
         targetColumn: "Other",
         labels: [],
         responseComments: [],
+        suggestions: {},
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: true,
@@ -76,6 +78,7 @@ function createEmptyActions(): Actions {
     return {
         labels: [],
         responseComments: [],
+        suggestions: {},
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: false,
@@ -290,6 +293,15 @@ export function process(prInfo: BotResult,
 
     // Update intro comment
     post({ tag: "welcome", status: createWelcomeComment(info, post) });
+
+    // Propagate suggestions into actions
+    for (const pkg of info.pkgInfo) {
+        for (const file of pkg.files) {
+            if (file.suggestion) {
+                context.suggestions[file.path] = file.suggestion;
+            }
+        }
+    }
 
     // Ping reviewers when needed
     const headCommitAbbrOid = abbrOid(info.headCommitOid);

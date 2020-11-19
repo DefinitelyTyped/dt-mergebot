@@ -122,3 +122,8 @@ I'll bump it to the DT maintainer queue. Thank you for your patience, @${author}
 
 (Ping ${owners}.)`} as { [k: string]: string };
 };
+
+export const suggestions = (user: string) => ({
+    tag: "suggestions",
+    status: `@${user} I noticed these differences from the expected form. If you can revise your changes to avoid them, so much the better! Otherwise please reply with explanations why they're needed (unless it's obvious) and a maintainer will take a look. Thanks!`,
+});

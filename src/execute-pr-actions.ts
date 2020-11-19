@@ -5,7 +5,7 @@ import { Actions, LabelNames, LabelName } from "./compute-pr-actions";
 import { createMutation, client } from "./graphql-client";
 import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
 import { noNullish, flatten } from "./util/util";
-import { tagsToDeleteIfNotPosted } from "./comments";
+import * as comments from "./comments";
 import * as comment from "./util/comment";
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/projects/5
@@ -18,6 +18,7 @@ export async function executePrActions(actions: Actions, pr: PR_repository_pullR
         ...await getMutationsForProjectChanges(actions, pr),
         ...getMutationsForComments(actions, pr.id, botComments),
         ...getMutationsForCommentRemovals(actions, botComments),
+        ...getMutationsForSuggestions(actions, pr),
         ...getMutationsForChangingPRState(actions, pr),
     ]);
     if (!dry) {
@@ -96,9 +97,31 @@ function getMutationsForCommentRemovals(actions: Actions, botComments: ParsedCom
         // Remove stale CI 'your build is green' notifications
         if (tag.includes("ci-") && tag !== ciTagToKeep) return del();
         // tags for comments that should be removed when not included in the actions
-        if (tagsToDeleteIfNotPosted.includes(tag) && !postedTags.includes(tag)) return del();
+        if (comments.tagsToDeleteIfNotPosted.includes(tag) && !postedTags.includes(tag)) return del();
         return null;
     });
+}
+
+function getMutationsForSuggestions(actions: Actions, pr: PR_repository_pullRequest) {
+    if (pr.reviews?.nodes?.find(review => review?.author?.login === "typescript-bot")) return [];
+    const mutations = Object.entries(actions.suggestions).map(([path, { startLine, line, suggestion }]) =>
+        createMutation<schema.AddPullRequestReviewThreadInput>("addPullRequestReviewThread", {
+            pullRequestId: pr.id,
+            path,
+            startLine: startLine === line ? undefined : startLine,
+            line,
+            body: "```suggestion\n" + suggestion,
+        })
+    );
+    if (mutations.length === 0) return [];
+    return [
+        ...mutations,
+        createMutation<schema.SubmitPullRequestReviewInput>("submitPullRequestReview", {
+            pullRequestId: pr.id,
+            body: comment.make(comments.suggestions(pr.author!.login)),
+            event: "COMMENT",
+        }),
+    ];
 }
 
 function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pullRequest) {
