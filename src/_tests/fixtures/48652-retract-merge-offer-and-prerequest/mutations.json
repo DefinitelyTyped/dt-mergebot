@@ -1,0 +1,71 @@
+[
+  {
+    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWwzOTU2NzkwNTk="
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NTAwNjg4ODM0"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: RemoveLabelsFromLabelableInput!) { removeLabelsFromLabelable(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWw5MDUzMzQwOTU=",
+          "MDU6TGFiZWwxNjA4NTUyNDEw",
+          "MDU6TGFiZWw2ODQzMjE1NzY=",
+          "MDU6TGFiZWw2OTcwMTg5NzI="
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NTAwNjg4ODM0"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "contentId": "MDExOlB1bGxSZXF1ZXN0NTAwNjg4ODM0",
+        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI0"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDcwNjI2OTA0NA==",
+        "body": "@mgol Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 2 packages in this PR\n\n* `angular-sanitize` [on npm](https://www.npmjs.com/package/angular-sanitize), [on unpkg](https://unpkg.com/browse/angular-sanitize@latest/)\n* `angular` [on npm](https://www.npmjs.com/package/angular), [on unpkg](https://unpkg.com/browse/angular@latest/)\n  - owner-approval: @peterblazejewicz\n\n## Code Reviews\n\nBecause this PR edits multiple packages, it can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect more than one package\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NTAwNjg4ODM0",
+        "body": "@mgol One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can \"dismiss\" the review using GitHub's review UI. Thank you!\n<!--typescript_bot_reviewer-complaint-06d8d67-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NTAwNjg4ODM0",
+        "body": "Hi @mgol, I can't [accept a merge request](https://github.com/DefinitelyTyped/DefinitelyTyped#make-a-pull-request) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.\n\nThanks, and happy typing!\n<!--typescript_bot_wait-for-merge-offer-06d8d67-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: DeleteIssueCommentInput!) { deleteIssueComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDY1NzE3MjMxMA=="
+      }
+    }
+  }
+]

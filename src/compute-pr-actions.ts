@@ -102,10 +102,13 @@ function createEmptyActions(prNumber: number): Actions {
     };
 }
 
-const uriForReview = "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/{}/files";
-const uriForTestingEditedPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package";
-const uriForTestingNewPackages = "https://github.com/DefinitelyTyped/DefinitelyTyped#testing";
-const uriForDefinitionOwners = "https://github.com/DefinitelyTyped/DefinitelyTyped#definition-owners";
+const baseURI = "https://github.com/DefinitelyTyped/DefinitelyTyped";
+const uriForReview = (n: number) => `${baseURI}/pull/${n}/files`;
+const uriForTestingEditedPackages = `${baseURI}#editing-tests-on-an-existing-package`;
+const uriForTestingNewPackages = `${baseURI}#testing`;
+const uriForDefinitionOwners = `${baseURI}#definition-owners`;
+const uriForWorkflow = `${baseURI}#make-a-pull-request`;
+const uriForBlob = (oid: string, path: string) => `${baseURI}/blob/${oid}/${path}`;
 
 const enum Staleness {
     Fresh,
@@ -138,7 +141,7 @@ interface ExtendedPrInfo extends PrInfo {
     readonly tooManyOwners: boolean;
     readonly editsOwners: boolean;
     readonly canBeSelfMerged: boolean;
-    readonly mergeIsRequested: boolean;
+    readonly hasValidMergeRequest: boolean; // has request following an offer
     readonly pendingCriticalPackages: readonly string[]; // critical packages that need owner approval
     readonly approved: boolean;
     readonly approverKind: ApproverKind;
@@ -161,7 +164,7 @@ interface ExtendedPrInfo extends PrInfo {
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isAuthor = (user: string) => sameUser(user, info.author);
-    const reviewLink = uriForReview.replace(/{}/, ""+info.pr_number);
+    const reviewLink = uriForReview(info.pr_number);
     const authorIsOwner = info.pkgInfo.every(p => p.owners.some(isAuthor));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
     const editsConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
@@ -185,15 +188,15 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const pendingCriticalPackages = getPendingCriticalPackages();
     const approverKind = getApproverKind();
     const approved = getApproval();
-    const canBeSelfMerged = info.ciResult === CIResult.Pass && !info.hasMergeConflict && approved;;
-    const mergeIsRequested = !!(info.mergeOfferDate && info.mergeRequestDate && info.mergeRequestDate > info.mergeOfferDate);
+    const canBeSelfMerged = info.ciResult === CIResult.Pass && !info.hasMergeConflict && approved;
+    const hasValidMergeRequest = !!(info.mergeOfferDate && info.mergeRequestDate && info.mergeRequestDate > info.mergeOfferDate);
     const failedCI = info.ciResult === CIResult.Fail;
     const staleness = getStaleness();
     const reviewColumn = getReviewColumn();
     return {
         ...info, orig: info, reviewLink,
         authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
-        canBeSelfMerged, mergeIsRequested, pendingCriticalPackages, approved, approverKind,
+        canBeSelfMerged, hasValidMergeRequest, pendingCriticalPackages, approved, approverKind,
         requireMaintainer, blessable, failedCI, staleness,
         packages, hasMultiplePackages, hasTests, newPackages, hasNewPackages,
         approvedReviews, changereqReviews, staleReviews, approvalFlags, hasChangereqs,
@@ -389,12 +392,12 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
         if (!info.canBeSelfMerged) {
             context.targetColumn = info.reviewColumn;
         }
-        else if (info.mergeIsRequested) {
+        else if (info.hasValidMergeRequest) {
             context.shouldMerge = true;
             context.targetColumn = "Recently Merged";
         }
         else {
-            context.responseComments.push(Comments.AskForAutoMergePermission(
+            context.responseComments.push(Comments.OfferSelfMerge(
                 info.author,
                 (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners,
                 info.headCommitAbbrOid));
@@ -407,6 +410,11 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
             const reviewers = info.staleReviews.map(r => r.reviewer);
             context.responseComments.push(Comments.PingStaleReviewer(oid, reviewers));
         }
+    }
+
+    if (!context.shouldMerge && info.mergeRequestUser) {
+        context.responseComments.push(
+            Comments.WaitUntilMergeIsOK(info.mergeRequestUser, info.headCommitAbbrOid, uriForWorkflow));
     }
 
     // This bot is faster than CI in coming back to give a response, and so the bot starts flipping between
@@ -525,7 +533,7 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         display(` * ${approved} Only ${requiredApprover} can approve changes when there are new packages added`);
     } else if (info.editsInfra) {
         const infraFiles = info.pkgInfo.find(p => p.name === null)!.files;
-        const links = infraFiles.map(f => `[\`${f.path}\`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/${info.headCommitOid}/${f.path})`);
+        const links = infraFiles.map(f => `[\`${f.path}\`](${uriForBlob(info.headCommitOid, f.path)})`);
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
     } else if (criticalNum > 1 && info.maintainerBlessed) {
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect more than one package`);

@@ -69,7 +69,7 @@ export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) 
     status: `@${reviewers.join(", @")} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
 });
 
-export const AskForAutoMergePermission = (user: string, otherOwners: string[], abbrOid: string) => ({
+export const OfferSelfMerge = (user: string, otherOwners: string[], abbrOid: string) => ({
     tag: `merge-offer`,
     // Note: pr-info.ts searches for the `(at ${abbrOid})`
     status: `@${user} Everything looks good here. Great job! I am ready to merge this PR (at ${abbrOid}) on your behalf.
@@ -81,6 +81,14 @@ If you'd like that to happen, please post a comment saying:
 and I'll merge this PR almost instantly. Thanks for helping out! :heart:
 ${otherOwners.length === 0 ? "" : `
 (${otherOwners.map(o => "@" + o).join(", ")}: you can do this too.)`}`});
+
+export const WaitUntilMergeIsOK = (user: string, abbrOid: string, uri: string) => ({
+    // at most one reminder per update
+    tag: `wait-for-merge-offer-${abbrOid}`,
+    status: `Hi @${user}, I can't [accept a merge request](${uri}) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.
+
+Thanks, and happy typing!`
+});
 
 function tinyHash(s: string): string {
     return crypto.createHash("sha256").update(s).digest("hex").substr(0, 6);

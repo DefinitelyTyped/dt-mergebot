@@ -1,0 +1,48 @@
+{
+  "pr_number": 48652,
+  "targetColumn": "Needs Author Action",
+  "labels": {
+    "Mergebot Error": false,
+    "Has Merge Conflict": false,
+    "The CI failed": false,
+    "Revision needed": true,
+    "New Definition": false,
+    "Edits Owners": false,
+    "Where is GH Actions?": false,
+    "Owner Approved": false,
+    "Other Approved": false,
+    "Maintainer Approved": false,
+    "Merge:YSYL": false,
+    "Popular package": false,
+    "Critical package": false,
+    "Edits Infrastructure": false,
+    "Edits multiple packages": true,
+    "Author is Owner": false,
+    "No Other Owners": false,
+    "Too Many Owners": false,
+    "Merge:Auto": false,
+    "Untested Change": false,
+    "Config Edit": false,
+    "Abandoned": false
+  },
+  "responseComments": [
+    {
+      "tag": "welcome",
+      "status": "@mgol Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 2 packages in this PR\n\n* `angular-sanitize` [on npm](https://www.npmjs.com/package/angular-sanitize), [on unpkg](https://unpkg.com/browse/angular-sanitize@latest/)\n* `angular` [on npm](https://www.npmjs.com/package/angular), [on unpkg](https://unpkg.com/browse/angular@latest/)\n  - owner-approval: @peterblazejewicz\n\n## Code Reviews\n\nBecause this PR edits multiple packages, it can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect more than one package\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+    },
+    {
+      "tag": "reviewer-complaint-06d8d67",
+      "status": "@mgol One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can \"dismiss\" the review using GitHub's review UI. Thank you!"
+    },
+    {
+      "tag": "wait-for-merge-offer-06d8d67",
+      "status": "Hi @mgol, I can't [accept a merge request](https://github.com/DefinitelyTyped/DefinitelyTyped#make-a-pull-request) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.\n\nThanks, and happy typing!"
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false,
+  "isReadyForAutoMerge": false
+}
