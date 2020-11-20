@@ -159,26 +159,6 @@
       "__typename": "Label"
     },
     {
-      "id": "MDU6TGFiZWw2OTcwMTg5NzI=",
-      "name": "Self Merge",
-      "__typename": "Label"
-    },
-    {
-      "id": "MDU6TGFiZWw2NDQwOTUyMzY=",
-      "name": "Merge:Express",
-      "__typename": "Label"
-    },
-    {
-      "id": "MDU6TGFiZWw2NDQxNTIyNzc=",
-      "name": "Merge:LGTM",
-      "__typename": "Label"
-    },
-    {
-      "id": "MDU6TGFiZWw2NDQwOTU4ODI=",
-      "name": "YSYL",
-      "__typename": "Label"
-    },
-    {
       "id": "MDU6TGFiZWwyMTk3MzU2OTA1",
       "name": "Mergebot Error",
       "__typename": "Label"
@@ -239,6 +219,11 @@
       "__typename": "Label"
     },
     {
+      "id": "MDU6TGFiZWw2OTcwMTg5NzI=",
+      "name": "Self Merge",
+      "__typename": "Label"
+    },
+    {
       "id": "MDU6TGFiZWw1NjcxNDI1Mg==",
       "name": "Target:Browser",
       "__typename": "Label"
@@ -286,6 +271,11 @@
     {
       "id": "MDU6TGFiZWwyMDk2NzQ1NzQx",
       "name": "Where is GH Actions?",
+      "__typename": "Label"
+    },
+    {
+      "id": "MDU6TGFiZWw2NDQwOTU4ODI=",
+      "name": "YSYL",
       "__typename": "Label"
     }
   ]
