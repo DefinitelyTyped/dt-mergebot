@@ -1,8 +1,9 @@
 import { PR as PRQueryResult, PR_repository_pullRequest } from "./queries/schema/PR";
-import { Actions } from "./compute-pr-actions";
-import { createMutation, mutate, Mutation } from "./graphql-client";
+import { Actions, LabelNames, LabelName } from "./compute-pr-actions";
+import { createMutation, mutate } from "./graphql-client";
 import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
-import * as Comment from "./util/comment";
+import { noNulls, flatten } from "./util/util";
+import * as comment from "./util/comment";
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/projects/5
 const ProjectBoardNumber = 5;
@@ -14,197 +15,125 @@ const addLabels = `mutation($input: AddLabelsToLabelableInput!) { addLabelsToLab
 const removeLabels = `mutation($input: RemoveLabelsFromLabelableInput!) { removeLabelsFromLabelable(input: $input) { clientMutationId } }`;
 export const mergePr = `mutation($input: MergePullRequestInput!) { mergePullRequest(input: $input) { clientMutationId } }`;
 const closePr = `mutation($input: ClosePullRequestInput!) { closePullRequest(input: $input) { clientMutationId } }`;
-
 const addProjectCard = `mutation($input: AddProjectCardInput!) { addProjectCard(input: $input) { clientMutationId } }`;
 const moveProjectCard = `mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }`;
 export const deleteProjectCard = `mutation($input: DeleteProjectCardInput!) { deleteProjectCard(input: $input) { clientMutationId } }`;
 
 export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean) {
-  const pr = info.repository?.pullRequest!;
-
-  let mutations: Mutation[] = [];
-
-  const labelMutations = await getMutationsForLabels(actions, pr);
-  mutations = mutations.concat(labelMutations);
-
-  const projectMutations = await getMutationsForProjectChanges(actions, pr);
-  mutations = mutations.concat(projectMutations);
-
-  const commentMutations = getMutationsForComments(actions, pr);
-  mutations = mutations.concat(commentMutations);
-
-  const commentRemovalMutations = getMutationsForCommentRemovals(actions, pr);
-  mutations = mutations.concat(commentRemovalMutations);
-
-  const prStateMutations = getMutationsForChangingPRState(actions, pr);
-  mutations = mutations.concat(prStateMutations);
-
-  if (!dry) {
-    // Perform mutations one at a time
-    for (const mutation of mutations) {
-      await mutate(mutation);
+    const pr = info.repository?.pullRequest!;
+    const botComments: ParsedComment[] = getBotComments(pr);
+    const mutations = noNulls([
+        ...await getMutationsForLabels(actions, pr),
+        ...await getMutationsForProjectChanges(actions, pr),
+        ...getMutationsForComments(actions, pr.id, botComments),
+        ...getMutationsForCommentRemovals(actions, botComments),
+        ...getMutationsForChangingPRState(actions, pr),
+    ]);
+    if (!dry) {
+        // Perform mutations one at a time
+        for (const mutation of mutations) await mutate(mutation);
     }
-  }
-
-  return mutations.map((m) => m.body);
+    return mutations.map(m => m.body);
 }
 
 async function getMutationsForLabels(actions: Actions, pr: PR_repository_pullRequest) {
-const labels = pr.labels?.nodes!;
-  const mutations: Mutation[] = [];
-  const labelsToAdd: string[] = [];
-  const labelsToRemove: string[] = [];
-
-  if (!actions.shouldUpdateLabels) {
-    return mutations;
-  }
-
-  for (const key of Object.keys(actions.labels) as (keyof typeof actions["labels"])[]) {
-    const exists = labels.some((l) => l && l.name === key);
-    if (exists && !actions.labels[key]) labelsToRemove.push(key);
-    if (!exists && actions.labels[key]) labelsToAdd.push(key);
-  }
-
-  if (labelsToAdd.length) {
-    const labelIds: string[] = [];
-    for (const label of labelsToAdd) {
-      labelIds.push(await getLabelIdByName(label));
-    }
-
-    mutations.push( createMutation(addLabels, { input: { labelIds, labelableId: pr.id, } }));
-  }
-
-  if (labelsToRemove.length) {
-    const labelIds: string[] = [];
-    for (const label of labelsToRemove) {
-      labelIds.push(await getLabelIdByName(label));
-    }
-
-    mutations.push( createMutation(removeLabels, { input: { labelIds, labelableId: pr.id } }) );
-  }
-
-  return mutations;
+    if (!actions.shouldUpdateLabels) return []
+    const labels = noNulls(pr.labels?.nodes!).map(l => l.name);
+    const makeMutations = async (pred: (l: LabelName) => boolean, query: string) => {
+        const labels = LabelNames.filter(pred);
+        return labels.length === 0 ? null
+            : createMutation(query, { input: {
+                labelIds: await Promise.all(labels.map(label => getLabelIdByName(label))),
+                labelableId: pr.id, } });
+    };
+    return Promise.all([
+        makeMutations((label => !labels.includes(label) && actions.labels.includes(label)), addLabels),
+        makeMutations((label => labels.includes(label) && !actions.labels.includes(label)), removeLabels),
+    ]);
 }
 
 async function getMutationsForProjectChanges(actions: Actions, pr: PR_repository_pullRequest) {
-  const mutations: Mutation[] = [];
-
-  if (actions.shouldRemoveFromActiveColumns) {
-    const card = pr.projectCards.nodes?.find(card => card?.project.number === ProjectBoardNumber);
-    if (card && card.column?.name !== "Recently Merged") {
-      mutations.push(createMutation(deleteProjectCard, { input: { cardId: card.id } }));
+    if (actions.shouldRemoveFromActiveColumns) {
+        const card = pr.projectCards.nodes?.find(card => card?.project.number === ProjectBoardNumber);
+        if (card?.column?.name === "Recently Merged") return [];
+        return [createMutation(deleteProjectCard, { input: { cardId: card!.id } })];
     }
-    return mutations;
-  }
-
-  if (!actions.shouldUpdateProjectColumn) {
-    return mutations;
-  }
-
-  // Create a project card if needed, otherwise move if needed
-  if (actions.targetColumn) {
-    const extantCard = pr.projectCards.nodes?.find((n) => !!n?.column && n.project.number === ProjectBoardNumber);
+    if (!(actions.shouldUpdateProjectColumn && actions.targetColumn)) return [];
+    const existingCard = pr.projectCards.nodes?.find(n => !!n?.column && n.project.number === ProjectBoardNumber);
     const targetColumnId = await getProjectBoardColumnIdByName(actions.targetColumn);
-    if (extantCard) {
-      if (extantCard.column?.name !== actions.targetColumn) {
-        mutations.push( createMutation(moveProjectCard, { input: { cardId: extantCard.id, columnId: targetColumnId } }) );
-      }
-    } else {
-      mutations.push( createMutation(addProjectCard, { input: { contentId: pr.id, projectColumnId: targetColumnId } }) );
-    }
-  }
-  return mutations;
+    // No existing card => create a new one
+    if (!existingCard) return [createMutation(addProjectCard, { input: { contentId: pr.id, projectColumnId: targetColumnId } })];
+    // Existing card is ok => do nothing
+    if (existingCard.column?.name === actions.targetColumn) return [];
+    // Move existing card
+    return [createMutation(moveProjectCard, { input: { cardId: existingCard.id, columnId: targetColumnId } })];
 }
 
-function getMutationsForComments(actions: Actions, pr: PR_repository_pullRequest) {
-  const mutations: Mutation[] = [];
-  for (const wantedComment of actions.responseComments) {
-    let exists = false;
-    for (const actualComment of pr.comments.nodes ?? []) {
-      if (actualComment?.author?.login !== "typescript-bot") continue;
-      const parsed = Comment.parse(actualComment.body);
-      if (parsed?.tag !== wantedComment.tag) continue;
-      exists = true;
-      if (parsed.status === wantedComment.status) continue; // Comment is up-to-date; skip
-      // Edit it
-      const body = Comment.make(wantedComment.status, wantedComment.tag);
-      if (body === actualComment.body) break;
-      mutations.push( createMutation(editComment, { input: { id: actualComment.id, body, } }) );
-      break;
-    }
+type ParsedComment = { id: string, body: string, tag: string, status: string };
 
-    if (!exists) {
-      mutations.push( createMutation(addComment, {
-          input: { subjectId: pr.id, body: Comment.make(wantedComment.status, wantedComment.tag) },
-        })
-      );
-    }
-  }
-
-  return mutations;
+function getBotComments(pr: PR_repository_pullRequest): ParsedComment[] {
+    return noNulls((pr.comments.nodes ?? [])
+                   .filter(comment => comment?.author?.login === "typescript-bot")
+                   .map(c => {
+                       const { id, body } = c!, parsed = comment.parse(body);
+                       return parsed && { id, body, ...parsed };
+                   }));
 }
 
-function getMutationsForCommentRemovals(actions: Actions, pr: PR_repository_pullRequest) {
-  const mutations: Mutation[] = [];
+function getMutationsForComments(actions: Actions, prId: string, botComments: ParsedComment[]) {
+    return flatten(actions.responseComments.map(wantedComment => {
+        const sameTagComments = botComments.filter(comment => comment.tag === wantedComment.tag);
+        return sameTagComments.length === 0
+            ? [createMutation(addComment, {
+                input: { subjectId: prId, body: comment.make(wantedComment.status, wantedComment.tag) } })]
+            : sameTagComments.map(actualComment =>
+                (actualComment.status === wantedComment.status) ? null // Comment is up-to-date; skip
+                : createMutation(editComment, { input: {
+                    id: actualComment.id,
+                    body: comment.make(wantedComment.status, wantedComment.tag) } }));
+    }));
+}
 
-  const ciMessageToKeep = actions.responseComments.find(c => c.tag.startsWith("ci-complaint"));
-  const botComments = (pr.comments.nodes ?? []).filter(comment => comment?.author?.login === "typescript-bot");
-  for (const comment of botComments) {
-    if (!comment) continue;
-
-    const parsed = Comment.parse(comment.body);
-    if (!parsed) continue;
-
-    // Remove stale CI 'your build is green' notifications
-    if (parsed.tag.includes("ci-") && parsed.tag !== ciMessageToKeep?.tag) {
-      mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) );
-    }
-
-    // It used to be mergable, but now it is not, remove those comments
-    if (parsed.tag === "merge-offer" && !actions.isReadyForAutoMerge) {
-      mutations.push( createMutation(deleteComment, { input: { id: comment.id } }) );
-    }
-  }
-
-  return mutations;
+function getMutationsForCommentRemovals(actions: Actions, botComments: ParsedComment[]) {
+    const ciTagToKeep = actions.responseComments.find(c => c.tag.startsWith("ci-complaint"))?.tag;
+    return botComments.map(comment => {
+        const del = () => createMutation(deleteComment, { input: { id: comment.id } });
+        // Remove stale CI 'your build is green' notifications
+        if (comment.tag.includes("ci-") && comment.tag !== ciTagToKeep) return del();
+        // It used to be mergable, but now it is not, remove those comments
+        if (comment.tag === "merge-offer" && !actions.isReadyForAutoMerge) return del();
+        return null;
+    });
 }
 
 function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pullRequest) {
-  const mutations: Mutation[] = [];
-
-  if (actions.shouldMerge) {
-    mutations.push(
-      createMutation(mergePr, {
-        input: {
-          commitHeadline: `🤖 Merge PR #${pr.number} ${pr.title} by @${pr.author?.login ?? "(ghost)"}`,
-          expectedHeadOid: pr.headRefOid,
-          mergeMethod: "SQUASH",
-          pullRequestId: pr.id,
-        },
-      })
-    );
-  }
-
-  if (actions.shouldClose) {
-    mutations.push( createMutation(closePr, { input: { pullRequestId: pr.id } }) );
-  }
-  return mutations;
+    return [
+        actions.shouldMerge
+            ? createMutation(mergePr, {
+                input: {
+                    commitHeadline: `🤖 Merge PR #${pr.number} ${pr.title} by @${pr.author?.login ?? "(ghost)"}`,
+                    expectedHeadOid: pr.headRefOid,
+                    mergeMethod: "SQUASH",
+                    pullRequestId: pr.id,
+                },
+            })
+            : null,
+        actions.shouldClose
+            ? createMutation(closePr, { input: { pullRequestId: pr.id } })
+            : null
+    ];
 }
 
 async function getProjectBoardColumnIdByName(name: string): Promise<string> {
-  const columns = await getProjectBoardColumns();
-  const res = columns.filter((e) => e && e.name === name)[0]?.id;
-  if (res !== undefined) {
+    const columns = await getProjectBoardColumns();
+    const res = columns.filter((e) => e && e.name === name)[0]?.id;
+    if (!res) throw new Error(`No project board column named "${name}" exists`);
     return res;
-  }
-  throw new Error(`No project board column named "${name}" exists`);
 }
 
 export async function getLabelIdByName(name: string): Promise<string> {
-  const labels = await getLabels();
-  const res = labels.find((l) => l.name === name)?.id;
-  if (res !== undefined) {
+    const labels = await getLabels();
+    const res = labels.find(l => l.name === name)?.id;
+    if (!res) throw new Error(`No label named "${name}" exists`);
     return res;
-  }
-  throw new Error(`No label named "${name}" exists`);
 }

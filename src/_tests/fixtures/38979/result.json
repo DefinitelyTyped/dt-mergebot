@@ -1,30 +1,11 @@
 {
   "pr_number": 38979,
   "targetColumn": "Needs Maintainer Review",
-  "labels": {
-    "Mergebot Error": false,
-    "Has Merge Conflict": false,
-    "The CI failed": false,
-    "Revision needed": false,
-    "New Definition": false,
-    "Edits Owners": false,
-    "Where is GH Actions?": false,
-    "Owner Approved": false,
-    "Other Approved": true,
-    "Maintainer Approved": false,
-    "YSYL": false,
-    "Popular package": false,
-    "Critical package": true,
-    "Edits Infrastructure": false,
-    "Edits multiple packages": false,
-    "Author is Owner": false,
-    "No Other Owners": false,
-    "Too Many Owners": false,
-    "Self Merge": false,
-    "Untested Change": false,
-    "Config Edit": true,
-    "Abandoned": false
-  },
+  "labels": [
+    "Critical package",
+    "Other Approved",
+    "Config Edit"
+  ],
   "responseComments": [
     {
       "tag": "welcome",

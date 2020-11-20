@@ -1,30 +1,10 @@
 {
   "pr_number": 47017,
   "targetColumn": "Waiting for Code Reviews",
-  "labels": {
-    "Mergebot Error": false,
-    "Has Merge Conflict": false,
-    "The CI failed": false,
-    "Revision needed": false,
-    "New Definition": false,
-    "Edits Owners": false,
-    "Where is GH Actions?": false,
-    "Owner Approved": false,
-    "Other Approved": false,
-    "Maintainer Approved": false,
-    "YSYL": false,
-    "Popular package": false,
-    "Critical package": true,
-    "Edits Infrastructure": false,
-    "Edits multiple packages": true,
-    "Author is Owner": false,
-    "No Other Owners": false,
-    "Too Many Owners": false,
-    "Self Merge": false,
-    "Untested Change": false,
-    "Config Edit": false,
-    "Abandoned": false
-  },
+  "labels": [
+    "Critical package",
+    "Edits multiple packages"
+  ],
   "responseComments": [
     {
       "tag": "welcome",
