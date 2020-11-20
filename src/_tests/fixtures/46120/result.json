@@ -20,6 +20,7 @@
       "status": ":passport_control: Hi @reubenrybnik,\n\nI can't [accept a merge request](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-make-a-pull-request) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.\n\nThanks, and happy typing!"
     }
   ],
+  "suggestions": {},
   "shouldClose": false,
   "shouldMerge": false,
   "shouldUpdateLabels": true,

@@ -42,7 +42,12 @@
         {
           "path": "types/omise-js/tslint.json",
           "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) `[{\"op\":\"replace\",\"path\":\"/extends\",\"value\":\"dtslint/dtslint.json\"},{\"op\":\"add\",\"path\":\"/rules\",\"value\":{\"no-redundant-jsdoc\":false,\"strict-export-declare-modifiers\":false,\"max-line-length\":false}}]`"
+          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson)",
+          "suggestion": {
+            "startLine": 1,
+            "line": 8,
+            "suggestion": "{ \"extends\": \"dtslint/dt.json\" }\n"
+          }
         }
       ],
       "owners": [],

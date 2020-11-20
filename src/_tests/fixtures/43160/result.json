@@ -19,6 +19,7 @@
       "status": "@rikkertkoppes The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!"
     }
   ],
+  "suggestions": {},
   "shouldClose": false,
   "shouldMerge": false,
   "shouldUpdateLabels": true,
