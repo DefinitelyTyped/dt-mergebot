@@ -1,0 +1,30 @@
+{
+  "pr_number": 44989,
+  "targetColumn": "Waiting for Author to Merge",
+  "labels": [
+    "Popular package",
+    "Owner Approved",
+    "Self Merge",
+    "Unmerged"
+  ],
+  "responseComments": [
+    {
+      "tag": "welcome",
+      "status": "@petr-motejlek Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `ramda` [on npm](https://www.npmjs.com/package/ramda), [on unpkg](https://unpkg.com/browse/ramda@latest/)\n  - owner-approval: @Nicholaiii\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners or DT maintainers\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n## Inactive\n\nThis PR has been inactive for 14 days — please merge or say something if there's a problem, otherwise it will move to the DT maintainer queue soon!\n\n----------------------\n... diagnostics scrubbed ..."
+    },
+    {
+      "tag": "merge-offer",
+      "status": "@petr-motejlek Everything looks good here. Great job! I am ready to merge this PR (at 9ca6086) on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@TheHandsomeCoder, @donnut, @mdekrey, @sbking, @afharo, @teves-castro, @1M0reBug, @hojberg, @samsonkeung, @angeloocana, @raynerd, @moshensky, @ethanresnick, @deftomat, @blimusiek, @biern, @rayhaneh, @rgm, @drewwyatt, @jottenlips, @minitesh, @krantisinh, @pirix-gh, @brekk, @nemo108, @jituanlin, @Philippe-mills, @Saul-Mirone, @Nicholaiii: you can do this too.)"
+    },
+    {
+      "tag": "Unmerged:nearly:2020-05-23",
+      "status": "Re-ping @petr-motejlek / @TheHandsomeCoder, @donnut, @mdekrey, @sbking, @afharo, @teves-castro, @1M0reBug, @hojberg, @samsonkeung, @angeloocana, @raynerd, @moshensky, @ethanresnick, @deftomat, @blimusiek, @biern, @rayhaneh, @rgm, @drewwyatt, @jottenlips, @minitesh, @krantisinh, @pirix-gh, @brekk, @nemo108, @jituanlin, @Philippe-mills, @Saul-Mirone, @Nicholaiii:\n\nThis PR has been ready to merge for over a week, and I haven't seen any requests to merge it. I will close it in three weeks if this doesn't happen.\n\n(Note that posting a comment will restart the month-timer again, so avoid doing that if you don't want me to nag you again... or you can just close it or turn it into a draft now.)"
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false,
+  "isReadyForAutoMerge": true
+}

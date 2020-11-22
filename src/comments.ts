@@ -9,26 +9,6 @@ export const HadError = (user: string | undefined, error: string) => ({
     ${error}`
 });
 
-export const SorryAbandoned = (user: string) => ({
-    tag: "abandon-sorry",
-    status: `@${user} To keep things tidy, we have to close PRs that aren't mergeable and don't have activity in the last month. No worries, though — please open a new PR if you'd like to continue with this change. Thank you!`
-});
-
-export const NearlyAbandoned = (user: string) => ({
-    tag: "abandon-warn",
-    status: `@${user} I haven't seen any activity on this PR in more than 3 weeks, and this PR currently has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.`
-});
-
-export const YSYL = () => ({
-    tag: "merge",
-    status: "After a week, no one has reviewed the PR 😞. A maintainer will be reviewing the PR in the next few days and will either merge it or request revisions. Thank you for your patience!"
-});
-
-export const NearlyYSYL = (user: string) => ({
-    tag: "ysyl-warn",
-    status: `@${user} I haven't seen any activity on this PR in almost a week. The PR will move to the DT maintainer queue soon if there is no further activity.  Please merge it or say why it shouldn't be soon.`
-});
-
 export const CIFailed = (slug: string, user: string, ciUrl: string) => ({
     tag: `gh-actions-complaint-${slug}`,
     status: `@${user} The CI build failed! Please [review the logs for more information](${ciUrl}).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!`
@@ -91,3 +71,40 @@ I can't [accept a merge request](${uri}) until the PR has a green CI and was app
 
 Thanks, and happy typing!`
 });
+
+// Explanation for the stalness count in the welcome message
+export const StalenessExplanations: { [k: string]: string } = {
+    "Unmerged:nearly": "please merge or say something if there's a problem, otherwise it will move to the DT maintainer queue soon!",
+    "Unmerged:done": "waiting for a DT maintainer!",
+    "Abandoned:nearly": "it is considered nearly abandoned!",
+    "Abandoned:done": "it is considered abandoned!",
+    "Unreviewed:nearly": "please try to get reviewers!",
+    "Unreviewed:done": "it is *still* unreviewed!",
+};
+
+// Comments to post for the staleness timeline (the tag is computed in `makeStaleness`)
+export const StalenessComment = (author: string, otherOwners: string[]) => {
+    const owners = otherOwners.length === 0 ? "«anyone?»" : otherOwners.map(o => "@"+o).join(", ");
+    return {
+        // --Unmerged--
+        "Unmerged:nearly": `Re-ping @${author} / ${owners}:
+
+This PR has been ready to merge for over a week, and I haven't seen any requests to merge it. I will close it in three weeks if this doesn't happen.
+
+(Note that posting a comment will restart the month-timer again, so avoid doing that if you don't want me to nag you again... or you can just close it or turn it into a draft now.)`,
+        "Unmerged:done": `After a month, no one has requested merging the PR 😞. I'm going to assume that the change is not wanted after all, and will therefore close it.`,
+        // --Abandoned--
+        "Abandoned:nearly": `@${author} I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.`,
+        "Abandoned:done": `@${author} To keep things tidy, we have to close PRs that aren't mergeable and don't have activity in the last month. No worries, though — please open a new PR if you'd like to continue with this change. Thank you!`,
+        // --Unreviewed--
+        "Unreviewed:nearly": `Re-ping ${owners}:
+
+This PR has been out for over a week, yet I haven't seen any reviews.
+
+Could someone please give it some attention? Thanks!`,
+        "Unreviewed:done": `It has been more than two weeks and this PR still has no reviews.
+
+I'll bump it to the DT maintainer queue. Thank you for your patience, @${author}.
+
+(Ping ${owners}.)`} as { [k: string]: string };
+};

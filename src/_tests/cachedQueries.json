@@ -164,6 +164,11 @@
       "__typename": "Label"
     },
     {
+      "id": "MDU6TGFiZWwyNTI5Mjc2Njc2",
+      "name": "Multiple Languages",
+      "__typename": "Label"
+    },
+    {
       "id": "MDU6TGFiZWw2NDY3ODg4ODg=",
       "name": "New Definition",
       "__typename": "Label"
@@ -254,6 +259,11 @@
       "__typename": "Label"
     },
     {
+      "id": "MDU6TGFiZWw2NDQwOTU4ODI=",
+      "name": "Unmerged",
+      "__typename": "Label"
+    },
+    {
       "id": "MDU6TGFiZWw2NDY3ODkyMDU=",
       "name": "Unowned",
       "__typename": "Label"
@@ -271,11 +281,6 @@
     {
       "id": "MDU6TGFiZWwyMDk2NzQ1NzQx",
       "name": "Where is GH Actions?",
-      "__typename": "Label"
-    },
-    {
-      "id": "MDU6TGFiZWw2NDQwOTU4ODI=",
-      "name": "YSYL",
       "__typename": "Label"
     }
   ]
