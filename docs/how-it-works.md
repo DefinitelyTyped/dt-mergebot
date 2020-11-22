@@ -1,4 +1,4 @@
-_Disclaimer: This could be out of date, the source of truth is always [compute-pr-actions.ts](https://github.com/DefinitelyTyped/dt-mergebot/blob/master/src/compute-pr-actions.ts)_
+_Disclaimer: This could be out of date, the source of truth is always [compute-pr-actions]_
 
 <img src="./dt-mergebot-lifecycle.png" />
 <!-- https://www.figma.com/file/qE7BDiEucqI55Q9u0yZO3b/dt-pr-lifecycle?node-id=6%3A7 -->
@@ -21,26 +21,34 @@ _Disclaimer: This could be out of date, the source of truth is always [compute-p
 PRs that are blessed (see `info.maintainerBlessed`) are excluded when
 possible.
 
-### Idle PR Removal
+### Stale PRs
 
-When a PR:
+There are several categories for PRs getting stale: "Unmerged" (good to go, but
+author+owners didn't request to merge them), "Abandoned" (bad CI, change
+requests), "Unreviewed" (got no reviews).  Each of these starts a day countdown
+at a configurable point, and goes through several states at configurable day
+counts:
 
-- Has merge conflicts, CI is failing or has Reviews which reject the most recent commit
-- Has not had any commits/comments/reviews/review comments in the last three weeks
+- `fresh`: just entered the corresponding staleness timeline, nothing done.
+- `attention`: the inactivity is now shown on the welcome message with a brief
+  explanation.
+- `nearly`: a comment is posted and a label with the staleness category is
+  added.
+- `done`: the timeline is done, either move the PR to a column (unreviewed) or
+  close it (the other).
 
-it will get a ping that it has about a week for something to happen.
+See the `getStaleness` definition in [compute-pr-actions] for the current
+configuration (conditions, count start, day counts, and final action).
 
-Then, assuming no new activities, a PR which:
-
-- Has merge conflicts, CI is failing or has Reviews which reject the most recent commit
-- Has not had any commits/comments/reviews/review comments in the last 30 days
-
-will be closed.
-
-For PRs that are ready to merge but were not, there is a similar (but
-much shorter) progression: pinged after 4 days, and moved to YSYL state
-after 8.
+The explanations for `attention` and the posted comments are defined in
+`StalenessExplanations` and `StalenessComment` respectively (in [comments]).
 
 ### Cleanup
 
-A [daily script](../src/scripts/daily.ts) is running every night, cutting the `Recently Merged` column to 50.  It also removes closed PRs from other columns as a safeguard in case the bot missed a PR closing event.
+A [daily script](../src/scripts/daily.ts) is running every night, cutting the
+`Recently Merged` column to 50.  It also removes closed PRs from other columns
+as a safeguard in case the bot missed a PR closing event.
+
+
+[compute-pr-actions]: <https://github.com/DefinitelyTyped/dt-mergebot/blob/master/src/compute-pr-actions.ts>
+[comments]: <https://github.com/DefinitelyTyped/dt-mergebot/blob/master/src/comments.ts>

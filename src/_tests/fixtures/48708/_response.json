@@ -299,7 +299,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@martin-badin I haven't seen any activity on this PR in more than 3 weeks, and this PR currently has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.\n<!--typescript_bot_abandon-warn-->",
+              "body": "@martin-badin I haven't seen any activity on this PR in more than 3 weeks, and this PR currently has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.\n<!--typescript_bot_Abandoned:nearly:2020-10-15-->",
               "createdAt": "2020-11-12T20:22:27Z",
               "reactions": {
                 "nodes": [],

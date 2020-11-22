@@ -4,7 +4,8 @@
   "labels": [
     "Revision needed",
     "Critical package",
-    "Author is Owner"
+    "Author is Owner",
+    "Abandoned"
   ],
   "responseComments": [
     {
@@ -16,8 +17,8 @@
       "status": "@martin-badin One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can \"dismiss\" the review using GitHub's review UI. Thank you!"
     },
     {
-      "tag": "abandon-warn",
-      "status": "@martin-badin I haven't seen any activity on this PR in more than 3 weeks, and this PR currently has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed."
+      "tag": "Abandoned:nearly:2020-10-15",
+      "status": "@martin-badin I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed."
     }
   ],
   "shouldClose": false,

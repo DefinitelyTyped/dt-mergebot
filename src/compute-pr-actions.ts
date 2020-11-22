@@ -13,6 +13,13 @@ type ColumnName =
     | "Recently Merged"
     | "Waiting for Code Reviews";
 
+type StalenessKind = typeof StalenessKinds[number];
+const StalenessKinds = [ // all are also label names
+    "Unmerged",
+    "Abandoned",
+    "Unreviewed",
+] as const;
+
 export type LabelName = typeof LabelNames[number];
 export const LabelNames = [
     "Mergebot Error",
@@ -26,7 +33,6 @@ export const LabelNames = [
     "Other Approved",
     "Maintainer Approved",
     "Self Merge",
-    "YSYL",
     "Popular package",
     "Critical package",
     "Edits Infrastructure",
@@ -36,7 +42,7 @@ export const LabelNames = [
     "Too Many Owners",
     "Untested Change",
     "Config Edit",
-    "Abandoned",
+    ...StalenessKinds
 ] as const;
 
 export interface Actions {
@@ -88,13 +94,12 @@ const uriForTestingNewPackages = `${baseURI}#testing`;
 const uriForDefinitionOwners = `${baseURI}#definition-owners`;
 const uriForWorkflow = `${baseURI}#make-a-pull-request`;
 
-const enum Staleness {
-    Fresh,
-    PayAttention,
-    NearlyYSYL,
-    YSYL,
-    NearlyAbandoned,
-    Abandoned,
+type Staleness = {
+    readonly kind: StalenessKind;
+    readonly days: number;
+    readonly state: "fresh" | "attention" | "nearly" | "done";
+    readonly explanation?: string;
+    readonly doTimelineActions: (context: Actions) => void;
 }
 
 type ApproverKind = "maintainer" | "owner" | "other";
@@ -124,8 +129,7 @@ export interface ExtendedPrInfo extends PrInfo {
     readonly approvedBy: ApproverKind[];
     readonly hasChangereqs: boolean;
     readonly failedCI: boolean;
-    readonly stalenessInDays: number;
-    readonly staleness: Staleness;
+    readonly staleness?: Staleness;
     readonly packages: readonly string[];
     readonly hasMultiplePackages: boolean; // not counting infra files
     readonly hasTests: boolean;
@@ -164,30 +168,30 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const failedCI = info.ciResult === CIResult.Fail;
     const canBeSelfMerged = info.ciResult === CIResult.Pass && !info.hasMergeConflict && approved;
     const hasValidMergeRequest = !!(info.mergeOfferDate && info.mergeRequestDate && info.mergeRequestDate > info.mergeOfferDate);
-    const stalenessInDays = daysSince(info.lastActivityDate, info.now);
     const needsAuthorAction = failedCI || info.hasMergeConflict || hasChangereqs;
+    //      => could be dropped from the extended info and replaced with: info.staleness?.kind === "Abandoned"
     const staleness = getStaleness();
     const reviewColumn = getReviewColumn();
     return {
         ...info, orig: info, reviewLink,
         authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeSelfMerged, hasValidMergeRequest, pendingCriticalPackages, approved, approverKind,
-        requireMaintainer, blessable, failedCI, stalenessInDays, staleness,
+        requireMaintainer, blessable, failedCI, staleness,
         packages, hasMultiplePackages, hasTests, newPackages, hasNewPackages,
         approvedReviews, changereqReviews, staleReviews, approvedBy, hasChangereqs,
         needsAuthorAction, reviewColumn, isAuthor
     };
 
+    // Staleness timeline configurations (except for texts that are all in `comments.ts`)
     function getStaleness() {
-        return canBeSelfMerged
-            ? (stalenessInDays <= 2 ? Staleness.Fresh
-               : stalenessInDays <= 4 ? Staleness.PayAttention
-               : stalenessInDays <= 8 ? Staleness.NearlyYSYL
-               : Staleness.YSYL)
-            : (stalenessInDays <= 6 ? Staleness.Fresh
-               : stalenessInDays <= 22 ? Staleness.PayAttention
-               : stalenessInDays <= 30 ? Staleness.NearlyAbandoned
-               : Staleness.Abandoned);
+        const mkStaleness = makeStaleness(info.now, info.author, otherOwners);
+        if (canBeSelfMerged && info.mergeOfferDate) return mkStaleness(
+            "Unmerged", info.mergeOfferDate, 4, 9, 30, "CLOSE");
+        if (needsAuthorAction) return mkStaleness(
+            "Abandoned", info.lastActivityDate, 6, 22, 30, "CLOSE");
+        if (!approved) return mkStaleness(
+            "Unreviewed", info.lastPushDate, 6, 10, 17, "Needs Maintainer Action");
+        return undefined;
     };
 
     function getApprovedBy() {
@@ -301,8 +305,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     context.isReadyForAutoMerge = info.canBeSelfMerged;
     label("Config Edit", !info.hasNewPackages && info.editsConfig);
     label("Untested Change", !info.hasTests);
-    label("YSYL", info.staleness === Staleness.YSYL);
-    label("Abandoned", info.staleness === Staleness.Abandoned);
+    if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
 
     // Update intro comment
     post({ tag: "welcome", status: createWelcomeComment(info) });
@@ -326,29 +329,9 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     // Needs author attention (bad CI, merge conflicts)
     if (info.needsAuthorAction) {
         context.targetColumn = "Needs Author Action";
-
         if (info.hasMergeConflict) post(Comments.MergeConflicted(info.headCommitAbbrOid, info.author));
         if (info.failedCI) post(Comments.CIFailed(info.headCommitAbbrOid, info.author, info.ciUrl!));
         if (info.hasChangereqs) post(Comments.ChangesRequest(info.headCommitAbbrOid, info.author));
-
-        // Could be abandoned
-        switch (info.staleness) {
-            case Staleness.NearlyYSYL: case Staleness.YSYL:
-                throw new Error("Internal Error: unexpected Staleness.YSYL");
-            case Staleness.NearlyAbandoned:
-                post(Comments.NearlyAbandoned(info.author));
-                break;
-            case Staleness.Abandoned:
-                post(Comments.SorryAbandoned(info.author));
-                context.shouldClose = true;
-                context.shouldRemoveFromActiveColumns = true;
-                break;
-        }
-    }
-    // Stale & doesn't need author attention => move to maintainer queue
-    // ("Abandoned" can happen here for a PR that is not broken, but didn't get any supporting reviews for a long time)
-    else if (info.staleness === Staleness.YSYL || info.staleness === Staleness.Abandoned) {
-        context.targetColumn = "Needs Maintainer Action";
     }
     // CI is running; default column is Waiting for Reviewers
     else if (info.ciResult === CIResult.Pending) {
@@ -385,6 +368,9 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
         post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, info.headCommitAbbrOid, uriForWorkflow));
     }
 
+    // Timeline-related actions
+    info.staleness?.doTimelineActions(context);
+
     // This bot is faster than CI in coming back to give a response, and so the bot starts flipping between
     // a 'where is CI'-ish state and a 'got CI deets' state. To work around this, we wait a 
     // minute since the last timeline push action before label/project states can be updated
@@ -394,6 +380,34 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     context.shouldUpdateProjectColumn = tooEarlyForLabelsOrProjects;
 
     return context;
+}
+
+function makeStaleness(now: string, author: string, otherOwners: string[]) { // curried for convenience
+    return (kind: StalenessKind, since: Date,
+            freshDays: number, attnDays: number, nearDays: number,
+            doneColumn: ColumnName | "CLOSE") => {
+        const days = daysSince(since, now);
+        const state = days <= freshDays ? "fresh" : days <= attnDays ? "attention" : days <= nearDays ? "nearly" : "done";
+        const kindAndState = `${kind}:${state}`;
+        const explanation = Comments.StalenessExplanations[kindAndState];
+        const comment = Comments.StalenessComment(author, otherOwners)[kindAndState];
+        const doTimelineActions = (context: Actions) => {
+            if (comment !== undefined) {
+                const tag = state === "done" ? kindAndState
+                    : `${kindAndState}:${since.toISOString().replace(/T.*$/, "")}`;
+                context.responseComments.push({ tag, status: comment });
+            }
+            if (state === "done") {
+                if (doneColumn === "CLOSE") {
+                    context.shouldClose = true;
+                    context.shouldRemoveFromActiveColumns = true;
+                } else {
+                    context.targetColumn = doneColumn;
+                }
+            }
+        };
+        return { kind, days, state, explanation, doTimelineActions } as const;
+    }
 }
 
 function createWelcomeComment(info: ExtendedPrInfo) {
@@ -535,16 +549,12 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         display(`All of the items on the list are green. **To merge, you need to post a comment including the string "Ready to merge"** to bring in your changes.`);
     }
 
-    if (info.staleness !== Staleness.Fresh) {
+    if (info.staleness && info.staleness.state !== "fresh") {
+        const expl = info.staleness.explanation;
         display(``,
                 `## Inactive`,
                 ``,
-                `This PR has been inactive for ${info.stalenessInDays} days${
-                  info.staleness === Staleness.NearlyAbandoned ? " — it is considered nearly abandoned!"
-                  : info.staleness === Staleness.NearlyYSYL ? " — please merge or say something if there's a problem, otherwise it will move to the DT maintainer queue soon!"
-                  : info.staleness === Staleness.Abandoned ? " — it is considered abandoned!"
-                  : info.staleness === Staleness.YSYL ? " — waiting for a DT maintainer!"
-                  : "."}`);
+                `This PR has been inactive for ${info.staleness.days} days${!expl ? "." : " — " + expl}`);
     }
 
     // Remove the 'now' attribute because otherwise the comment would need editing every time

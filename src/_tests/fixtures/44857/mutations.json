@@ -1,10 +1,41 @@
 [
   {
+    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWwyNDYyODA0MzE1"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDE5NzEzNjEz"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: RemoveLabelsFromLabelableInput!) { removeLabelsFromLabelable(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWw2NDQxMTYxNzA="
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDE5NzEzNjEz"
+      }
+    }
+  },
+  {
     "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYzMDQwNjQ0NA==",
-        "body": "@ExE-Boss Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `node` [on npm](https://www.npmjs.com/package/node), [on unpkg](https://unpkg.com/browse/node@latest/) (author is owner)\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by a DT maintainer\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 31 days — it is considered abandoned!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@ExE-Boss Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `node` [on npm](https://www.npmjs.com/package/node), [on unpkg](https://unpkg.com/browse/node@latest/) (author is owner)\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by a DT maintainer\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 32 days — it is *still* unreviewed!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NDE5NzEzNjEz",
+        "body": "It has been more than two weeks and this PR still has no reviews.\n\nI'll bump it to the DT maintainer queue. Thank you for your patience, @ExE-Boss.\n\n(Ping @Microsoft, @DefinitelyTyped, @jkomyno, @a-tarasyuk, @alvis, @r3nya, @btoueg, @brunoscheufler, @smac89, @touffy, @DeividasBakanas, @eyqs, @Flarna, @Hannes-Magnusson-CK, @KSXGitHub, @hoo29, @kjin, @ajafff, @islishude, @mwiktorczyk, @mohsen1, @n-e, @galkin, @parambirs, @eps1lon, @SimonSchick, @ThomasdenH, @WilcoBakker, @wwwy3y3, @samuela, @kuehlein, @j-oliveras, @bhongy, @chyzwar, @trivikr, @nguymin4, @yoursunny, @qwelias, @Ryan-Willpower, @peterblazejewicz, @addaleax, @JasonHK.)\n<!--typescript_bot_Unreviewed:done-->"
       }
     }
   }
