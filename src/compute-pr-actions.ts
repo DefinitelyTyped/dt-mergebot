@@ -1,5 +1,5 @@
 import * as Comments from "./comments";
-import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages } from "./pr-info";
+import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages, FileInfo } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
 import { noNulls, flatten, unique, sameUser } from "./util/util";
@@ -529,11 +529,14 @@ function createWelcomeComment(info: ExtendedPrInfo) {
     display(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
 
     const approved = emoji(info.approved);
+    const blobLink = (f: FileInfo) =>
+        `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${uriForBlob(info.headCommitOid, f.path)})`;
+
     if (info.hasNewPackages) {
         display(` * ${approved} Only ${requiredApprover} can approve changes when there are new packages added`);
     } else if (info.editsInfra) {
         const infraFiles = info.pkgInfo.find(p => p.name === null)!.files;
-        const links = infraFiles.map(f => `[\`${f.path}\`](${uriForBlob(info.headCommitOid, f.path)})`);
+        const links = infraFiles.map(blobLink);
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
     } else if (criticalNum > 1 && info.maintainerBlessed) {
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect more than one package`);
@@ -551,12 +554,8 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         display(` * ${approved} Most recent commit is approved by ${requiredApprover}`);
     } else if (info.editsConfig) {
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect module config files`);
-        for (const pkg of info.pkgInfo) {
-            for (const file of pkg.files) {
-                if (!file.suspect) continue;
-                display(`   - [\`${file.path.replace(/^types\//, "")}\`](${uriForBlob(info.headCommitOid, file.path)}): ${file.suspect}`);
-            }
-        }
+        info.pkgInfo.forEach(pkg => pkg.files.forEach(file =>
+            file.suspect && display(`   - ${blobLink(file)}: ${file.suspect}`)));
     } else {
         display(` * ${approved} Only ${requiredApprover} can approve changes [without tests](${testsLink})`);
     }
