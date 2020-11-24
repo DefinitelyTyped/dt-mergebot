@@ -2,7 +2,7 @@ import * as Comments from "./comments";
 import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages, FileInfo } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
-import { noNulls, flatten, unique, sameUser } from "./util/util";
+import { noNulls, flatten, unique, sameUser, daysSince } from "./util/util";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -13,34 +13,36 @@ type ColumnName =
     | "Recently Merged"
     | "Waiting for Code Reviews";
 
-type LabelName =
-    | "Mergebot Error"
-    | "Has Merge Conflict"
-    | "The CI failed"
-    | "Revision needed"
-    | "New Definition"
-    | "Edits Owners"
-    | "Where is GH Actions?"
-    | "Owner Approved"
-    | "Other Approved"
-    | "Maintainer Approved"
-    | "Self Merge"
-    | "YSYL"
-    | "Popular package"
-    | "Critical package"
-    | "Edits Infrastructure"
-    | "Edits multiple packages"
-    | "Author is Owner"
-    | "No Other Owners"
-    | "Too Many Owners"
-    | "Untested Change"
-    | "Config Edit"
-    | "Abandoned";
+export type LabelName = typeof LabelNames[number];
+export const LabelNames = [
+    "Mergebot Error",
+    "Has Merge Conflict",
+    "The CI failed",
+    "Revision needed",
+    "New Definition",
+    "Edits Owners",
+    "Where is GH Actions?",
+    "Owner Approved",
+    "Other Approved",
+    "Maintainer Approved",
+    "Self Merge",
+    "YSYL",
+    "Popular package",
+    "Critical package",
+    "Edits Infrastructure",
+    "Edits multiple packages",
+    "Author is Owner",
+    "No Other Owners",
+    "Too Many Owners",
+    "Untested Change",
+    "Config Edit",
+    "Abandoned",
+] as const;
 
 export interface Actions {
     pr_number: number;
     targetColumn?: ColumnName;
-    labels: { [L in LabelName]?: boolean };
+    labels: LabelName[];
     responseComments: Comments.Comment[];
     shouldClose: boolean;
     shouldMerge: boolean;
@@ -54,30 +56,7 @@ function createDefaultActions(pr_number: number): Actions {
     return {
         pr_number,
         targetColumn: "Other",
-        labels: {
-            "Mergebot Error": false,
-            "Has Merge Conflict": false,
-            "The CI failed": false,
-            "Revision needed": false,
-            "New Definition": false,
-            "Edits Owners": false,
-            "Where is GH Actions?": false,
-            "Owner Approved": false,
-            "Other Approved": false,
-            "Maintainer Approved": false,
-            "YSYL": false,
-            "Popular package": false,
-            "Critical package": false,
-            "Edits Infrastructure": false,
-            "Edits multiple packages": false,
-            "Author is Owner": false,
-            "No Other Owners": false,
-            "Too Many Owners": false,
-            "Self Merge": false,
-            "Untested Change": false,
-            "Config Edit": false,
-            "Abandoned": false
-        },
+        labels: [],
         responseComments: [],
         shouldClose: false,
         shouldMerge: false,
@@ -91,7 +70,7 @@ function createDefaultActions(pr_number: number): Actions {
 function createEmptyActions(prNumber: number): Actions {
     return {
         pr_number: prNumber,
-        labels: {},
+        labels: [],
         responseComments: [],
         shouldClose: false,
         shouldMerge: false,
@@ -119,14 +98,7 @@ const enum Staleness {
     Abandoned,
 }
 
-type ApproverKind = "maintainers" | "owners" | "others";
-
-export enum ApprovalFlags {
-    None = 0,
-    Other = 1 << 0,
-    Owner = 1 << 1,
-    Maintainer = 1 << 2
-}
+type ApproverKind = "maintainer" | "owner" | "other";
 
 // used to pass around pr info with additional values
 interface ExtendedPrInfo extends PrInfo {
@@ -150,15 +122,17 @@ interface ExtendedPrInfo extends PrInfo {
     readonly approvedReviews: (ReviewInfo & { type: "approved" })[];
     readonly changereqReviews: (ReviewInfo & { type: "changereq" })[];
     readonly staleReviews: (ReviewInfo & { type: "stale" })[];
-    readonly approvalFlags: ApprovalFlags;
+    readonly approvedBy: ApproverKind[];
     readonly hasChangereqs: boolean;
     readonly failedCI: boolean;
+    readonly stalenessInDays: number;
     readonly staleness: Staleness;
     readonly packages: readonly string[];
     readonly hasMultiplePackages: boolean; // not counting infra files
     readonly hasTests: boolean;
     readonly newPackages: readonly string[];
     readonly hasNewPackages: boolean;
+    readonly needsAuthorAction: boolean;
     readonly reviewColumn: ColumnName;
     readonly isAuthor: (user: string) => boolean; // specialized version of sameUser
 }
@@ -184,44 +158,44 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const changereqReviews = info.reviews.filter(r => r.type === "changereq") as ExtendedPrInfo["changereqReviews"];
     const staleReviews = info.reviews.filter(r => r.type === "stale") as ExtendedPrInfo["staleReviews"];
     const hasChangereqs = changereqReviews.length > 0;
-    const approvalFlags = getApprovalFlags();
+    const approvedBy = getApprovedBy();
     const pendingCriticalPackages = getPendingCriticalPackages();
     const approverKind = getApproverKind();
-    const approved = getApproval();
+    const approved = getApproved();
+    const failedCI = info.ciResult === CIResult.Fail;
     const canBeSelfMerged = info.ciResult === CIResult.Pass && !info.hasMergeConflict && approved;
     const hasValidMergeRequest = !!(info.mergeOfferDate && info.mergeRequestDate && info.mergeRequestDate > info.mergeOfferDate);
-    const failedCI = info.ciResult === CIResult.Fail;
+    const stalenessInDays = daysSince(info.lastActivityDate, info.now);
+    const needsAuthorAction = failedCI || info.hasMergeConflict || hasChangereqs;
     const staleness = getStaleness();
     const reviewColumn = getReviewColumn();
     return {
         ...info, orig: info, reviewLink,
         authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeSelfMerged, hasValidMergeRequest, pendingCriticalPackages, approved, approverKind,
-        requireMaintainer, blessable, failedCI, staleness,
+        requireMaintainer, blessable, failedCI, stalenessInDays, staleness,
         packages, hasMultiplePackages, hasTests, newPackages, hasNewPackages,
-        approvedReviews, changereqReviews, staleReviews, approvalFlags, hasChangereqs,
-        reviewColumn, isAuthor
+        approvedReviews, changereqReviews, staleReviews, approvedBy, hasChangereqs,
+        needsAuthorAction, reviewColumn, isAuthor
     };
 
     function getStaleness() {
         return canBeSelfMerged
-            ? (info.stalenessInDays <= 2 ? Staleness.Fresh
-               : info.stalenessInDays <= 4 ? Staleness.PayAttention
-               : info.stalenessInDays <= 8 ? Staleness.NearlyYSYL
+            ? (stalenessInDays <= 2 ? Staleness.Fresh
+               : stalenessInDays <= 4 ? Staleness.PayAttention
+               : stalenessInDays <= 8 ? Staleness.NearlyYSYL
                : Staleness.YSYL)
-            : (info.stalenessInDays <= 6 ? Staleness.Fresh
-               : info.stalenessInDays <= 22 ? Staleness.PayAttention
-               : info.stalenessInDays <= 30 ? Staleness.NearlyAbandoned
+            : (stalenessInDays <= 6 ? Staleness.Fresh
+               : stalenessInDays <= 22 ? Staleness.PayAttention
+               : stalenessInDays <= 30 ? Staleness.NearlyAbandoned
                : Staleness.Abandoned);
     };
 
-    function getApprovalFlags() {
-        if (hasChangereqs) return ApprovalFlags.None;
-        return approvedReviews.reduce(
-            (flags, r) => flags | (r.isMaintainer ? ApprovalFlags.Maintainer
-                                   : allOwners.some(o => sameUser(o, r.reviewer)) ? ApprovalFlags.Owner
-                                   : ApprovalFlags.Other),
-            ApprovalFlags.None)
+    function getApprovedBy() {
+        return hasChangereqs ? []
+            : approvedReviews.map(r => r.isMaintainer ? "maintainer"
+                                       : allOwners.some(o => sameUser(o, r.reviewer)) ? "owner"
+                                       : "other");
     }
 
     function getPendingCriticalPackages() {
@@ -233,29 +207,27 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     function getApproverKind() {
         const blessed = blessable && info.maintainerBlessed;
         const who: ApproverKind | undefined =
-            requireMaintainer ? "maintainers"
-            : info.popularityLevel === "Well-liked by everyone" ? "others"
-            : info.popularityLevel === "Popular" ? "owners"
-            : info.popularityLevel === "Critical" ? "maintainers"
+            requireMaintainer ? "maintainer"
+            : info.popularityLevel === "Well-liked by everyone" ? "other"
+            : info.popularityLevel === "Popular" ? "owner"
+            : info.popularityLevel === "Critical" ? "maintainer"
             : undefined;
         if (!who) throw new Error("Unknown popularity level " + info.popularityLevel);
-        return who === "maintainers" && blessed && !noOtherOwners ? "owners"
-            : who === "owners" && noOtherOwners ? "maintainers"
+        return who === "maintainer" && blessed && !noOtherOwners ? "owner"
+            : who === "owner" && noOtherOwners ? "maintainer"
             : who;
     }
 
-    function getApproval() {
-        if (!!(approvalFlags & ApprovalFlags.Maintainer)) return true; // maintainer approval => no need for anything else
-        return pendingCriticalPackages.length === 0
-            && !!(approvalFlags & (approverKind === "others" ? ApprovalFlags.Maintainer | ApprovalFlags.Owner | ApprovalFlags.Other
-                                   : approverKind === "owners" ? ApprovalFlags.Maintainer | ApprovalFlags.Owner
-                                   : ApprovalFlags.Maintainer));
+    function getApproved() {
+        if (approvedBy.includes("maintainer")) return true; // maintainer approval => no need for anything else
+        return pendingCriticalPackages.length === 0 && approvedBy.length > 0
+            && (approverKind === "other" || approvedBy.includes("maintainer") || approvedBy.includes(approverKind))
     }
 
     function getReviewColumn(): ColumnName {
         // Get the project column for review with least access
         // E.g. let people review, but fall back to the DT maintainers based on the access rights above
-        return approverKind !== "maintainers" ? "Waiting for Code Reviews"
+        return approverKind !== "maintainer" ? "Waiting for Code Reviews"
             : blessable ? "Needs Maintainer Review"
             : "Needs Maintainer Action";
     }
@@ -283,17 +255,18 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
             ...createEmptyActions(prInfo.pr_number),
             targetColumn: "Needs Maintainer Action",
             shouldUpdateProjectColumn: true,
-            labels: { "Edits Infrastructure": true },
+            labels: ["Edits Infrastructure"],
             shouldUpdateLabels: true,
         };
     }
 
     const context = createDefaultActions(prInfo.pr_number);
+    const post = (c: Comments.Comment) => context.responseComments.push(c);
 
     if (prInfo.type === "error") {
         context.targetColumn = "Other";
-        context.labels["Mergebot Error"] = true;
-        context.responseComments.push(Comments.HadError(prInfo.author, prInfo.message));
+        context.labels.push("Mergebot Error");
+        post(Comments.HadError(prInfo.author, prInfo.message));
         return context;
     }
 
@@ -301,45 +274,48 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     const info = extendPrInfo(prInfo);
 
     // General labelling and housekeeping
-    context.labels["Has Merge Conflict"] = info.hasMergeConflict;
-    context.labels["The CI failed"] = info.failedCI;
-    context.labels["Revision needed"] = info.hasChangereqs;
-    context.labels["Critical package"] = info.popularityLevel === "Critical";
-    context.labels["Popular package"] = info.popularityLevel === "Popular";
-    context.labels["Other Approved"] = !!(info.approvalFlags & ApprovalFlags.Other);
-    context.labels["Owner Approved"] = !!(info.approvalFlags & ApprovalFlags.Owner)
-        && info.pendingCriticalPackages.length === 0; // and *all* owners of critical packages
-    context.labels["Maintainer Approved"] = !!(info.approvalFlags & ApprovalFlags.Maintainer);
-    context.labels["New Definition"] = info.hasNewPackages;
-    context.labels["Edits Owners"] = info.editsOwners;
-    context.labels["Edits Infrastructure"] = info.editsInfra;
-    context.labels["Edits multiple packages"] = info.hasMultiplePackages;
-    context.labels["Author is Owner"] = info.authorIsOwner;
-    context.labels["No Other Owners"] = !info.hasNewPackages && info.noOtherOwners;
-    context.labels["Too Many Owners"] = info.tooManyOwners;
-    context.labels["Self Merge"] = info.canBeSelfMerged;
+    const label = (label: LabelName, cond: unknown = true) => {
+        const i = context.labels.indexOf(label);
+        if (cond && i < 0) context.labels.push(label);
+        else if (!cond && i >= 0) context.labels.splice(i, 1);
+    };
+    label("Has Merge Conflict", info.hasMergeConflict);
+    label("The CI failed", info.failedCI);
+    label("Revision needed", info.hasChangereqs);
+    label("Critical package", info.popularityLevel === "Critical");
+    label("Popular package", info.popularityLevel === "Popular");
+    label("Other Approved", info.approvedBy.includes("other"));
+    label("Owner Approved",
+          info.approvedBy.includes("owner")
+          && info.pendingCriticalPackages.length === 0); // and *all* owners of critical packages
+    label("Maintainer Approved", info.approvedBy.includes("maintainer"));
+    label("New Definition", info.hasNewPackages);
+    label("Edits Owners", info.editsOwners);
+    label("Edits Infrastructure", info.editsInfra);
+    label("Edits multiple packages", info.hasMultiplePackages);
+    label("Author is Owner", info.authorIsOwner);
+    label("No Other Owners", !info.hasNewPackages && info.noOtherOwners);
+    label("Too Many Owners", info.tooManyOwners);
+    label("Self Merge", info.canBeSelfMerged);
     context.isReadyForAutoMerge = info.canBeSelfMerged;
-    context.labels["Config Edit"] = !info.hasNewPackages && info.editsConfig;
-    context.labels["Untested Change"] = !info.hasTests;
-    context.labels["YSYL"] = info.staleness === Staleness.YSYL;
-    context.labels["Abandoned"] = info.staleness === Staleness.Abandoned;
+    label("Config Edit", !info.hasNewPackages && info.editsConfig);
+    label("Untested Change", !info.hasTests);
+    label("YSYL", info.staleness === Staleness.YSYL);
+    label("Abandoned", info.staleness === Staleness.Abandoned);
 
     // Update intro comment
-    context.responseComments.push({
-        tag: "welcome",
-        status: createWelcomeComment(info)
-    });
+    post({ tag: "welcome", status: createWelcomeComment(info) });
 
     // Ping reviewers when needed
-    if (!info.hasChangereqs && !(info.approvalFlags & (ApprovalFlags.Owner | ApprovalFlags.Maintainer))) {
+    if (!(info.hasChangereqs || info.approvedBy.includes("owner") || info.approvedBy.includes("maintainer"))) {
         if (info.noOtherOwners) {
             if (info.popularityLevel !== "Critical") {
-                context.responseComments.push(Comments.PingReviewersOther(info.author, info.reviewLink));
+                post(Comments.PingReviewersOther(info.author, info.reviewLink));
             }
         } else if (info.tooManyOwners) {
-            context.responseComments.push(Comments.PingReviewersTooMany(info.otherOwners));
+            post(Comments.PingReviewersTooMany(info.otherOwners));
         } else {
-            context.responseComments.push(Comments.PingReviewers(info.otherOwners, info.reviewLink));
+            post(Comments.PingReviewers(info.otherOwners, info.reviewLink));
         }
     }
 
@@ -347,28 +323,22 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     context.targetColumn = "Other";
 
     // Needs author attention (bad CI, merge conflicts)
-    if (info.failedCI || info.hasMergeConflict || info.hasChangereqs) {
+    if (info.needsAuthorAction) {
         context.targetColumn = "Needs Author Action";
 
-        if (info.hasMergeConflict) {
-            context.responseComments.push(Comments.MergeConflicted(info.headCommitAbbrOid, info.author));
-        }
-        if (info.failedCI) {
-            context.responseComments.push(Comments.CIFailed(info.headCommitAbbrOid, info.author, info.ciUrl!));
-        }
-        if (info.hasChangereqs) {
-            context.responseComments.push(Comments.ChangesRequest(info.headCommitAbbrOid, info.author));
-        }
+        if (info.hasMergeConflict) post(Comments.MergeConflicted(info.headCommitAbbrOid, info.author));
+        if (info.failedCI) post(Comments.CIFailed(info.headCommitAbbrOid, info.author, info.ciUrl!));
+        if (info.hasChangereqs) post(Comments.ChangesRequest(info.headCommitAbbrOid, info.author));
 
         // Could be abandoned
         switch (info.staleness) {
             case Staleness.NearlyYSYL: case Staleness.YSYL:
                 throw new Error("Internal Error: unexpected Staleness.YSYL");
             case Staleness.NearlyAbandoned:
-                context.responseComments.push(Comments.NearlyAbandoned(info.author));
+                post(Comments.NearlyAbandoned(info.author));
                 break;
             case Staleness.Abandoned:
-                context.responseComments.push(Comments.SorryAbandoned(info.author));
+                post(Comments.SorryAbandoned(info.author));
                 context.shouldClose = true;
                 context.shouldRemoveFromActiveColumns = true;
                 break;
@@ -385,7 +355,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     }
     // CI is missing
     else if (info.ciResult === CIResult.Missing) {
-        context.labels["Where is GH Actions?"] = true;
+        label("Where is GH Actions?");
     }
     // CI is green
     else if (info.ciResult === CIResult.Pass) {
@@ -397,30 +367,26 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
             context.targetColumn = "Recently Merged";
         }
         else {
-            context.responseComments.push(Comments.OfferSelfMerge(
-                info.author,
-                (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners,
-                info.headCommitAbbrOid));
+            post(Comments.OfferSelfMerge(info.author,
+                                         (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners,
+                                         info.headCommitAbbrOid));
             context.targetColumn = "Waiting for Author to Merge";
         }
-
         // Ping stale reviewers if any
         if (info.staleReviews.length > 0) {
             const oid = info.staleReviews.slice().sort((l, r) => l.date.getTime() - r.date.getTime())[0].abbrOid;
             const reviewers = info.staleReviews.map(r => r.reviewer);
-            context.responseComments.push(Comments.PingStaleReviewer(oid, reviewers));
+            post(Comments.PingStaleReviewer(oid, reviewers));
         }
     }
 
     if (!context.shouldMerge && info.mergeRequestUser) {
-        context.responseComments.push(
-            Comments.WaitUntilMergeIsOK(info.mergeRequestUser, info.headCommitAbbrOid, uriForWorkflow));
+        post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, info.headCommitAbbrOid, uriForWorkflow));
     }
 
     // This bot is faster than CI in coming back to give a response, and so the bot starts flipping between
     // a 'where is CI'-ish state and a 'got CI deets' state. To work around this, we wait a 
     // minute since the last timeline push action before label/project states can be updated
-
     const oneMinute = 60 * 1000;
     const tooEarlyForLabelsOrProjects = info.lastPushDate.getTime() + oneMinute < (new Date(prInfo.now)).getTime();
     context.shouldUpdateLabels = tooEarlyForLabelsOrProjects;
@@ -446,8 +412,8 @@ function createWelcomeComment(info: ExtendedPrInfo) {
     const criticalNum = info.pkgInfo.reduce((num,pkg) => pkg.popularityLevel === "Critical" ? num+1 : num, 0)
     if (criticalNum === 0 && info.popularityLevel === "Critical") throw new Error("Internal Error: unexpected criticalNum === 0");
     const requiredApprover =
-        info.approverKind === "others" ? "type definition owners, DT maintainers or others"
-        : info.approverKind === "maintainers" ? "a DT maintainer"
+        info.approverKind === "other" ? "type definition owners, DT maintainers or others"
+        : info.approverKind === "maintainer" ? "a DT maintainer"
         : criticalNum <= 1 ? "type definition owners or DT maintainers"
         : "all owners or a DT maintainer";
     const RequiredApprover = requiredApprover[0].toUpperCase() + requiredApprover.substring(1);

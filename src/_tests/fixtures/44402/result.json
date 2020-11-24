@@ -1,8 +1,8 @@
 {
   "pr_number": 44402,
-  "labels": {
-    "Edits Infrastructure": true
-  },
+  "labels": [
+    "Edits Infrastructure"
+  ],
   "responseComments": [],
   "shouldClose": false,
   "shouldMerge": false,

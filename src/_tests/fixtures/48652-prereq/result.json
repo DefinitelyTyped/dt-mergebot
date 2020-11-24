@@ -1,30 +1,12 @@
 {
   "pr_number": 48652,
   "targetColumn": "Waiting for Author to Merge",
-  "labels": {
-    "Mergebot Error": false,
-    "Has Merge Conflict": false,
-    "The CI failed": false,
-    "Revision needed": false,
-    "New Definition": false,
-    "Edits Owners": false,
-    "Where is GH Actions?": false,
-    "Owner Approved": true,
-    "Other Approved": false,
-    "Maintainer Approved": true,
-    "YSYL": false,
-    "Popular package": false,
-    "Critical package": false,
-    "Edits Infrastructure": false,
-    "Edits multiple packages": true,
-    "Author is Owner": false,
-    "No Other Owners": false,
-    "Too Many Owners": false,
-    "Self Merge": true,
-    "Untested Change": false,
-    "Config Edit": false,
-    "Abandoned": false
-  },
+  "labels": [
+    "Owner Approved",
+    "Maintainer Approved",
+    "Edits multiple packages",
+    "Self Merge"
+  ],
   "responseComments": [
     {
       "tag": "welcome",
@@ -40,7 +22,7 @@
     },
     {
       "tag": "wait-for-merge-offer-06d8d67",
-      "status": "Hi @mgol, I can't [accept a merge request](https://github.com/DefinitelyTyped/DefinitelyTyped#make-a-pull-request) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.\n\nThanks, and happy typing!"
+      "status": ":passport_control: Hi @mgol,\n\nI can't [accept a merge request](https://github.com/DefinitelyTyped/DefinitelyTyped#make-a-pull-request) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.\n\nThanks, and happy typing!"
     }
   ],
   "shouldClose": false,

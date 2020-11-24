@@ -85,7 +85,9 @@ ${otherOwners.length === 0 ? "" : `
 export const WaitUntilMergeIsOK = (user: string, abbrOid: string, uri: string) => ({
     // at most one reminder per update
     tag: `wait-for-merge-offer-${abbrOid}`,
-    status: `Hi @${user}, I can't [accept a merge request](${uri}) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.
+    status: `:passport_control: Hi @${user},
+
+I can't [accept a merge request](${uri}) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.
 
 Thanks, and happy typing!`
 });

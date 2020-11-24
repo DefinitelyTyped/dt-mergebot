@@ -17,8 +17,8 @@
         "labelIds": [
           "MDU6TGFiZWw5MDUzMzQwOTU=",
           "MDU6TGFiZWwxNjA4NTUyNDEw",
-          "MDU6TGFiZWw2ODQzMjE1NzY=",
-          "MDU6TGFiZWw2OTcwMTg5NzI="
+          "MDU6TGFiZWw2OTcwMTg5NzI=",
+          "MDU6TGFiZWw2ODQzMjE1NzY="
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NTAwNjg4ODM0"
       }
@@ -56,7 +56,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTAwNjg4ODM0",
-        "body": "Hi @mgol, I can't [accept a merge request](https://github.com/DefinitelyTyped/DefinitelyTyped#make-a-pull-request) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.\n\nThanks, and happy typing!\n<!--typescript_bot_wait-for-merge-offer-06d8d67-->"
+        "body": ":passport_control: Hi @mgol,\n\nI can't [accept a merge request](https://github.com/DefinitelyTyped/DefinitelyTyped#make-a-pull-request) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.\n\nThanks, and happy typing!\n<!--typescript_bot_wait-for-merge-offer-06d8d67-->"
       }
     }
   },

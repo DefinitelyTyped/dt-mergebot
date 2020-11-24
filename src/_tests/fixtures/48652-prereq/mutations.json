@@ -51,7 +51,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTAwNjg4ODM0",
-        "body": "Hi @mgol, I can't [accept a merge request](https://github.com/DefinitelyTyped/DefinitelyTyped#make-a-pull-request) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.\n\nThanks, and happy typing!\n<!--typescript_bot_wait-for-merge-offer-06d8d67-->"
+        "body": ":passport_control: Hi @mgol,\n\nI can't [accept a merge request](https://github.com/DefinitelyTyped/DefinitelyTyped#make-a-pull-request) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.\n\nThanks, and happy typing!\n<!--typescript_bot_wait-for-merge-offer-06d8d67-->"
       }
     }
   }

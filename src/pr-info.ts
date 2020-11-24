@@ -16,9 +16,8 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNulls, notUndefined, findLast, forEachReverse, daysSince, sameUser, authorNotBot, latestDate, earliestDate
-       } from "./util/util";
-import * as Comment from "./util/comment";
+import { noNulls, notUndefined, findLast, forEachReverse, sameUser, authorNotBot, latestDate } from "./util/util";
+import * as comment from "./util/comment";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
 import { PullRequestState } from "./schema/graphql-global-types";
@@ -129,19 +128,9 @@ export interface PrInfo {
     readonly lastPushDate: Date;
 
     /**
-     * The date the anyone had a meaningful interaction with the PR
+     * The date of the last activity, including non-bot comments
      */
-    readonly lastCommentDate: Date;
-
-    /**
-     * The date the PR was last reopened by a maintainer
-     */
-    readonly reopenedDate?: Date;
-
-    /**
-     * Integer count of days of inactivity from the author
-     */
-    readonly stalenessInDays: number;
+    readonly lastActivityDate: Date;
 
     /**
      * True if a maintainer blessed this PR
@@ -228,8 +217,7 @@ export async function deriveStateForPR(
     const mergeRequest = getMergeRequest(comments,
                                          pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
                                          latestDate(createdDate, reopenedDate, lastPushDate)!);
-    const stalenessInDays =
-        daysSince(latestDate(createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview)!, now);
+    const lastActivityDate = latestDate(createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview)!;
 
     return {
         type: "info",
@@ -238,8 +226,7 @@ export async function deriveStateForPR(
         author,
         headCommitAbbrOid: headCommit.abbreviatedOid,
         headCommitOid: headCommit.oid,
-        stalenessInDays,
-        lastPushDate, reopenedDate, lastCommentDate,
+        lastPushDate, lastActivityDate,
         maintainerBlessed: lastBlessing ? lastBlessing > lastPushDate : false,
         mergeOfferDate, mergeRequestDate: mergeRequest?.date, mergeRequestUser: mergeRequest?.user,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
@@ -276,7 +263,7 @@ function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems)
         item?.__typename === "ReopenedEvent" || item?.__typename === "ReadyForReviewEvent"
       ));
 
-    return lastItem && lastItem.createdAt && new Date(lastItem.createdAt)
+    return lastItem?.createdAt && new Date(lastItem.createdAt);
 }
 
 type IssueComment = PR_repository_pullRequest_timelineItems_nodes_IssueComment;
@@ -441,10 +428,10 @@ function latestComment(comments: PR_repository_pullRequest_comments_nodes[]) {
 }
 
 function getMergeOfferDate(comments: PR_repository_pullRequest_comments_nodes[], abbrOid: string) {
-    const offer = latestComment(comments.filter(comment =>
-        sameUser("typescript-bot", comment.author?.login || "-")
-        && Comment.parse(comment.body)?.tag === "merge-offer"
-        && comment.body.includes(`(at ${abbrOid})`)));
+    const offer = latestComment(comments.filter(c =>
+        sameUser("typescript-bot", c.author?.login || "-")
+        && comment.parse(c.body)?.tag === "merge-offer"
+        && c.body.includes(`(at ${abbrOid})`)));
     return offer && new Date(offer.createdAt);
 }
 
