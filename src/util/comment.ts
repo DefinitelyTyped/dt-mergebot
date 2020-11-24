@@ -1,7 +1,9 @@
+import { Comment } from "../comments";
+
 export const prefix = "\n<!--typescript_bot_";
 export const suffix = "-->";
 
-export function parse(body: string): undefined | { status: string; tag: string } {
+export function parse(body: string): Comment | undefined {
   const start = body.lastIndexOf(prefix);
   const end = body.lastIndexOf(suffix);
   return start < 0 || end < 0 || end + suffix.length != body.length
