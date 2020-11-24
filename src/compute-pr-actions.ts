@@ -3,6 +3,7 @@ import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages, FileInfo 
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
 import { noNulls, flatten, unique, sameUser, daysSince } from "./util/util";
+import * as crypto from "crypto";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -87,7 +88,6 @@ const uriForTestingEditedPackages = `${baseURI}#editing-tests-on-an-existing-pac
 const uriForTestingNewPackages = `${baseURI}#testing`;
 const uriForDefinitionOwners = `${baseURI}#definition-owners`;
 const uriForWorkflow = `${baseURI}#make-a-pull-request`;
-const uriForBlob = (oid: string, path: string) => `${baseURI}/blob/${oid}/${path}`;
 
 const enum Staleness {
     Fresh,
@@ -495,14 +495,14 @@ function createWelcomeComment(info: ExtendedPrInfo) {
     display(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
 
     const approved = emoji(info.approved);
-    const blobLink = (f: FileInfo) =>
-        `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${uriForBlob(info.headCommitOid, f.path)})`;
+    const reviewLink = (f: FileInfo) =>
+        `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${uriForReview(info.pr_number)}/${info.headCommitOid}#diff-${crypto.createHash("sha256").update(f.path).digest("hex")})`;
 
     if (info.hasNewPackages) {
         display(` * ${approved} Only ${requiredApprover} can approve changes when there are new packages added`);
     } else if (info.editsInfra) {
         const infraFiles = info.pkgInfo.find(p => p.name === null)!.files;
-        const links = infraFiles.map(blobLink);
+        const links = infraFiles.map(reviewLink);
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
     } else if (criticalNum > 1 && info.maintainerBlessed) {
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect more than one package`);
@@ -521,7 +521,7 @@ function createWelcomeComment(info: ExtendedPrInfo) {
     } else if (info.editsConfig) {
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect module config files`);
         info.pkgInfo.forEach(pkg => pkg.files.forEach(file =>
-            file.suspect && display(`   - ${blobLink(file)}: ${file.suspect}`)));
+            file.suspect && display(`   - ${reviewLink(file)}: ${file.suspect}`)));
     } else {
         display(` * ${approved} Only ${requiredApprover} can approve changes [without tests](${testsLink})`);
     }
