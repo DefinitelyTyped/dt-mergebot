@@ -554,7 +554,7 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         for (const pkg of info.pkgInfo) {
             for (const file of pkg.files) {
                 if (!file.suspect) continue;
-                display(`   - \`${file.path.replace(/^types\//, "")}\`: ${file.suspect}`);
+                display(`   - [\`${file.path.replace(/^types\//, "")}\`](${uriForBlob(info.headCommitOid, file.path)}): ${file.suspect}`);
             }
         }
     } else {
