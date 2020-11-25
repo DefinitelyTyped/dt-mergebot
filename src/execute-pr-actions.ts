@@ -85,12 +85,12 @@ function getMutationsForComments(actions: Actions, prId: string, botComments: Pa
         const sameTagComments = botComments.filter(comment => comment.tag === wantedComment.tag);
         return sameTagComments.length === 0
             ? [createMutation(addComment, {
-                input: { subjectId: prId, body: comment.make(wantedComment.status, wantedComment.tag) } })]
+                input: { subjectId: prId, body: comment.make(wantedComment) } })]
             : sameTagComments.map(actualComment =>
                 (actualComment.status === wantedComment.status) ? null // Comment is up-to-date; skip
                 : createMutation(editComment, { input: {
                     id: actualComment.id,
-                    body: comment.make(wantedComment.status, wantedComment.tag) } }));
+                    body: comment.make(wantedComment) } }));
     }));
 }
 

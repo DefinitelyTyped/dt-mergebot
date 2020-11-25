@@ -13,6 +13,6 @@ export function parse(body: string): Comment | undefined {
       };
 }
 
-export function make(body: string, tag: string) {
-  return `${body}${prefix}${tag}${suffix}`;
+export function make({ status, tag }: Comment) {
+  return `${status}${prefix}${tag}${suffix}`;
 }
