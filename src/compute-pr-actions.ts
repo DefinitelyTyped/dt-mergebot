@@ -2,8 +2,7 @@ import * as Comments from "./comments";
 import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages, FileInfo } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
-import { noNulls, flatten, unique, sameUser, daysSince } from "./util/util";
-import * as crypto from "crypto";
+import { noNulls, flatten, unique, sameUser, daysSince, sha256 } from "./util/util";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -496,7 +495,8 @@ function createWelcomeComment(info: ExtendedPrInfo) {
 
     const approved = emoji(info.approved);
     const reviewLink = (f: FileInfo) =>
-        `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${uriForReview(info.pr_number)}/${info.headCommitOid}#diff-${crypto.createHash("sha256").update(f.path).digest("hex")})`;
+        `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${
+          uriForReview(info.pr_number)}/${info.headCommitOid}#diff-${sha256(f.path)})`;
 
     if (info.hasNewPackages) {
         display(` * ${approved} Only ${requiredApprover} can approve changes when there are new packages added`);

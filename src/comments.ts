@@ -1,4 +1,4 @@
-import crypto = require("crypto");
+import { sha256 } from "./util/util";
 
 export type Comment = { tag: string, status: string };
 
@@ -65,7 +65,7 @@ ${names.map(n => `${n}`).join(" ")}
 });
 
 export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) => ({
-    tag: `stale-ping-${tinyHash(reviewers.join("-"))}-${reviewedAbbrOid}`,
+    tag: `stale-ping-${sha256(reviewers.join("-")).substr(0, 6)}-${reviewedAbbrOid}`,
     status: `@${reviewers.join(", @")} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
 });
 
@@ -91,7 +91,3 @@ I can't [accept a merge request](${uri}) until the PR has a green CI and was app
 
 Thanks, and happy typing!`
 });
-
-function tinyHash(s: string): string {
-    return crypto.createHash("sha256").update(s).digest("hex").substr(0, 6);
-}

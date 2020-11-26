@@ -1,4 +1,5 @@
-import moment = require("moment");
+import * as crypto from "crypto";
+import * as moment from "moment";
 
 export function noNulls<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined): T[] {
     if (arr == null) return [];
@@ -74,4 +75,8 @@ export function authorNotBot(node: { login: string } | { author?: { login: strin
 
 export function scrubDiagnosticDetails(s: string) {
     return s.replace(/<details><summary>Diagnostic Information.*?<\/summary>(?:\\n)+```json\\n{.*?\\n}\\n```(?:\\n)+<\/details>/sg, "... diagnostics scrubbed ...");
+}
+
+export function sha256(s: string) {
+    return crypto.createHash("sha256").update(s).digest("hex")
 }
