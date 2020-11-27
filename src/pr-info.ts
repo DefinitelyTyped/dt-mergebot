@@ -57,13 +57,13 @@ export type FileInfo = {
     path: string,
     kind: FileKind,
     suspect?: string, // reason for a file being "package-meta" rather than "package-meta-ok"
-    suggestion?: Suggestion,
+    suggestion?: Suggestion, // The differences from the expected form, as GitHub suggestions
 };
 
 export interface Suggestion {
     readonly startLine: number;
-    readonly line: number;
-    readonly suggestion: string;
+    readonly endLine: number;
+    readonly body: string;
 }
 
 export type ReviewInfo = {
@@ -209,9 +209,15 @@ export async function deriveStateForPR(
     const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
 
+    const refs = {
+        head: prInfo.headRefOid,
+        master: "master",
+        latestSuggestions: max(noNullish(prInfo.reviews?.nodes).filter(review => !authorNotBot(review)), (a, b) =>
+            Date.parse(a.submittedAt) - Date.parse(b.submittedAt))?.commit?.oid,
+    };
     const pkgInfoEtc = await getPackageInfosEtc(
         noNullish(prInfo.files?.nodes).map(f => f.path).sort(),
-        prInfo.headRefOid, fetchFile, async name => await getDownloads(name, lastPushDate));
+        refs, fetchFile, async name => await getDownloads(name, lastPushDate));
     if (pkgInfoEtc instanceof Error) return botError(pkgInfoEtc.message);
     const { pkgInfo, popularityLevel } = pkgInfoEtc;
 
@@ -287,11 +293,11 @@ function getLastMaintainerBlessingDate(timelineItems: PR_repository_pullRequest_
 }
 
 async function getPackageInfosEtc(
-    paths: string[], headId: string, fetchFile: typeof defaultFetchFile, getDownloads: typeof getMonthlyDownloadCount
+    paths: string[], refs: { [ref: string]: string }, fetchFile: typeof defaultFetchFile, getDownloads: typeof getMonthlyDownloadCount
 ): Promise<{pkgInfo: PackageInfo[], popularityLevel: PopularityLevel} | Error> {
     const infos = new Map<string|null, FileInfo[]>();
     for (const path of paths) {
-        const [pkg, fileInfo] = await categorizeFile(path, async (oid: string = headId) => fetchFile(`${oid}:${path}`));
+        const [pkg, fileInfo] = await categorizeFile(path, async (ref: string) => fetchFile(`${refs[ref]}:${path}`));
         if (!infos.has(pkg)) infos.set(pkg, []);
         infos.get(pkg)!.push(fileInfo);
     }
@@ -302,7 +308,7 @@ async function getPackageInfosEtc(
         if (oldOwners instanceof Error) return oldOwners;
         const newOwners0 = !name ? null
             : !paths.includes(`types/${name}/index.d.ts`) ? oldOwners
-            : await getOwnersOfPackage(name, headId, fetchFile);
+            : await getOwnersOfPackage(name, refs.head, fetchFile);
         // A header error is still an add/edit whereas a missing file is
         // delete, hence newOwners0 here
         const kind = !name ? "edit" : !oldOwners ? "add" : !newOwners0 ? "delete" : "edit";
@@ -326,7 +332,7 @@ async function getPackageInfosEtc(
     return { pkgInfo: result, popularityLevel: downloadsToPopularityLevel(maxDownloads) };
 }
 
-async function categorizeFile(path: string, contents: (oid?: string) => Promise<string | undefined>): Promise<[string|null, FileInfo]> {
+async function categorizeFile(path: string, contents: (ref: string) => Promise<string | undefined>): Promise<[string|null, FileInfo]> {
     // https://regex101.com/r/eFvtrz/1
     const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
     if (!match) return [null, { path, kind: "infrastructure" }];
@@ -344,20 +350,19 @@ async function categorizeFile(path: string, contents: (oid?: string) => Promise<
 }
 
 interface ConfigSuspicious {
-    (path: string, getContents: (oid?: string) => Promise<string | undefined>): Promise<{ suspect: string, sugestion?: Suggestion } | undefined>;
-    [basename: string]: (text: string, oldText?: string) => { suspect: string, suggestion?: Suggestion } | undefined;
+    (path: string, getContents: (ref: string) => Promise<string | undefined>): Promise<{ suspect: string, sugestion?: Suggestion } | undefined>;
+    [basename: string]: (text: string, getContents: (ref: string) => Promise<string | undefined>) => Promise<{ suspect: string, suggestion?: Suggestion } | undefined>;
 }
 const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     const basename = path.replace(/.*\//, "");
     const checker = configSuspicious[basename];
     if (!checker) return { suspect: `edited` };
-    const text = await getContents();
+    const text = await getContents("head");
     // Removing tslint.json, tsconfig.json, package.json and
     // OTHER_FILES.txt is checked by the CI. Specifics are in my commit
     // message.
     if (text === undefined) return undefined;
-    const oldText = await getContents("master");
-    return checker(text, oldText);
+    return checker(text, getContents);
 });
 configSuspicious["OTHER_FILES.txt"] = makeChecker(
     [],
@@ -405,57 +410,79 @@ configSuspicious["tsconfig.json"] = makeChecker(
 // to it, ignoring some keys.  The ignored properties are in most cases checked
 // elsewhere (dtslint), and in some cases they are irrelevant.
 function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { parse: (text: string) => unknown } | { ignore: (data: any) => void }) {
-    return (contents: string, oldText?: string) => {
-        const theExpectedForm = `[the expected form](${expectedFormUrl})`;
-        const diffFromExpected = (data: any) => {
-            if (options && "ignore" in options) options.ignore(data);
-            return jsonDiff.compare(expectedForm, data);
-        };
-        let newData;
+    return async (contents: string, getContents: (ref: string) => Promise<string | undefined>) => {
+        let suggestion: any;
         if (options && "parse" in options) {
-            newData = options.parse(contents);
+            suggestion = options.parse(contents);
         } else {
-            try { newData = JSON.parse(contents); } catch (e) { if (e instanceof SyntaxError) return { suspect: `couldn't parse json: ${e.message}` }; }
+            try { suggestion = JSON.parse(contents); } catch (e) { if (e instanceof SyntaxError) return { suspect: `couldn't parse json: ${e.message}` }; }
         }
-        const suggestion = jsonDiff.deepClone(newData);
-        const newDiff = diffFromExpected(newData);
-        if (newDiff.length === 0) return undefined;
+        const newData = jsonDiff.deepClone(suggestion);
+        if (options && "ignore" in options) options.ignore(newData);
         const towardsIt = jsonDiff.deepClone(expectedForm);
-        if (oldText) {
+        // Getting closer to the expected form relative to master isn't
+        // suspect
+        const vsMaster = await ignoreExistingDiffs("master");
+        if (!vsMaster) return undefined;
+        if (vsMaster.done) return { suspect: vsMaster.suspect };
+        // whereas getting closer relative to existing suggestions makes
+        // no further suggestions
+        if (!await ignoreExistingDiffs("latestSuggestions")) return { suspect: vsMaster.suspect };
+        jsonDiff.applyPatch(suggestion, jsonDiff.compare(newData, towardsIt));
+        return {
+            suspect: vsMaster.suspect,
+            suggestion: makeSuggestion(),
+        };
+
+        // Apply any preexisting diffs to towardsIt
+        async function ignoreExistingDiffs(ref: string) {
+            const theExpectedForm = `[the expected form](${expectedFormUrl})`;
+            const diffFromExpected = (data: any) => jsonDiff.compare(towardsIt, data);
+            const newDiff = diffFromExpected(newData);
+            if (newDiff.length === 0) return undefined;
+            const oldText = await getContents(ref);
+            if (!oldText) return { suspect: `not ${theExpectedForm}` };
             let oldData;
             if (options && "parse" in options) {
                 oldData = options.parse(oldText);
             } else {
-                try { oldData = JSON.parse(oldText); } catch (e) { if (e instanceof SyntaxError) return { suspect: `couldn't parse json: ${e.message}` }; }
+                try { oldData = JSON.parse(oldText); } catch (e) { if (e instanceof SyntaxError) return { done: true, suspect: `couldn't parse json: ${e.message}` }; }
             }
+            if (options && "ignore" in options) options.ignore(oldData);
             const oldDiff = diffFromExpected(oldData);
             const notRemove = jsonDiff.compare(oldDiff, newDiff).filter(({ op }) => op !== "remove");
             if (notRemove.length === 0) return undefined;
             jsonDiff.applyPatch(newDiff, notRemove.map(({ path }) => ({ op: "remove", path })));
             jsonDiff.applyPatch(towardsIt, newDiff.filter(({ op }: { op?: typeof newDiff[number]["op"] }) => op));
+            return { suspect: `not ${theExpectedForm} and not moving towards it` };
         }
-        jsonDiff.applyPatch(suggestion, jsonDiff.compare(newData, towardsIt));
+
         // Suggest the different lines to the author
-        const suggestionLines = (
-            Object.keys(suggestion).length <= 1
-                ? prettier.format(JSON.stringify(suggestion), { tabWidth: 4, filepath: ".json" })
-                : JSON.stringify(suggestion, undefined, 4) + "\n"
-        ).split(/^/m);
-        const lines = contents.split(/^/m);
-        let i = 0;
-        while (suggestionLines[i]!.trim() === lines[i]!.trim()) i++;
-        let j = 1;
-        while (suggestionLines[suggestionLines.length - j]!.trim() === lines[lines.length - j]!.trim()) j++;
-        return {
-            suspect: oldText
-                ? `not ${theExpectedForm} and not moving towards it`
-                : `not ${theExpectedForm}`,
-            suggestion: {
-                startLine: i + 1,
-                line: lines.length - j + 1,
-                suggestion: suggestionLines.slice(i, 1 - j || undefined).join(""),
-            },
-        };
+        function makeSuggestion() {
+            const suggestionLines = (
+                Object.keys(suggestion).length <= 1
+                    ? prettier.format(JSON.stringify(suggestion), { tabWidth: 4, filepath: ".json" })
+                    : JSON.stringify(suggestion, undefined, 4) + "\n"
+            ).split(/^/m);
+            const lines = contents.split(/^/m);
+            // When suggestionLines is empty, that suggests removing all
+            // of the different lines
+            let startLine = 1;
+            while (suggestionLines[0]?.trim() === lines[startLine - 1]?.trim()) {
+                suggestionLines.shift();
+                startLine++;
+            }
+            let endLine = lines.length;
+            while (suggestionLines[suggestionLines.length - 1]?.trim() === lines[endLine - 1]?.trim()) {
+                suggestionLines.pop();
+                endLine--;
+            }
+            return {
+                startLine,
+                endLine,
+                body: suggestionLines.join(""),
+            };
+        }
     };
 }
 
@@ -465,7 +492,7 @@ function latestComment(comments: PR_repository_pullRequest_comments_nodes[]) {
 
 function getMergeOfferDate(comments: PR_repository_pullRequest_comments_nodes[], headOid: string) {
     const offer = latestComment(comments.filter(c =>
-        sameUser("typescript-bot", c.author?.login || "-")
+        !authorNotBot(c)
         && comment.parse(c.body)?.tag === "merge-offer"
         && c.body.includes(`(at ${abbrOid(headOid)})`)));
     return offer && new Date(offer.createdAt);

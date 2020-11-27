@@ -4,7 +4,7 @@ import { PR_repository_pullRequest } from "./queries/schema/PR";
 import { Actions, LabelNames, LabelName } from "./compute-pr-actions";
 import { createMutation, client } from "./graphql-client";
 import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
-import { noNullish, flatten } from "./util/util";
+import { authorNotBot, noNullish, flatten } from "./util/util";
 import * as comments from "./comments";
 import * as comment from "./util/comment";
 
@@ -67,7 +67,7 @@ type ParsedComment = { id: string, body: string, tag: string, status: string };
 function getBotComments(pr: PR_repository_pullRequest): ParsedComment[] {
     return noNullish(
         (pr.comments.nodes ?? [])
-            .filter(comment => comment?.author?.login === "typescript-bot")
+            .filter(comment => comment && !authorNotBot(comment))
             .map(c => {
                 const { id, body } = c!, parsed = comment.parse(body);
                 return parsed && { id, body, ...parsed };
@@ -103,22 +103,21 @@ function getMutationsForCommentRemovals(actions: Actions, botComments: ParsedCom
 }
 
 function getMutationsForSuggestions(actions: Actions, pr: PR_repository_pullRequest) {
-    if (pr.reviews?.nodes?.find(review => review?.author?.login === "typescript-bot")) return [];
-    const mutations = Object.entries(actions.suggestions).map(([path, { startLine, line, suggestion }]) =>
-        createMutation<schema.AddPullRequestReviewThreadInput>("addPullRequestReviewThread", {
-            pullRequestId: pr.id,
-            path,
-            startLine: startLine === line ? undefined : startLine,
-            line,
-            body: "```suggestion\n" + suggestion,
-        })
-    );
-    if (mutations.length === 0) return [];
+    if (actions.suggestions.length === 0) return [];
+    if (!pr.author) throw new Error("Internal Error: no author is a bot error");
     return [
-        ...mutations,
+        ...actions.suggestions.map(({ path, startLine, endLine, body }) =>
+            createMutation<schema.AddPullRequestReviewThreadInput>("addPullRequestReviewThread", {
+                pullRequestId: pr.id,
+                path,
+                startLine: startLine === endLine ? undefined : startLine,
+                line: endLine,
+                body: "```suggestion\n" + body,
+            })
+        ),
         createMutation<schema.SubmitPullRequestReviewInput>("submitPullRequestReview", {
             pullRequestId: pr.id,
-            body: comment.make(comments.suggestions(pr.author!.login)),
+            body: comments.suggestions(pr.author.login),
             event: "COMMENT",
         }),
     ];
