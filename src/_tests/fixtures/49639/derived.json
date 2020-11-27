@@ -20,6 +20,16 @@
           "kind": "definition"
         },
         {
+          "path": "types/jasmine/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it",
+          "suggestion": {
+            "startLine": 21,
+            "endLine": 21,
+            "body": "        \"forceConsistentCasingInFileNames\": true,\n        \"strictFunctionTypes\": true\n"
+          }
+        },
+        {
           "path": "types/jasmine/tslint.json",
           "kind": "package-meta",
           "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) and not moving towards it",

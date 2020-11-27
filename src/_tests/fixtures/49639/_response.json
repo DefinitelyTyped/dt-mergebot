@@ -439,6 +439,12 @@
               "__typename": "PullRequestChangedFile"
             },
             {
+              "path": "types/jasmine/tsconfig.json",
+              "additions": 0,
+              "deletions": 1,
+              "__typename": "PullRequestChangedFile"
+            },
+            {
               "path": "types/jasmine/tslint.json",
               "additions": 1,
               "deletions": 0,
