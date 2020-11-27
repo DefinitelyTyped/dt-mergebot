@@ -20,7 +20,7 @@
       "status": "After a month, no one has requested merging the PR 😞. I'm going to assume that the change is not wanted after all, and will therefore close it."
     }
   ],
-  "suggestions": {},
+  "suggestions": [],
   "shouldClose": true,
   "shouldMerge": false,
   "shouldUpdateLabels": true,

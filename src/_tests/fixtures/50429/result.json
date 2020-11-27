@@ -19,13 +19,14 @@
       "status": "@SaltyAom The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/8454d0853c273f9a20b08bd68cfd5c6b4f70c018/checks?check_suite_id=1778052567).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!"
     }
   ],
-  "suggestions": {
-    "types/omise-js/tslint.json": {
+  "suggestions": [
+    {
+      "path": "types/omise-js/tslint.json",
       "startLine": 1,
-      "line": 8,
-      "suggestion": "{ \"extends\": \"dtslint/dt.json\" }\n"
+      "endLine": 8,
+      "body": "{ \"extends\": \"dtslint/dt.json\" }\n"
     }
-  },
+  ],
   "shouldClose": false,
   "shouldMerge": false,
   "shouldUpdateLabels": true,

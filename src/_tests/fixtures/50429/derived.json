@@ -45,8 +45,8 @@
           "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson)",
           "suggestion": {
             "startLine": 1,
-            "line": 8,
-            "suggestion": "{ \"extends\": \"dtslint/dt.json\" }\n"
+            "endLine": 8,
+            "body": "{ \"extends\": \"dtslint/dt.json\" }\n"
           }
         }
       ],

@@ -14,7 +14,7 @@
       "status": "@mgol One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!"
     }
   ],
-  "suggestions": {},
+  "suggestions": [],
   "shouldClose": false,
   "shouldMerge": false,
   "shouldUpdateLabels": true,
