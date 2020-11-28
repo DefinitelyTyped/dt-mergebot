@@ -1,7 +1,17 @@
 {
   "name": "dt-mergebot",
-  "version": "1.0.9",
-  "description": "dt-mergebot",
+  "description": "The bot that manages DefinitelyTyped PRs.",
+  "author": "DT Maintainers",
+  "homepage": "https://github.com/DefinitelyTyped/dt-mergebot#readme",
+  "version": "2.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DefinitelyTyped/dt-mergebot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DefinitelyTyped/dt-mergebot/issues"
+  },
   "engines": {
     "node": ">=10.0.0"
   },
@@ -10,7 +20,6 @@
     "@graphql-codegen/fragment-matcher": "^1.15.4",
     "@octokit/graphql-schema": "^6.70.1",
     "@octokit/webhooks": "^6.3.2",
-    "@types/jest": "25.1.4",
     "@types/node": "latest",
     "@types/node-fetch": "^1.6.9",
     "@types/prettyjson": "^0.0.29",
@@ -24,11 +33,18 @@
     "graphql": "^14.5.8",
     "idembot": "^0.0.12",
     "moment": "^2.27.0",
-    "node-fetch": "^1.7.3",
+    "node-fetch": "^2.6.1",
     "prettyjson": "^1.2.1",
     "request": "^2.88.2",
     "tslib": "^1.13.0",
     "typescript": "^3.9.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.0",
+    "apollo": "^2.28.3",
+    "jest": "^25.1.0",
+    "jest-file-snapshot": "^0.3.8",
+    "ts-jest": "^25.1.0"
   },
   "scripts": {
     "prepublishOnly": "npm run build",
@@ -47,28 +63,12 @@
     "graphql-schema": "npx apollo client:codegen schema --target typescript --globalTypesFile=src/schema/graphql-global-types.ts",
     "test": "jest"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/RyanCavanaugh/dt-mergebot.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/RyanCavanaugh/dt-mergebot/issues"
-  },
-  "homepage": "https://github.com/RyanCavanaugh/dt-mergebot#readme",
-  "devDependencies": {
-    "apollo": "^2.28.3",
-    "jest": "25.1.0",
-    "jest-file-snapshot": "^0.3.8",
-    "ts-jest": "^26.1.1"
-  },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/bin"
+      "/bin/"
     ]
   }
 }
