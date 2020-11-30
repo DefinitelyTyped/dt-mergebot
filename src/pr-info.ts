@@ -163,14 +163,29 @@ function getHeadCommit(pr: GraphqlPullRequest) {
 
 // Just the networking
 export async function queryPRInfo(prNumber: number) {
-    return await client.query<PRQueryResult>({
-        query: GetPRInfo,
-        variables: {
-            pr_number: prNumber
-        },
-        fetchPolicy: "network-only",
-        fetchResults: true
-    });
+    // The query can return a mergeable value of `UNKNOWN`, and then it takes a
+    // while to get the actual value while GH refreshes the state (verified
+    // with GH that this is expected).  So implement a simple retry thing to
+    // get a proper value, or return a useless one if giving up.
+    let retries = 0;
+    while (true) {
+        const info = await client.query<PRQueryResult>({
+            query: GetPRInfo,
+            variables: { pr_number: prNumber },
+            fetchPolicy: "network-only",
+            fetchResults: true
+        });
+        const prInfo = info.data.repository?.pullRequest;
+        if (!prInfo) return info; // let `deriveStateForPR` handle the missing result
+        if (prInfo.mergeable !== "UNKNOWN") return info;
+        if (++retries > 5) { // we already did 5 tries, so give up and...
+            info.data.repository = null;
+            return info; // ...return a bad result to avoid using the bogus information
+        }
+        // wait 3N..3N+1 seconds (based on trial runs: it usually works after one wait)
+        const wait = 1000 * (Math.random() + 3 * retries);
+        await new Promise(resolve => setTimeout(resolve, wait));
+    }
 }
 
 // The GQL response => Useful data for us
