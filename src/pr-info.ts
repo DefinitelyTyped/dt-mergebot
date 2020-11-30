@@ -332,7 +332,7 @@ async function getPackageInfosEtc(
     return { pkgInfo: result, popularityLevel: downloadsToPopularityLevel(maxDownloads) };
 }
 
-async function categorizeFile(path: string, contents: (ref: string) => Promise<string | undefined>): Promise<[string|null, FileInfo]> {
+async function categorizeFile(path: string, getContents: (ref: string) => Promise<string | undefined>): Promise<[string|null, FileInfo]> {
     // https://regex101.com/r/eFvtrz/1
     const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
     if (!match) return [null, { path, kind: "infrastructure" }];
@@ -343,7 +343,7 @@ async function categorizeFile(path: string, contents: (ref: string) => Promise<s
         case "ts": case "tsx": return [pkg, { path, kind: "test" }];
         case "md": return [pkg, { path, kind: "markdown" }];
         default: {
-            const suspect = await configSuspicious(path, contents);
+            const suspect = await configSuspicious(path, getContents);
             return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", ...suspect }];
         }
     }
@@ -351,18 +351,18 @@ async function categorizeFile(path: string, contents: (ref: string) => Promise<s
 
 interface ConfigSuspicious {
     (path: string, getContents: (ref: string) => Promise<string | undefined>): Promise<{ suspect: string, sugestion?: Suggestion } | undefined>;
-    [basename: string]: (text: string, getContents: (ref: string) => Promise<string | undefined>) => Promise<{ suspect: string, suggestion?: Suggestion } | undefined>;
+    [basename: string]: (newText: string, getContents: (ref: string) => Promise<string | undefined>) => Promise<{ suspect: string, suggestion?: Suggestion } | undefined>;
 }
 const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     const basename = path.replace(/.*\//, "");
     const checker = configSuspicious[basename];
     if (!checker) return { suspect: `edited` };
-    const text = await getContents("head");
+    const newText = await getContents("head");
     // Removing tslint.json, tsconfig.json, package.json and
     // OTHER_FILES.txt is checked by the CI. Specifics are in my commit
     // message.
-    if (text === undefined) return undefined;
-    return checker(text, getContents);
+    if (newText === undefined) return undefined;
+    return checker(newText, getContents);
 });
 configSuspicious["OTHER_FILES.txt"] = makeChecker(
     [],
@@ -410,12 +410,12 @@ configSuspicious["tsconfig.json"] = makeChecker(
 // to it, ignoring some keys.  The ignored properties are in most cases checked
 // elsewhere (dtslint), and in some cases they are irrelevant.
 function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { parse: (text: string) => unknown } | { ignore: (data: any) => void }) {
-    return async (contents: string, getContents: (ref: string) => Promise<string | undefined>) => {
+    return async (newText: string, getContents: (ref: string) => Promise<string | undefined>) => {
         let suggestion: any;
         if (options && "parse" in options) {
-            suggestion = options.parse(contents);
+            suggestion = options.parse(newText);
         } else {
-            try { suggestion = JSON.parse(contents); } catch (e) { if (e instanceof SyntaxError) return { suspect: `couldn't parse json: ${e.message}` }; }
+            try { suggestion = JSON.parse(newText); } catch (e) { if (e instanceof SyntaxError) return { suspect: `couldn't parse json: ${e.message}` }; }
         }
         const newData = jsonDiff.deepClone(suggestion);
         if (options && "ignore" in options) options.ignore(newData);
@@ -464,7 +464,7 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
                     ? prettier.format(JSON.stringify(suggestion), { tabWidth: 4, filepath: ".json" })
                     : JSON.stringify(suggestion, undefined, 4) + "\n"
             ).split(/^/m);
-            const lines = contents.split(/^/m);
+            const lines = newText.split(/^/m);
             // When suggestionLines is empty, that suggests removing all
             // of the different lines
             let startLine = 1;
