@@ -183,6 +183,12 @@ export async function queryPRInfo(prNumber: number) {
     }
 }
 
+interface Refs {
+    readonly head: string;
+    readonly master: "master";
+    readonly latestSuggestions: string;
+}
+
 // The GQL response => Useful data for us
 export async function deriveStateForPR(
     prInfo: PR_repository_pullRequest,
@@ -214,7 +220,7 @@ export async function deriveStateForPR(
         master: "master",
         latestSuggestions: max(noNullish(prInfo.reviews?.nodes).filter(review => !authorNotBot(review)), (a, b) =>
             Date.parse(a.submittedAt) - Date.parse(b.submittedAt))?.commit?.oid,
-    };
+    } as const;
     const pkgInfoEtc = await getPackageInfosEtc(
         noNullish(prInfo.files?.nodes).map(f => f.path).sort(),
         refs, fetchFile, async name => await getDownloads(name, lastPushDate));
@@ -293,11 +299,11 @@ function getLastMaintainerBlessingDate(timelineItems: PR_repository_pullRequest_
 }
 
 async function getPackageInfosEtc(
-    paths: string[], refs: { [ref: string]: string }, fetchFile: typeof defaultFetchFile, getDownloads: typeof getMonthlyDownloadCount
+    paths: string[], refs: Refs, fetchFile: typeof defaultFetchFile, getDownloads: typeof getMonthlyDownloadCount
 ): Promise<{pkgInfo: PackageInfo[], popularityLevel: PopularityLevel} | Error> {
     const infos = new Map<string|null, FileInfo[]>();
     for (const path of paths) {
-        const [pkg, fileInfo] = await categorizeFile(path, async (ref: string) => fetchFile(`${refs[ref]}:${path}`));
+        const [pkg, fileInfo] = await categorizeFile(path, async ref => fetchFile(`${refs[ref]}:${path}`));
         if (!infos.has(pkg)) infos.set(pkg, []);
         infos.get(pkg)!.push(fileInfo);
     }
@@ -332,7 +338,9 @@ async function getPackageInfosEtc(
     return { pkgInfo: result, popularityLevel: downloadsToPopularityLevel(maxDownloads) };
 }
 
-async function categorizeFile(path: string, getContents: (ref: string) => Promise<string | undefined>): Promise<[string|null, FileInfo]> {
+type GetContents = (ref: keyof Refs) => Promise<string | undefined>;
+
+async function categorizeFile(path: string, getContents: GetContents): Promise<[string|null, FileInfo]> {
     // https://regex101.com/r/eFvtrz/1
     const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
     if (!match) return [null, { path, kind: "infrastructure" }];
@@ -350,8 +358,8 @@ async function categorizeFile(path: string, getContents: (ref: string) => Promis
 }
 
 interface ConfigSuspicious {
-    (path: string, getContents: (ref: string) => Promise<string | undefined>): Promise<{ suspect: string, sugestion?: Suggestion } | undefined>;
-    [basename: string]: (newText: string, getContents: (ref: string) => Promise<string | undefined>) => Promise<{ suspect: string, suggestion?: Suggestion } | undefined>;
+    (path: string, getContents: GetContents): Promise<{ suspect: string, sugestion?: Suggestion } | undefined>;
+    [basename: string]: (newText: string, getContents: GetContents) => Promise<{ suspect: string, suggestion?: Suggestion } | undefined>;
 }
 const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     const basename = path.replace(/.*\//, "");
@@ -410,7 +418,7 @@ configSuspicious["tsconfig.json"] = makeChecker(
 // to it, ignoring some keys.  The ignored properties are in most cases checked
 // elsewhere (dtslint), and in some cases they are irrelevant.
 function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { parse: (text: string) => unknown } | { ignore: (data: any) => void }) {
-    return async (newText: string, getContents: (ref: string) => Promise<string | undefined>) => {
+    return async (newText: string, getContents: GetContents) => {
         let suggestion: any;
         if (options && "parse" in options) {
             suggestion = options.parse(newText);
@@ -435,7 +443,7 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
         };
 
         // Apply any preexisting diffs to towardsIt
-        async function ignoreExistingDiffs(ref: string) {
+        async function ignoreExistingDiffs(ref: keyof Refs) {
             const theExpectedForm = `[the expected form](${expectedFormUrl})`;
             const diffFromExpected = (data: any) => jsonDiff.compare(towardsIt, data);
             const newDiff = diffFromExpected(newData);
