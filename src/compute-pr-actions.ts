@@ -100,7 +100,7 @@ const enum Staleness {
 type ApproverKind = "maintainer" | "owner" | "other";
 
 // used to pass around pr info with additional values
-interface ExtendedPrInfo extends PrInfo {
+export interface ExtendedPrInfo extends PrInfo {
     readonly orig: PrInfo;
     readonly reviewLink: string;
     readonly editsInfra: boolean;
@@ -233,7 +233,8 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
 
 }
 
-export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPackages | BotError ): Actions {
+export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPackages | BotError,
+                        extendedCallback: (info: ExtendedPrInfo) => void = _i => {}): Actions {
     if (prInfo.type === "remove") {
         if (prInfo.isDraft) {
             return {
@@ -271,6 +272,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
 
     // Collect some additional info
     const info = extendPrInfo(prInfo);
+    extendedCallback(info);
 
     // General labelling and housekeeping
     const label = (label: LabelName, cond: unknown = true) => {
