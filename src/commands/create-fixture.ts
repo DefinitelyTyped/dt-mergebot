@@ -35,7 +35,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     response,
     shouldOverwrite(filesJSONPath) ? initFetchFilesAndWriteToFile() : getFilesFromFile,
     shouldOverwrite(downloadsJSONPath) ? initGetDownloadsAndWriteToFile() : getDownloadsFromFile,
-    shouldOverwrite(derivedFixturePath) ? undefined : getTimeFromFile,
+    shouldOverwrite(derivedFixturePath) ? undefined : getTimeFromFile(),
   );
 
   writeFileSync(derivedFixturePath, scrubDiagnosticDetails(JSON.stringify(derivedInfo, null, "  ")));
@@ -79,7 +79,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   }
 
   function getTimeFromFile() {
-    return new Date(JSON.parse(readFileSync(derivedFixturePath, "utf8")).now);
+    return JSON.parse(readFileSync(derivedFixturePath, "utf8")).now;
   }
 }
 
