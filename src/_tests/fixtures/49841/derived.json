@@ -1,0 +1,46 @@
+{
+  "type": "info",
+  "now": "2020-11-30T23:30:29.827Z",
+  "pr_number": 49841,
+  "author": "shekari-ah",
+  "headCommitAbbrOid": "4849e88",
+  "headCommitOid": "4849e8876b0ab7adc889ccc35b55fde6f0274837",
+  "lastPushDate": "2020-11-28T09:12:34.000Z",
+  "lastActivityDate": "2020-11-28T09:17:28.000Z",
+  "maintainerBlessed": false,
+  "hasMergeConflict": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "pkgInfo": [
+    {
+      "name": "react-native-sha1",
+      "kind": "add",
+      "files": [
+        {
+          "path": "types/react-native-sha1/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/react-native-sha1/react-native-sha1-test.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/react-native-sha1/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": "not the required form"
+        },
+        {
+          "path": "types/react-native-sha1/tslint.json",
+          "kind": "package-meta-ok"
+        }
+      ],
+      "owners": [],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
+    }
+  ],
+  "reviews": [],
+  "ciResult": "fail",
+  "ciUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/4849e8876b0ab7adc889ccc35b55fde6f0274837/checks?check_suite_id=1574877739"
+}
