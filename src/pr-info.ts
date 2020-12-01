@@ -332,15 +332,13 @@ async function getPackageInfosEtc(
             : !paths.includes(`types/${name}/index.d.ts`) ? oldOwners
             : await getOwnersOfPackage(name, headId, fetchFile);
         if (oldOwners instanceof Error) return oldOwners;
-        if (newOwners instanceof Error) return newOwners;
-        if (name && !oldOwners && !newOwners) return new Error("could not get either old or new owners");
-        const kind = !name ? "edit" : oldOwners && newOwners ? "edit" : newOwners ? "add" : "delete";
+        const kind = !name ? "edit" : oldOwners ? newOwners ? "edit" : "delete" : "add";
         const owners = oldOwners || [];
-        const addedOwners = oldOwners === null ? (newOwners || [])
-            : newOwners === null ? []
+        const addedOwners = newOwners === null || newOwners instanceof Error ? []
+            : oldOwners === null ? newOwners
             : newOwners.filter(o => !oldOwners.includes(o));
-        const deletedOwners = newOwners === null ? owners
-            : oldOwners === null ? []
+        const deletedOwners = oldOwners === null ? []
+            : newOwners === null || newOwners instanceof Error ? oldOwners
             : oldOwners.filter(o => !newOwners.includes(o));
         // null name => infra => ensure critical (even though it's unused atm)
         const downloads = name ? await getDownloads(name) : Infinity;
