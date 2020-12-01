@@ -89,7 +89,7 @@ function createEmptyActions(prNumber: number): Actions {
 
 const baseURI = "https://github.com/DefinitelyTyped/DefinitelyTyped";
 const uriForReview = (n: number) => `${baseURI}/pull/${n}/files`;
-const uriForTestingEditedPackages = `${baseURI}#editing-tests-on-an-existing-package`;
+const uriForTestingEditedPackages = `${baseURI}#testing`;
 const uriForTestingNewPackages = `${baseURI}#testing`;
 const uriForDefinitionOwners = `${baseURI}#definition-owners`;
 const uriForWorkflow = `${baseURI}#make-a-pull-request`;

@@ -199,7 +199,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@mattleff Thank you for submitting this PR! \n\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can approve changes [without tests](https://github.com/DefinitelyTyped/DefinitelyTyped#editing-tests-on-an-existing-package)\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
+              "body": "@mattleff Thank you for submitting this PR! \n\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can approve changes [without tests](https://github.com/DefinitelyTyped/DefinitelyTyped#testing)\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
               "createdAt": "2020-04-28T22:43:13Z",
               "reactions": {
                 "nodes": [],
