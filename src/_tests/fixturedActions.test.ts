@@ -38,7 +38,7 @@ async function testFixture(dir: string) {
     response,
     (expr: string) => Promise.resolve(files[expr] as string),
     (name: string, _until?: Date) => name in downloads ? downloads[name] : 0,
-    () => new Date(readJSON(derivedPath).now)
+    readJSON(derivedPath).now
   );
 
   if (derived.type === "fail") throw new Error("Should never happen");

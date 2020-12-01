@@ -39,6 +39,7 @@ export interface BotFail {
 // Some error found, will be passed to `process` to report in a comment
 export interface BotError {
     readonly type: "error";
+    readonly now: string;
     readonly pr_number: number;
     readonly message: string;
     readonly author: string | undefined;
@@ -193,7 +194,7 @@ export async function deriveStateForPR(
     info: ApolloQueryResult<PRQueryResult>,
     fetchFile = defaultFetchFile,
     getDownloads = getMonthlyDownloadCount,
-    getNow = () => new Date(),
+    now = new Date().toISOString(),
 ): Promise<PrInfo | BotFail | BotError | BotEnsureRemovedFromProject | BotNoPackages>  {
     const prInfo = info.data.repository?.pullRequest;
 
@@ -224,7 +225,6 @@ export async function deriveStateForPR(
     const { pkgInfo, popularityLevel } = pkgInfoEtc;
     if (!pkgInfo.some(p => p.name)) return botNoPackages(prInfo.number);
 
-    const now = getNow().toISOString();
     const reviews = getReviews(prInfo);
     const latestReview = latestDate(...reviews.map(r => r.date));
     const comments = noNulls(prInfo.comments.nodes || []);
@@ -257,7 +257,7 @@ export async function deriveStateForPR(
     }
 
     function botError(pr_number: number, message: string): BotError {
-        return { type: "error", message, pr_number, author: prInfo?.author?.login };
+        return { type: "error", now, message, pr_number, author: prInfo?.author?.login };
     }
 
     function botEnsureRemovedFromProject(pr_number: number, message: string, isDraft: boolean): BotEnsureRemovedFromProject {
