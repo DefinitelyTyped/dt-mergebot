@@ -2,7 +2,7 @@ import * as Comments from "./comments";
 import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages, FileInfo } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
-import { noNulls, flatten, unique, sameUser, daysSince, sha256 } from "./util/util";
+import { noNullish, flatten, unique, sameUser, daysSince, sha256 } from "./util/util";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -150,10 +150,10 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const noOtherOwners = allOwners.every(isAuthor);
     const tooManyOwners = allOwners.length > 50;
     const editsOwners = info.pkgInfo.some(p => p.kind === "edit" && p.addedOwners.length + p.deletedOwners.length > 0);
-    const packages = noNulls(info.pkgInfo.map(p => p.name));
+    const packages = noNullish(info.pkgInfo.map(p => p.name));
     const hasMultiplePackages = packages.length > 1;
     const hasTests = info.pkgInfo.some(p => p.files.some(f => f.kind === "test"));
-    const newPackages = noNulls(info.pkgInfo.map(p => p.kind === "add" ? p.name : null));
+    const newPackages = noNullish(info.pkgInfo.map(p => p.kind === "add" ? p.name : null));
     const hasNewPackages = newPackages.length > 0;
     const requireMaintainer = editsInfra || editsConfig || hasMultiplePackages || !hasTests || hasNewPackages || tooManyOwners;
     const blessable = !(hasNewPackages || editsInfra || noOtherOwners);
@@ -202,7 +202,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     }
 
     function getPendingCriticalPackages() {
-        return noNulls(info.pkgInfo.map(p =>
+        return noNullish(info.pkgInfo.map(p =>
             p.popularityLevel === "Critical" && !p.owners.some(o => approvedReviews.some(r => sameUser(o, r.reviewer)))
             ? p.name : null));
     }
