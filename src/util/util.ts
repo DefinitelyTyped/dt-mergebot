@@ -6,8 +6,6 @@ export function noNullish<T>(arr: ReadonlyArray<T | null | undefined> | null | u
     return arr.filter(arr => arr != null) as T[];
 }
 
-export function notUndefined<T>(arg: T | undefined): arg is T { return arg !== undefined; }
-
 export function flatten<T>(xs: T[][]) {
     return ([] as T[]).concat(...xs);
 }

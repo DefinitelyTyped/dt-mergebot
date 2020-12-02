@@ -16,7 +16,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNullish, notUndefined, findLast, forEachReverse, sameUser, authorNotBot, latestDate } from "./util/util";
+import { noNullish, findLast, forEachReverse, sameUser, authorNotBot, latestDate } from "./util/util";
 import * as comment from "./util/comment";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
@@ -522,5 +522,5 @@ async function getOwnersOfPackage(packageName: string, version: string, fetchFil
     } catch (e) {
         if (e instanceof Error) return new Error(`error parsing owners: ${e.message}`);
     }
-    return parsed!.contributors.map(c => c.githubUsername).filter(notUndefined);
+    return noNullish(parsed!.contributors.map(c => c.githubUsername));
 }
