@@ -1,7 +1,7 @@
 import * as crypto from "crypto";
 import * as moment from "moment";
 
-export function noNulls<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined): T[] {
+export function noNullish<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined): T[] {
     if (arr == null) return [];
     return arr.filter(arr => arr != null) as T[];
 }

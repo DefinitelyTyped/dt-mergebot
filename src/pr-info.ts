@@ -16,7 +16,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNulls, notUndefined, findLast, forEachReverse, sameUser, authorNotBot, latestDate } from "./util/util";
+import { noNullish, notUndefined, findLast, forEachReverse, sameUser, authorNotBot, latestDate } from "./util/util";
 import * as comment from "./util/comment";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
@@ -219,7 +219,7 @@ export async function deriveStateForPR(
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
 
     const pkgInfoEtc = await getPackageInfosEtc(
-        noNulls(prInfo.files?.nodes).map(f => f.path).sort(),
+        noNullish(prInfo.files?.nodes).map(f => f.path).sort(),
         headCommit.oid, fetchFile, async name => await getDownloads(name, lastPushDate));
     if (pkgInfoEtc instanceof Error) return botError(prInfo.number, pkgInfoEtc.message);
     const { pkgInfo, popularityLevel } = pkgInfoEtc;
@@ -227,7 +227,7 @@ export async function deriveStateForPR(
 
     const reviews = getReviews(prInfo);
     const latestReview = latestDate(...reviews.map(r => r.date));
-    const comments = noNulls(prInfo.comments.nodes || []);
+    const comments = noNullish(prInfo.comments.nodes || []);
     const mergeOfferDate = getMergeOfferDate(comments, headCommit.abbreviatedOid);
     const mergeRequest = getMergeRequest(comments,
                                          pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
@@ -465,7 +465,7 @@ function getReviews(prInfo: PR_repository_pullRequest) {
     const headCommitOid: string = prInfo.headRefOid;
     const reviews: ReviewInfo[] = [];
     // Do this in reverse order so we can detect up-to-date-reviews correctly
-    for (const r of noNulls(prInfo.reviews.nodes).reverse()) {
+    for (const r of noNullish(prInfo.reviews.nodes).reverse()) {
         const [reviewer, date] = [r?.author?.login, new Date(r.submittedAt)];
         // Skip nulls
         if (!(r?.commit && reviewer)) continue;

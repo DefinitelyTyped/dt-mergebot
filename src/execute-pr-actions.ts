@@ -2,7 +2,7 @@ import { PR as PRQueryResult, PR_repository_pullRequest } from "./queries/schema
 import { Actions, LabelNames, LabelName } from "./compute-pr-actions";
 import { createMutation, mutate } from "./graphql-client";
 import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
-import { noNulls, flatten } from "./util/util";
+import { noNullish, flatten } from "./util/util";
 import * as comment from "./util/comment";
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/projects/5
@@ -22,7 +22,7 @@ export const deleteProjectCard = `mutation($input: DeleteProjectCardInput!) { de
 export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean) {
     const pr = info.repository?.pullRequest!;
     const botComments: ParsedComment[] = getBotComments(pr);
-    const mutations = noNulls([
+    const mutations = noNullish([
         ...await getMutationsForLabels(actions, pr),
         ...await getMutationsForProjectChanges(actions, pr),
         ...getMutationsForComments(actions, pr.id, botComments),
@@ -38,7 +38,7 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
 
 async function getMutationsForLabels(actions: Actions, pr: PR_repository_pullRequest) {
     if (!actions.shouldUpdateLabels) return []
-    const labels = noNulls(pr.labels?.nodes!).map(l => l.name);
+    const labels = noNullish(pr.labels?.nodes!).map(l => l.name);
     const makeMutations = async (pred: (l: LabelName) => boolean, query: string) => {
         const labels = LabelNames.filter(pred);
         return labels.length === 0 ? null
@@ -72,7 +72,7 @@ async function getMutationsForProjectChanges(actions: Actions, pr: PR_repository
 type ParsedComment = { id: string, body: string, tag: string, status: string };
 
 function getBotComments(pr: PR_repository_pullRequest): ParsedComment[] {
-    return noNulls((pr.comments.nodes ?? [])
+    return noNullish((pr.comments.nodes ?? [])
                    .filter(comment => comment?.author?.login === "typescript-bot")
                    .map(c => {
                        const { id, body } = c!, parsed = comment.parse(body);
