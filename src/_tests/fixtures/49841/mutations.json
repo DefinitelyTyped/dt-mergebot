@@ -65,9 +65,8 @@
       "input": {
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTI4OTE2Mjg5",
         "path": "types/react-native-sha1/tsconfig.json",
-        "startLine": 2,
-        "line": 46,
-        "body": "```suggestion\n    \"compilerOptions\": {\n        \"module\": \"commonjs\",\n        \"lib\": [\n            \"es6\"\n        ],\n        \"noImplicitAny\": true,\n        \"noImplicitThis\": true,\n        \"strictNullChecks\": true,\n        \"strictFunctionTypes\": true,\n        \"baseUrl\": \"../\",\n        \"typeRoots\": [\n            \"../\"\n        ],\n        \"types\": [],\n        \"noEmit\": true,\n        \"forceConsistentCasingInFileNames\": true\n    },\n    \"files\": [\n        \"index.d.ts\",\n        \"react-native-sha1-test.ts\"\n    ]\n"
+        "line": 17,
+        "body": "```suggestion\n"
       }
     }
   },
