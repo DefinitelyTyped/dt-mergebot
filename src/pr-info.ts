@@ -328,17 +328,20 @@ async function getPackageInfosEtc(
     let result: PackageInfo[] = [], maxDownloads = 0;
     for (const [name, files] of infos) {
         const oldOwners = !name ? null : await getOwnersOfPackage(name, "master", fetchFile);
-        const newOwners = !name ? null
+        if (oldOwners instanceof Error) return oldOwners;
+        const newOwners0 = !name ? null
             : !paths.includes(`types/${name}/index.d.ts`) ? oldOwners
             : await getOwnersOfPackage(name, headId, fetchFile);
-        if (oldOwners instanceof Error) return oldOwners;
-        const kind = !name ? "edit" : oldOwners ? newOwners ? "edit" : "delete" : "add";
+        // treats a header error as a missing file, the CI will fail anyway
+        // (maybe add a way to pass the error in the info so people don't need to read the CI?)
+        const newOwners = newOwners0 instanceof Error ? null : newOwners0;
+        const kind = !name ? "edit" : !oldOwners ? "add" : !newOwners ? "delete" : "edit";
         const owners = oldOwners || [];
-        const addedOwners = newOwners === null || newOwners instanceof Error ? []
+        const addedOwners = newOwners === null ? []
             : oldOwners === null ? newOwners
             : newOwners.filter(o => !oldOwners.includes(o));
         const deletedOwners = oldOwners === null ? []
-            : newOwners === null || newOwners instanceof Error ? oldOwners
+            : newOwners === null ? oldOwners
             : oldOwners.filter(o => !newOwners.includes(o));
         // null name => infra => ensure critical (even though it's unused atm)
         const downloads = name ? await getDownloads(name) : Infinity;
