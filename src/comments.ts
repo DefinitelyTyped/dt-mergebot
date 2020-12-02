@@ -126,4 +126,4 @@ I'll bump it to the DT maintainer queue. Thank you for your patience, @${author}
 // Introduction to the review when config files diverge from the
 // expected form
 export const suggestions = (user: string) =>
-    `@${user} I noticed these differences from the expected form. If you can revise your changes to avoid them, so much the better! Otherwise please reply with explanations why they're needed (unless it's obvious) and a maintainer will take a look. Thanks!`;
+    `@${user} I noticed these differences from the expected form. If you can revise your changes to avoid them, so much the better! Otherwise please reply with explanations why they're needed and a maintainer will take a look. Thanks!`;

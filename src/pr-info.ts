@@ -63,7 +63,7 @@ export type FileInfo = {
 export interface Suggestion {
     readonly startLine: number;
     readonly endLine: number;
-    readonly body: string;
+    readonly text: string;
 }
 
 export type ReviewInfo = {
@@ -218,6 +218,7 @@ export async function deriveStateForPR(
     const refs = {
         head: prInfo.headRefOid,
         master: "master",
+        // Exclude existing suggestions from subsequent reviews
         latestSuggestions: max(noNullish(prInfo.reviews?.nodes).filter(review => !authorNotBot(review)), (a, b) =>
             Date.parse(a.submittedAt) - Date.parse(b.submittedAt))?.commit?.oid,
     } as const;
@@ -433,8 +434,8 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
         const vsMaster = await ignoreExistingDiffs("master");
         if (!vsMaster) return undefined;
         if (vsMaster.done) return { suspect: vsMaster.suspect };
-        // whereas getting closer relative to existing suggestions makes
-        // no further suggestions
+        // whereas getting closer relative to existing suggestions means
+        // no new suggestions
         if (!await ignoreExistingDiffs("latestSuggestions")) return { suspect: vsMaster.suspect };
         jsonDiff.applyPatch(suggestion, jsonDiff.compare(newData, towardsIt));
         return {
@@ -491,7 +492,7 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
             return {
                 startLine,
                 endLine,
-                body: suggestionLines.join(""),
+                text: suggestionLines.join(""),
             };
         }
     };

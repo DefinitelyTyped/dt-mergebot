@@ -103,16 +103,17 @@ function getMutationsForCommentRemovals(actions: Actions, botComments: ParsedCom
 }
 
 function getMutationsForSuggestions(actions: Actions, pr: PR_repository_pullRequest) {
+    // Suggestions will be empty if we already reviewed this head
     if (actions.suggestions.length === 0) return [];
-    if (!pr.author) throw new Error("Internal Error: no author is a bot error");
+    if (!pr.author) throw new Error("Internal Error: expected to be checked");
     return [
-        ...actions.suggestions.map(({ path, startLine, endLine, body }) =>
+        ...actions.suggestions.map(({ path, startLine, endLine, text }) =>
             createMutation<schema.AddPullRequestReviewThreadInput>("addPullRequestReviewThread", {
                 pullRequestId: pr.id,
                 path,
                 startLine: startLine === endLine ? undefined : startLine,
                 line: endLine,
-                body: "```suggestion\n" + body,
+                body: "```suggestion\n" + text + "```",
             })
         ),
         createMutation<schema.SubmitPullRequestReviewInput>("submitPullRequestReview", {
@@ -123,20 +124,17 @@ function getMutationsForSuggestions(actions: Actions, pr: PR_repository_pullRequ
     ];
 }
 
-function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pullRequest) {
-    return [
-        actions.shouldMerge
-            ? createMutation<schema.MergePullRequestInput>("mergePullRequest", {
-                commitHeadline: `🤖 Merge PR #${pr.number} ${pr.title} by @${pr.author?.login ?? "(ghost)"}`,
-                expectedHeadOid: pr.headRefOid,
-                mergeMethod: "SQUASH",
-                pullRequestId: pr.id,
-            })
-            : null,
-        actions.shouldClose
-            ? createMutation<schema.ClosePullRequestInput>("closePullRequest", { pullRequestId: pr.id })
-            : null,
-    ];
+function* getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pullRequest) {
+    if (actions.shouldMerge) {
+        if (!pr.author) throw new Error("Internal Error: expected to be checked");
+        yield createMutation<schema.MergePullRequestInput>("mergePullRequest", {
+            commitHeadline: `🤖 Merge PR #${pr.number} ${pr.title} by @${pr.author.login}`,
+            expectedHeadOid: pr.headRefOid,
+            mergeMethod: "SQUASH",
+            pullRequestId: pr.id,
+        });
+    }
+    if (actions.shouldClose) yield createMutation<schema.ClosePullRequestInput>("closePullRequest", { pullRequestId: pr.id });
 }
 
 async function getProjectBoardColumnIdByName(name: string): Promise<string> {
