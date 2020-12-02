@@ -472,7 +472,10 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
                     ? prettier.format(JSON.stringify(suggestion), { tabWidth: 4, filepath: ".json" })
                     : JSON.stringify(suggestion, undefined, 4) + "\n"
             ).split(/^/m);
-            const lines = newText.split(/^/m);
+            // "^" will match inside LineTerminatorSequence so
+            // "\r\n".split(/^/m) is two lines. Sigh.
+            // https://tc39.es/ecma262/#_ref_7303:~:text=the%20character%20Input%5Be%20%2D%201%5D%20is%20one%20of%20LineTerminator
+            const lines = newText.replace(/\r\n/g, "\n").split(/^/m);
             // When suggestionLines is empty, that suggests removing all
             // of the different lines
             let startLine = 1;
