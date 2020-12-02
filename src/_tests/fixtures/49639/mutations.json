@@ -57,7 +57,7 @@
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx",
         "path": "types/jasmine/tsconfig.json",
         "line": 21,
-        "body": "```suggestion\n        \"forceConsistentCasingInFileNames\": true,\n        \"strictFunctionTypes\": true\n"
+        "body": "```suggestion\n        \"forceConsistentCasingInFileNames\": true,\n        \"strictFunctionTypes\": true\n```"
       }
     }
   },
@@ -68,7 +68,7 @@
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx",
         "path": "types/jasmine/tslint.json",
         "line": 4,
-        "body": "```suggestion\n"
+        "body": "```suggestion\n```"
       }
     }
   },
@@ -77,7 +77,7 @@
     "variables": {
       "input": {
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx",
-        "body": "@ienzam I noticed these differences from the expected form. If you can revise your changes to avoid them, so much the better! Otherwise please reply with explanations why they're needed (unless it's obvious) and a maintainer will take a look. Thanks!",
+        "body": "@ienzam I noticed these differences from the expected form. If you can revise your changes to avoid them, so much the better! Otherwise please reply with explanations why they're needed and a maintainer will take a look. Thanks!",
         "event": "COMMENT"
       }
     }

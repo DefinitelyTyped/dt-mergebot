@@ -23,13 +23,13 @@
       "path": "types/jasmine/tsconfig.json",
       "startLine": 21,
       "endLine": 21,
-      "body": "        \"forceConsistentCasingInFileNames\": true,\n        \"strictFunctionTypes\": true\n"
+      "text": "        \"forceConsistentCasingInFileNames\": true,\n        \"strictFunctionTypes\": true\n"
     },
     {
       "path": "types/jasmine/tslint.json",
       "startLine": 4,
       "endLine": 4,
-      "body": ""
+      "text": ""
     }
   ],
   "shouldClose": false,

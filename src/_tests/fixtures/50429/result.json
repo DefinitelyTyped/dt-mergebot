@@ -24,7 +24,7 @@
       "path": "types/omise-js/tslint.json",
       "startLine": 1,
       "endLine": 8,
-      "body": "{ \"extends\": \"dtslint/dt.json\" }\n"
+      "text": "{ \"extends\": \"dtslint/dt.json\" }\n"
     }
   ],
   "shouldClose": false,

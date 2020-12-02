@@ -45,7 +45,7 @@
         "path": "types/omise-js/tslint.json",
         "startLine": 1,
         "line": 8,
-        "body": "```suggestion\n{ \"extends\": \"dtslint/dt.json\" }\n"
+        "body": "```suggestion\n{ \"extends\": \"dtslint/dt.json\" }\n```"
       }
     }
   },
@@ -54,7 +54,7 @@
     "variables": {
       "input": {
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTUwNDE0ODEz",
-        "body": "@SaltyAom I noticed these differences from the expected form. If you can revise your changes to avoid them, so much the better! Otherwise please reply with explanations why they're needed (unless it's obvious) and a maintainer will take a look. Thanks!",
+        "body": "@SaltyAom I noticed these differences from the expected form. If you can revise your changes to avoid them, so much the better! Otherwise please reply with explanations why they're needed and a maintainer will take a look. Thanks!",
         "event": "COMMENT"
       }
     }
