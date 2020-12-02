@@ -342,7 +342,7 @@ async function getPackageInfosEtc(
             : oldOwners === null ? newOwners
             : newOwners.filter(o => !oldOwners.includes(o));
         const deletedOwners = oldOwners === null ? []
-            : newOwners === null ? oldOwners
+            : newOwners === null ? []
             : oldOwners.filter(o => !newOwners.includes(o));
         // null name => infra => ensure critical (even though it's unused atm)
         const downloads = name ? await getDownloads(name) : Infinity;
