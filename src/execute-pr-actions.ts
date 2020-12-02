@@ -38,7 +38,7 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
 
 async function getMutationsForLabels(actions: Actions, pr: PR_repository_pullRequest) {
     if (!actions.shouldUpdateLabels) return []
-    const labels = noNullish(pr.labels?.nodes!).map(l => l.name);
+    const labels = noNullish(pr.labels?.nodes).map(l => l.name);
     const makeMutations = async (pred: (l: LabelName) => boolean, query: string) => {
         const labels = LabelNames.filter(pred);
         return labels.length === 0 ? null

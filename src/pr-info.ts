@@ -227,7 +227,7 @@ export async function deriveStateForPR(
 
     const reviews = getReviews(prInfo);
     const latestReview = latestDate(...reviews.map(r => r.date));
-    const comments = noNullish(prInfo.comments.nodes || []);
+    const comments = noNullish(prInfo.comments.nodes);
     const mergeOfferDate = getMergeOfferDate(comments, headCommit.abbreviatedOid);
     const mergeRequest = getMergeRequest(comments,
                                          pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
