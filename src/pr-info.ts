@@ -393,7 +393,8 @@ configSuspicious["OTHER_FILES.txt"] = contents =>
     : undefined;
 configSuspicious["package.json"] = makeJsonCheckerFromCore(
     { private: true },
-    [ "/dependencies", "/types", "/typesVersions" ]
+    [ "/dependencies", "/types", "/typesVersions" ],
+    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/README.md#packagejson",
 );
 configSuspicious["tslint.json"] = makeJsonCheckerFromCore(
     { extends: "dtslint/dt.json" },
@@ -419,7 +420,7 @@ configSuspicious["tsconfig.json"] = makeJsonCheckerFromCore(
 // helper for json file testers: allow either a given "requiredForm", or any edits that get closer
 // to it, ignoring some keys (JSON Patch paths).  The ignored properties are in most cases checked
 // elsewhere (dtslint), and in some cases they are irrelevant.
-function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[]) {
+function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[], requiredFormUrl?: string) {
     const diffFromReq = (text: string) => {
         let json: any;
         try { json = JSON.parse(text); } catch (e) { return "couldn't parse json"; }
@@ -427,14 +428,17 @@ function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[]) {
         try { return jsonDiff.compare(requiredForm, json); } catch (e) { return "couldn't diff json" };
     };
     return (contents: string, oldText?: string) => {
+        const theRequiredForm = requiredFormUrl
+            ? `[the required form](${requiredFormUrl})`
+            : "the required form";
         const newDiff = diffFromReq(contents);
         if (typeof newDiff === "string") return newDiff;
         if (newDiff.length === 0) return undefined;
-        if (!oldText) return "not the required form";
+        if (!oldText) return `not ${theRequiredForm}`;
         const oldDiff = diffFromReq(oldText);
         if (typeof oldDiff === "string") return oldDiff;
         if (jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) return undefined;
-        return "not the required form and not moving towards it";
+        return `not ${theRequiredForm} and not moving towards it`;
     };
 }
 
