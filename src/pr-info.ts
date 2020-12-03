@@ -18,6 +18,7 @@ import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
 import { noNullish, findLast, forEachReverse, sameUser, authorNotBot, latestDate } from "./util/util";
 import * as comment from "./util/comment";
+import * as urls from "./urls";
 import * as HeaderParser from "definitelytyped-header-parser";
 import * as jsonDiff from "fast-json-patch";
 import { PullRequestState } from "./schema/graphql-global-types";
@@ -394,7 +395,7 @@ configSuspicious["OTHER_FILES.txt"] = contents =>
 configSuspicious["package.json"] = makeJsonCheckerFromCore(
     { private: true },
     [ "/dependencies", "/types", "/typesVersions" ],
-    "https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/README.md#packagejson",
+    urls.packageJson
 );
 configSuspicious["tslint.json"] = makeJsonCheckerFromCore(
     { extends: "dtslint/dt.json" },

@@ -1,4 +1,5 @@
 import * as Comments from "./comments";
+import * as urls from "./urls";
 import { PrInfo, BotError, BotEnsureRemovedFromProject, BotNoPackages, FileInfo } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
@@ -87,13 +88,6 @@ function createEmptyActions(prNumber: number): Actions {
     };
 }
 
-const baseURI = "https://github.com/DefinitelyTyped/DefinitelyTyped";
-const uriForReview = (n: number) => `${baseURI}/pull/${n}/files`;
-const uriForTestingEditedPackages = `${baseURI}#testing`;
-const uriForTestingNewPackages = `${baseURI}#testing`;
-const uriForDefinitionOwners = `${baseURI}#definition-owners`;
-const uriForWorkflow = `${baseURI}#make-a-pull-request`;
-
 type Staleness = {
     readonly kind: StalenessKind;
     readonly days: number;
@@ -141,7 +135,7 @@ export interface ExtendedPrInfo extends PrInfo {
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isAuthor = (user: string) => sameUser(user, info.author);
-    const reviewLink = uriForReview(info.pr_number);
+    const reviewLink = urls.review(info.pr_number);
     const authorIsOwner = info.pkgInfo.every(p => p.owners.some(isAuthor));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
     const editsConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
@@ -365,7 +359,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     }
 
     if (!context.shouldMerge && info.mergeRequestUser) {
-        post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, info.headCommitAbbrOid, uriForWorkflow));
+        post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, info.headCommitAbbrOid, urls.workflow));
     }
 
     // Timeline-related actions
@@ -416,7 +410,7 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         lines.forEach(line => content += line + "\n");
     }
 
-    const testsLink = info.hasNewPackages ? uriForTestingNewPackages : uriForTestingEditedPackages;
+    const testsLink = info.hasNewPackages ? urls.testingNewPackages : urls.testingEditedPackages;
 
     const specialWelcome = !info.isFirstContribution ? `` :
         ` I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.`;
@@ -476,7 +470,7 @@ function createWelcomeComment(info: ExtendedPrInfo) {
     }
     if (addedSelfToManyOwners) {
         display(``,
-                `@${info.author}: I see that you have added yourself as an owner${addedSelfToManyOwners > 1 ? " to several packages" : ""}, are you sure you want to [become an owner](${uriForDefinitionOwners})?`);
+                `@${info.author}: I see that you have added yourself as an owner${addedSelfToManyOwners > 1 ? " to several packages" : ""}, are you sure you want to [become an owner](${urls.definitionOwners})?`);
     }
 
     // Lets the author know who needs to review this
@@ -512,7 +506,7 @@ function createWelcomeComment(info: ExtendedPrInfo) {
     const approved = emoji(info.approved);
     const reviewLink = (f: FileInfo) =>
         `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${
-          uriForReview(info.pr_number)}/${info.headCommitOid}#diff-${sha256(f.path)})`;
+          urls.review(info.pr_number)}/${info.headCommitOid}#diff-${sha256(f.path)})`;
 
     if (info.hasNewPackages) {
         display(` * ${approved} Only ${requiredApprover} can approve changes when there are new packages added`);
