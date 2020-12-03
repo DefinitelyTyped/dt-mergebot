@@ -333,10 +333,12 @@ async function getPackageInfosEtc(
         const newOwners0 = !name ? null
             : !paths.includes(`types/${name}/index.d.ts`) ? oldOwners
             : await getOwnersOfPackage(name, headId, fetchFile);
+        // A header error is still an add/edit whereas a missing file is
+        // delete, hence newOwners0 here
+        const kind = !name ? "edit" : !oldOwners ? "add" : !newOwners0 ? "delete" : "edit";
         // treats a header error as a missing file, the CI will fail anyway
         // (maybe add a way to pass the error in the info so people don't need to read the CI?)
         const newOwners = newOwners0 instanceof Error ? null : newOwners0;
-        const kind = !name ? "edit" : !oldOwners ? "add" : !newOwners ? "delete" : "edit";
         const owners = oldOwners || [];
         const addedOwners = newOwners === null ? []
             : oldOwners === null ? newOwners
