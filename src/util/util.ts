@@ -50,11 +50,18 @@ export function forEachReverse<T, U>(arr: readonly T[] | null | undefined, actio
     return undefined;
 }
 
-export function earliestDate(...dates: (Date | undefined)[]) {
-    return dates.reduce((res,d) => (res && d && d < res ? d : res) || d, undefined);
+export function min<T>(arr: readonly [T, ...(T | undefined)[]]): T;
+export function min<T>(arr: readonly T[], compare?: (a: T, b: T) => number): T | undefined;
+export function min<T>(arr: readonly T[], compare?: (a: T, b: T) => number) {
+    return arr.length === 0 ? undefined : arr.reduce((res, x) =>
+        (compare ? compare(x, res) < 0 : x < res) ? x : res);
 }
-export function latestDate(...dates: (Date | undefined)[]) {
-    return dates.reduce((res,d) => (res && d && d > res ? d : res) || d, undefined);
+
+export function max<T>(arr: readonly [T, ...(T | undefined)[]]): T;
+export function max<T>(arr: readonly T[], compare?: (a: T, b: T) => number): T | undefined;
+export function max<T>(arr: readonly T[], compare?: (a: T, b: T) => number) {
+    return arr.length === 0 ? undefined : arr.reduce((res, x) =>
+        (compare ? compare(x, res) > 0 : x > res) ? x : res);
 }
 
 export function daysSince(date: Date, now: Date | string): number {

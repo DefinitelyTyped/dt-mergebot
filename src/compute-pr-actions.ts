@@ -3,7 +3,7 @@ import * as urls from "./urls";
 import { PrInfo, BotNotFail, FileInfo } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
-import { noNullish, flatten, unique, sameUser, daysSince, sha256 } from "./util/util";
+import { noNullish, flatten, unique, sameUser, daysSince, sha256, min } from "./util/util";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -351,7 +351,7 @@ export function process(prInfo: BotNotFail,
         }
         // Ping stale reviewers if any
         if (info.staleReviews.length > 0) {
-            const oid = info.staleReviews.slice().sort((l, r) => l.date.getTime() - r.date.getTime())[0].abbrOid;
+            const oid = min(info.staleReviews, (l, r) => +l.date - +r.date)!.abbrOid;
             const reviewers = info.staleReviews.map(r => r.reviewer);
             post(Comments.PingStaleReviewer(oid, reviewers));
         }
