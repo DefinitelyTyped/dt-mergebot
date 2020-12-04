@@ -12,11 +12,13 @@
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "unicorn"
     ],
     "rules": {
         "no-constant-condition": ["error", { "checkLoops": false }],
-        "no-useless-escape": "off"
+        "no-useless-escape": "off",
+        "unicorn/prefer-array-find": "error"
     },
     "overrides": [
         {

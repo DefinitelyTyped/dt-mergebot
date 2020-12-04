@@ -16,7 +16,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNullish, findLast, forEachReverse, sameUser, authorNotBot, latestDate } from "./util/util";
+import { noNullish, findLast, forEachReverse, sameUser, authorNotBot, max } from "./util/util";
 import * as comment from "./util/comment";
 import * as urls from "./urls";
 import * as HeaderParser from "definitelytyped-header-parser";
@@ -164,7 +164,7 @@ export type BotNotFail =
 export type BotResult = BotNotFail | BotFail;
 
 function getHeadCommit(pr: GraphqlPullRequest) {
-    return pr.commits.nodes?.filter(c => c?.commit.oid === pr.headRefOid)?.[0]?.commit;
+    return pr.commits.nodes?.find(c => c?.commit.oid === pr.headRefOid)?.commit;
 }
 
 // Just the networking
@@ -232,13 +232,13 @@ export async function deriveStateForPR(
     const { pkgInfo, popularityLevel } = pkgInfoEtc;
 
     const reviews = getReviews(prInfo);
-    const latestReview = latestDate(...reviews.map(r => r.date));
+    const latestReview = max(reviews.map(r => r.date));
     const comments = noNullish(prInfo.comments.nodes);
     const mergeOfferDate = getMergeOfferDate(comments, headCommit.abbreviatedOid);
     const mergeRequest = getMergeRequest(comments,
                                          pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
-                                         latestDate(createdDate, reopenedDate, lastPushDate)!);
-    const lastActivityDate = latestDate(createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview)!;
+                                         max([createdDate, reopenedDate, lastPushDate]));
+    const lastActivityDate = max([createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview]);
 
     return {
         type: "info",
@@ -294,7 +294,7 @@ function getLastCommentishActivityDate(timelineItems: PR_repository_pullRequest_
     });
 
     if (lastIssueComment && lastReviewComment) {
-        return latestDate(new Date(lastIssueComment.createdAt), new Date(lastReviewComment.createdAt));
+        return max([new Date(lastIssueComment.createdAt), new Date(lastReviewComment.createdAt)]);
     }
     if (lastIssueComment || lastReviewComment) {
         return new Date((lastIssueComment || lastReviewComment)?.createdAt);
@@ -449,8 +449,7 @@ function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[], requi
 }
 
 function latestComment(comments: PR_repository_pullRequest_comments_nodes[]) {
-    if (comments.length === 0) return undefined;
-    return comments.reduce((r, c) => r && Date.parse(r.createdAt) > Date.parse(c.createdAt) ? r : c);
+    return max(comments, (r, c) => Date.parse(r.createdAt) - Date.parse(c.createdAt));
 }
 
 function getMergeOfferDate(comments: PR_repository_pullRequest_comments_nodes[], abbrOid: string) {
