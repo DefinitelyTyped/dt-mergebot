@@ -1,7 +1,7 @@
 _Disclaimer: This could be out of date, the source of truth is always [compute-pr-actions]_
 
-<img src="./dt-mergebot-lifecycle.png" />
-<!-- https://www.figma.com/file/qE7BDiEucqI55Q9u0yZO3b/dt-pr-lifecycle?node-id=6%3A7 -->
+<img src="./dt-mergebot-lifecycle.svg" />
+<!-- https://www.figma.com/file/jIYpibfnaKRhq9rpK5wwkj/dt-pr-lifecycle-Eli -->
 
 ### What PRs does the bot ignore
 
