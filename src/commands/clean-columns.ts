@@ -35,7 +35,7 @@ const headers = {
 }
 
 
-var cleanCount = 0;
+let cleanCount = 0;
 fs.readFile(path.join(__dirname, '../clean-columns-query.graphql'), { encoding: 'utf-8' }, (err, query) => {
     if (err) throw err;
 

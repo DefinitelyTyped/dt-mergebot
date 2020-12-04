@@ -186,7 +186,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
         if (!approved) return mkStaleness(
             "Unreviewed", info.lastPushDate, 6, 10, 17, "Needs Maintainer Action");
         return undefined;
-    };
+    }
 
     function getApprovedBy() {
         return hasChangereqs ? []
@@ -245,7 +245,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
                 ...createEmptyActions(prInfo.pr_number),
                 shouldRemoveFromActiveColumns: true
             };
-        };
+        }
     }
 
     if (prInfo.type === "no_packages") {
@@ -526,8 +526,6 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         display(` * ${approved} Most recent commit is approved by ${requiredApprover}`);
     } else if (info.noOtherOwners) {
         display(` * ${approved} ${RequiredApprover} can merge changes when there are no other reviewers`);
-    } else if (info.maintainerBlessed) {
-        display(` * ${approved} Most recent commit is approved by ${requiredApprover}`);
     } else if (info.editsConfig) {
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect module config files`);
         info.pkgInfo.forEach(pkg => pkg.files.forEach(file =>

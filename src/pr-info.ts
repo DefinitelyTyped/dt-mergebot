@@ -326,7 +326,8 @@ async function getPackageInfosEtc(
         if (!infos.has(pkg)) infos.set(pkg, []);
         infos.get(pkg)!.push(fileInfo);
     }
-    let result: PackageInfo[] = [], maxDownloads = 0;
+    const result: PackageInfo[] = [];
+    let maxDownloads = 0;
     for (const [name, files] of infos) {
         const oldOwners = !name ? null : await getOwnersOfPackage(name, "master", fetchFile);
         if (oldOwners instanceof Error) return oldOwners;
@@ -374,7 +375,7 @@ async function categorizeFile(path: string, contents: (oid?: string) => Promise<
 interface ConfigSuspicious {
     (path: string, getContents: (oid?: string) => Promise<string | undefined>): Promise<string | undefined>;
     [basename: string]: (text: string, oldText?: string) => string | undefined;
-};
+}
 const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     const basename = path.replace(/.*\//, "");
     if (!(basename in configSuspicious)) return `edited`;
@@ -428,7 +429,7 @@ function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[], requi
         let json: any;
         try { json = JSON.parse(text); } catch (e) { return "couldn't parse json"; }
         jsonDiff.applyPatch(json, ignoredKeys.map(path => ({ op: "remove", path })));
-        try { return jsonDiff.compare(requiredForm, json); } catch (e) { return "couldn't diff json" };
+        try { return jsonDiff.compare(requiredForm, json); } catch (e) { return "couldn't diff json" }
     };
     return (contents: string, oldText?: string) => {
         const theRequiredForm = requiredFormUrl

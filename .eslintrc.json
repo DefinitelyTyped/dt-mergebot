@@ -5,7 +5,7 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/eslint-recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -16,5 +16,9 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "no-case-declarations": "off",
+        "no-constant-condition": ["error", { "checkLoops": false }],
+        "no-unused-vars": "off",
+        "no-useless-escape": "off"
     }
 }
