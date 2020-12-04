@@ -14,7 +14,7 @@ async function main() {
 
   for (const query in cachedQueries) {
     data[query] = await cachedQueries[query as keyof typeof cachedQueries]();
-  };
+  }
 
   await fs.promises.writeFile(
       dataPath,
