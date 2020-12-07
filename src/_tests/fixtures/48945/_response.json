@@ -291,7 +291,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@google-api-typings-generator One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can \"dismiss\" the review using GitHub's review UI. Thank you!\n<!--typescript_bot_reviewer-complaint-759b4cb-->",
+              "body": "@google-api-typings-generator One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!\n<!--typescript_bot_reviewer-complaint-759b4cb-->",
               "createdAt": "2020-11-03T02:26:22Z",
               "reactions": {
                 "nodes": [],
