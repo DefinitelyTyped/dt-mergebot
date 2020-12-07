@@ -83,28 +83,38 @@ export const StalenessExplanations: { [k: string]: string } = {
 };
 
 // Comments to post for the staleness timeline (the tag is computed in `makeStaleness`)
-export const StalenessComment = (author: string, otherOwners: string[]) => {
-    const owners = otherOwners.length === 0 ? "«anyone?»" : otherOwners.map(o => "@"+o).join(", ");
-    return {
-        // --Unmerged--
-        "Unmerged:nearly": `Re-ping @${author} / ${owners}:
+const allOwners = (otherOwners: string[]) => {
+    if (otherOwners.length > 0) return otherOwners.map(o => "@"+o).join(", ");
+    // report an error, but don't fail (which would make it worse)
+    console.error("  *** Possible internal error: no `otherOwners` to ping!");
+    return "«anyone?»";
+};
+export const StalenessComment: { [k: string]: ((author: string, otherOwners: string[]) => string) | undefined } = {
+    // --Unmerged--
+    "Unmerged:nearly": (author: string, otherOwners: string[]) =>
+        `Re-ping @${author} / ${allOwners(otherOwners)}:
 
 This PR has been ready to merge for over a week, and I haven't seen any requests to merge it. I will close it in three weeks if this doesn't happen.
 
 (Note that posting a comment will restart the month-timer again, so avoid doing that if you don't want me to nag you again... or you can just close it or turn it into a draft now.)`,
-        "Unmerged:done": `After a month, no one has requested merging the PR 😞. I'm going to assume that the change is not wanted after all, and will therefore close it.`,
-        // --Abandoned--
-        "Abandoned:nearly": `@${author} I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.`,
-        "Abandoned:done": `@${author} To keep things tidy, we have to close PRs that aren't mergeable and don't have activity in the last month. No worries, though — please open a new PR if you'd like to continue with this change. Thank you!`,
-        // --Unreviewed--
-        "Unreviewed:nearly": `Re-ping ${owners}:
+    "Unmerged:done": (_author: string, _otherOwners: string[]) =>
+        `After a month, no one has requested merging the PR 😞. I'm going to assume that the change is not wanted after all, and will therefore close it.`,
+    // --Abandoned--
+    "Abandoned:nearly": (author: string, _otherOwners: string[]) =>
+        `@${author} I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.`,
+    "Abandoned:done": (author: string, _otherOwners: string[]) =>
+        `@${author} To keep things tidy, we have to close PRs that aren't mergeable and don't have activity in the last month. No worries, though — please open a new PR if you'd like to continue with this change. Thank you!`,
+    // --Unreviewed--
+    "Unreviewed:nearly": (_author: string, otherOwners: string[]) =>
+        `Re-ping ${allOwners(otherOwners)}:
 
 This PR has been out for over a week, yet I haven't seen any reviews.
 
 Could someone please give it some attention? Thanks!`,
-        "Unreviewed:done": `It has been more than two weeks and this PR still has no reviews.
+    "Unreviewed:done": (author: string, otherOwners: string[]) =>
+        `It has been more than two weeks and this PR still has no reviews.
 
 I'll bump it to the DT maintainer queue. Thank you for your patience, @${author}.
 
-(Ping ${owners}.)`} as { [k: string]: string };
+(Ping ${allOwners(otherOwners)}.)`
 };

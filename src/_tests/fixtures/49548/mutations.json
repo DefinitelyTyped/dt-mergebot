@@ -1,12 +1,10 @@
 [
   {
-    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
     "variables": {
       "input": {
-        "labelIds": [
-          "MDU6TGFiZWwyNDYyODA0MzE1"
-        ],
-        "labelableId": "MDExOlB1bGxSZXF1ZXN0NTIwODA1MjIx"
+        "cardId": "MDExOlByb2plY3RDYXJkNDkzMjE3NzM=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
       }
     }
   },
@@ -15,16 +13,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDcyNjk4OTM0NQ==",
-        "body": "@concision Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `gulp-sourcemaps` [on npm](https://www.npmjs.com/package/gulp-sourcemaps), [on unpkg](https://unpkg.com/browse/gulp-sourcemaps@latest/)\n  - 2 added owners: @pspeter3, ✎@concision\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 14 days — please try to get reviewers!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
-      }
-    }
-  },
-  {
-    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "subjectId": "MDExOlB1bGxSZXF1ZXN0NTIwODA1MjIx",
-        "body": "Re-ping «anyone?»:\n\nThis PR has been out for over a week, yet I haven't seen any reviews.\n\nCould someone please give it some attention? Thanks!\n<!--typescript_bot_Unreviewed:nearly:2020-11-16-->"
+        "body": "@concision Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `gulp-sourcemaps` [on npm](https://www.npmjs.com/package/gulp-sourcemaps), [on unpkg](https://unpkg.com/browse/gulp-sourcemaps@latest/)\n  - 2 added owners: @pspeter3, ✎@concision\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer can merge changes when there are no other reviewers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   }
