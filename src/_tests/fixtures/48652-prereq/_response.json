@@ -626,7 +626,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@mgol One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can \"dismiss\" the review using GitHub's review UI. Thank you!\n<!--typescript_bot_reviewer-complaint-753cdb3-->",
+              "body": "@mgol One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!\n<!--typescript_bot_reviewer-complaint-753cdb3-->",
               "createdAt": "2020-10-12T08:56:09Z",
               "reactions": {
                 "nodes": [],
