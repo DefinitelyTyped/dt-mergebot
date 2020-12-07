@@ -23,7 +23,6 @@ query PR($pr_number: Int!) {
         baseRef {
           name
         }
-        changedFiles
         labels(first: 100) {
           nodes {
             name
@@ -131,6 +130,7 @@ query PR($pr_number: Int!) {
         }
 
         files(first: 100) {
+          totalCount
           nodes {
             path
             additions

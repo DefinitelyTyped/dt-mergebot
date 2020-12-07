@@ -14,7 +14,6 @@
           "name": "master",
           "__typename": "Ref"
         },
-        "changedFiles": 72,
         "createdAt": "2019-10-08T18:19:50Z",
         "labels": {
           "nodes": [
@@ -2460,7 +2459,8 @@
               "__typename": "PullRequestChangedFile"
             }
           ],
-          "__typename": "PullRequestChangedFileConnection"
+          "__typename": "PullRequestChangedFileConnection",
+          "totalCount": 72
         },
         "projectCards": {
           "nodes": [
