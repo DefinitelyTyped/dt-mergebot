@@ -298,7 +298,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotError,
     }
 
     // Update intro comment
-    post({ tag: "welcome", status: createWelcomeComment(info) });
+    post({ tag: "welcome", status: createWelcomeComment(info, post) });
 
     // Ping reviewers when needed
     if (!(info.hasChangereqs || info.approvedBy.includes("owner") || info.approvedBy.includes("maintainer"))) {
@@ -401,7 +401,7 @@ function makeStaleness(now: string, author: string, otherOwners: string[]) { // 
     }
 }
 
-function createWelcomeComment(info: ExtendedPrInfo) {
+function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) => void) {
     let content = "";
     function display(...lines: string[]) {
         lines.forEach(line => content += line + "\n");
@@ -424,9 +424,8 @@ function createWelcomeComment(info: ExtendedPrInfo) {
         : "all owners or a DT maintainer";
     const RequiredApprover = requiredApprover[0].toUpperCase() + requiredApprover.substring(1);
 
-    if (!info.hasTests) {
-        display(``,
-                `This PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Have you considered [adding tests](${testsLink}) to cover the change you're making? Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`);
+    if (info.isUntested) {
+        post(Comments.SuggestTesting(info.author, testsLink));
     } else if (info.editsInfra) {
         display(``,
                 `This PR touches some part of DefinitelyTyped infrastructure, so ${requiredApprover} will need to review it. This is rare — did you mean to do this?`);
@@ -479,7 +478,7 @@ function createWelcomeComment(info: ExtendedPrInfo) {
     } else if (info.popularityLevel === "Critical" && !info.maintainerBlessed) {
         display(`Because this is a widely-used package, ${requiredApprover} will need to review it before it can be merged.`);
     } else if (!info.requireMaintainer) {
-        const and = info.hasDefinitions && info.hasTests ? "and updated the tests (👏)" : "(and no type definition changes)";
+        const and = info.hasDefinitions && info.hasTests ? "and updated the tests (👏)" : "and there were no type definition changes";
         display(`Because you edited one package ${and}, I can help you merge this PR once someone else signs off on it.`);
     } else if (info.noOtherOwners && !info.maintainerBlessed) {
         display(`There aren't any other owners of this package, so ${requiredApprover} will review it.`);
