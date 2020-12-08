@@ -13,12 +13,15 @@
     {
       "tag": "pinging-reviewers",
       "status": "🔔 @climba03003 — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/48236/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on."
+    },
+    {
+      "tag": "merge-offer",
+      "status": "@jablko Everything looks good here. Great job! I am ready to merge this PR (at b4d71f6) on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@climba03003: you can do this too.)"
     }
   ],
   "shouldClose": false,
   "shouldMerge": true,
   "shouldUpdateLabels": true,
   "shouldUpdateProjectColumn": true,
-  "shouldRemoveFromActiveColumns": false,
-  "isReadyForAutoMerge": true
+  "shouldRemoveFromActiveColumns": false
 }

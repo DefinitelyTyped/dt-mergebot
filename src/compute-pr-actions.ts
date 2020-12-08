@@ -56,7 +56,6 @@ export interface Actions {
     shouldUpdateLabels: boolean;
     shouldUpdateProjectColumn: boolean;
     shouldRemoveFromActiveColumns: boolean;
-    isReadyForAutoMerge: boolean;
 }
 
 function createDefaultActions(pr_number: number): Actions {
@@ -70,7 +69,6 @@ function createDefaultActions(pr_number: number): Actions {
         shouldUpdateLabels: true,
         shouldUpdateProjectColumn: true,
         shouldRemoveFromActiveColumns: false,
-        isReadyForAutoMerge: false
     };
 }
 
@@ -84,7 +82,6 @@ function createEmptyActions(prNumber: number): Actions {
         shouldUpdateLabels: false,
         shouldUpdateProjectColumn: false,
         shouldRemoveFromActiveColumns: false,
-        isReadyForAutoMerge: false
     };
 }
 
@@ -296,7 +293,6 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     label("No Other Owners", !info.hasNewPackages && info.noOtherOwners);
     label("Too Many Owners", info.tooManyOwners);
     label("Self Merge", info.canBeSelfMerged);
-    context.isReadyForAutoMerge = info.canBeSelfMerged;
     label("Config Edit", !info.hasNewPackages && info.editsConfig);
     label("Untested Change", !info.hasTests);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
@@ -339,16 +335,17 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotNoPack
     else if (info.ciResult === CIResult.Pass) {
         if (!info.canBeSelfMerged) {
             context.targetColumn = info.reviewColumn;
-        }
-        else if (info.hasValidMergeRequest) {
-            context.shouldMerge = true;
-            context.targetColumn = "Recently Merged";
-        }
-        else {
+        } else {
+            // post even when merging, so it won't get deleted
             post(Comments.OfferSelfMerge(info.author,
                                          (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners,
                                          info.headCommitAbbrOid));
-            context.targetColumn = "Waiting for Author to Merge";
+            if (info.hasValidMergeRequest) {
+                context.shouldMerge = true;
+                context.targetColumn = "Recently Merged";
+            } else {
+                context.targetColumn = "Waiting for Author to Merge";
+            }
         }
         // Ping stale reviewers if any
         if (info.staleReviews.length > 0) {
