@@ -41,12 +41,12 @@ export const client = new ApolloClient({ cache, link, defaultOptions: {
   }
 });
 
-export async function mutate(mutation: Mutation) {
+export async function mutate(mutation: Mutation): Promise<string> {
     const result = await fetch(uri, mutation);
     return await result.text();
 }
 
-export function createMutation(query: string, input: object): Mutation {
+export function createMutation(query: string, input: unknown): Mutation {
     return {
         method: "POST",
         headers: {

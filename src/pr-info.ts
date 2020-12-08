@@ -366,9 +366,10 @@ async function categorizeFile(path: string, contents: (oid?: string) => Promise<
         case "d.ts": return [pkg, { path, kind: "definition" }];
         case "ts": case "tsx": return [pkg, { path, kind: "test" }];
         case "md": return [pkg, { path, kind: "markdown" }];
-        default:
+        default: {
             const suspect = await configSuspicious(path, contents);
             return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", suspect }];
+        }
     }
 }
 
