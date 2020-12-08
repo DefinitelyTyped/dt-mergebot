@@ -1,5 +1,12 @@
 import { sha256 } from "./util/util";
 
+// use `deletedWhenNotPresent` for comments that should be removed if not in the actions
+export const tagsToDeleteIfNotPosted: string[] = [];
+const deletedWhenNotPresent = <T>(tag: string, f: (tag: string) => T) => {
+    tagsToDeleteIfNotPosted.push(tag);
+    return f(tag);
+};
+
 export type Comment = { tag: string, status: string };
 
 export const HadError = (user: string | undefined, error: string) => ({
@@ -49,10 +56,11 @@ export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) 
     status: `@${reviewers.join(", @")} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
 });
 
-export const OfferSelfMerge = (user: string, otherOwners: string[], abbrOid: string) => ({
-    tag: `merge-offer`,
-    // Note: pr-info.ts searches for the `(at ${abbrOid})`
-    status: `@${user} Everything looks good here. Great job! I am ready to merge this PR (at ${abbrOid}) on your behalf.
+export const OfferSelfMerge = deletedWhenNotPresent("merge-offer", tag =>
+    (user: string, otherOwners: string[], abbrOid: string) => ({
+        tag,
+        // Note: pr-info.ts searches for the `(at ${abbrOid})`
+        status: `@${user} Everything looks good here. Great job! I am ready to merge this PR (at ${abbrOid}) on your behalf.
 
 If you'd like that to happen, please post a comment saying:
 
@@ -60,7 +68,7 @@ If you'd like that to happen, please post a comment saying:
 
 and I'll merge this PR almost instantly. Thanks for helping out! :heart:
 ${otherOwners.length === 0 ? "" : `
-(${otherOwners.map(o => "@" + o).join(", ")}: you can do this too.)`}`});
+(${otherOwners.map(o => "@" + o).join(", ")}: you can do this too.)`}`}));
 
 export const WaitUntilMergeIsOK = (user: string, abbrOid: string, uri: string) => ({
     // at most one reminder per update

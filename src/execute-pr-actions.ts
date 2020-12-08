@@ -3,6 +3,7 @@ import { Actions, LabelNames, LabelName } from "./compute-pr-actions";
 import { createMutation, mutate } from "./graphql-client";
 import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
 import { noNullish, flatten } from "./util/util";
+import { tagsToDeleteIfNotPosted } from "./comments";
 import * as comment from "./util/comment";
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/projects/5
@@ -96,12 +97,14 @@ function getMutationsForComments(actions: Actions, prId: string, botComments: Pa
 
 function getMutationsForCommentRemovals(actions: Actions, botComments: ParsedComment[]) {
     const ciTagToKeep = actions.responseComments.find(c => c.tag.startsWith("ci-complaint"))?.tag;
+    const postedTags = actions.responseComments.map(c => c.tag);
     return botComments.map(comment => {
-        const del = () => createMutation(deleteComment, { input: { id: comment.id } });
+        const { tag, id } = comment;
+        const del = () => createMutation(deleteComment, { input: { id } });
         // Remove stale CI 'your build is green' notifications
-        if (comment.tag.includes("ci-") && comment.tag !== ciTagToKeep) return del();
-        // It used to be mergable, but now it is not, remove those comments
-        if (comment.tag === "merge-offer" && !actions.isReadyForAutoMerge) return del();
+        if (tag.includes("ci-") && tag !== ciTagToKeep) return del();
+        // tags for comments that should be removed when not included in the actions
+        if (tagsToDeleteIfNotPosted.includes(tag) && !postedTags.includes(tag)) return del();
         return null;
     });
 }
