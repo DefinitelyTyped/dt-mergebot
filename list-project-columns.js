@@ -11,6 +11,7 @@ const headers = {
     "accept": "application/vnd.github.inertia-preview+json"
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const projects = r('https://api.github.com/repos/DefinitelyTyped/DefinitelyTyped/projects', { headers }, (err, data) => {
     const body = JSON.parse(data.body);
 
@@ -37,7 +38,7 @@ const projects = r('https://api.github.com/repos/DefinitelyTyped/DefinitelyTyped
             console.log(`== Project ${name} (${id}) ==`);
             console.log("{");
             for (const c of cols) {
-                console.log(`  \"${c.name}\": ${c.id},`);
+                console.log(`  "${c.name}": ${c.id},`);
             }
             console.log("}");
 

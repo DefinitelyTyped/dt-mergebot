@@ -402,7 +402,7 @@ function makeStaleness(now: string, author: string, otherOwners: string[]) { // 
 }
 
 function createWelcomeComment(info: ExtendedPrInfo) {
-    let content: string = "";
+    let content = "";
     function display(...lines: string[]) {
         lines.forEach(line => content += line + "\n");
     }

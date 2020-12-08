@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import * as yargs from "yargs";
-import { process as computeActions, ExtendedPrInfo } from "./compute-pr-actions";
+import { process as computeActions } from "./compute-pr-actions";
 import { getAllOpenPRsAndCardIDs } from "./queries/all-open-prs-query";
 import { queryPRInfo, deriveStateForPR } from "./pr-info";
 import { executePrActions, deleteProjectCard } from "./execute-pr-actions";
