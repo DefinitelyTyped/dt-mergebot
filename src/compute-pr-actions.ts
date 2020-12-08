@@ -123,7 +123,9 @@ export interface ExtendedPrInfo extends PrInfo {
     readonly staleness?: Staleness;
     readonly packages: readonly string[];
     readonly hasMultiplePackages: boolean; // not counting infra files
+    readonly hasDefinitions: boolean;
     readonly hasTests: boolean;
+    readonly isUntested: boolean;
     readonly newPackages: readonly string[];
     readonly hasNewPackages: boolean;
     readonly needsAuthorAction: boolean;
@@ -143,10 +145,12 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const editsOwners = info.pkgInfo.some(p => p.kind === "edit" && p.addedOwners.length + p.deletedOwners.length > 0);
     const packages = noNullish(info.pkgInfo.map(p => p.name));
     const hasMultiplePackages = packages.length > 1;
+    const hasDefinitions = info.pkgInfo.some(p => p.files.some(f => f.kind === "definition"));
     const hasTests = info.pkgInfo.some(p => p.files.some(f => f.kind === "test"));
+    const isUntested = hasDefinitions && !hasTests;
     const newPackages = noNullish(info.pkgInfo.map(p => p.kind === "add" ? p.name : null));
     const hasNewPackages = newPackages.length > 0;
-    const requireMaintainer = editsInfra || editsConfig || hasMultiplePackages || !hasTests || hasNewPackages || tooManyOwners;
+    const requireMaintainer = editsInfra || editsConfig || hasMultiplePackages || isUntested || hasNewPackages || tooManyOwners;
     const blessable = !(hasNewPackages || editsInfra || noOtherOwners);
     const approvedReviews = info.reviews.filter(r => r.type === "approved") as ExtendedPrInfo["approvedReviews"];
     const changereqReviews = info.reviews.filter(r => r.type === "changereq") as ExtendedPrInfo["changereqReviews"];
@@ -168,7 +172,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
         authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeSelfMerged, hasValidMergeRequest, pendingCriticalPackages, approved, approverKind,
         requireMaintainer, blessable, failedCI, staleness,
-        packages, hasMultiplePackages, hasTests, newPackages, hasNewPackages,
+        packages, hasMultiplePackages, hasDefinitions, hasTests, isUntested, newPackages, hasNewPackages,
         approvedReviews, changereqReviews, staleReviews, approvedBy, hasChangereqs,
         needsAuthorAction, reviewColumn, isAuthor
     };
@@ -284,7 +288,7 @@ export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotError,
     label("Too Many Owners", info.tooManyOwners);
     label("Self Merge", info.canBeSelfMerged);
     label("Config Edit", !info.hasNewPackages && info.editsConfig);
-    label("Untested Change", !info.hasTests);
+    label("Untested Change", info.isUntested);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
 
     if (!info.pkgInfo.some(p => p.name)) {
@@ -475,7 +479,8 @@ function createWelcomeComment(info: ExtendedPrInfo) {
     } else if (info.popularityLevel === "Critical" && !info.maintainerBlessed) {
         display(`Because this is a widely-used package, ${requiredApprover} will need to review it before it can be merged.`);
     } else if (!info.requireMaintainer) {
-        display("Because you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.");
+        const and = info.hasDefinitions && info.hasTests ? "and updated the tests (👏)" : "(and no type definition changes)";
+        display(`Because you edited one package ${and}, I can help you merge this PR once someone else signs off on it.`);
     } else if (info.noOtherOwners && !info.maintainerBlessed) {
         display(`There aren't any other owners of this package, so ${requiredApprover} will review it.`);
     } else if (info.hasMultiplePackages && !info.maintainerBlessed) {
