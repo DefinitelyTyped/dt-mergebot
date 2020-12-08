@@ -20,8 +20,8 @@ const addProjectCard = `mutation($input: AddProjectCardInput!) { addProjectCard(
 const moveProjectCard = `mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }`;
 export const deleteProjectCard = `mutation($input: DeleteProjectCardInput!) { deleteProjectCard(input: $input) { clientMutationId } }`;
 
-export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean): Promise<string[]> {
-    const pr = info.repository?.pullRequest!;
+export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean) {
+    const pr = info.repository!.pullRequest!;
     const botComments: ParsedComment[] = getBotComments(pr);
     const mutations = noNullish([
         ...await getMutationsForLabels(actions, pr),

@@ -11,8 +11,7 @@ const headers = {
     "accept": "application/vnd.github.inertia-preview+json"
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const projects = r('https://api.github.com/repos/DefinitelyTyped/DefinitelyTyped/projects', { headers }, (err, data) => {
+r('https://api.github.com/repos/DefinitelyTyped/DefinitelyTyped/projects', { headers }, (err, data) => {
     const body = JSON.parse(data.body);
 
     console.log(JSON.stringify(JSON.parse(data.body), undefined, 2));
