@@ -41,7 +41,7 @@ export const client = new ApolloClient({ cache, link, defaultOptions: {
   }
 });
 
-export async function mutate(mutation: Mutation): Promise<string> {
+export async function mutate(mutation: Mutation) {
     const result = await fetch(uri, mutation);
     return await result.text();
 }

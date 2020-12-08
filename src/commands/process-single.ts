@@ -4,7 +4,7 @@ import * as exec from "../execute-pr-actions";
 import { render } from "prettyjson";
 import { formatMutationRequest } from "../util/formatMutationRequest";
 
-export default async function main(prNumber: number, log: (..._args: any[]) => void, dry?: boolean) {
+export default async function main(prNumber: number, log: (...args: any[]) => void, dry?: boolean) {
     const info = await queryPRInfo(prNumber);
     const state = await deriveStateForPR(info);
     log(``);
