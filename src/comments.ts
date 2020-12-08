@@ -31,6 +31,13 @@ export const ChangesRequest = (headOid: string, user: string) => ({
     status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!`
 });
 
+export const SuggestTesting = deletedWhenNotPresent("suggest-testing", tag =>
+    (user: string, testsLink: string) => ({
+        tag, status: `Hey @${user},
+
+:unamused: Your PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Please consider [adding tests](${testsLink}) to cover the change you're making. Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`
+    }));
+
 export const PingReviewers = (names: readonly string[], reviewLink: string) => ({
     tag: "pinging-reviewers",
     status: `🔔 ${names.map(n => `@${n}`).join(" ")} — please [review this PR](${reviewLink}) in the next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`** in the GitHub UI so I know what's going on.`
@@ -58,9 +65,8 @@ export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) 
 
 export const OfferSelfMerge = deletedWhenNotPresent("merge-offer", tag =>
     (user: string, otherOwners: string[], abbrOid: string) => ({
-        tag,
         // Note: pr-info.ts searches for the `(at ${abbrOid})`
-        status: `@${user} Everything looks good here. Great job! I am ready to merge this PR (at ${abbrOid}) on your behalf.
+        tag, status: `@${user} Everything looks good here. Great job! I am ready to merge this PR (at ${abbrOid}) on your behalf.
 
 If you'd like that to happen, please post a comment saying:
 
