@@ -146,8 +146,8 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const hasTests = info.pkgInfo.some(p => p.files.some(f => f.kind === "test"));
     const newPackages = noNullish(info.pkgInfo.map(p => p.kind === "add" ? p.name : null));
     const hasNewPackages = newPackages.length > 0;
-    const requireMaintainer = editsInfra || editsConfig || hasMultiplePackages || !hasTests || hasNewPackages || tooManyOwners;
-    const blessable = !(hasNewPackages || editsInfra || noOtherOwners);
+    const requireMaintainer = editsInfra || hasNewPackages || noOtherOwners || editsConfig || hasMultiplePackages || !hasTests || tooManyOwners;
+    const blessable = !(editsInfra || hasNewPackages || noOtherOwners);
     const approvedReviews = info.reviews.filter(r => r.type === "approved") as ExtendedPrInfo["approvedReviews"];
     const changereqReviews = info.reviews.filter(r => r.type === "changereq") as ExtendedPrInfo["changereqReviews"];
     const staleReviews = info.reviews.filter(r => r.type === "stale") as ExtendedPrInfo["staleReviews"];
@@ -180,7 +180,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
             "Unmerged", info.mergeOfferDate, 4, 9, 30, "CLOSE");
         if (needsAuthorAction) return mkStaleness(
             "Abandoned", info.lastActivityDate, 6, 22, 30, "CLOSE");
-        if (!approved) return mkStaleness(
+        if (!approved && !(requireMaintainer && !blessable)) return mkStaleness(
             "Unreviewed", info.lastPushDate, 6, 10, 17, "Needs Maintainer Action");
         return undefined;
     }
@@ -207,9 +207,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
             : info.popularityLevel === "Critical" ? "maintainer"
             : undefined;
         if (!who) throw new Error("Unknown popularity level " + info.popularityLevel);
-        return who === "maintainer" && blessed && !noOtherOwners ? "owner"
-            : who === "owner" && noOtherOwners ? "maintainer"
-            : who;
+        return who === "maintainer" && blessed ? "owner" : who;
     }
 
     function getApproved() {
@@ -381,12 +379,12 @@ function makeStaleness(now: string, author: string, otherOwners: string[]) { // 
         const state = days <= freshDays ? "fresh" : days <= attnDays ? "attention" : days <= nearDays ? "nearly" : "done";
         const kindAndState = `${kind}:${state}`;
         const explanation = Comments.StalenessExplanations[kindAndState];
-        const comment = Comments.StalenessComment(author, otherOwners)[kindAndState];
+        const commentGen = Comments.StalenessComment[kindAndState];
         const doTimelineActions = (context: Actions) => {
-            if (comment !== undefined) {
+            if (commentGen !== undefined) {
                 const tag = state === "done" ? kindAndState
                     : `${kindAndState}:${since.toISOString().replace(/T.*$/, "")}`;
-                context.responseComments.push({ tag, status: comment });
+                context.responseComments.push({ tag, status: commentGen(author, otherOwners) });
             }
             if (state === "done") {
                 if (doneColumn === "CLOSE") {
