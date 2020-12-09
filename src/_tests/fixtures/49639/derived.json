@@ -22,21 +22,19 @@
         {
           "path": "types/jasmine/tsconfig.json",
           "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it",
-          "suggestion": {
+          "suspect": {
             "startLine": 21,
             "endLine": 21,
-            "text": "        \"forceConsistentCasingInFileNames\": true,\n        \"strictFunctionTypes\": true\n"
+            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it\n```suggestion\n        \"forceConsistentCasingInFileNames\": true,\n        \"strictFunctionTypes\": true\n```"
           }
         },
         {
           "path": "types/jasmine/tslint.json",
           "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) and not moving towards it",
-          "suggestion": {
+          "suspect": {
             "startLine": 4,
             "endLine": 4,
-            "text": ""
+            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) and not moving towards it\n```suggestion\n```"
           }
         }
       ],

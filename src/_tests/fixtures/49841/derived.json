@@ -26,11 +26,10 @@
         {
           "path": "types/react-native-sha1/tsconfig.json",
           "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson)",
-          "suggestion": {
+          "suspect": {
             "startLine": 17,
             "endLine": 17,
-            "text": ""
+            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson)\n```suggestion\n```"
           }
         },
         {
