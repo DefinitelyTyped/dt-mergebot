@@ -32,13 +32,14 @@ export type PopularityLevel =
     | "Critical";
 
 // Complete failure, won't be passed to `process` (no PR found)
-export interface BotFail {
+interface BotFail {
     readonly type: "fail";
+    readonly now: string;
     readonly message: string;
 }
 
 // Some error found, will be passed to `process` to report in a comment
-export interface BotError {
+interface BotError {
     readonly type: "error";
     readonly now: string;
     readonly pr_number: number;
@@ -46,8 +47,9 @@ export interface BotError {
     readonly author: string | undefined;
 }
 
-export interface BotEnsureRemovedFromProject {
+interface BotEnsureRemovedFromProject {
     readonly type: "remove";
+    readonly now: string;
     readonly pr_number: number;
     readonly message: string;
     readonly isDraft: boolean;
@@ -154,6 +156,13 @@ export interface PrInfo {
     readonly reviews: readonly ReviewInfo[];
 }
 
+export type BotNotFail =
+    | PrInfo
+    | BotError
+    | BotEnsureRemovedFromProject;
+
+export type BotResult = BotNotFail | BotFail;
+
 function getHeadCommit(pr: GraphqlPullRequest) {
     return pr.commits.nodes?.filter(c => c?.commit.oid === pr.headRefOid)?.[0]?.commit;
 }
@@ -191,7 +200,7 @@ export async function deriveStateForPR(
     fetchFile = defaultFetchFile,
     getDownloads = getMonthlyDownloadCount,
     now = new Date().toISOString(),
-): Promise<PrInfo | BotFail | BotError | BotEnsureRemovedFromProject>  {
+): Promise<BotResult>  {
     const prInfo = info.data.repository?.pullRequest;
 
     if (!prInfo) return botFail(`No PR with this number exists, (${JSON.stringify(info)})`);
@@ -248,7 +257,7 @@ export async function deriveStateForPR(
     };
 
     function botFail(message: string): BotFail {
-        return { type: "fail", message };
+        return { type: "fail", now, message };
     }
 
     function botError(pr_number: number, message: string): BotError {
@@ -256,7 +265,7 @@ export async function deriveStateForPR(
     }
 
     function botEnsureRemovedFromProject(pr_number: number, message: string, isDraft: boolean): BotEnsureRemovedFromProject {
-        return { type: "remove", pr_number, message, isDraft };
+        return { type: "remove", now, pr_number, message, isDraft };
     }
 }
 

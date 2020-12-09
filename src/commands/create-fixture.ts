@@ -1,5 +1,5 @@
 import * as computeActions from "../compute-pr-actions";
-import { deriveStateForPR, queryPRInfo } from "../pr-info";
+import { deriveStateForPR, BotResult, queryPRInfo } from "../pr-info";
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { fetchFile } from "../util/fetchFile";
@@ -79,7 +79,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   }
 
   function getTimeFromFile() {
-    return JSON.parse(readFileSync(derivedFixturePath, "utf8")).now;
+    return (JSON.parse(readFileSync(derivedFixturePath, "utf8")) as BotResult).now;
   }
 }
 
