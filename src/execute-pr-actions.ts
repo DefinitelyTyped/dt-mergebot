@@ -18,7 +18,7 @@ export async function executePrActions(actions: Actions, pr: PR_repository_pullR
         ...await getMutationsForProjectChanges(actions, pr),
         ...getMutationsForComments(actions, pr.id, botComments),
         ...getMutationsForCommentRemovals(actions, botComments),
-        ...getMutationsForSuggestions(actions, pr),
+        ...getMutationsForExplanations(actions, pr),
         ...getMutationsForChangingPRState(actions, pr),
     ]);
     if (!dry) {
@@ -102,23 +102,28 @@ function getMutationsForCommentRemovals(actions: Actions, botComments: ParsedCom
     });
 }
 
-function getMutationsForSuggestions(actions: Actions, pr: PR_repository_pullRequest) {
-    // Suggestions will be empty if we already reviewed this head
-    if (actions.suggestions.length === 0) return [];
+function getMutationsForExplanations(actions: Actions, pr: PR_repository_pullRequest) {
+    // Explanations will be empty if we already reviewed this head
+    if (actions.explanations.length === 0) return [];
     if (!pr.author) throw new Error("Internal Error: expected to be checked");
     return [
-        ...actions.suggestions.map(({ path, startLine, endLine, text }) =>
-            createMutation<schema.AddPullRequestReviewThreadInput>("addPullRequestReviewThread", {
+        ...actions.explanations.map(({ path, startLine, endLine, body }) => endLine
+            ? createMutation<schema.AddPullRequestReviewThreadInput>("addPullRequestReviewThread", {
                 pullRequestId: pr.id,
                 path,
                 startLine: startLine === endLine ? undefined : startLine,
                 line: endLine,
-                body: "```suggestion\n" + text + "```",
+                body,
+            })
+            : createMutation<schema.AddPullRequestReviewCommentInput>("addPullRequestReviewComment", {
+                pullRequestId: pr.id,
+                path,
+                body,
             })
         ),
         createMutation<schema.SubmitPullRequestReviewInput>("submitPullRequestReview", {
             pullRequestId: pr.id,
-            body: comments.suggestions(pr.author.login),
+            body: comments.explanations(pr.author.login),
             event: "COMMENT",
         }),
     ];

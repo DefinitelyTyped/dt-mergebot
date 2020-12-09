@@ -55,14 +55,13 @@ type FileKind = "test" | "definition" | "markdown" | "package-meta" | "package-m
 export type FileInfo = {
     path: string,
     kind: FileKind,
-    suspect?: string, // reason for a file being "package-meta" rather than "package-meta-ok"
-    suggestion?: Suggestion, // The differences from the expected form, as GitHub suggestions
+    suspect?: Explanation // reason for a file being "package-meta" rather than "package-meta-ok"
 };
 
-export interface Suggestion {
-    readonly startLine: number;
-    readonly endLine: number;
-    readonly text: string;
+export interface Explanation {
+    readonly startLine?: number;
+    readonly endLine?: number;
+    readonly body: string;
 }
 
 export type ReviewInfo = {
@@ -185,7 +184,7 @@ export async function queryPRInfo(prNumber: number) {
 interface Refs {
     readonly head: string;
     readonly master: "master";
-    readonly latestSuggestions: string;
+    readonly latestExplanations: string;
 }
 
 // The GQL response => Useful data for us
@@ -217,8 +216,8 @@ export async function deriveStateForPR(
     const refs = {
         head: prInfo.headRefOid,
         master: "master",
-        // Exclude existing suggestions from subsequent reviews
-        latestSuggestions: max(noNullish(prInfo.reviews?.nodes).filter(review => !authorNotBot(review)), (a, b) =>
+        // Exclude existing explanations from subsequent reviews
+        latestExplanations: max(noNullish(prInfo.reviews?.nodes).filter(review => !authorNotBot(review)), (a, b) =>
             Date.parse(a.submittedAt) - Date.parse(b.submittedAt))?.commit?.oid,
     } as const;
     const pkgInfoEtc = await getPackageInfosEtc(
@@ -352,19 +351,19 @@ async function categorizeFile(path: string, getContents: GetContents): Promise<[
         case "md": return [pkg, { path, kind: "markdown" }];
         default: {
             const suspect = await configSuspicious(path, getContents);
-            return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", ...suspect }];
+            return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", suspect }];
         }
     }
 }
 
 interface ConfigSuspicious {
-    (path: string, getContents: GetContents): Promise<{ suspect: string, sugestion?: Suggestion } | undefined>;
-    [basename: string]: (newText: string, getContents: GetContents) => Promise<{ suspect: string, suggestion?: Suggestion } | undefined>;
+    (path: string, getContents: GetContents): Promise<Explanation | undefined>;
+    [basename: string]: (newText: string, getContents: GetContents) => Promise<Explanation | undefined>;
 }
 const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     const basename = path.replace(/.*\//, "");
     const checker = configSuspicious[basename];
-    if (!checker) return { suspect: `edited` };
+    if (!checker) return { body: `edited` };
     const newText = await getContents("head");
     // Removing tslint.json, tsconfig.json, package.json and
     // OTHER_FILES.txt is checked by the CI. Specifics are in my commit
@@ -423,7 +422,7 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
         if (options && "parse" in options) {
             suggestion = options.parse(newText);
         } else {
-            try { suggestion = JSON.parse(newText); } catch (e) { if (e instanceof SyntaxError) return { suspect: `couldn't parse json: ${e.message}` }; }
+            try { suggestion = JSON.parse(newText); } catch (e) { if (e instanceof SyntaxError) return { body: `couldn't parse json: ${e.message}` }; }
         }
         const newData = jsonDiff.deepClone(suggestion);
         if (options && "ignore" in options) options.ignore(newData);
@@ -432,15 +431,12 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
         // suspect
         const vsMaster = await ignoreExistingDiffs("master");
         if (!vsMaster) return undefined;
-        if (vsMaster.done) return { suspect: vsMaster.suspect };
+        if (vsMaster.done) return { body: vsMaster.suspect };
         // whereas getting closer relative to existing suggestions means
         // no new suggestions
-        if (!await ignoreExistingDiffs("latestSuggestions")) return { suspect: vsMaster.suspect };
+        if (!await ignoreExistingDiffs("latestExplanations")) return { body: vsMaster.suspect };
         jsonDiff.applyPatch(suggestion, jsonDiff.compare(newData, towardsIt));
-        return {
-            suspect: vsMaster.suspect,
-            suggestion: makeSuggestion(),
-        };
+        return makeSuggestion();
 
         // Apply any preexisting diffs to towardsIt
         async function ignoreExistingDiffs(ref: keyof Refs) {
@@ -490,7 +486,7 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
             return {
                 startLine,
                 endLine,
-                text: suggestionLines.join(""),
+                body: vsMaster!.suspect + "\n```suggestion\n" + suggestionLines.join("") + "```",
             };
         }
     };
