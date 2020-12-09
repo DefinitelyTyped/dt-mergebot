@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, lstatSync } from "fs";
 import { join } from "path";
 import { toMatchFile } from "jest-file-snapshot";
 import { process } from "../compute-pr-actions";
-import { deriveStateForPR } from "../pr-info";
+import { deriveStateForPR, BotResult } from "../pr-info";
 import { scrubDiagnosticDetails } from "../util/util";
 import * as cachedQueries from "./cachedQueries.json";
 jest.mock("../util/cachedQueries", () => ({
@@ -38,7 +38,7 @@ async function testFixture(dir: string) {
     response,
     (expr: string) => Promise.resolve(files[expr] as string),
     (name: string, _until?: Date) => name in downloads ? downloads[name] : 0,
-    readJSON(derivedPath).now
+    (readJSON(derivedPath) as BotResult).now
   );
 
   if (derived.type === "fail") throw new Error("Should never happen");

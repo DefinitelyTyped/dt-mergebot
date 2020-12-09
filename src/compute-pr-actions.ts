@@ -1,6 +1,6 @@
 import * as Comments from "./comments";
 import * as urls from "./urls";
-import { PrInfo, BotError, BotEnsureRemovedFromProject, FileInfo } from "./pr-info";
+import { PrInfo, BotNotFail, FileInfo } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
 import { noNullish, flatten, unique, sameUser, daysSince, sha256 } from "./util/util";
@@ -232,7 +232,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
 
 }
 
-export function process(prInfo: PrInfo | BotEnsureRemovedFromProject | BotError,
+export function process(prInfo: BotNotFail,
                         extendedCallback: (info: ExtendedPrInfo) => void = _i => {}): Actions {
     if (prInfo.type === "remove") {
         if (prInfo.isDraft) {
