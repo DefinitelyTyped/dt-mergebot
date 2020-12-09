@@ -98,7 +98,6 @@ type ApproverKind = "maintainer" | "owner" | "other";
 // used to pass around pr info with additional values
 export interface ExtendedPrInfo extends PrInfo {
     readonly orig: PrInfo;
-    readonly reviewLink: string;
     readonly editsInfra: boolean;
     readonly editsConfig: boolean;
     readonly authorIsOwner: boolean;
@@ -135,7 +134,6 @@ export interface ExtendedPrInfo extends PrInfo {
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isAuthor = (user: string) => sameUser(user, info.author);
-    const reviewLink = urls.review(info.pr_number);
     const authorIsOwner = info.pkgInfo.every(p => p.owners.some(isAuthor));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
     const editsConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
@@ -170,7 +168,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const staleness = getStaleness();
     const reviewColumn = getReviewColumn();
     return {
-        ...info, orig: info, reviewLink,
+        ...info, orig: info,
         authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeSelfMerged, hasValidMergeRequest, pendingCriticalPackages, approved, approverKind,
         requireMaintainer, blessable, failedCI, staleness,
@@ -305,12 +303,12 @@ export function process(prInfo: BotNotFail,
     if (!(info.hasChangereqs || info.approvedBy.includes("owner") || info.approvedBy.includes("maintainer"))) {
         if (info.noOtherOwners) {
             if (info.popularityLevel !== "Critical") {
-                post(Comments.PingReviewersOther(info.author, info.reviewLink));
+                post(Comments.PingReviewersOther(info.author, urls.review(info.pr_number)));
             }
         } else if (info.tooManyOwners) {
             post(Comments.PingReviewersTooMany(info.otherOwners));
         } else {
-            post(Comments.PingReviewers(info.otherOwners, info.reviewLink));
+            post(Comments.PingReviewers(info.otherOwners, urls.review(info.pr_number)));
         }
     }
 
