@@ -18,7 +18,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   let response;
   if (overwriteInfo || !existsSync(jsonFixturePath)) {
     response = await queryPRInfo(prNumber);
-    writeFileSync(jsonFixturePath, scrubDiagnosticDetails(JSON.stringify(response, null, "  ")));
+    writeFileSync(jsonFixturePath, scrubDiagnosticDetails(JSON.stringify(response, null, "  ") + "\n"));
   } else {
     response = JSON.parse(readFileSync(jsonFixturePath, "utf8"));
   }
@@ -38,17 +38,17 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     shouldOverwrite(derivedFixturePath) ? undefined : getTimeFromFile(),
   );
 
-  writeFileSync(derivedFixturePath, scrubDiagnosticDetails(JSON.stringify(derivedInfo, null, "  ")));
+  writeFileSync(derivedFixturePath, scrubDiagnosticDetails(JSON.stringify(derivedInfo, null, "  ") + "\n"));
 
   if (derivedInfo.type === "fail") return;
 
   const resultFixturePath = join(fixturePath, "result.json");
   const actions = computeActions.process(derivedInfo);
-  writeFileSync(resultFixturePath, scrubDiagnosticDetails(JSON.stringify(actions, null, "  ")));
+  writeFileSync(resultFixturePath, scrubDiagnosticDetails(JSON.stringify(actions, null, "  ") + "\n"));
 
   const mutationsFixturePath = join(fixturePath, "mutations.json");
   const mutations = await executePrActions(actions, response.data, /*dry*/ true);
-  writeFileSync(mutationsFixturePath, scrubDiagnosticDetails(JSON.stringify(mutations.map(m => JSON.parse(m)), null, "  ")));
+  writeFileSync(mutationsFixturePath, scrubDiagnosticDetails(JSON.stringify(mutations.map(m => JSON.parse(m)), null, "  ") + "\n"));
 
   console.log(`Recorded`);
 
@@ -58,7 +58,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   }
   async function fetchFilesAndWriteToFile(expr: string, limit?: number) {
     filesFetched[expr] = await fetchFile(expr, limit);
-    writeFileSync(filesJSONPath, JSON.stringify(filesFetched, null, "  "));
+    writeFileSync(filesJSONPath, JSON.stringify(filesFetched, null, "  ") + "\n");
     return filesFetched[expr];
   }
   function getFilesFromFile(expr: string) {
@@ -71,7 +71,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   }
   async function getDownloadsAndWriteToFile(packageName: string, until?: Date) {
       downloadsFetched[packageName] = await getMonthlyDownloadCount(packageName, until);
-    writeFileSync(downloadsJSONPath, JSON.stringify(downloadsFetched, null, "  "));
+    writeFileSync(downloadsJSONPath, JSON.stringify(downloadsFetched, null, "  ") + "\n");
     return downloadsFetched[packageName];
   }
   function getDownloadsFromFile(packageName: string) {
