@@ -140,7 +140,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const editsConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
     const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners)));
     const otherOwners = allOwners.filter(o => !isAuthor(o));
-    const noOtherOwners = allOwners.every(isAuthor);
+    const noOtherOwners = allOwners.length > 0 && otherOwners.length === 0;
     const tooManyOwners = allOwners.length > 50;
     const editsOwners = info.pkgInfo.some(p => p.kind === "edit" && p.addedOwners.length + p.deletedOwners.length > 0);
     const packages = noNullish(info.pkgInfo.map(p => p.name));
@@ -284,7 +284,7 @@ export function process(prInfo: BotNotFail,
     label("Edits Infrastructure", info.editsInfra);
     label("Edits multiple packages", info.hasMultiplePackages);
     label("Author is Owner", info.authorIsOwner);
-    label("No Other Owners", !info.hasNewPackages && info.noOtherOwners);
+    label("No Other Owners", info.noOtherOwners);
     label("Too Many Owners", info.tooManyOwners);
     label("Self Merge", info.canBeSelfMerged);
     label("Config Edit", !info.hasNewPackages && info.editsConfig);
@@ -302,7 +302,7 @@ export function process(prInfo: BotNotFail,
 
     // Ping reviewers when needed
     if (!(info.hasChangereqs || info.approvedBy.includes("owner") || info.approvedBy.includes("maintainer"))) {
-        if (info.noOtherOwners) {
+        if (info.otherOwners.length === 0) { // Including PRs without any owners
             if (info.popularityLevel !== "Critical") {
                 post(Comments.PingReviewersOther(info.author, info.reviewLink));
             }
