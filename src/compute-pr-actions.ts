@@ -138,11 +138,6 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const authorIsOwner = info.pkgInfo.every(p => p.owners.some(isAuthor));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
     const editsConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
-    const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners)));
-    const otherOwners = allOwners.filter(o => !isAuthor(o));
-    const noOtherOwners = allOwners.length > 0 && otherOwners.length === 0;
-    const tooManyOwners = allOwners.length > 50;
-    const editsOwners = info.pkgInfo.some(p => p.kind === "edit" && p.addedOwners.length + p.deletedOwners.length > 0);
     const packages = noNullish(info.pkgInfo.map(p => p.name));
     const hasMultiplePackages = packages.length > 1;
     const hasDefinitions = info.pkgInfo.some(p => p.files.some(f => f.kind === "definition"));
@@ -150,6 +145,11 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isUntested = hasDefinitions && !hasTests;
     const newPackages = noNullish(info.pkgInfo.map(p => p.kind === "add" ? p.name : null));
     const hasNewPackages = newPackages.length > 0;
+    const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners)));
+    const otherOwners = allOwners.filter(o => !isAuthor(o));
+    const noOtherOwners = packages.length > newPackages.length && otherOwners.length === 0;
+    const tooManyOwners = allOwners.length > 50;
+    const editsOwners = info.pkgInfo.some(p => p.kind === "edit" && p.addedOwners.length + p.deletedOwners.length > 0);
     const requireMaintainer = editsInfra || editsConfig || hasMultiplePackages || isUntested || hasNewPackages || tooManyOwners;
     const blessable = !(hasNewPackages || editsInfra || noOtherOwners);
     const approvedReviews = info.reviews.filter(r => r.type === "approved") as ExtendedPrInfo["approvedReviews"];
