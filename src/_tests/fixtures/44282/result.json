@@ -2,7 +2,8 @@
   "pr_number": 44282,
   "targetColumn": "Waiting for Code Reviews",
   "labels": [
-    "Edits Owners"
+    "Edits Owners",
+    "No Other Owners"
   ],
   "responseComments": [
     {

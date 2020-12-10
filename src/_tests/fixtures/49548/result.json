@@ -3,6 +3,7 @@
   "targetColumn": "Waiting for Code Reviews",
   "labels": [
     "Edits Owners",
+    "No Other Owners",
     "Unreviewed"
   ],
   "responseComments": [
