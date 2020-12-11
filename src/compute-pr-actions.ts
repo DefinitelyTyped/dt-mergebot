@@ -288,7 +288,6 @@ export function process(prInfo: BotNotFail,
     label("Author is Owner", info.authorIsOwner);
     label("No Other Owners", info.hasEditedPackages && info.noOtherOwners);
     label("Too Many Owners", info.tooManyOwners);
-    label("Self Merge", info.canBeSelfMerged);
     label("Config Edit", info.hasEditedPackages && info.editsConfig);
     label("Untested Change", info.isUntested);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
@@ -338,6 +337,7 @@ export function process(prInfo: BotNotFail,
         if (!info.canBeSelfMerged) {
             context.targetColumn = info.reviewColumn;
         } else {
+            label("Self Merge");
             // post even when merging, so it won't get deleted
             post(Comments.OfferSelfMerge(info.author,
                                          (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners,
