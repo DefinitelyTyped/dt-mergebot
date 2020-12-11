@@ -289,12 +289,6 @@ export function process(prInfo: BotNotFail,
     label("Untested Change", info.isUntested);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
 
-    if (!info.pkgInfo.some(p => p.name)) {
-        context.targetColumn = "Needs Maintainer Action";
-        context.labels.push("Edits Infrastructure");
-        return context;
-    }
-
     // Update intro comment
     post({ tag: "welcome", status: createWelcomeComment(info, post) });
 
@@ -440,9 +434,6 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     display(``,
             `## ${announceList("package", info.packages)} in this PR`,
             ``);
-    if (info.packages.length === 0) { // should not happen atm
-        throw new Error("Internal Error: unexpected Infrastructure-only PR in `createWelcomeComment`");
-    }
     let addedSelfToManyOwners = 0;
     for (const p of info.pkgInfo) {
         if (p.name === null) continue;
