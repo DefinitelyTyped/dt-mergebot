@@ -42,7 +42,7 @@ export const LabelNames = [
     "No Other Owners",
     "Too Many Owners",
     "Untested Change",
-    "Config Edit",
+    "Suspicious Config",
     ...StalenessKinds
 ] as const;
 
@@ -288,7 +288,7 @@ export function process(prInfo: BotNotFail,
     label("Author is Owner", info.authorIsOwner);
     label("No Other Owners", info.hasEditedPackages && info.noOtherOwners);
     label("Too Many Owners", info.tooManyOwners);
-    label("Config Edit", info.hasEditedPackages && info.editsConfig);
+    label("Suspicious Config", info.editsConfig);
     label("Untested Change", info.isUntested);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
 
