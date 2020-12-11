@@ -113,7 +113,7 @@ const start = async function () {
         if (afterFirst50.length > 0) {
             console.log(`Cutting "Recently Merged" projects to the last 50`);
             if (cards.length < totalCount) {
-                console.log(`  *** Note: ${totalCount - cards.length} were not seen by this query!`);
+                console.warn(`  *** Note: ${totalCount - cards.length} cards were not seen by this query!`);
             }
             for (const card of afterFirst50) await deleteObject(card.id);
         }

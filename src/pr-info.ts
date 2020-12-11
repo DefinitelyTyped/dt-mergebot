@@ -185,7 +185,7 @@ export async function queryPRInfo(prNumber: number) {
         if (!prInfo) return info; // let `deriveStateForPR` handle the missing result
         if (prInfo.mergeable !== "UNKNOWN") return info;
         const { nodes, totalCount } = prInfo.files!;
-        if (nodes!.length < totalCount) console.warn(`  *** Note: ${totalCount - nodes!.length} were not seen by this query!`);
+        if (nodes!.length < totalCount) console.warn(`  *** Note: ${totalCount - nodes!.length} files were not seen by this query!`);
         if (++retries > 5) { // we already did 5 tries, so give up and...
             info.data.repository = null;
             return info; // ...return a bad result to avoid using the bogus information
