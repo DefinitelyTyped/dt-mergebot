@@ -8,6 +8,9 @@ import { scrubDiagnosticDetails } from "../util/util";
 import { executePrActions } from "../execute-pr-actions";
 
 export default async function main(directory: string, overwriteInfo: boolean) {
+  const writeJsonSync = (file: string, json: unknown) =>
+      writeFileSync(file, scrubDiagnosticDetails(JSON.stringify(json, undefined, 2) + "\n"));
+
   const fixturePath = join("src", "_tests", "fixtures", directory);
   const prNumber = parseInt(directory, 10);
   if (isNaN(prNumber)) throw new Error(`Expected ${directory} to be parseable as a PR number`);
@@ -18,7 +21,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   let response;
   if (overwriteInfo || !existsSync(jsonFixturePath)) {
     response = await queryPRInfo(prNumber);
-    writeFileSync(jsonFixturePath, scrubDiagnosticDetails(JSON.stringify(response, null, "  ") + "\n"));
+    writeJsonSync(jsonFixturePath, response);
   } else {
     response = JSON.parse(readFileSync(jsonFixturePath, "utf8"));
   }
@@ -38,27 +41,27 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     shouldOverwrite(derivedFixturePath) ? undefined : getTimeFromFile(),
   );
 
-  writeFileSync(derivedFixturePath, scrubDiagnosticDetails(JSON.stringify(derivedInfo, null, "  ") + "\n"));
+  writeJsonSync(derivedFixturePath, derivedInfo);
 
   if (derivedInfo.type === "fail") return;
 
   const resultFixturePath = join(fixturePath, "result.json");
   const actions = computeActions.process(derivedInfo);
-  writeFileSync(resultFixturePath, scrubDiagnosticDetails(JSON.stringify(actions, null, "  ") + "\n"));
+  writeJsonSync(resultFixturePath, actions);
 
   const mutationsFixturePath = join(fixturePath, "mutations.json");
   const mutations = await executePrActions(actions, response.data, /*dry*/ true);
-  writeFileSync(mutationsFixturePath, scrubDiagnosticDetails(JSON.stringify(mutations.map(m => JSON.parse(m)), null, "  ") + "\n"));
+  writeJsonSync(mutationsFixturePath, mutations.map(m => JSON.parse(m)));
 
   console.log(`Recorded`);
 
   function initFetchFilesAndWriteToFile() {
-    writeFileSync(filesJSONPath, "{}"); // one-time initialization of an empty storage
+    writeJsonSync(filesJSONPath, {}); // one-time initialization of an empty storage
     return fetchFilesAndWriteToFile;
   }
   async function fetchFilesAndWriteToFile(expr: string, limit?: number) {
     filesFetched[expr] = await fetchFile(expr, limit);
-    writeFileSync(filesJSONPath, JSON.stringify(filesFetched, null, "  ") + "\n");
+    writeJsonSync(filesJSONPath, filesFetched);
     return filesFetched[expr];
   }
   function getFilesFromFile(expr: string) {
@@ -66,12 +69,12 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   }
 
   function initGetDownloadsAndWriteToFile() {
-    writeFileSync(downloadsJSONPath, "{}"); // one-time initialization of an empty storage
+    writeJsonSync(downloadsJSONPath, {}); // one-time initialization of an empty storage
     return getDownloadsAndWriteToFile;
   }
   async function getDownloadsAndWriteToFile(packageName: string, until?: Date) {
       downloadsFetched[packageName] = await getMonthlyDownloadCount(packageName, until);
-    writeFileSync(downloadsJSONPath, JSON.stringify(downloadsFetched, null, "  ") + "\n");
+    writeJsonSync(downloadsJSONPath, downloadsFetched);
     return downloadsFetched[packageName];
   }
   function getDownloadsFromFile(packageName: string) {
