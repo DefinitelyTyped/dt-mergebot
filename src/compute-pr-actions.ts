@@ -128,6 +128,7 @@ export interface ExtendedPrInfo extends PrInfo {
     readonly isUntested: boolean;
     readonly newPackages: readonly string[];
     readonly hasNewPackages: boolean;
+    readonly hasEditedPackages: boolean;
     readonly needsAuthorAction: boolean;
     readonly reviewColumn: ColumnName;
     readonly isAuthor: (user: string) => boolean; // specialized version of sameUser
@@ -140,7 +141,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const editsConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
     const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners)));
     const otherOwners = allOwners.filter(o => !isAuthor(o));
-    const noOtherOwners = allOwners.every(isAuthor);
+    const noOtherOwners = otherOwners.length === 0;
     const tooManyOwners = allOwners.length > 50;
     const editsOwners = info.pkgInfo.some(p => p.kind === "edit" && p.addedOwners.length + p.deletedOwners.length > 0);
     const packages = noNullish(info.pkgInfo.map(p => p.name));
@@ -150,6 +151,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isUntested = hasDefinitions && !hasTests;
     const newPackages = noNullish(info.pkgInfo.map(p => p.kind === "add" ? p.name : null));
     const hasNewPackages = newPackages.length > 0;
+    const hasEditedPackages = packages.length > newPackages.length;
     const requireMaintainer = editsInfra || editsConfig || hasMultiplePackages || isUntested || hasNewPackages || tooManyOwners;
     const blessable = !(hasNewPackages || editsInfra || noOtherOwners);
     const approvedReviews = info.reviews.filter(r => r.type === "approved") as ExtendedPrInfo["approvedReviews"];
@@ -172,7 +174,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
         authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeSelfMerged, hasValidMergeRequest, pendingCriticalPackages, approved, approverKind,
         requireMaintainer, blessable, failedCI, staleness,
-        packages, hasMultiplePackages, hasDefinitions, hasTests, isUntested, newPackages, hasNewPackages,
+        packages, hasMultiplePackages, hasDefinitions, hasTests, isUntested, newPackages, hasNewPackages, hasEditedPackages,
         approvedReviews, changereqReviews, staleReviews, approvedBy, hasChangereqs,
         needsAuthorAction, reviewColumn, isAuthor
     };
@@ -284,10 +286,10 @@ export function process(prInfo: BotNotFail,
     label("Edits Infrastructure", info.editsInfra);
     label("Edits multiple packages", info.hasMultiplePackages);
     label("Author is Owner", info.authorIsOwner);
-    label("No Other Owners", !info.hasNewPackages && info.noOtherOwners);
+    label("No Other Owners", info.hasEditedPackages && info.noOtherOwners);
     label("Too Many Owners", info.tooManyOwners);
     label("Self Merge", info.canBeSelfMerged);
-    label("Config Edit", !info.hasNewPackages && info.editsConfig);
+    label("Config Edit", info.hasEditedPackages && info.editsConfig);
     label("Untested Change", info.isUntested);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
 
