@@ -8,7 +8,7 @@ This is the bot which controls the workflow of Definitely Typed PRs.
 It is both a series of command line scripts which you can use to test different states, and an Azure Function App which handles incoming webhooks from the DefinitelyTyped repo.
 
 This repo is deployed to Azure on every push to master.
-To ensure we can handle timeouts on older PRs, there is a [nightly](https://github.com/DefinitelyTyped/dt-mergebot/actions) GitHub Action which runs the bot against [all open PRs](./src/scripts/daily.ts).
+To ensure we can handle timeouts on older PRs, there is a [GitHub Action](https://github.com/DefinitelyTyped/dt-mergebot/actions) which runs the bot every 6 hours against [all open PRs](./src/run.ts), and has a bunch of useful flags for running manually too.
 
 # Setup
 
