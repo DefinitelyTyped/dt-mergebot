@@ -1,16 +1,5 @@
 [
   {
-    "query": "mutation($input: RemoveLabelsFromLabelableInput!) { removeLabelsFromLabelable(input: $input) { clientMutationId } }",
-    "variables": {
-      "input": {
-        "labelIds": [
-          "MDU6TGFiZWwyMTU0ODE2NTQ5"
-        ],
-        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDkzNjExNjMz"
-      }
-    }
-  },
-  {
     "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
     "variables": {
       "input": {

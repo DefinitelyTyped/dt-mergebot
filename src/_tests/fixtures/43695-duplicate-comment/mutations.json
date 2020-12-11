@@ -4,6 +4,7 @@
     "variables": {
       "input": {
         "labelIds": [
+          "MDU6TGFiZWwyMTU0ODE2NTQ5",
           "MDU6TGFiZWwyNDYyODA0MzE1"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDAwMTAwMTk2"
@@ -15,8 +16,7 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWwyMTU0ODU3ODAw",
-          "MDU6TGFiZWwyMTU0ODE2NTQ5"
+          "MDU6TGFiZWwyMTU0ODU3ODAw"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDAwMTAwMTk2"
       }

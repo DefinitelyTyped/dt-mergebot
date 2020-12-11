@@ -3,7 +3,8 @@
   "targetColumn": "Needs Author Action",
   "labels": [
     "Revision needed",
-    "New Definition"
+    "New Definition",
+    "Suspicious Config"
   ],
   "responseComments": [
     {

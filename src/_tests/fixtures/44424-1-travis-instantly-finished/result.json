@@ -3,7 +3,7 @@
   "targetColumn": "Needs Maintainer Review",
   "labels": [
     "Author is Owner",
-    "Config Edit"
+    "Suspicious Config"
   ],
   "responseComments": [
     {

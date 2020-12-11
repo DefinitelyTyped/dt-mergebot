@@ -3,7 +3,7 @@
   "targetColumn": "Needs Maintainer Review",
   "labels": [
     "Edits Owners",
-    "Config Edit"
+    "Suspicious Config"
   ],
   "responseComments": [
     {

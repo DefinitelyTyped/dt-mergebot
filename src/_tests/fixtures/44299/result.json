@@ -2,7 +2,8 @@
   "pr_number": 44299,
   "targetColumn": "Needs Maintainer Action",
   "labels": [
-    "New Definition"
+    "New Definition",
+    "Suspicious Config"
   ],
   "responseComments": [
     {

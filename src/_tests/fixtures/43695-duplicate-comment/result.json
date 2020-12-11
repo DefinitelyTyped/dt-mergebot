@@ -3,6 +3,7 @@
   "targetColumn": "Needs Maintainer Action",
   "labels": [
     "New Definition",
+    "Suspicious Config",
     "Unreviewed"
   ],
   "responseComments": [
