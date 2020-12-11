@@ -34,5 +34,5 @@ fixtureNames.forEach(fixture => {
     "__typename": "CheckSuite"
   })
 
-  writeFileSync(responsePath, JSON.stringify(response, null, "  "), "utf8")
+  writeFileSync(responsePath, JSON.stringify(response, null, "  ") + "\n", "utf8")
 });

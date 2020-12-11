@@ -28,7 +28,7 @@ async function testFixture(dir: string) {
   const mutationsPath = join(dir, "mutations.json");
 
   const readJSON = (file: string) => JSON.parse(readFileSync(file, "utf8"));
-  const JSONString = (value: any) => scrubDiagnosticDetails(JSON.stringify(value, null, "  "));
+  const JSONString = (value: any) => scrubDiagnosticDetails(JSON.stringify(value, null, "  ") + "\n");
 
   const response = readJSON(responsePath);
   const files = readJSON(filesPath);
