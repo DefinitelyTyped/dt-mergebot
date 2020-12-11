@@ -6,7 +6,7 @@ name: Daily Open PR Sync
 # For prod
 on:
   schedule:
-    - cron: '0 4 * * *'
+    - cron: "37 */6 * * *"
 
 jobs:
   build:
@@ -21,6 +21,6 @@ jobs:
       - run: npm run build
 
       # Go through all open PRs and run the bot over them
-      - run: node ./bin/scripts/daily.js
+      - run: node ./bin/run.js
         env:
           BOT_AUTH_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}

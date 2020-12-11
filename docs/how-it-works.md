@@ -45,7 +45,7 @@ The explanations for `attention` and the posted comments are defined in
 
 ### Cleanup
 
-A [daily script](../src/scripts/daily.ts) is running every night, cutting the
+The [`run` script](../src/run.ts) is running every 6 hours, cutting the
 `Recently Merged` column to 50.  It also removes closed PRs from other columns
 as a safeguard in case the bot missed a PR closing event.
 
