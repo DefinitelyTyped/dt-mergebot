@@ -3,8 +3,8 @@
   "targetColumn": "Waiting for Author to Merge",
   "labels": [
     "Owner Approved",
-    "Self Merge",
-    "Untested Change"
+    "Untested Change",
+    "Self Merge"
   ],
   "responseComments": [
     {

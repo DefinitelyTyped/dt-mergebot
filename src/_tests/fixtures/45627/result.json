@@ -5,9 +5,9 @@
     "Critical package",
     "Owner Approved",
     "Edits Owners",
-    "Self Merge",
     "Untested Change",
-    "Unmerged"
+    "Unmerged",
+    "Self Merge"
   ],
   "responseComments": [
     {
