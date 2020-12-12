@@ -16,7 +16,6 @@ import * as comment from "./util/comment";
 import * as urls from "./urls";
 import * as HeaderParser from "@definitelytyped/header-parser";
 import * as jsonDiff from "fast-json-patch";
-import * as prettier from "prettier";
 
 const CriticalPopularityThreshold = 5_000_000;
 const NormalPopularityThreshold = 200_000;
@@ -468,11 +467,10 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
 
         // Suggest the different lines to the author
         function makeSuggestion() {
-            const suggestionLines = (
-                Object.keys(suggestion).length <= 1
-                    ? prettier.format(JSON.stringify(suggestion), { tabWidth: 4, filepath: ".json" })
-                    : JSON.stringify(suggestion, undefined, 4) + "\n"
-            ).split(/^/m);
+            const text = JSON.stringify(suggestion, undefined, 4);
+            const suggestionLines = Object.keys(suggestion).length === 1
+                ? [text.replace(/\n */g, " ") + "\n"]
+                : (text + "\n").split(/^/m);
             // "^" will match inside LineTerminatorSequence so
             // "\r\n".split(/^/m) is two lines. Sigh.
             // https://tc39.es/ecma262/#_ref_7303:~:text=the%20character%20Input%5Be%20%2D%201%5D%20is%20one%20of%20LineTerminator
