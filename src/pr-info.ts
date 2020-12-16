@@ -360,34 +360,33 @@ interface ConfigSuspicious {
 }
 const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
     const basename = path.replace(/.*\//, "");
-    if (!(basename in configSuspicious)) return `edited`;
+    const checker = configSuspicious[basename];
+    if (!checker) return `edited`;
     const text = await getContents();
     // Removing tslint.json, tsconfig.json, package.json and
     // OTHER_FILES.txt is checked by the CI. Specifics are in my commit
     // message.
     if (text === undefined) return undefined;
-    const tester = configSuspicious[basename];
-    let suspect: string | undefined;
-    if (tester.length <= 1) {
-        suspect = tester(text);
-    } else {
-        const oldText = await getContents("master");
-        suspect = tester(text, oldText);
-    }
-    return suspect;
+    const oldText = await getContents("master");
+    return checker(text, oldText);
 });
-configSuspicious["OTHER_FILES.txt"] = () => undefined;
-configSuspicious["package.json"] = makeJsonCheckerFromCore(
+configSuspicious["OTHER_FILES.txt"] = makeChecker(
+    [],
+    [],
+    urls.otherFilesTxt,
+    text => text.split(/\r?\n/),
+);
+configSuspicious["package.json"] = makeChecker(
     { private: true },
     [ "/dependencies", "/types", "/typesVersions" ],
     urls.packageJson
 );
-configSuspicious["tslint.json"] = makeJsonCheckerFromCore(
+configSuspicious["tslint.json"] = makeChecker(
     { extends: "dtslint/dt.json" },
     [],
     urls.linterJson
 );
-configSuspicious["tsconfig.json"] = makeJsonCheckerFromCore(
+configSuspicious["tsconfig.json"] = makeChecker(
     {
         compilerOptions: {
             module: "commonjs",
@@ -405,26 +404,30 @@ configSuspicious["tsconfig.json"] = makeJsonCheckerFromCore(
     urls.tsconfigJson
 );
 
-// helper for json file testers: allow either a given "requiredForm", or any edits that get closer
+// helper for file checkers: allow either a given "expectedForm", or any edits that get closer
 // to it, ignoring some keys (JSON Patch paths).  The ignored properties are in most cases checked
 // elsewhere (dtslint), and in some cases they are irrelevant.
-function makeJsonCheckerFromCore(requiredForm: any, ignoredKeys: string[], requiredFormUrl: string) {
-    const diffFromReq = (text: string) => {
-        let json: any;
-        try { json = JSON.parse(text); } catch (e) { return "couldn't parse json"; }
-        jsonDiff.applyPatch(json, ignoredKeys.map(path => ({ op: "remove", path })));
-        try { return jsonDiff.compare(requiredForm, json); } catch (e) { return "couldn't diff json" }
+function makeChecker(expectedForm: any, ignoredKeys: string[], expectedFormUrl: string, parse?: (text: string) => unknown) {
+    const diffFromExpected = (text: string) => {
+        let data: any;
+        if (parse) {
+            data = parse(text);
+        } else {
+            try { data = JSON.parse(text); } catch (e) { return "couldn't parse json"; }
+        }
+        jsonDiff.applyPatch(data, ignoredKeys.map(path => ({ op: "remove", path })));
+        try { return jsonDiff.compare(expectedForm, data); } catch (e) { return "couldn't diff json" }
     };
     return (contents: string, oldText?: string) => {
-        const theRequiredForm = `[the required form](${requiredFormUrl})`;
-        const newDiff = diffFromReq(contents);
+        const theExpectedForm = `[the expected form](${expectedFormUrl})`;
+        const newDiff = diffFromExpected(contents);
         if (typeof newDiff === "string") return newDiff;
         if (newDiff.length === 0) return undefined;
-        if (!oldText) return `not ${theRequiredForm}`;
-        const oldDiff = diffFromReq(oldText);
+        if (!oldText) return `not ${theExpectedForm}`;
+        const oldDiff = diffFromExpected(oldText);
         if (typeof oldDiff === "string") return oldDiff;
         if (jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) return undefined;
-        return `not ${theRequiredForm} and not moving towards it`;
+        return `not ${theExpectedForm} and not moving towards it`;
     };
 }
 
