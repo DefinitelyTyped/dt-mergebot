@@ -433,6 +433,9 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
 
     const announceList = (what: string, xs: readonly string[]) => `${xs.length} ${what}${xs.length > 1 ? "s" : ""}`
     const usersToString = (users: string[]) => users.map(u => (info.isAuthor(u) ? "✎" : "") + "@" + u).join(", ");
+    const reviewLink = (f: FileInfo) =>
+        `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${
+          urls.review(info.pr_number)}/${info.headCommitOid}#diff-${sha256(f.path)})`;
 
     display(``,
             `## ${announceList("package", info.packages)} in this PR`,
@@ -463,8 +466,17 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         displayOwners("added", p.addedOwners);
         displayOwners("removed", p.deletedOwners);
         if (!info.authorIsOwner && p.owners.length >= 4 && p.addedOwners.some(info.isAuthor)) addedSelfToManyOwners++;
+
+        let showSuspects = false;
+        for (const file of p.files) {
+            if (!file.suspect) continue;
+            if (!showSuspects) display(`  - Config files to check:`);
+            display(`    - ${reviewLink(file)}: ${file.suspect}`);
+            showSuspects = true;
+        }
+
     }
-    if (addedSelfToManyOwners) {
+    if (addedSelfToManyOwners > 0) {
         display(``,
                 `@${info.author}: I see that you have added yourself as an owner${addedSelfToManyOwners > 1 ? " to several packages" : ""}, are you sure you want to [become an owner](${urls.definitionOwners})?`);
     }
@@ -501,9 +513,6 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     display(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
 
     const approved = emoji(info.approved);
-    const reviewLink = (f: FileInfo) =>
-        `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${
-          urls.review(info.pr_number)}/${info.headCommitOid}#diff-${sha256(f.path)})`;
 
     if (info.hasNewPackages) {
         display(` * ${approved} Only ${requiredApprover} can approve changes when there are new packages added`);
@@ -525,8 +534,6 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         display(` * ${approved} ${RequiredApprover} can merge changes when there are no other reviewers`);
     } else if (info.checkConfig) {
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect module config files`);
-        info.pkgInfo.forEach(pkg => pkg.files.forEach(file =>
-            file.suspect && display(`   - ${reviewLink(file)}: ${file.suspect}`)));
     } else {
         display(` * ${approved} Only ${requiredApprover} can approve changes [without tests](${testsLink})`);
     }
