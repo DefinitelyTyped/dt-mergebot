@@ -26,7 +26,7 @@
               "__typename": "Label"
             },
             {
-              "name": "Config Edit",
+              "name": "Check Config",
               "__typename": "Label"
             }
           ],
