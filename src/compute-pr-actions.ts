@@ -42,7 +42,7 @@ export const LabelNames = [
     "No Other Owners",
     "Too Many Owners",
     "Untested Change",
-    "Config Edit",
+    "Check Config",
     ...StalenessKinds
 ] as const;
 
@@ -99,7 +99,7 @@ type ApproverKind = "maintainer" | "owner" | "other";
 export interface ExtendedPrInfo extends PrInfo {
     readonly orig: PrInfo;
     readonly editsInfra: boolean;
-    readonly editsConfig: boolean;
+    readonly checkConfig: boolean;
     readonly authorIsOwner: boolean;
     readonly allOwners: string[];
     readonly otherOwners: string[];
@@ -136,7 +136,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isAuthor = (user: string) => sameUser(user, info.author);
     const authorIsOwner = info.pkgInfo.every(p => p.owners.some(isAuthor));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
-    const editsConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
+    const checkConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
     const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners)));
     const otherOwners = allOwners.filter(o => !isAuthor(o));
     const noOtherOwners = otherOwners.length === 0;
@@ -150,7 +150,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const newPackages = noNullish(info.pkgInfo.map(p => p.kind === "add" ? p.name : null));
     const hasNewPackages = newPackages.length > 0;
     const hasEditedPackages = packages.length > newPackages.length;
-    const requireMaintainer = editsInfra || editsConfig || hasMultiplePackages || isUntested || hasNewPackages || tooManyOwners;
+    const requireMaintainer = editsInfra || checkConfig || hasMultiplePackages || isUntested || hasNewPackages || tooManyOwners;
     const blessable = !(hasNewPackages || editsInfra || noOtherOwners);
     const approvedReviews = info.reviews.filter(r => r.type === "approved") as ExtendedPrInfo["approvedReviews"];
     const changereqReviews = info.reviews.filter(r => r.type === "changereq") as ExtendedPrInfo["changereqReviews"];
@@ -169,7 +169,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const reviewColumn = getReviewColumn();
     return {
         ...info, orig: info,
-        authorIsOwner, editsInfra, editsConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
+        authorIsOwner, editsInfra, checkConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeSelfMerged, hasValidMergeRequest, pendingCriticalPackages, approved, approverKind,
         requireMaintainer, blessable, failedCI, staleness,
         packages, hasMultiplePackages, hasDefinitions, hasTests, isUntested, newPackages, hasNewPackages, hasEditedPackages,
@@ -286,7 +286,7 @@ export function process(prInfo: BotNotFail,
     label("Author is Owner", info.authorIsOwner);
     label("No Other Owners", info.hasEditedPackages && info.noOtherOwners);
     label("Too Many Owners", info.tooManyOwners);
-    label("Config Edit", info.hasEditedPackages && info.editsConfig);
+    label("Check Config", info.checkConfig);
     label("Untested Change", info.isUntested);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
 
@@ -484,7 +484,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         display(`There aren't any other owners of this package, so ${requiredApprover} will review it.`);
     } else if (info.hasMultiplePackages && !info.maintainerBlessed) {
         display(`Because this PR edits multiple packages, it can be merged once it's reviewed by ${requiredApprover}.`);
-    } else if (info.editsConfig && !info.maintainerBlessed) {
+    } else if (info.checkConfig && !info.maintainerBlessed) {
         display(`Because this PR edits the configuration file, it can be merged once it's reviewed by ${requiredApprover}.`);
     } else if (!info.maintainerBlessed) {
         display(`This PR can be merged once it's reviewed by ${requiredApprover}.`);
@@ -523,7 +523,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         display(` * ${approved} Most recent commit is approved by ${requiredApprover}`);
     } else if (info.noOtherOwners) {
         display(` * ${approved} ${RequiredApprover} can merge changes when there are no other reviewers`);
-    } else if (info.editsConfig) {
+    } else if (info.checkConfig) {
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect module config files`);
         info.pkgInfo.forEach(pkg => pkg.files.forEach(file =>
             file.suspect && display(`   - ${reviewLink(file)}: ${file.suspect}`)));

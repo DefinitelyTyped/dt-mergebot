@@ -3,7 +3,7 @@
   "targetColumn": "Waiting for Code Reviews",
   "labels": [
     "Author is Owner",
-    "Config Edit"
+    "Check Config"
   ],
   "responseComments": [
     {

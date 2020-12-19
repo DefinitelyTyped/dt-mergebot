@@ -3,7 +3,8 @@
   "targetColumn": "Needs Author Action",
   "labels": [
     "The CI failed",
-    "New Definition"
+    "New Definition",
+    "Check Config"
   ],
   "responseComments": [
     {
