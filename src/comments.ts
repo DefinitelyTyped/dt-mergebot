@@ -88,10 +88,10 @@ Thanks, and happy typing!`
 
 // Explanation for the stalness count in the welcome message
 export const StalenessExplanations: { [k: string]: string } = {
-    "Unmerged:nearly": "please merge or say something if there's a problem, otherwise it will move to the DT maintainer queue soon!",
-    "Unmerged:done": "waiting for a DT maintainer!",
+    "Unmerged:nearly": "please merge or say something if there's a problem, otherwise it will be closed!",
+    "Unmerged:done": "closed because it wasn't merged for a long time!",
     "Abandoned:nearly": "it is considered nearly abandoned!",
-    "Abandoned:done": "it is considered abandoned!",
+    "Abandoned:done": "it is considered abandoned, and therefore closed!",
     "Unreviewed:nearly": "please try to get reviewers!",
     "Unreviewed:done": "it is *still* unreviewed!",
 };
@@ -105,7 +105,7 @@ export const StalenessComment = (author: string, otherOwners: string[]) => {
 
 This PR has been ready to merge for over a week, and I haven't seen any requests to merge it. I will close it in three weeks if this doesn't happen.
 
-(Note that posting a comment will restart the month-timer again, so avoid doing that if you don't want me to nag you again... or you can just close it or turn it into a draft now.)`,
+(If there's no reason to avoid merging it, please do so.  Otherwise, if it shouldn't be merged or if it needs more time, please close it or turn it into a draft.)`,
         "Unmerged:done": `After a month, no one has requested merging the PR 😞. I'm going to assume that the change is not wanted after all, and will therefore close it.`,
         // --Abandoned--
         "Abandoned:nearly": `@${author} I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.`,
