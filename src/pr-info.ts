@@ -183,7 +183,7 @@ export async function queryPRInfo(prNumber: number) {
         });
         const prInfo = info.data.repository?.pullRequest;
         if (!prInfo) return info; // let `deriveStateForPR` handle the missing result
-        if (prInfo.mergeable !== "UNKNOWN") return info;
+        if (!(prInfo.state === "OPEN" && prInfo.mergeable === "UNKNOWN")) return info;
         const { nodes, totalCount } = prInfo.files!;
         if (nodes!.length < totalCount) console.warn(`  *** Note: ${totalCount - nodes!.length} files were not seen by this query!`);
         if (++retries > 5) { // we already did 5 tries, so give up and...
