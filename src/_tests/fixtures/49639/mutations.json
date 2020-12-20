@@ -57,7 +57,7 @@
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx",
         "path": "types/jasmine/tsconfig.json",
         "line": 21,
-        "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it\n```suggestion\n        \"forceConsistentCasingInFileNames\": true,\n        \"strictFunctionTypes\": true\n```"
+        "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it"
       }
     }
   },
@@ -68,7 +68,7 @@
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx",
         "path": "types/jasmine/tslint.json",
         "line": 4,
-        "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) and not moving towards it\n```suggestion\n```"
+        "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) and not moving towards it"
       }
     }
   },

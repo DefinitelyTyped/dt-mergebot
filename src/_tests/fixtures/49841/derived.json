@@ -29,7 +29,7 @@
           "suspect": {
             "startLine": 17,
             "endLine": 17,
-            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson)\n```suggestion\n```"
+            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson)"
           }
         },
         {

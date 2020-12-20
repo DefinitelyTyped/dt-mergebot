@@ -25,7 +25,7 @@
           "suspect": {
             "startLine": 21,
             "endLine": 21,
-            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it\n```suggestion\n        \"forceConsistentCasingInFileNames\": true,\n        \"strictFunctionTypes\": true\n```"
+            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it"
           }
         },
         {
@@ -34,7 +34,7 @@
           "suspect": {
             "startLine": 4,
             "endLine": 4,
-            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) and not moving towards it\n```suggestion\n```"
+            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) and not moving towards it"
           }
         }
       ],
