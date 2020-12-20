@@ -372,18 +372,20 @@ const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
 });
 configSuspicious["OTHER_FILES.txt"] = makeChecker(
     [],
-    [],
     urls.otherFilesTxt,
-    text => text.split(/\r?\n/),
+    { parse: text => text.split(/\r?\n/) },
 );
 configSuspicious["package.json"] = makeChecker(
     { private: true },
-    [ "/dependencies", "/types", "/typesVersions" ],
-    urls.packageJson
+    urls.packageJson,
+    { ignore: data => {
+        delete data.dependencies;
+        delete data.types;
+        delete data.typesVersions;
+    } },
 );
 configSuspicious["tslint.json"] = makeChecker(
     { extends: "dtslint/dt.json" },
-    [],
     urls.linterJson
 );
 configSuspicious["tsconfig.json"] = makeChecker(
@@ -400,22 +402,28 @@ configSuspicious["tsconfig.json"] = makeChecker(
             forceConsistentCasingInFileNames: true
         }
     },
-    [ "/files", "/compilerOptions/paths", "/compilerOptions/baseUrl", "/compilerOptions/typeRoots" ],
-    urls.tsconfigJson
+    urls.tsconfigJson,
+    { ignore: data => {
+        data.compilerOptions.lib = data.compilerOptions.lib.filter((value: unknown) => value !== "dom");
+        delete data.compilerOptions.baseUrl;
+        delete data.compilerOptions.typeRoots;
+        delete data.compilerOptions.paths;
+        delete data.files;
+    } },
 );
 
 // helper for file checkers: allow either a given "expectedForm", or any edits that get closer
-// to it, ignoring some keys (JSON Patch paths).  The ignored properties are in most cases checked
+// to it, ignoring some keys.  The ignored properties are in most cases checked
 // elsewhere (dtslint), and in some cases they are irrelevant.
-function makeChecker(expectedForm: any, ignoredKeys: string[], expectedFormUrl: string, parse?: (text: string) => unknown) {
+function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { parse: (text: string) => unknown } | { ignore: (data: any) => void }) {
     const diffFromExpected = (text: string) => {
         let data: any;
-        if (parse) {
-            data = parse(text);
+        if (options && "parse" in options) {
+            data = options.parse(text);
         } else {
             try { data = JSON.parse(text); } catch (e) { return "couldn't parse json"; }
         }
-        jsonDiff.applyPatch(data, ignoredKeys.map(path => ({ op: "remove", path })));
+        if (options && "ignore" in options) options.ignore(data);
         try { return jsonDiff.compare(expectedForm, data); } catch (e) { return "couldn't diff json" }
     };
     return (contents: string, oldText?: string) => {
