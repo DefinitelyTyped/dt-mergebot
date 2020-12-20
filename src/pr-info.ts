@@ -486,7 +486,7 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
             return {
                 startLine,
                 endLine,
-                body: vsMaster!.suspect + "\n```suggestion\n" + suggestionLines.join("") + "```",
+                body: vsMaster!.suspect,
             };
         }
     };
