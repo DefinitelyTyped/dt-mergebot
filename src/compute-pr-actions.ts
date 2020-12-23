@@ -375,7 +375,9 @@ function makeStaleness(now: string, author: string, otherOwners: string[]) { // 
         const state = days <= freshDays ? "fresh" : days <= attnDays ? "attention" : days <= nearDays ? "nearly" : "done";
         const kindAndState = `${kind}:${state}`;
         const explanation = Comments.StalenessExplanations[kindAndState];
-        const comment = Comments.StalenessComment(author, otherOwners)[kindAndState];
+        const expires = new Date(now);
+        expires.setDate(expires.getDate() + nearDays);
+        const comment = Comments.StalenessComment(author, otherOwners, expires)[kindAndState];
         const doTimelineActions = (context: Actions) => {
             if (comment !== undefined) {
                 const tag = state === "done" ? kindAndState

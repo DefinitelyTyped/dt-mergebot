@@ -97,18 +97,19 @@ export const StalenessExplanations: { [k: string]: string } = {
 };
 
 // Comments to post for the staleness timeline (the tag is computed in `makeStaleness`)
-export const StalenessComment = (author: string, otherOwners: string[]) => {
+export const StalenessComment = (author: string, otherOwners: string[], expires: Date) => {
     const owners = otherOwners.length === 0 ? "«anyone?»" : otherOwners.map(o => "@"+o).join(", ");
+    const { format } = new Intl.DateTimeFormat("en", { month: "short", day: "numeric", timeZone: "UTC" });
     return {
         // --Unmerged--
         "Unmerged:nearly": `Re-ping @${author} / ${owners}:
 
-This PR has been ready to merge for over a week, and I haven't seen any requests to merge it. I will close it in three weeks if this doesn't happen.
+This PR has been ready to merge for over a week, and I haven't seen any requests to merge it. I will close it on ${format(expires)} (in three weeks) if this doesn't happen.
 
 (If there's no reason to avoid merging it, please do so.  Otherwise, if it shouldn't be merged or if it needs more time, please close it or turn it into a draft.)`,
         "Unmerged:done": `After a month, no one has requested merging the PR 😞. I'm going to assume that the change is not wanted after all, and will therefore close it.`,
         // --Abandoned--
-        "Abandoned:nearly": `@${author} I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.`,
+        "Abandoned:nearly": `@${author} I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed on ${format(expires)} (in a week) if the issues aren't addressed.`,
         "Abandoned:done": `@${author} To keep things tidy, we have to close PRs that aren't mergeable and don't have activity in the last month. No worries, though — please open a new PR if you'd like to continue with this change. Thank you!`,
         // --Unreviewed--
         "Unreviewed:nearly": `Re-ping ${owners}:

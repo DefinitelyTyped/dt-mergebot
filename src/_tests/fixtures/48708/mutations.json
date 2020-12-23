@@ -25,7 +25,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDcyNjMyMDI0OQ==",
-        "body": "@martin-badin I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.\n<!--typescript_bot_Abandoned:nearly:2020-10-15-->"
+        "body": "@martin-badin I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed on Dec 12 (in a week) if the issues aren't addressed.\n<!--typescript_bot_Abandoned:nearly:2020-10-15-->"
       }
     }
   }
