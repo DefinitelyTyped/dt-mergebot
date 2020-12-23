@@ -9,7 +9,7 @@ import { PR as PRQueryResult,
          PR_repository_pullRequest_comments_nodes
        } from "./queries/schema/PR";
 import { CIResult } from "./util/CIResult";
-import { PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./queries/graphql-global-types";
+import { PullRequestReviewState, PullRequestState, CommentAuthorAssociation, CheckConclusionState } from "./queries/schema/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "@apollo/client/core";
@@ -19,7 +19,6 @@ import * as comment from "./util/comment";
 import * as urls from "./urls";
 import * as HeaderParser from "@definitelytyped/header-parser";
 import * as jsonDiff from "fast-json-patch";
-import { PullRequestState } from "./schema/graphql-global-types";
 
 const CriticalPopularityThreshold = 5_000_000;
 const NormalPopularityThreshold = 200_000;

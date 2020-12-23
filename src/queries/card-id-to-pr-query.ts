@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client/core";
 import { client } from "../graphql-client";
-import { PullRequestState } from "../schema/graphql-global-types";
+import { PullRequestState } from "./schema/graphql-global-types";
 import { CardIdToPr } from "./schema/CardIdToPr";
 
 interface CardPRInfo {

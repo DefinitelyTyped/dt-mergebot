@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { PullRequestState } from "./../../schema/graphql-global-types";
+import { PullRequestState } from "./graphql-global-types";
 
 // ====================================================
 // GraphQL query operation: CardIdToPr

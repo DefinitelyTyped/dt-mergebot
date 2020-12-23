@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { CommentAuthorAssociation, MergeableState, PullRequestState, CheckConclusionState, CheckStatusState, StatusState, PullRequestReviewState } from "./../../schema/graphql-global-types";
+import { CommentAuthorAssociation, MergeableState, PullRequestState, CheckConclusionState, CheckStatusState, StatusState, PullRequestReviewState } from "./graphql-global-types";
 
 // ====================================================
 // GraphQL query operation: PR
