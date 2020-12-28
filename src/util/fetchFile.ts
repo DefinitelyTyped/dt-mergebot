@@ -10,9 +10,8 @@ export async function fetchFile(expr: string, limit?: number): Promise<string | 
           expr: `${expr}`
       }
   });
-  const obj = info.data?.repository?.object;
+  const obj = info.data.repository?.object;
   if (!obj || obj.__typename !== "Blob") return undefined;
-  if (!obj) return undefined;
   if (obj.text && limit && obj.text.length > limit) {
     return obj.text.substring(0, limit);
   } else if (obj.byteSize > 3_000_000 && !obj.text) {
