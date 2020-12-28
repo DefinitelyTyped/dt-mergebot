@@ -119,7 +119,7 @@ function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pull
 
 async function getProjectBoardColumnIdByName(name: string): Promise<string> {
     const columns = await getProjectBoardColumns();
-    const res = columns.find(e => e?.name === name)?.id;
+    const res = columns.find(e => e.name === name)?.id;
     if (!res) throw new Error(`No project board column named "${name}" exists`);
     return res;
 }

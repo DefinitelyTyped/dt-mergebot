@@ -467,9 +467,9 @@ function getReviews(prInfo: PR_repository_pullRequest) {
     const reviews: ReviewInfo[] = [];
     // Do this in reverse order so we can detect up-to-date-reviews correctly
     for (const r of noNullish(prInfo.reviews.nodes).reverse()) {
-        const [reviewer, date] = [r?.author?.login, new Date(r.submittedAt)];
+        const [reviewer, date] = [r.author?.login, new Date(r.submittedAt)];
         // Skip nulls
-        if (!(r?.commit && reviewer)) continue;
+        if (!(r.commit && reviewer)) continue;
         // Skip self-reviews
         if (reviewer === prInfo.author!.login) continue;
         // Only look at the most recent review per person (ignoring pending/commented)
@@ -493,7 +493,7 @@ function getReviews(prInfo: PR_repository_pullRequest) {
 }
 
 function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string } {
-    const ghActionsChecks = checkSuites?.nodes?.filter(check => check?.app?.name?.includes("GitHub Actions"));
+    const ghActionsChecks = checkSuites?.nodes?.filter(check => check?.app?.name.includes("GitHub Actions"));
     // Now that there is more than one GitHub Actions suite, we need to get the right one, but naively fall back
     // to the first if we can't find it, mostly to prevent breaking old tests.
     const totalStatusChecks = ghActionsChecks?.find(check => check?.checkRuns?.nodes?.[0]?.title === "test") || ghActionsChecks?.[0];
