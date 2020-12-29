@@ -18,13 +18,10 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   if (!existsSync(fixturePath)) mkdirSync(fixturePath);
 
   const jsonFixturePath = join(fixturePath, "_response.json");
-  let response;
   if (overwriteInfo || !existsSync(jsonFixturePath)) {
-    response = await queryPRInfo(prNumber);
-    writeJsonSync(jsonFixturePath, response);
-  } else {
-    response = JSON.parse(readFileSync(jsonFixturePath, "utf8"));
+    writeJsonSync(jsonFixturePath, await queryPRInfo(prNumber));
   }
+  const response = JSON.parse(readFileSync(jsonFixturePath, "utf8"));
 
   const filesJSONPath = join(fixturePath, "_files.json");
   const filesFetched: {[expr: string]: string | undefined} = {};
