@@ -34,14 +34,9 @@ query PR($pr_number: Int!) {
         state
         headRefOid
 
-        timelineItems(last: 200, itemTypes: [ISSUE_COMMENT, REOPENED_EVENT, READY_FOR_REVIEW_EVENT,
+        timelineItems(last: 200, itemTypes: [REOPENED_EVENT, READY_FOR_REVIEW_EVENT,
                                              MOVED_COLUMNS_IN_PROJECT_EVENT]) {
           nodes {
-            __typename
-            ... on IssueComment {
-              author { login }
-              createdAt
-            }
             ... on ReopenedEvent {
               createdAt
             }
@@ -112,7 +107,7 @@ query PR($pr_number: Int!) {
           }
         }
 
-        comments(first: 100) {
+        comments(last: 100) {
           totalCount
           nodes {
             id

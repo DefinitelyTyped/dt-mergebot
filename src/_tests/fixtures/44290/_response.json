@@ -99,7 +99,10 @@
               "state": "COMMENTED",
               "submittedAt": "2020-04-28T13:56:31Z",
               "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44290#pullrequestreview-401861064",
-              "__typename": "PullRequestReview"
+              "__typename": "PullRequestReview",
+              "comments": {
+                "nodes": []
+              }
             }
           ],
           "__typename": "PullRequestReviewConnection"

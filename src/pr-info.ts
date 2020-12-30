@@ -4,8 +4,6 @@ import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest,
          PR_repository_pullRequest,
          PR_repository_pullRequest_timelineItems,
          PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent,
-         PR_repository_pullRequest_reviews,
-         PR_repository_pullRequest_timelineItems_nodes_IssueComment,
          PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent,
          PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent,
          PR_repository_pullRequest_comments_nodes
@@ -16,7 +14,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNullish, findLast, forEachReverse, sameUser, authorNotBot, max } from "./util/util";
+import { noNullish, findLast, sameUser, authorNotBot, max } from "./util/util";
 import * as comment from "./util/comment";
 import * as urls from "./urls";
 import * as HeaderParser from "definitelytyped-header-parser";
@@ -221,7 +219,7 @@ export async function deriveStateForPR(
     // apparently `headCommit.pushedDate` can be null in some cases (see #48708), use the PR creation time for that
     // (it would be bad to use `committedDate`/`authoredDate`, since these can be set to arbitrary values)
     const lastPushDate = new Date(headCommit.pushedDate || prInfo.createdAt);
-    const lastCommentDate = getLastCommentishActivityDate(prInfo.timelineItems, prInfo.reviews) || lastPushDate;
+    const lastCommentDate = getLastCommentishActivityDate(prInfo);
     const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
 
@@ -283,23 +281,14 @@ function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems)
     return lastItem?.createdAt && new Date(lastItem.createdAt);
 }
 
-type IssueComment = PR_repository_pullRequest_timelineItems_nodes_IssueComment;
-function getLastCommentishActivityDate(timelineItems: PR_repository_pullRequest_timelineItems, reviews: PR_repository_pullRequest_reviews | null) {
-
-    const lastIssueComment = findLast(timelineItems.nodes, (item): item is IssueComment => {
-        return item?.__typename === "IssueComment" && authorNotBot(item!);
-    });
-    const lastReviewComment = forEachReverse(reviews?.nodes, review => {
-        return findLast(review?.comments?.nodes, comment => !!comment?.author?.login)
-    });
-
-    if (lastIssueComment && lastReviewComment) {
-        return max([new Date(lastIssueComment.createdAt), new Date(lastReviewComment.createdAt)]);
-    }
-    if (lastIssueComment || lastReviewComment) {
-        return new Date((lastIssueComment || lastReviewComment)?.createdAt);
-    }
-    return undefined;
+function getLastCommentishActivityDate(prInfo: PR_repository_pullRequest) {
+    const latestIssueCommentDate = max(noNullish(prInfo.comments.nodes)
+        .filter(authorNotBot)
+        .map(comment => new Date(comment.createdAt)));
+    const latestReviewCommentDate = max(noNullish(prInfo.reviews?.nodes)
+        .map(review => max(noNullish(review.comments.nodes)
+            .map(comment => new Date(comment.createdAt)))));
+    return max([latestIssueCommentDate, latestReviewCommentDate]);
 }
 
 type MovedColumnsInProjectEvent = PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent;
