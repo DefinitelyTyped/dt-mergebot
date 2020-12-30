@@ -37,19 +37,6 @@ export function findLast<T>(arr: readonly T[] | null | undefined, predicate: (it
     return undefined;
 }
 
-export function forEachReverse<T, U>(arr: readonly T[] | null | undefined, action: (item: T) => U | undefined): U | undefined {
-    if (!arr) {
-        return undefined;
-    }
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const result = action(arr[i]);
-        if (result !== undefined) {
-            return result;
-        }
-    }
-    return undefined;
-}
-
 export function min<T>(arr: readonly [T, ...(T | undefined)[]]): T;
 export function min<T>(arr: readonly T[], compare?: (a: T, b: T) => number): T | undefined;
 export function min<T>(arr: readonly T[], compare?: (a: T, b: T) => number) {

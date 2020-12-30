@@ -88,7 +88,10 @@
               "state": "APPROVED",
               "submittedAt": "2020-03-15T01:29:09Z",
               "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43144#pullrequestreview-374764862",
-              "__typename": "PullRequestReview"
+              "__typename": "PullRequestReview",
+              "comments": {
+                "nodes": []
+              }
             }
           ],
           "__typename": "PullRequestReviewConnection"

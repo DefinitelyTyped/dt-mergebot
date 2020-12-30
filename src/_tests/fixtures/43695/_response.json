@@ -111,7 +111,10 @@
               "state": "CHANGES_REQUESTED",
               "submittedAt": "2020-04-08T16:23:52Z",
               "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43695#pullrequestreview-390133785",
-              "__typename": "PullRequestReview"
+              "__typename": "PullRequestReview",
+              "comments": {
+                "nodes": []
+              }
             },
             {
               "author": {
@@ -127,7 +130,10 @@
               "state": "COMMENTED",
               "submittedAt": "2020-04-08T17:03:39Z",
               "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43695#pullrequestreview-390164904",
-              "__typename": "PullRequestReview"
+              "__typename": "PullRequestReview",
+              "comments": {
+                "nodes": []
+              }
             }
           ],
           "__typename": "PullRequestReviewConnection"
