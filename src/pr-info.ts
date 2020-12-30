@@ -3,6 +3,7 @@ import { PR as PRQueryResult,
          PR_repository_pullRequest,
          PR_repository_pullRequest_headRef_target_Commit_checkSuites,
          PR_repository_pullRequest_timelineItems,
+         PR_repository_pullRequest_timelineItems_nodes,
          PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent,
          PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent,
          PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent,
@@ -220,12 +221,15 @@ export async function deriveStateForPR(
 
     const reviews = getReviews(prInfo);
     const latestReview = max(reviews.map(r => r.date));
+    const latestMovedColumnsDate = max(noNullish(prInfo.timelineItems.nodes)
+        .filter((item): item is PR_repository_pullRequest_timelineItems_nodes & { __typename: "MovedColumnsInProjectEvent" } => item.__typename === "MovedColumnsInProjectEvent")
+        .map(item => new Date(item.createdAt)));
     const comments = noNullish(prInfo.comments.nodes);
     const mergeOfferDate = getMergeOfferDate(comments, prInfo.headRefOid);
     const mergeRequest = getMergeRequest(comments,
                                          pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
                                          max([createdDate, reopenedDate, lastPushDate]));
-    const lastActivityDate = max([createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview]);
+    const lastActivityDate = max([createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview, latestMovedColumnsDate]);
 
     return {
         type: "info",
