@@ -282,13 +282,12 @@ function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems)
 }
 
 function getLastCommentishActivityDate(prInfo: PR_repository_pullRequest) {
-    const latestIssueCommentDate = max(noNullish(prInfo.comments.nodes)
-        .filter(authorNotBot)
-        .map(comment => new Date(comment.createdAt)));
-    const latestReviewCommentDate = max(noNullish(prInfo.reviews?.nodes)
-        .map(review => max(noNullish(review.comments.nodes)
-            .map(comment => new Date(comment.createdAt)))));
-    return max([latestIssueCommentDate, latestReviewCommentDate]);
+    const getCommentDate = (comment: { createdAt: string }) => new Date(comment.createdAt);
+    const latestIssueCommentDate = noNullish(prInfo.comments.nodes)
+        .filter(authorNotBot).map(getCommentDate);
+    const latestReviewCommentDate = noNullish(prInfo.reviews?.nodes)
+        .map(review => max(noNullish(review.comments.nodes).map(getCommentDate)));
+    return max([...latestIssueCommentDate, ...latestReviewCommentDate]);
 }
 
 type MovedColumnsInProjectEvent = PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent;
