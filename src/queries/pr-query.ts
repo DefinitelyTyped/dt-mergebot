@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client/core";
 
 // Note: If you want to work on this in a copy of GraphiQL (the IDE-like for GraphQL)
 // - You will need to download the electron app: https://github.com/skevy/graphiql-app
@@ -12,6 +12,7 @@ import { gql } from "apollo-boost";
 export const GetPRInfo = gql`
 query PR($pr_number: Int!) {
     repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
+      id
       pullRequest(number: $pr_number) {
         id
         title

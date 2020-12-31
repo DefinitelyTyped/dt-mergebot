@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client/core";
 import { client } from "../graphql-client";
 import { GetPRForSHA1 } from "./schema/GetPRForSHA1";
 
@@ -7,7 +7,6 @@ export const runQueryToGetPRMetadataForSHA1 = async (owner: string, repo: string
       query: GetPRForSHA1Query,
       variables: { query: `${sha1} type:pr repo:${owner}/${repo}` },
       fetchPolicy: "network-only",
-      fetchResults: true
   });
   const pr = info.data.search.nodes?.[0];
   return pr?.__typename === "PullRequest" ? pr : undefined;

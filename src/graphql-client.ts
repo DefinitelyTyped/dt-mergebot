@@ -1,7 +1,5 @@
 import fetch, { RequestInit } from "node-fetch";
-import { ApolloClient } from "apollo-boost";
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client/core";
 
 export interface Mutation extends RequestInit {
     method: "POST";
@@ -20,14 +18,7 @@ const headers = {
 
 const uri = "https://api.github.com/graphql";
 
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-    introspectionQueryResultData: {
-        __schema: {
-            types: []
-        }
-    }
-});
-const cache = new InMemoryCache({ fragmentMatcher });
+const cache = new InMemoryCache();
 const link = new HttpLink({
     uri,
     headers,

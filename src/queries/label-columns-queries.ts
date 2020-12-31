@@ -1,8 +1,9 @@
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client/core";
 
 export const GetLabels = gql`
 query GetLabels {
   repository(name:"DefinitelyTyped", owner:"DefinitelyTyped") {
+    id
     labels(first: 100) {
       nodes {
         id

@@ -26,6 +26,7 @@ export interface GetLabels_repository_labels {
 
 export interface GetLabels_repository {
   __typename: "Repository";
+  id: string;
   /**
    * A list of labels associated with the repository.
    */

@@ -12,7 +12,7 @@ import { CIResult } from "./util/CIResult";
 import { PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState } from "./queries/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
-import { ApolloQueryResult } from "apollo-boost";
+import { ApolloQueryResult } from "@apollo/client/core";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
 import { noNullish, findLast, sameUser, authorNotBot, max } from "./util/util";
 import * as comment from "./util/comment";
@@ -177,7 +177,6 @@ export async function queryPRInfo(prNumber: number) {
             query: GetPRInfo,
             variables: { pr_number: prNumber },
             fetchPolicy: "network-only",
-            fetchResults: true
         });
         const prInfo = info.data.repository?.pullRequest;
         if (!prInfo) return info; // let `deriveStateForPR` handle the missing result
