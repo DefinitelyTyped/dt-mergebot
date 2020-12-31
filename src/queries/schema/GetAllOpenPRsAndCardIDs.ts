@@ -58,6 +58,7 @@ export interface GetAllOpenPRsAndCardIDs_repository_pullRequests {
 
 export interface GetAllOpenPRsAndCardIDs_repository {
   __typename: "Repository";
+  id: string;
   /**
    * A list of pull requests that have been opened in the repository.
    */

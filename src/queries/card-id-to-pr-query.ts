@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client/core";
 import { client } from "../graphql-client";
 import { PullRequestState } from "../schema/graphql-global-types";
 import { CardIdToPr } from "./schema/CardIdToPr";
@@ -18,7 +18,6 @@ export const runQueryToGetPRForCardId = async (id: string): Promise<CardPRInfo |
             }`,
         variables: { id },
         fetchPolicy: "network-only",
-        fetchResults: true
     });
     const node = info.data.node;
     return (node?.__typename === "ProjectCard" && node.content?.__typename === "PullRequest")

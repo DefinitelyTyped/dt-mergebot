@@ -27,6 +27,7 @@ export type GetFileContent_repository_object = GetFileContent_repository_object_
 
 export interface GetFileContent_repository {
   __typename: "Repository";
+  id: string;
   /**
    * A Git object in the repository
    */

@@ -27,7 +27,6 @@ async function query<T>(gql: any): Promise<T> {
   const res = await client.query<T>({
       query: gql,
       fetchPolicy: "network-only",
-      fetchResults: true
   });
   return res.data;
 }

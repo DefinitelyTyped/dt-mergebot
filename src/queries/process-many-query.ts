@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client/core";
 import { client } from "../graphql-client";
 import { ProcessManyPRs, ProcessManyPRsVariables } from "./schema/ProcessManyPRs";
 
@@ -28,7 +28,6 @@ export async function getProcessManyPRs(startTime: Date, endTime?: Date) {
     const results = await client.query<ProcessManyPRs, ProcessManyPRsVariables>({
       query: GetProcessManyPRs,
       fetchPolicy: "network-only",
-      fetchResults: true,
       variables: { after }
     });
 

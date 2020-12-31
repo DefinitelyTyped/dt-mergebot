@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client/core";
 import { client } from "../graphql-client";
 import { GetProjectBoardCards } from "./schema/GetProjectBoardCards";
 
@@ -39,7 +39,6 @@ export async function getProjectBoardCards() {
     const results = await client.query<GetProjectBoardCards>({
         query: GetProjectBoardCardsQuery,
         fetchPolicy: "network-only",
-        fetchResults: true
     });
 
     if (results.errors) {

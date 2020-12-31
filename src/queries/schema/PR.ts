@@ -525,6 +525,7 @@ export interface PR_repository_pullRequest {
 
 export interface PR_repository {
   __typename: "Repository";
+  id: string;
   /**
    * Returns a single pull request from the current repository by number.
    */
