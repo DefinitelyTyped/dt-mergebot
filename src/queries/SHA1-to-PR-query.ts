@@ -1,9 +1,9 @@
-import { gql } from "@apollo/client/core";
+import { gql, TypedDocumentNode } from "@apollo/client/core";
 import { client } from "../graphql-client";
-import { GetPRForSHA1 } from "./schema/GetPRForSHA1";
+import { GetPRForSHA1, GetPRForSHA1Variables } from "./schema/GetPRForSHA1";
 
 export const runQueryToGetPRMetadataForSHA1 = async (owner: string, repo: string, sha1: string) => {
-  const info = await client.query<GetPRForSHA1>({
+  const info = await client.query({
       query: GetPRForSHA1Query,
       variables: { query: `${sha1} type:pr repo:${owner}/${repo}` },
       fetchPolicy: "network-only",
@@ -12,7 +12,7 @@ export const runQueryToGetPRMetadataForSHA1 = async (owner: string, repo: string
   return pr?.__typename === "PullRequest" ? pr : undefined;
 };
 
-export const GetPRForSHA1Query = gql`
+export const GetPRForSHA1Query: TypedDocumentNode<GetPRForSHA1, GetPRForSHA1Variables> = gql`
 query GetPRForSHA1($query: String!) {
   search(query: $query, first: 1, type: ISSUE) {
     nodes {
