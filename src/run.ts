@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import * as schema from "@octokit/graphql-schema/schema";
 import * as yargs from "yargs";
 import { process as computeActions } from "./compute-pr-actions";
 import { getAllOpenPRsAndCardIDs } from "./queries/all-open-prs-query";
@@ -98,7 +99,7 @@ const start = async function () {
             // during the scan would end up here.
             return console.log(`  Should delete "${id}" (${shoulda})`);
         }
-        const mutation = createMutation(deleteProjectCard, { input: { cardId: id }});
+        const mutation = createMutation<schema.DeleteProjectCardInput>(deleteProjectCard, { cardId: id });
         await mutate(mutation);
     }
     // Reduce "Recently Merged"
