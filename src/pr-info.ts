@@ -17,7 +17,7 @@ import { fetchFile as defaultFetchFile } from "./util/fetchFile";
 import { noNullish, findLast, sameUser, authorNotBot, max } from "./util/util";
 import * as comment from "./util/comment";
 import * as urls from "./urls";
-import * as HeaderParser from "definitelytyped-header-parser";
+import * as HeaderParser from "@definitelytyped/header-parser";
 import * as jsonDiff from "fast-json-patch";
 import { PullRequestState } from "./schema/graphql-global-types";
 

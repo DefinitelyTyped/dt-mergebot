@@ -18,6 +18,7 @@
   "dependencies": {
     "@apollo/client": "^3.3.6",
     "@azure/functions": "^1.2.2",
+    "@definitelytyped/header-parser": "^0.0.64",
     "@graphql-codegen/fragment-matcher": "^1.15.4",
     "@octokit/graphql-schema": "^10.11.0",
     "@octokit/webhooks": "^6.3.2",
@@ -26,7 +27,6 @@
     "@types/prettyjson": "^0.0.29",
     "@types/request": "^2.48.5",
     "chalk": "^3.0.0",
-    "definitelytyped-header-parser": "github:Microsoft/definitelytyped-header-parser#production",
     "fast-json-patch": "^3.0.0-1",
     "fs-extra": "^4.0.3",
     "graceful-fs": "^4.2.4",
