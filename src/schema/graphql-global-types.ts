@@ -30,6 +30,7 @@ export enum CheckStatusState {
   IN_PROGRESS = "IN_PROGRESS",
   QUEUED = "QUEUED",
   REQUESTED = "REQUESTED",
+  WAITING = "WAITING",
 }
 
 /**
