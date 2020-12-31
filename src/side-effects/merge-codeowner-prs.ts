@@ -1,3 +1,4 @@
+import * as schema from "@octokit/graphql-schema/schema";
 import { WebhookPayloadCheckSuite } from "@octokit/webhooks";
 import { createMutation, mutate } from "../graphql-client";
 import { mergePr } from "../execute-pr-actions";
@@ -15,11 +16,11 @@ export const mergeCodeOwnersOnGreen = async (payload: WebhookPayloadCheckSuite) 
   const isFromSameRepo = payload.check_suite.pull_requests[0].base.repo.id === payload.check_suite.pull_requests[0].head.repo.id;
 
   if (isGreen && isFromBot && hasRightCommitMsg && isFromSameRepo) {
-    const mergeMutation = createMutation(mergePr, {
+    const mergeMutation = createMutation<schema.MergePullRequestInput>(mergePr, {
       commitHeadline: `🤖 Auto Merge`,
       expectedHeadOid: payload.check_suite.head_commit.id,
       mergeMethod: "SQUASH",
-      pullRequestId: payload.check_suite.pull_requests[0].id,
+      pullRequestId: payload.check_suite.pull_requests[0].id.toFixed(),
     });
 
     await mutate(mergeMutation);

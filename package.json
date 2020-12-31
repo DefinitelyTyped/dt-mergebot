@@ -18,7 +18,7 @@
   "dependencies": {
     "@azure/functions": "^1.2.2",
     "@graphql-codegen/fragment-matcher": "^1.15.4",
-    "@octokit/graphql-schema": "^6.70.1",
+    "@octokit/graphql-schema": "^10.11.0",
     "@octokit/webhooks": "^6.3.2",
     "@types/node": "latest",
     "@types/node-fetch": "^1.6.9",

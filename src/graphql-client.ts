@@ -46,7 +46,7 @@ export async function mutate(mutation: Mutation) {
     return await result.text();
 }
 
-export function createMutation(query: string, input: unknown): Mutation {
+export function createMutation<T>(query: string, input: T): Mutation {
     return {
         method: "POST",
         headers: {
@@ -55,7 +55,7 @@ export function createMutation(query: string, input: unknown): Mutation {
         },
         body: JSON.stringify({
             query,
-            variables: input
+            variables: { input }
         }, undefined, 2)
     };
 }
