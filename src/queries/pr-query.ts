@@ -1,4 +1,5 @@
-import { gql } from "@apollo/client/core";
+import { gql, TypedDocumentNode } from "@apollo/client/core";
+import { PR, PRVariables } from "./schema/PR";
 
 // Note: If you want to work on this in a copy of GraphiQL (the IDE-like for GraphQL)
 // - You will need to download the electron app: https://github.com/skevy/graphiql-app
@@ -9,7 +10,7 @@ import { gql } from "@apollo/client/core";
 // - Now you're good to C&P the query below
 
 /** This is a GraphQL AST tree */
-export const GetPRInfo = gql`
+export const GetPRInfo: TypedDocumentNode<PR, PRVariables> = gql`
 query PR($pr_number: Int!) {
     repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
       id

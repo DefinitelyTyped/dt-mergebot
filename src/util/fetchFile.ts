@@ -1,9 +1,8 @@
 import { client } from "../graphql-client";
 import { GetFileContent } from "../queries/file-query";
-import { GetFileContent as GetFileContentResult } from "../queries/schema/GetFileContent";
 
 export async function fetchFile(expr: string, limit?: number): Promise<string | undefined> {
-  const info = await client.query<GetFileContentResult>({
+  const info = await client.query({
       query: GetFileContent,
       variables: {
           name: "DefinitelyTyped",

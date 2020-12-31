@@ -1,8 +1,8 @@
-import { gql } from "@apollo/client/core";
+import { gql, TypedDocumentNode } from "@apollo/client/core";
 import { client } from "../graphql-client";
 import { GetProjectBoardCards } from "./schema/GetProjectBoardCards";
 
-const GetProjectBoardCardsQuery = gql`
+const GetProjectBoardCardsQuery: TypedDocumentNode<GetProjectBoardCards, never> = gql`
   query GetProjectBoardCards {
     repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
       id
@@ -36,7 +36,7 @@ interface ColumnInfo {
 }
 
 export async function getProjectBoardCards() {
-    const results = await client.query<GetProjectBoardCards>({
+    const results = await client.query({
         query: GetProjectBoardCardsQuery,
         fetchPolicy: "network-only",
     });

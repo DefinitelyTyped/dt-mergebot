@@ -163,7 +163,7 @@ export async function queryPRInfo(prNumber: number) {
     // get a proper value, or return a useless one if giving up.
     let retries = 0;
     while (true) {
-        const info = await client.query<PRQueryResult>({
+        const info = await client.query({
             query: GetPRInfo,
             variables: { pr_number: prNumber },
             fetchPolicy: "network-only",

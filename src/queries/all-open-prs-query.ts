@@ -1,8 +1,8 @@
-import { gql } from "@apollo/client/core";
+import { gql, TypedDocumentNode } from "@apollo/client/core";
 import { client } from "../graphql-client";
 import { GetAllOpenPRsAndCardIDs, GetAllOpenPRsAndCardIDsVariables } from "./schema/GetAllOpenPRsAndCardIDs";
 
-export const getAllOpenPRsAndCardIDsQuery = gql`
+export const getAllOpenPRsAndCardIDsQuery: TypedDocumentNode<GetAllOpenPRsAndCardIDs, GetAllOpenPRsAndCardIDsVariables> = gql`
 query GetAllOpenPRsAndCardIDs($after: String) {
   repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
     id
@@ -24,7 +24,7 @@ export async function getAllOpenPRsAndCardIDs() {
   const cardIDs: string[] = [];
   let after: string | undefined;
   while (true) {
-    const results = await client.query<GetAllOpenPRsAndCardIDs, GetAllOpenPRsAndCardIDsVariables>({
+    const results = await client.query({
       query: getAllOpenPRsAndCardIDsQuery,
       fetchPolicy: "network-only",
       variables: { after }

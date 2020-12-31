@@ -1,7 +1,7 @@
-import { gql } from "@apollo/client/core";
+import { gql, TypedDocumentNode } from "@apollo/client/core";
 import { client } from "../graphql-client";
 import { PullRequestState } from "./schema/graphql-global-types";
-import { CardIdToPr } from "./schema/CardIdToPr";
+import { CardIdToPr, CardIdToPrVariables } from "./schema/CardIdToPr";
 
 interface CardPRInfo {
     number: number;
@@ -9,13 +9,13 @@ interface CardPRInfo {
 }
 
 export const runQueryToGetPRForCardId = async (id: string): Promise<CardPRInfo | undefined> => {
-    const info = await client.query<CardIdToPr>({
+    const info = await client.query({
         query: gql`
             query CardIdToPr($id: ID!) {
                 node(id: $id) {
                     ... on ProjectCard { content { ... on PullRequest { state number } } }
                 }
-            }`,
+            }` as TypedDocumentNode<CardIdToPr, CardIdToPrVariables>,
         variables: { id },
         fetchPolicy: "network-only",
     });

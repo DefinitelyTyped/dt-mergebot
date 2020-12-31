@@ -1,6 +1,10 @@
-import { gql } from "@apollo/client/core";
+import { gql, TypedDocumentNode } from "@apollo/client/core";
+import { GetLabels } from "./schema/GetLabels";
+import { GetProjectColumns } from "./schema/GetProjectColumns";
 
-export const GetLabels = gql`
+export { GetLabels, GetProjectColumns };
+
+const GetLabels: TypedDocumentNode<GetLabels, never> = gql`
 query GetLabels {
   repository(name:"DefinitelyTyped", owner:"DefinitelyTyped") {
     id
@@ -13,7 +17,7 @@ query GetLabels {
   }
 }`;
 
-export const GetProjectColumns = gql`
+const GetProjectColumns: TypedDocumentNode<GetProjectColumns, never> = gql`
 query GetProjectColumns {
   repository(name:"DefinitelyTyped", owner:"DefinitelyTyped") {
     id
