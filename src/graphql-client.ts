@@ -1,20 +1,11 @@
-import fetch, { RequestInit } from "node-fetch";
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client/core";
-
-export interface Mutation extends RequestInit {
-    method: "POST";
-    headers: {
-        authorization: string;
-        accept: "application/vnd.github.antiope-preview+json";
-        "Content-type": "application/json";
-    };
-    body: string;
-}
+import fetch from "node-fetch";
+import { ApolloClient, gql, HttpLink, InMemoryCache, TypedDocumentNode } from "@apollo/client/core";
+import * as schema from "@octokit/graphql-schema/schema";
 
 const headers = {
     authorization: `Bearer ${getAuthToken()}`,
     accept: "application/vnd.github.antiope-preview+json"
-} as const;
+};
 
 const uri = "https://api.github.com/graphql";
 
@@ -32,22 +23,10 @@ export const client = new ApolloClient({ cache, link, defaultOptions: {
   }
 });
 
-export async function mutate(mutation: Mutation) {
-    const result = await fetch(uri, mutation);
-    return await result.text();
-}
-
-export function createMutation<T>(query: string, input: T): Mutation {
+export function createMutation<T>(name: keyof schema.Mutation, input: T) {
     return {
-        method: "POST",
-        headers: {
-            ...headers,
-            "Content-type": "application/json"
-        },
-        body: JSON.stringify({
-            query,
-            variables: { input }
-        }, undefined, 2)
+        mutation: gql`mutation($input: ${name[0].toUpperCase() + name.slice(1)}Input!) { ${name}(input: $input) { __typename } }` as TypedDocumentNode<void, { input: T }>,
+        variables: { input }
     };
 }
 

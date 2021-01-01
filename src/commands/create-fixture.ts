@@ -1,3 +1,4 @@
+import { print } from "graphql";
 import * as computeActions from "../compute-pr-actions";
 import { deriveStateForPR, BotResult, queryPRInfo } from "../pr-info";
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
@@ -51,7 +52,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
 
   const mutationsFixturePath = join(fixturePath, "mutations.json");
   const mutations = await executePrActions(actions, response.data, /*dry*/ true);
-  writeJsonSync(mutationsFixturePath, mutations.map(m => JSON.parse(m)));
+  writeJsonSync(mutationsFixturePath, mutations.map(({ mutation, ...options }) => ({ mutation: print(mutation), ...options })));
 
   console.log(`Recorded`);
 

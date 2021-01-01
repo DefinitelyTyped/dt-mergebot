@@ -1,6 +1,6 @@
 [
   {
-    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "labelIds": [
@@ -13,7 +13,7 @@
     }
   },
   {
-    "query": "mutation($input: RemoveLabelsFromLabelableInput!) { removeLabelsFromLabelable(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "labelIds": [
@@ -24,7 +24,7 @@
     }
   },
   {
-    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkNTAyMTU4MjU=",
@@ -33,7 +33,7 @@
     }
   },
   {
-    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTI4OTE2Mjg5",
@@ -42,7 +42,7 @@
     }
   },
   {
-    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTI4OTE2Mjg5",
@@ -51,7 +51,7 @@
     }
   },
   {
-    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTI4OTE2Mjg5",

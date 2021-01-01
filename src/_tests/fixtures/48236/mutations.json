@@ -1,6 +1,6 @@
 [
   {
-    "query": "mutation($input: RemoveLabelsFromLabelableInput!) { removeLabelsFromLabelable(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "labelIds": [
@@ -12,7 +12,7 @@
     }
   },
   {
-    "query": "mutation($input: MoveProjectCardInput!) { moveProjectCard(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkNDYyMzUxMDY=",
@@ -21,7 +21,7 @@
     }
   },
   {
-    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDY5OTY3NDc5MQ==",
@@ -30,7 +30,7 @@
     }
   },
   {
-    "query": "mutation($input: MergePullRequestInput!) { mergePullRequest(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: MergePullRequestInput!) {\n  mergePullRequest(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "commitHeadline": "🤖 Merge PR #48236 [woocommerce__woocommerce-rest-api] Unmangle scoped package names by @jablko",

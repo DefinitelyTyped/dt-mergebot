@@ -1,6 +1,6 @@
 [
   {
-    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "labelIds": [
@@ -11,7 +11,7 @@
     }
   },
   {
-    "query": "mutation($input: DeleteProjectCardInput!) { deleteProjectCard(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: DeleteProjectCardInput!) {\n  deleteProjectCard(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkMzg3NDg0NDE="
@@ -19,7 +19,7 @@
     }
   },
   {
-    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYzMjgzOTQzNQ==",
@@ -28,7 +28,7 @@
     }
   },
   {
-    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYzMzAxODkyMw==",
@@ -37,7 +37,7 @@
     }
   },
   {
-    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDIyMDc5Mjk3",
@@ -46,7 +46,7 @@
     }
   },
   {
-    "query": "mutation($input: ClosePullRequestInput!) { closePullRequest(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: ClosePullRequestInput!) {\n  closePullRequest(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NDIyMDc5Mjk3"
