@@ -1,6 +1,6 @@
 [
   {
-    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "labelIds": [
@@ -12,7 +12,7 @@
     }
   },
   {
-    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDcwNzA5MDA1OQ==",
@@ -21,7 +21,7 @@
     }
   },
   {
-    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDcyNjMyMDI0OQ==",

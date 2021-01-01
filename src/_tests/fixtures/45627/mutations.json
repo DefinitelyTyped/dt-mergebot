@@ -1,6 +1,6 @@
 [
   {
-    "query": "mutation($input: AddLabelsToLabelableInput!) { addLabelsToLabelable(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "labelIds": [
@@ -13,7 +13,7 @@
     }
   },
   {
-    "query": "mutation($input: DeleteProjectCardInput!) { deleteProjectCard(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: DeleteProjectCardInput!) {\n  deleteProjectCard(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkNDA0NTk5NzM="
@@ -21,7 +21,7 @@
     }
   },
   {
-    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDM3NTIxMTQ2",
@@ -30,7 +30,7 @@
     }
   },
   {
-    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDY0NzEwNDY2NQ==",
@@ -39,7 +39,7 @@
     }
   },
   {
-    "query": "mutation($input: UpdateIssueCommentInput!) { updateIssueComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYyMTU1OTExNA==",
@@ -48,7 +48,7 @@
     }
   },
   {
-    "query": "mutation($input: AddCommentInput!) { addComment(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDM3NTIxMTQ2",
@@ -57,7 +57,7 @@
     }
   },
   {
-    "query": "mutation($input: MergePullRequestInput!) { mergePullRequest(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: MergePullRequestInput!) {\n  mergePullRequest(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "commitHeadline": "🤖 Merge PR #45627 [webpack] fix for MultiCompiler doesn't define Multistats for callback/handler of run method by @spamshaker",
@@ -68,7 +68,7 @@
     }
   },
   {
-    "query": "mutation($input: ClosePullRequestInput!) { closePullRequest(input: $input) { clientMutationId } }",
+    "mutation": "mutation ($input: ClosePullRequestInput!) {\n  closePullRequest(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NDM3NTIxMTQ2"

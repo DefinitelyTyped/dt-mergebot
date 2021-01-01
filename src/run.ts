@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
+import { print } from "graphql";
 import * as schema from "@octokit/graphql-schema/schema";
 import * as yargs from "yargs";
 import { process as computeActions } from "./compute-pr-actions";
 import { getAllOpenPRsAndCardIDs } from "./queries/all-open-prs-query";
 import { queryPRInfo, deriveStateForPR } from "./pr-info";
-import { executePrActions, deleteProjectCard } from "./execute-pr-actions";
+import { executePrActions } from "./execute-pr-actions";
 import { getProjectBoardCards } from "./queries/projectboard-cards";
 import { runQueryToGetPRForCardId } from "./queries/card-id-to-pr-query";
-import { createMutation, mutate } from "./graphql-client";
+import { createMutation, client } from "./graphql-client";
 import { render } from "prettyjson";
 import { inspect } from "util";
 
@@ -87,7 +88,7 @@ const start = async function () {
         if (args["show-actions"]) show("Actions", actions);
         // Act on the actions
         const mutations = await executePrActions(actions, info.data, args.dry);
-        if (args["show-mutations"] ?? args.dry) show("Mutations", mutations.map(m => JSON.parse(m)));
+        if (args["show-mutations"] ?? args.dry) show("Mutations", mutations.map(({ mutation, ...options }) => ({ mutation: print(mutation), ...options })));
     }
     if (args.dry || !args.cleanup) return;
     //
@@ -99,8 +100,8 @@ const start = async function () {
             // during the scan would end up here.
             return console.log(`  Should delete "${id}" (${shoulda})`);
         }
-        const mutation = createMutation<schema.DeleteProjectCardInput>(deleteProjectCard, { cardId: id });
-        await mutate(mutation);
+        const mutation = createMutation<schema.DeleteProjectCardInput>("deleteProjectCard", { cardId: id });
+        await client.mutate(mutation);
     }
     // Reduce "Recently Merged"
     {

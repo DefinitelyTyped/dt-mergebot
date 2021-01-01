@@ -1,7 +1,6 @@
 import * as schema from "@octokit/graphql-schema/schema";
 import { EventPayloads } from "@octokit/webhooks";
-import { createMutation, mutate } from "../graphql-client";
-import { mergePr } from "../execute-pr-actions";
+import { createMutation, client } from "../graphql-client";
 
 export const mergeCodeOwnersOnGreen = async (payload: EventPayloads.WebhookPayloadCheckSuite) => {
   // Because we only care about GH actions, we can use the check suite API which means we get both the
@@ -16,13 +15,13 @@ export const mergeCodeOwnersOnGreen = async (payload: EventPayloads.WebhookPaylo
   const isFromSameRepo = payload.check_suite.pull_requests[0].base.repo.id === payload.check_suite.pull_requests[0].head.repo.id;
 
   if (isGreen && isFromBot && hasRightCommitMsg && isFromSameRepo) {
-    const mergeMutation = createMutation<schema.MergePullRequestInput>(mergePr, {
+    const mergeMutation = createMutation<schema.MergePullRequestInput>("mergePullRequest", {
       commitHeadline: `🤖 Auto Merge`,
       expectedHeadOid: payload.check_suite.head_commit.id,
       mergeMethod: "SQUASH",
       pullRequestId: payload.check_suite.pull_requests[0].id.toFixed(),
     });
 
-    await mutate(mergeMutation);
+    await client.mutate(mergeMutation);
   }
 };
