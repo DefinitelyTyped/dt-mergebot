@@ -119,77 +119,6 @@
           ],
           "__typename": "PullRequestReviewConnection"
         },
-        "commits": {
-          "totalCount": 1,
-          "nodes": [
-            {
-              "commit": {
-                "checkSuites": {
-                  "nodes": [
-                    {
-                      "app": {
-                        "name": "GitHub Actions",
-                        "__typename": "App"
-                      },
-                      "conclusion": "SUCCESS",
-                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
-                      "status": "COMPLETED",
-                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
-                      "__typename": "CheckSuite"
-                    },
-                    {
-                      "app": {
-                        "name": "Azure Pipelines",
-                        "__typename": "App"
-                      },
-                      "conclusion": "SUCCESS",
-                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664582",
-                      "status": "COMPLETED",
-                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664582",
-                      "__typename": "CheckSuite"
-                    },
-                    {
-                      "app": {
-                        "name": "GitHub Actions",
-                        "__typename": "App"
-                      },
-                      "conclusion": "FAILURE",
-                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
-                      "status": "FAILURE",
-                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
-                      "__typename": "CheckSuite"
-                    }
-                  ],
-                  "__typename": "CheckSuiteConnection"
-                },
-                "status": {
-                  "state": "FAILURE",
-                  "contexts": [
-                    {
-                      "state": "FAILURE",
-                      "description": "The Travis CI build failed",
-                      "creator": {
-                        "login": "orta",
-                        "__typename": "User"
-                      },
-                      "targetUrl": "https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/692427445?utm_source=github_status&utm_medium=notification",
-                      "__typename": "StatusContext"
-                    }
-                  ],
-                  "__typename": "Status"
-                },
-                "authoredDate": "2020-05-29T04:38:47Z",
-                "committedDate": "2020-05-29T04:38:47Z",
-                "pushedDate": "2020-05-29T04:38:59Z",
-                "abbreviatedOid": "22c73c8",
-                "oid": "22c73c88cc9c09efd4c2998ec360607dd4c36c2e",
-                "__typename": "Commit"
-              },
-              "__typename": "PullRequestCommit"
-            }
-          ],
-          "__typename": "PullRequestCommitConnection"
-        },
         "comments": {
           "totalCount": 5,
           "nodes": [
@@ -298,7 +227,71 @@
           ],
           "__typename": "ProjectCardConnection"
         },
-        "__typename": "PullRequest"
+        "__typename": "PullRequest",
+        "headRef": {
+          "target": {
+            "checkSuites": {
+              "nodes": [
+                {
+                  "app": {
+                    "name": "GitHub Actions",
+                    "__typename": "App"
+                  },
+                  "conclusion": "SUCCESS",
+                  "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
+                  "status": "COMPLETED",
+                  "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
+                  "__typename": "CheckSuite"
+                },
+                {
+                  "app": {
+                    "name": "Azure Pipelines",
+                    "__typename": "App"
+                  },
+                  "conclusion": "SUCCESS",
+                  "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664582",
+                  "status": "COMPLETED",
+                  "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664582",
+                  "__typename": "CheckSuite"
+                },
+                {
+                  "app": {
+                    "name": "GitHub Actions",
+                    "__typename": "App"
+                  },
+                  "conclusion": "FAILURE",
+                  "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
+                  "status": "FAILURE",
+                  "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
+                  "__typename": "CheckSuite"
+                }
+              ],
+              "__typename": "CheckSuiteConnection"
+            },
+            "status": {
+              "state": "FAILURE",
+              "contexts": [
+                {
+                  "state": "FAILURE",
+                  "description": "The Travis CI build failed",
+                  "creator": {
+                    "login": "orta",
+                    "__typename": "User"
+                  },
+                  "targetUrl": "https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/692427445?utm_source=github_status&utm_medium=notification",
+                  "__typename": "StatusContext"
+                }
+              ],
+              "__typename": "Status"
+            },
+            "authoredDate": "2020-05-29T04:38:47Z",
+            "committedDate": "2020-05-29T04:38:47Z",
+            "pushedDate": "2020-05-29T04:38:59Z",
+            "abbreviatedOid": "22c73c8",
+            "oid": "22c73c88cc9c09efd4c2998ec360607dd4c36c2e",
+            "__typename": "Commit"
+          }
+        }
       },
       "__typename": "Repository"
     }

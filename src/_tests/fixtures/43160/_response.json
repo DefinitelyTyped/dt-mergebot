@@ -86,55 +86,6 @@
           ],
           "__typename": "PullRequestReviewConnection"
         },
-        "commits": {
-          "totalCount": 1,
-          "nodes": [
-            {
-              "commit": {
-                "checkSuites": {
-                  "nodes": [
-                    {
-                      "app": {
-                        "name": "GitHub Actions",
-                        "__typename": "App"
-                      },
-                      "conclusion": "FAILURE",
-                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
-                      "status": "FAILURE",
-                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
-                      "__typename": "CheckSuite"
-                    }
-                  ],
-                  "__typename": "CheckSuiteConnection"
-                },
-                "status": {
-                  "state": "FAILURE",
-                  "contexts": [
-                    {
-                      "state": "FAILURE",
-                      "description": "The Travis CI build failed",
-                      "creator": {
-                        "login": "borisyankov",
-                        "__typename": "User"
-                      },
-                      "targetUrl": "https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/662962786?utm_source=github_status&utm_medium=notification",
-                      "__typename": "StatusContext"
-                    }
-                  ],
-                  "__typename": "Status"
-                },
-                "authoredDate": "2020-03-16T08:13:52Z",
-                "committedDate": "2020-03-16T08:13:52Z",
-                "pushedDate": "2020-03-16T08:14:50Z",
-                "abbreviatedOid": "6d5d2a8",
-                "oid": "6d5d2a85b41d287f97c9d331a9ff6a9824e2f1ff",
-                "__typename": "Commit"
-              },
-              "__typename": "PullRequestCommit"
-            }
-          ],
-          "__typename": "PullRequestCommitConnection"
-        },
         "comments": {
           "totalCount": 2,
           "nodes": [
@@ -201,7 +152,49 @@
           ],
           "__typename": "ProjectCardConnection"
         },
-        "__typename": "PullRequest"
+        "__typename": "PullRequest",
+        "headRef": {
+          "target": {
+            "checkSuites": {
+              "nodes": [
+                {
+                  "app": {
+                    "name": "GitHub Actions",
+                    "__typename": "App"
+                  },
+                  "conclusion": "FAILURE",
+                  "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
+                  "status": "FAILURE",
+                  "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
+                  "__typename": "CheckSuite"
+                }
+              ],
+              "__typename": "CheckSuiteConnection"
+            },
+            "status": {
+              "state": "FAILURE",
+              "contexts": [
+                {
+                  "state": "FAILURE",
+                  "description": "The Travis CI build failed",
+                  "creator": {
+                    "login": "borisyankov",
+                    "__typename": "User"
+                  },
+                  "targetUrl": "https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/662962786?utm_source=github_status&utm_medium=notification",
+                  "__typename": "StatusContext"
+                }
+              ],
+              "__typename": "Status"
+            },
+            "authoredDate": "2020-03-16T08:13:52Z",
+            "committedDate": "2020-03-16T08:13:52Z",
+            "pushedDate": "2020-03-16T08:14:50Z",
+            "abbreviatedOid": "6d5d2a8",
+            "oid": "6d5d2a85b41d287f97c9d331a9ff6a9824e2f1ff",
+            "__typename": "Commit"
+          }
+        }
       },
       "__typename": "Repository"
     }

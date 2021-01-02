@@ -3,7 +3,6 @@
   "now": "2020-05-01T17:11:04.885Z",
   "pr_number": 43695,
   "author": "alexandercerutti",
-  "headCommitAbbrOid": "3e83617",
   "headCommitOid": "3e836178b736e5512361ffda46e84a5c668d7a90",
   "lastPushDate": "2020-04-07T07:51:12.000Z",
   "lastActivityDate": "2020-05-01T00:19:19.000Z",
@@ -46,13 +45,13 @@
       "type": "stale",
       "reviewer": "andrewbranch",
       "date": "2020-04-30T23:59:41.000Z",
-      "abbrOid": "68463fd"
+      "oid": "68463fd2f4f3bcfdfdf271637a1b33a0fb1190b1"
     },
     {
       "type": "stale",
       "reviewer": "RyanCavanaugh",
       "date": "2020-04-08T16:23:52.000Z",
-      "abbrOid": "a5285cd"
+      "oid": "a5285cda2722912a390770722a334e6d6e43d1ab"
     }
   ],
   "ciResult": "pass"

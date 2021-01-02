@@ -33,6 +33,35 @@ query PR($pr_number: Int!) {
         mergeable
         number
         state
+        headRef {
+          target {
+            ... on Commit {
+              checkSuites(first: 100) {
+                nodes {
+                  app {
+                    name
+                  }
+                  conclusion
+                  resourcePath
+                  status
+                  url
+                }
+              }
+              status {
+                state
+                contexts {
+                  state
+                  description
+                  creator { login }
+                  targetUrl
+                }
+              }
+              authoredDate
+              committedDate
+              pushedDate
+            }
+          }
+        }
         headRefOid
 
         timelineItems(last: 200, itemTypes: [REOPENED_EVENT, READY_FOR_REVIEW_EVENT,
@@ -58,7 +87,6 @@ query PR($pr_number: Int!) {
             }
             commit {
               oid
-              abbreviatedOid
             }
             comments(last: 10) {
               nodes {
@@ -72,39 +100,6 @@ query PR($pr_number: Int!) {
             state
             submittedAt
             url
-          }
-        }
-
-        commits(last: 100) {
-          totalCount
-          nodes {
-            commit {
-              checkSuites(first: 100) {
-                nodes {
-                  app {
-                    name
-                  }
-                  conclusion
-                  resourcePath
-                  status
-                  url
-                }
-              }
-              status {
-                state
-                contexts {
-                  state
-                  description
-                  creator { login }
-                  targetUrl
-                }
-              }
-              authoredDate
-              committedDate
-              pushedDate
-              abbreviatedOid
-              oid
-            }
           }
         }
 

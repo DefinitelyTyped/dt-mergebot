@@ -1,7 +1,7 @@
 import { GetPRInfo } from "./queries/pr-query";
-import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest,
-         PR_repository_pullRequest_commits_nodes_commit,
+import { PR as PRQueryResult,
          PR_repository_pullRequest,
+         PR_repository_pullRequest_headRef_target_Commit_checkSuites,
          PR_repository_pullRequest_timelineItems,
          PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent,
          PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent,
@@ -78,7 +78,7 @@ export type ReviewInfo = {
 } & (
     | { type: "approved", isMaintainer: boolean }
     | { type: "changereq" }
-    | { type: "stale", abbrOid: string }
+    | { type: "stale", oid: string }
 );
 
 export interface PrInfo {
@@ -93,11 +93,6 @@ export interface PrInfo {
      * The head commit of this PR (full format)
      */
     readonly headCommitOid: string;
-
-    /**
-     * The head commit of this PR (abbreviated format)
-     */
-    readonly headCommitAbbrOid: string;
 
     /**
      * The GitHub login of the PR author
@@ -161,10 +156,6 @@ export type BotNotFail =
 
 export type BotResult = BotNotFail | BotFail;
 
-function getHeadCommit(pr: GraphqlPullRequest) {
-    return pr.commits.nodes?.find(c => c?.commit.oid === pr.headRefOid)?.commit;
-}
-
 // Just the networking
 export async function queryPRInfo(prNumber: number) {
     // The query can return a mergeable value of `UNKNOWN`, and then it takes a
@@ -208,8 +199,8 @@ export async function deriveStateForPR(
     if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft", true);
     if (prInfo.state !== PullRequestState.OPEN) return botEnsureRemovedFromProject(prInfo.number, "PR is not active", false);
 
-    const headCommit = getHeadCommit(prInfo);
-    if (headCommit == null) return botError(prInfo.number, "No head commit found");
+    const headCommit = prInfo.headRef?.target;
+    if (headCommit == null || headCommit.__typename !== "Commit") return botError(prInfo.number, "No head commit found");
 
     const author = prInfo.author.login;
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
@@ -224,14 +215,14 @@ export async function deriveStateForPR(
 
     const pkgInfoEtc = await getPackageInfosEtc(
         noNullish(prInfo.files?.nodes).map(f => f.path).sort(),
-        headCommit.oid, fetchFile, async name => await getDownloads(name, lastPushDate));
+        prInfo.headRefOid, fetchFile, async name => await getDownloads(name, lastPushDate));
     if (pkgInfoEtc instanceof Error) return botError(prInfo.number, pkgInfoEtc.message);
     const { pkgInfo, popularityLevel } = pkgInfoEtc;
 
     const reviews = getReviews(prInfo);
     const latestReview = max(reviews.map(r => r.date));
     const comments = noNullish(prInfo.comments.nodes);
-    const mergeOfferDate = getMergeOfferDate(comments, headCommit.abbreviatedOid);
+    const mergeOfferDate = getMergeOfferDate(comments, prInfo.headRefOid);
     const mergeRequest = getMergeRequest(comments,
                                          pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
                                          max([createdDate, reopenedDate, lastPushDate]));
@@ -242,8 +233,7 @@ export async function deriveStateForPR(
         now,
         pr_number: prInfo.number,
         author,
-        headCommitAbbrOid: headCommit.abbreviatedOid,
-        headCommitOid: headCommit.oid,
+        headCommitOid: prInfo.headRefOid,
         lastPushDate, lastActivityDate,
         maintainerBlessed: lastBlessing ? lastBlessing > lastPushDate : false,
         mergeOfferDate, mergeRequestDate: mergeRequest?.date, mergeRequestUser: mergeRequest?.user,
@@ -252,7 +242,7 @@ export async function deriveStateForPR(
         popularityLevel,
         pkgInfo,
         reviews,
-        ...getCIResult(headCommit)
+        ...getCIResult(headCommit.checkSuites)
     };
 
     function botFail(message: string): BotFail {
@@ -439,11 +429,11 @@ function latestComment(comments: PR_repository_pullRequest_comments_nodes[]) {
     return max(comments, (r, c) => Date.parse(r.createdAt) - Date.parse(c.createdAt));
 }
 
-function getMergeOfferDate(comments: PR_repository_pullRequest_comments_nodes[], abbrOid: string) {
+function getMergeOfferDate(comments: PR_repository_pullRequest_comments_nodes[], headOid: string) {
     const offer = latestComment(comments.filter(c =>
         sameUser("typescript-bot", c.author?.login || "-")
         && comment.parse(c.body)?.tag === "merge-offer"
-        && c.body.includes(`(at ${abbrOid})`)));
+        && c.body.includes(`(at ${headOid.slice(0, 7)})`)));
     return offer && new Date(offer.createdAt);
 }
 
@@ -471,7 +461,7 @@ function getReviews(prInfo: PR_repository_pullRequest) {
         if (reviews.find(r => sameUser(r.reviewer, reviewer))) continue;
         // collect reviews by type
         if (r.commit.oid !== headCommitOid) {
-            reviews.push({ type: "stale", reviewer, date, abbrOid: r.commit.abbreviatedOid });
+            reviews.push({ type: "stale", reviewer, date, oid: r.commit.oid });
             continue;
         }
         if (r.state === PullRequestReviewState.CHANGES_REQUESTED) {
@@ -487,8 +477,8 @@ function getReviews(prInfo: PR_repository_pullRequest) {
     return reviews;
 }
 
-function getCIResult(headCommit: PR_repository_pullRequest_commits_nodes_commit): { ciResult: CIResult, ciUrl?: string } {
-    const totalStatusChecks = headCommit.checkSuites?.nodes?.find(check => check?.app?.name?.includes("GitHub Actions"));
+function getCIResult(checkSuites: PR_repository_pullRequest_headRef_target_Commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string } {
+    const totalStatusChecks = checkSuites?.nodes?.find(check => check?.app?.name?.includes("GitHub Actions"));
     if (!totalStatusChecks) return { ciResult: CIResult.Missing, ciUrl: undefined };
     switch (totalStatusChecks.conclusion) {
         case CheckConclusionState.SUCCESS:

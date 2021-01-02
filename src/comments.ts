@@ -16,18 +16,18 @@ export const HadError = (user: string | undefined, error: string) => ({
     ${error}`
 });
 
-export const CIFailed = (slug: string, user: string, ciUrl: string) => ({
-    tag: `gh-actions-complaint-${slug}`,
+export const CIFailed = (abbrOid: string, user: string, ciUrl: string) => ({
+    tag: `gh-actions-complaint-${abbrOid}`,
     status: `@${user} The CI build failed! Please [review the logs for more information](${ciUrl}).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!`
 });
 
-export const MergeConflicted = (slug: string, user: string) => ({
-    tag: `merge-complaint-${slug}`,
+export const MergeConflicted = (abbrOid: string, user: string) => ({
+    tag: `merge-complaint-${abbrOid}`,
     status: `@${user} Unfortunately, this pull request currently has a merge conflict 😥. Please update your PR branch to be up-to-date with respect to master. Have a nice day!`
 });
 
-export const ChangesRequest = (headOid: string, user: string) => ({
-    tag: `reviewer-complaint-${headOid}`,
+export const ChangesRequest = (abbrOid: string, user: string) => ({
+    tag: `reviewer-complaint-${abbrOid}`,
     status: `@${user} One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!`
 });
 
