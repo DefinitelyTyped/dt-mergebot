@@ -98,173 +98,6 @@
           "nodes": [],
           "__typename": "PullRequestReviewConnection"
         },
-        "commits": {
-          "totalCount": 6,
-          "nodes": [
-            {
-              "commit": {
-                "checkSuites": {
-                  "nodes": [
-                    {
-                      "app": {
-                        "name": "Azure Pipelines",
-                        "__typename": "App"
-                      },
-                      "conclusion": "FAILURE",
-                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/4e010246ff699217c93de8ffcd9442e8b680011b/checks?check_suite_id=633760336",
-                      "status": "COMPLETED",
-                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/4e010246ff699217c93de8ffcd9442e8b680011b/checks?check_suite_id=633760336",
-                      "__typename": "CheckSuite"
-                    }
-                  ],
-                  "__typename": "CheckSuiteConnection"
-                },
-                "status": {
-                  "state": "FAILURE",
-                  "contexts": [
-                    {
-                      "state": "FAILURE",
-                      "description": "The Travis CI build failed",
-                      "creator": {
-                        "login": "johnnyreilly",
-                        "__typename": "User"
-                      },
-                      "targetUrl": "https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/680340548?utm_source=github_status&utm_medium=notification",
-                      "__typename": "StatusContext"
-                    }
-                  ],
-                  "__typename": "Status"
-                },
-                "authoredDate": "2020-04-27T23:27:10Z",
-                "committedDate": "2020-04-27T23:27:10Z",
-                "pushedDate": "2020-04-27T23:27:18Z",
-                "abbreviatedOid": "4e01024",
-                "oid": "4e010246ff699217c93de8ffcd9442e8b680011b",
-                "__typename": "Commit"
-              },
-              "__typename": "PullRequestCommit"
-            },
-            {
-              "commit": {
-                "checkSuites": {
-                  "nodes": [],
-                  "__typename": "CheckSuiteConnection"
-                },
-                "status": null,
-                "authoredDate": "2020-04-27T23:44:03Z",
-                "committedDate": "2020-04-27T23:44:03Z",
-                "pushedDate": null,
-                "abbreviatedOid": "c8c42c2",
-                "oid": "c8c42c25d9b7dd4cd04d8377d91c2a29d584f357",
-                "__typename": "Commit"
-              },
-              "__typename": "PullRequestCommit"
-            },
-            {
-              "commit": {
-                "checkSuites": {
-                  "nodes": [],
-                  "__typename": "CheckSuiteConnection"
-                },
-                "status": null,
-                "authoredDate": "2020-04-27T23:44:20Z",
-                "committedDate": "2020-04-27T23:44:20Z",
-                "pushedDate": null,
-                "abbreviatedOid": "f68d56f",
-                "oid": "f68d56f259f89dbd35f6d72a82ad518feb2797e4",
-                "__typename": "Commit"
-              },
-              "__typename": "PullRequestCommit"
-            },
-            {
-              "commit": {
-                "checkSuites": {
-                  "nodes": [],
-                  "__typename": "CheckSuiteConnection"
-                },
-                "status": null,
-                "authoredDate": "2020-04-27T23:44:29Z",
-                "committedDate": "2020-04-27T23:44:29Z",
-                "pushedDate": null,
-                "abbreviatedOid": "23fb843",
-                "oid": "23fb84387b09e6dcc9bd34c45638d7d345486b15",
-                "__typename": "Commit"
-              },
-              "__typename": "PullRequestCommit"
-            },
-            {
-              "commit": {
-                "checkSuites": {
-                  "nodes": [],
-                  "__typename": "CheckSuiteConnection"
-                },
-                "status": null,
-                "authoredDate": "2020-04-27T23:46:49Z",
-                "committedDate": "2020-04-27T23:46:49Z",
-                "pushedDate": null,
-                "abbreviatedOid": "c93970c",
-                "oid": "c93970cce55dabaa19781421530c8a4da9892cfc",
-                "__typename": "Commit"
-              },
-              "__typename": "PullRequestCommit"
-            },
-            {
-              "commit": {
-                "checkSuites": {
-                  "nodes": [
-                    {
-                      "app": {
-                        "name": "Azure Pipelines",
-                        "__typename": "App"
-                      },
-                      "conclusion": "SUCCESS",
-                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/25794304acf8c1fd70712bd068beb07b0e09755e/checks?check_suite_id=633799690",
-                      "status": "COMPLETED",
-                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/25794304acf8c1fd70712bd068beb07b0e09755e/checks?check_suite_id=633799690",
-                      "__typename": "CheckSuite"
-                    },
-                    {
-                      "app": {
-                        "name": "GitHub Actions",
-                        "__typename": "App"
-                      },
-                      "conclusion": "SUCCESS",
-                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
-                      "status": "SUCCESS",
-                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
-                      "__typename": "CheckSuite"
-                    }
-                  ],
-                  "__typename": "CheckSuiteConnection"
-                },
-                "status": {
-                  "state": "SUCCESS",
-                  "contexts": [
-                    {
-                      "state": "SUCCESS",
-                      "description": "The Travis CI build passed",
-                      "creator": {
-                        "login": "johnnyreilly",
-                        "__typename": "User"
-                      },
-                      "targetUrl": "https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/680345779?utm_source=github_status&utm_medium=notification",
-                      "__typename": "StatusContext"
-                    }
-                  ],
-                  "__typename": "Status"
-                },
-                "authoredDate": "2020-04-27T23:57:13Z",
-                "committedDate": "2020-04-27T23:57:13Z",
-                "pushedDate": "2020-04-27T23:58:24Z",
-                "abbreviatedOid": "2579430",
-                "oid": "25794304acf8c1fd70712bd068beb07b0e09755e",
-                "__typename": "Commit"
-              },
-              "__typename": "PullRequestCommit"
-            }
-          ],
-          "__typename": "PullRequestCommitConnection"
-        },
         "comments": {
           "totalCount": 5,
           "nodes": [
@@ -379,7 +212,60 @@
           ],
           "__typename": "ProjectCardConnection"
         },
-        "__typename": "PullRequest"
+        "__typename": "PullRequest",
+        "headRef": {
+          "target": {
+            "checkSuites": {
+              "nodes": [
+                {
+                  "app": {
+                    "name": "Azure Pipelines",
+                    "__typename": "App"
+                  },
+                  "conclusion": "SUCCESS",
+                  "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/25794304acf8c1fd70712bd068beb07b0e09755e/checks?check_suite_id=633799690",
+                  "status": "COMPLETED",
+                  "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/25794304acf8c1fd70712bd068beb07b0e09755e/checks?check_suite_id=633799690",
+                  "__typename": "CheckSuite"
+                },
+                {
+                  "app": {
+                    "name": "GitHub Actions",
+                    "__typename": "App"
+                  },
+                  "conclusion": "SUCCESS",
+                  "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
+                  "status": "SUCCESS",
+                  "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
+                  "__typename": "CheckSuite"
+                }
+              ],
+              "__typename": "CheckSuiteConnection"
+            },
+            "status": {
+              "state": "SUCCESS",
+              "contexts": [
+                {
+                  "state": "SUCCESS",
+                  "description": "The Travis CI build passed",
+                  "creator": {
+                    "login": "johnnyreilly",
+                    "__typename": "User"
+                  },
+                  "targetUrl": "https://travis-ci.org/github/DefinitelyTyped/DefinitelyTyped/builds/680345779?utm_source=github_status&utm_medium=notification",
+                  "__typename": "StatusContext"
+                }
+              ],
+              "__typename": "Status"
+            },
+            "authoredDate": "2020-04-27T23:57:13Z",
+            "committedDate": "2020-04-27T23:57:13Z",
+            "pushedDate": "2020-04-27T23:58:24Z",
+            "abbreviatedOid": "2579430",
+            "oid": "25794304acf8c1fd70712bd068beb07b0e09755e",
+            "__typename": "Commit"
+          }
+        }
       },
       "__typename": "Repository"
     }

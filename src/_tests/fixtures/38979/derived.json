@@ -3,7 +3,6 @@
   "now": "2020-05-12T19:14:42.000Z",
   "pr_number": 38979,
   "author": "ExE-Boss",
-  "headCommitAbbrOid": "2223341",
   "headCommitOid": "222334139e52fc16369464cfb5dc95c82f71192f",
   "lastPushDate": "2020-01-03T21:02:41.000Z",
   "lastActivityDate": "2020-05-12T15:13:19.000Z",
@@ -324,13 +323,13 @@
       "type": "stale",
       "reviewer": "sandersn",
       "date": "2019-10-22T22:56:09.000Z",
-      "abbrOid": "3aba5ac"
+      "oid": "3aba5ac906488433b92621605ef1eaceff29679b"
     },
     {
       "type": "stale",
       "reviewer": "weswigham",
       "date": "2019-10-22T22:20:55.000Z",
-      "abbrOid": "0e6e7f4"
+      "oid": "0e6e7f4d543b37e7862868499883a4afb3f59e5c"
     }
   ],
   "ciResult": "pass"

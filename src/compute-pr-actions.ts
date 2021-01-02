@@ -131,6 +131,7 @@ export interface ExtendedPrInfo extends PrInfo {
     readonly needsAuthorAction: boolean;
     readonly reviewColumn: ColumnName;
     readonly isAuthor: (user: string) => boolean; // specialized version of sameUser
+    readonly headCommitAbbrOid: string;
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isAuthor = (user: string) => sameUser(user, info.author);
@@ -167,6 +168,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     //      => could be dropped from the extended info and replaced with: info.staleness?.kind === "Abandoned"
     const staleness = getStaleness();
     const reviewColumn = getReviewColumn();
+    const headCommitAbbrOid = info.headCommitOid.slice(0, 7);
     return {
         ...info, orig: info,
         authorIsOwner, editsInfra, checkConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
@@ -174,7 +176,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
         requireMaintainer, blessable, failedCI, staleness,
         packages, hasMultiplePackages, hasDefinitions, hasTests, isUntested, newPackages, hasNewPackages, hasEditedPackages,
         approvedReviews, changereqReviews, staleReviews, approvedBy, hasChangereqs,
-        needsAuthorAction, reviewColumn, isAuthor
+        needsAuthorAction, reviewColumn, isAuthor, headCommitAbbrOid
     };
 
     // Staleness timeline configurations (except for texts that are all in `comments.ts`)
@@ -349,9 +351,9 @@ export function process(prInfo: BotNotFail,
         }
         // Ping stale reviewers if any
         if (info.staleReviews.length > 0) {
-            const oid = min(info.staleReviews, (l, r) => +l.date - +r.date)!.abbrOid;
+            const { oid } = min(info.staleReviews, (l, r) => +l.date - +r.date)!;
             const reviewers = info.staleReviews.map(r => r.reviewer);
-            post(Comments.PingStaleReviewer(oid, reviewers));
+            post(Comments.PingStaleReviewer(oid.slice(0, 7), reviewers));
         }
     }
 

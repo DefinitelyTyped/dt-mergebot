@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequestReviewState, CheckConclusionState, CheckStatusState, StatusState } from "./../../schema/graphql-global-types";
+import { CommentAuthorAssociation, MergeableState, PullRequestState, CheckConclusionState, CheckStatusState, StatusState, PullRequestReviewState } from "./../../schema/graphql-global-types";
 
 // ====================================================
 // GraphQL query operation: PR
@@ -39,6 +39,124 @@ export interface PR_repository_pullRequest_labels {
    * A list of nodes.
    */
   nodes: (PR_repository_pullRequest_labels_nodes | null)[] | null;
+}
+
+export interface PR_repository_pullRequest_headRef_target_Tree {
+  __typename: "Tree" | "Blob" | "Tag";
+}
+
+export interface PR_repository_pullRequest_headRef_target_Commit_checkSuites_nodes_app {
+  __typename: "App";
+  /**
+   * The name of the app.
+   */
+  name: string;
+}
+
+export interface PR_repository_pullRequest_headRef_target_Commit_checkSuites_nodes {
+  __typename: "CheckSuite";
+  /**
+   * The GitHub App which created this check suite.
+   */
+  app: PR_repository_pullRequest_headRef_target_Commit_checkSuites_nodes_app | null;
+  /**
+   * The conclusion of this check suite.
+   */
+  conclusion: CheckConclusionState | null;
+  /**
+   * The HTTP path for this check suite
+   */
+  resourcePath: any;
+  /**
+   * The status of this check suite.
+   */
+  status: CheckStatusState;
+  /**
+   * The HTTP URL for this check suite
+   */
+  url: any;
+}
+
+export interface PR_repository_pullRequest_headRef_target_Commit_checkSuites {
+  __typename: "CheckSuiteConnection";
+  /**
+   * A list of nodes.
+   */
+  nodes: (PR_repository_pullRequest_headRef_target_Commit_checkSuites_nodes | null)[] | null;
+}
+
+export interface PR_repository_pullRequest_headRef_target_Commit_status_contexts_creator {
+  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  /**
+   * The username of the actor.
+   */
+  login: string;
+}
+
+export interface PR_repository_pullRequest_headRef_target_Commit_status_contexts {
+  __typename: "StatusContext";
+  /**
+   * The state of this status context.
+   */
+  state: StatusState;
+  /**
+   * The description for this status context.
+   */
+  description: string | null;
+  /**
+   * The actor who created this status context.
+   */
+  creator: PR_repository_pullRequest_headRef_target_Commit_status_contexts_creator | null;
+  /**
+   * The URL for this status context.
+   */
+  targetUrl: any | null;
+}
+
+export interface PR_repository_pullRequest_headRef_target_Commit_status {
+  __typename: "Status";
+  /**
+   * The combined commit status.
+   */
+  state: StatusState;
+  /**
+   * The individual status contexts for this commit.
+   */
+  contexts: PR_repository_pullRequest_headRef_target_Commit_status_contexts[];
+}
+
+export interface PR_repository_pullRequest_headRef_target_Commit {
+  __typename: "Commit";
+  /**
+   * The check suites associated with a commit.
+   */
+  checkSuites: PR_repository_pullRequest_headRef_target_Commit_checkSuites | null;
+  /**
+   * Status information for this commit
+   */
+  status: PR_repository_pullRequest_headRef_target_Commit_status | null;
+  /**
+   * The datetime when this commit was authored.
+   */
+  authoredDate: any;
+  /**
+   * The datetime when this commit was committed.
+   */
+  committedDate: any;
+  /**
+   * The datetime when this commit was pushed.
+   */
+  pushedDate: any | null;
+}
+
+export type PR_repository_pullRequest_headRef_target = PR_repository_pullRequest_headRef_target_Tree | PR_repository_pullRequest_headRef_target_Commit;
+
+export interface PR_repository_pullRequest_headRef {
+  __typename: "Ref";
+  /**
+   * The object the ref points to. Returns null when object does not exist.
+   */
+  target: PR_repository_pullRequest_headRef_target | null;
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent {
@@ -105,10 +223,6 @@ export interface PR_repository_pullRequest_reviews_nodes_commit {
    * The Git object ID
    */
   oid: any;
-  /**
-   * An abbreviated version of the Git object ID
-   */
-  abbreviatedOid: string;
 }
 
 export interface PR_repository_pullRequest_reviews_nodes_comments_nodes_author {
@@ -177,138 +291,6 @@ export interface PR_repository_pullRequest_reviews {
    * A list of nodes.
    */
   nodes: (PR_repository_pullRequest_reviews_nodes | null)[] | null;
-}
-
-export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_app {
-  __typename: "App";
-  /**
-   * The name of the app.
-   */
-  name: string;
-}
-
-export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes {
-  __typename: "CheckSuite";
-  /**
-   * The GitHub App which created this check suite.
-   */
-  app: PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_app | null;
-  /**
-   * The conclusion of this check suite.
-   */
-  conclusion: CheckConclusionState | null;
-  /**
-   * The HTTP path for this check suite
-   */
-  resourcePath: any;
-  /**
-   * The status of this check suite.
-   */
-  status: CheckStatusState;
-  /**
-   * The HTTP URL for this check suite
-   */
-  url: any;
-}
-
-export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites {
-  __typename: "CheckSuiteConnection";
-  /**
-   * A list of nodes.
-   */
-  nodes: (PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes | null)[] | null;
-}
-
-export interface PR_repository_pullRequest_commits_nodes_commit_status_contexts_creator {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
-  /**
-   * The username of the actor.
-   */
-  login: string;
-}
-
-export interface PR_repository_pullRequest_commits_nodes_commit_status_contexts {
-  __typename: "StatusContext";
-  /**
-   * The state of this status context.
-   */
-  state: StatusState;
-  /**
-   * The description for this status context.
-   */
-  description: string | null;
-  /**
-   * The actor who created this status context.
-   */
-  creator: PR_repository_pullRequest_commits_nodes_commit_status_contexts_creator | null;
-  /**
-   * The URL for this status context.
-   */
-  targetUrl: any | null;
-}
-
-export interface PR_repository_pullRequest_commits_nodes_commit_status {
-  __typename: "Status";
-  /**
-   * The combined commit status.
-   */
-  state: StatusState;
-  /**
-   * The individual status contexts for this commit.
-   */
-  contexts: PR_repository_pullRequest_commits_nodes_commit_status_contexts[];
-}
-
-export interface PR_repository_pullRequest_commits_nodes_commit {
-  __typename: "Commit";
-  /**
-   * The check suites associated with a commit.
-   */
-  checkSuites: PR_repository_pullRequest_commits_nodes_commit_checkSuites | null;
-  /**
-   * Status information for this commit
-   */
-  status: PR_repository_pullRequest_commits_nodes_commit_status | null;
-  /**
-   * The datetime when this commit was authored.
-   */
-  authoredDate: any;
-  /**
-   * The datetime when this commit was committed.
-   */
-  committedDate: any;
-  /**
-   * The datetime when this commit was pushed.
-   */
-  pushedDate: any | null;
-  /**
-   * An abbreviated version of the Git object ID
-   */
-  abbreviatedOid: string;
-  /**
-   * The Git object ID
-   */
-  oid: any;
-}
-
-export interface PR_repository_pullRequest_commits_nodes {
-  __typename: "PullRequestCommit";
-  /**
-   * The Git commit object
-   */
-  commit: PR_repository_pullRequest_commits_nodes_commit;
-}
-
-export interface PR_repository_pullRequest_commits {
-  __typename: "PullRequestCommitConnection";
-  /**
-   * Identifies the total count of items in the connection.
-   */
-  totalCount: number;
-  /**
-   * A list of nodes.
-   */
-  nodes: (PR_repository_pullRequest_commits_nodes | null)[] | null;
 }
 
 export interface PR_repository_pullRequest_comments_nodes_author {
@@ -494,6 +476,10 @@ export interface PR_repository_pullRequest {
    */
   state: PullRequestState;
   /**
+   * Identifies the head Ref associated with the pull request.
+   */
+  headRef: PR_repository_pullRequest_headRef | null;
+  /**
    * Identifies the oid of the head ref associated with the pull request, even if the ref has been deleted.
    */
   headRefOid: any;
@@ -505,10 +491,6 @@ export interface PR_repository_pullRequest {
    * A list of reviews associated with the pull request.
    */
   reviews: PR_repository_pullRequest_reviews | null;
-  /**
-   * A list of commits present in this pull request's head branch not present in the base branch.
-   */
-  commits: PR_repository_pullRequest_commits;
   /**
    * A list of comments associated with the pull request.
    */

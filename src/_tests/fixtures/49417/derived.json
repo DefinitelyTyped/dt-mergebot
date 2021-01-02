@@ -3,7 +3,6 @@
   "now": "2020-11-16T07:38:51.000Z",
   "pr_number": 49417,
   "author": "Methuselah96",
-  "headCommitAbbrOid": "2b9d098",
   "headCommitOid": "2b9d0980329843dc436a18460f85bb2e2d2f688c",
   "lastPushDate": "2020-11-08T07:52:53.000Z",
   "lastActivityDate": "2020-11-16T07:38:51.000Z",
@@ -49,7 +48,7 @@
       "type": "stale",
       "reviewer": "tuuling",
       "date": "2020-11-07T21:37:04.000Z",
-      "abbrOid": "525f75c"
+      "oid": "525f75c2fecceb410d9fa026bb218476fbe1c66a"
     }
   ],
   "ciResult": "pass"

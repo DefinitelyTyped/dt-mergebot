@@ -3,7 +3,6 @@
   "now": "2020-04-30T23:13:37.659Z",
   "pr_number": 43695,
   "author": "alexandercerutti",
-  "headCommitAbbrOid": "90c94f9",
   "headCommitOid": "90c94f91120c026f5f8bcc586426e8590b7b4048",
   "lastPushDate": "2020-04-15T15:53:29.000Z",
   "lastActivityDate": "2020-04-30T23:07:49.000Z",
@@ -51,7 +50,7 @@
       "type": "stale",
       "reviewer": "RyanCavanaugh",
       "date": "2020-04-08T16:23:52.000Z",
-      "abbrOid": "a5285cd"
+      "oid": "a5285cda2722912a390770722a334e6d6e43d1ab"
     }
   ],
   "ciResult": "pass"
