@@ -28,6 +28,7 @@ query GetPRForSHA1($query: String!) {
 /* This is better since it doesn't do a generic search, but for some reason it will sometime fail to get a PR
 query GetPRForSHA1($owner: String!, $repo: String!, $sha1: String!) {
   repository(owner: $owner, name: $repo) {
+    id
     object(expression: $sha1) {
       ... on Commit {
         associatedPullRequests(first: 1) {

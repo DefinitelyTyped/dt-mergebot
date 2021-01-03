@@ -9,6 +9,7 @@ import { ProcessManyPRs, ProcessManyPRsVariables } from "./schema/ProcessManyPRs
 export const GetProcessManyPRs = gql`
 query ProcessManyPRs($after: String) {
   repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
+    id
     pullRequests(orderBy: { field: UPDATED_AT, direction: DESC }, states: [OPEN], first: 100, after: $after) {
       edges {
         cursor
