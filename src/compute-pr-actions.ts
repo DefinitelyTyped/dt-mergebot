@@ -182,7 +182,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
         const mkStaleness = makeStaleness(info.now, info.author, otherOwners);
         if (canBeSelfMerged && info.mergeOfferDate) return mkStaleness(
             "Unmerged", info.mergeOfferDate, 4, 9, 30, "CLOSE");
-        if (needsAuthorAction) return mkStaleness(
+        if (info.projectColumnName === "Needs Author Action") return mkStaleness(
             "Abandoned", info.lastActivityDate, 6, 22, 30, "CLOSE");
         if (!approved) return mkStaleness(
             "Unreviewed", info.lastPushDate, 6, 10, 17, "Needs Maintainer Action");

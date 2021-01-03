@@ -140,6 +140,8 @@ export interface PrInfo {
     readonly mergeRequestDate?: Date;
     readonly mergeRequestUser?: string;
 
+    readonly projectColumnName?: string;
+
     readonly isFirstContribution: boolean;
 
     readonly popularityLevel: PopularityLevel;
@@ -241,6 +243,7 @@ export async function deriveStateForPR(
         maintainerBlessed: lastBlessing ? lastBlessing > lastPushDate : false,
         mergeOfferDate, mergeRequestDate: mergeRequest?.date, mergeRequestUser: mergeRequest?.user,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
+        projectColumnName: prInfo.projectCards.nodes?.find(card => card?.project.number === 5)?.column?.name,
         isFirstContribution,
         popularityLevel,
         pkgInfo,
