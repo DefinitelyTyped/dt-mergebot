@@ -41,6 +41,7 @@ export interface ProcessManyPRs_repository_pullRequests {
 
 export interface ProcessManyPRs_repository {
   __typename: "Repository";
+  id: string;
   /**
    * A list of pull requests that have been opened in the repository.
    */

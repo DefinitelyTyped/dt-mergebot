@@ -35,6 +35,7 @@ export interface GetProjectColumns_repository_project {
 
 export interface GetProjectColumns_repository {
   __typename: "Repository";
+  id: string;
   /**
    * Find project by number.
    */

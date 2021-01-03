@@ -16,6 +16,7 @@ query GetLabels {
 export const GetProjectColumns = gql`
 query GetProjectColumns {
   repository(name:"DefinitelyTyped", owner:"DefinitelyTyped") {
+    id
     project(number: 5) {
       id
       columns(first: 30) {
