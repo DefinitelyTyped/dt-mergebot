@@ -4,7 +4,7 @@ const { queryPRInfo, deriveStateForPR } = require("../bin/pr-info");
 const compute = require("../bin/compute-pr-actions");
 const { executePrActions } = require("../bin/execute-pr-actions");
 const { mergeCodeOwnersOnGreen } = require("../bin/side-effects/merge-codeowner-prs");
-const Webhooks = require("@octokit/webhooks");
+const {Webhooks} = require("@octokit/webhooks");
 const { runQueryToGetPRMetadataForSHA1 } = require("../bin/queries/SHA1-to-PR-query");
 
 const prHandlers = new Map();
