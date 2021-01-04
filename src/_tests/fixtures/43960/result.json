@@ -3,16 +3,21 @@
   "targetColumn": "Needs Author Action",
   "labels": [
     "Revision needed",
-    "Popular package"
+    "Popular package",
+    "Unreviewed"
   ],
   "responseComments": [
     {
       "tag": "welcome",
-      "status": "@aaltepet Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `supertest` [on npm](https://www.npmjs.com/package/supertest), [on unpkg](https://unpkg.com/browse/supertest@latest/)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by type definition owners or DT maintainers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+      "status": "@aaltepet Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `supertest` [on npm](https://www.npmjs.com/package/supertest), [on unpkg](https://unpkg.com/browse/supertest@latest/)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Most recent commit is approved by type definition owners or DT maintainers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 13 days — please try to get reviewers!\n\n----------------------\n... diagnostics scrubbed ..."
     },
     {
       "tag": "reviewer-complaint-129f84e",
       "status": "@aaltepet One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!"
+    },
+    {
+      "tag": "Unreviewed:nearly:2020-04-16",
+      "status": "Re-ping @varju, @pietu:\n\nThis PR has been out for over a week, yet I haven't seen any reviews.\n\nCould someone please give it some attention? Thanks!"
     }
   ],
   "shouldClose": false,

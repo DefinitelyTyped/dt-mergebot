@@ -11,6 +11,7 @@
   "mergeRequestDate": "2020-07-06T08:36:06.000Z",
   "mergeRequestUser": "spamshaker",
   "hasMergeConflict": false,
+  "projectColumnName": "Needs Maintainer Review",
   "isFirstContribution": false,
   "popularityLevel": "Critical",
   "pkgInfo": [

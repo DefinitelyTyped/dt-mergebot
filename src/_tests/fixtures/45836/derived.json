@@ -11,6 +11,7 @@
   "mergeRequestDate": "2020-07-08T17:47:50.000Z",
   "mergeRequestUser": "mmorearty",
   "hasMergeConflict": false,
+  "projectColumnName": "Needs Author Action",
   "isFirstContribution": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [

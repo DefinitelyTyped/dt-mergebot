@@ -8,6 +8,7 @@
   "lastActivityDate": "2020-08-30T10:22:56.000Z",
   "maintainerBlessed": false,
   "hasMergeConflict": false,
+  "projectColumnName": "Needs Maintainer Action",
   "isFirstContribution": false,
   "popularityLevel": "Critical",
   "pkgInfo": [

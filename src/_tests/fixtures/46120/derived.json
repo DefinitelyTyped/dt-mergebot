@@ -10,6 +10,7 @@
   "mergeRequestDate": "2020-07-19T16:36:44.000Z",
   "mergeRequestUser": "reubenrybnik",
   "hasMergeConflict": false,
+  "projectColumnName": "Needs Maintainer Action",
   "isFirstContribution": false,
   "popularityLevel": "Popular",
   "pkgInfo": [
