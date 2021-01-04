@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { ApolloClient, gql, HttpLink, InMemoryCache, TypedDocumentNode } from "@apollo/client/core";
+import { ApolloClient, gql, HttpLink, InMemoryCache, MutationOptions, TypedDocumentNode } from "@apollo/client/core";
 import { print } from "graphql";
 import * as schema from "@octokit/graphql-schema/schema";
 
@@ -15,20 +15,16 @@ const link = new HttpLink({ uri, headers, fetch });
 
 export const client = new ApolloClient({ cache, link, defaultOptions: { query: { errorPolicy: "all" } } });
 
-type Mutation<T> = {
-    mutation: TypedDocumentNode<void, { input: T }>,
-    variables: { input: T },
-    asJson: () => unknown
-};
-
-export function createMutation<T>(name: keyof schema.Mutation, input: T): Mutation<T> {
-    return {
-        mutation: gql`mutation($input: ${name[0].toUpperCase() + name.slice(1)}Input!) {
-                        ${name}(input: $input) { __typename } }
-                     ` as TypedDocumentNode<void, { input: T }>,
-        variables: { input },
-        asJson: function() { return { ...this, mutation: print(this.mutation) } }
+export function createMutation<T>(name: keyof schema.Mutation, input: T): MutationOptions<void, { input: T }> {
+    const mutation = {
+        toJSON: () => print(mutation),
+        ...(gql`mutation($input: ${name[0].toUpperCase() + name.slice(1)}Input!) {
+                    ${name}(input: $input) {
+                        __typename
+                    }
+                }` as TypedDocumentNode<void, { input: T }>),
     };
+    return { mutation, variables: { input } };
 }
 
 function getAuthToken() {

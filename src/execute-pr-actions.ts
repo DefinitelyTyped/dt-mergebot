@@ -1,3 +1,4 @@
+import { MutationOptions } from "@apollo/client/core";
 import * as schema from "@octokit/graphql-schema/schema";
 import { PR as PRQueryResult, PR_repository_pullRequest } from "./queries/schema/PR";
 import { Actions, LabelNames, LabelName } from "./compute-pr-actions";
@@ -22,7 +23,8 @@ export async function executePrActions(actions: Actions, info: PRQueryResult, dr
     ]);
     if (!dry) {
         // Perform mutations one at a time
-        for (const mutation of mutations) await client.mutate<void, typeof mutations[number]["variables"]>(mutation);
+        for (const mutation of mutations)
+            await client.mutate(mutation as MutationOptions<void, typeof mutations[number]["variables"]>);
     }
     return mutations;
 }

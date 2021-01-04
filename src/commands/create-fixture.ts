@@ -51,7 +51,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
 
   const mutationsFixturePath = join(fixturePath, "mutations.json");
   const mutations = await executePrActions(actions, response.data, /*dry*/ true);
-  writeJsonSync(mutationsFixturePath, mutations.map(m => m.asJson()));
+  writeJsonSync(mutationsFixturePath, mutations);
 
   console.log(`Recorded`);
 
