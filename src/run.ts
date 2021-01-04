@@ -87,7 +87,7 @@ const start = async function () {
         if (args["show-actions"]) show("Actions", actions);
         // Act on the actions
         const mutations = await executePrActions(actions, info.data, args.dry);
-        if (args["show-mutations"] ?? args.dry) show("Mutations", mutations.map(m => m.asJson()));
+        if (args["show-mutations"] ?? args.dry) show("Mutations", mutations);
     }
     if (args.dry || !args.cleanup) return;
     //

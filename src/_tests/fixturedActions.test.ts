@@ -49,7 +49,7 @@ async function testFixture(dir: string) {
   expect(JSONString(derived)).toMatchFile(derivedPath);
 
   const mutations = await executePrActions(action, response.data, /*dry*/ true);
-  expect(JSONString(mutations.map(m => m.asJson()))).toMatchFile(mutationsPath);
+  expect(JSONString(mutations)).toMatchFile(mutationsPath);
 }
 
 describe("Test fixtures", () => {
