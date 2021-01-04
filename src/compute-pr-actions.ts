@@ -98,7 +98,6 @@ type ApproverKind = "maintainer" | "owner" | "other";
 // used to pass around pr info with additional values
 export interface ExtendedPrInfo extends PrInfo {
     readonly orig: PrInfo;
-    readonly headCommitAbbrOid: string;
     readonly editsInfra: boolean;
     readonly checkConfig: boolean;
     readonly authorIsOwner: boolean;
@@ -134,7 +133,6 @@ export interface ExtendedPrInfo extends PrInfo {
     readonly isAuthor: (user: string) => boolean; // specialized version of sameUser
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
-    const headCommitAbbrOid = abbrOid(info.headCommitOid);
     const isAuthor = (user: string) => sameUser(user, info.author);
     const authorIsOwner = info.pkgInfo.every(p => p.owners.some(isAuthor));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
@@ -170,7 +168,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const staleness = getStaleness();
     const reviewColumn = getReviewColumn();
     return {
-        ...info, orig: info, headCommitAbbrOid,
+        ...info, orig: info,
         authorIsOwner, editsInfra, checkConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeSelfMerged, hasValidMergeRequest, pendingCriticalPackages, approved, approverKind,
         requireMaintainer, blessable, failedCI, staleness,
@@ -302,6 +300,7 @@ export function process(prInfo: BotNotFail,
     post({ tag: "welcome", status: createWelcomeComment(info, post) });
 
     // Ping reviewers when needed
+    const headCommitAbbrOid = abbrOid(info.headCommitOid);
     if (!(info.hasChangereqs || info.approvedBy.includes("owner") || info.approvedBy.includes("maintainer"))) {
         if (info.noOtherOwners) {
             if (info.popularityLevel !== "Critical") {
@@ -320,9 +319,9 @@ export function process(prInfo: BotNotFail,
     // Needs author attention (bad CI, merge conflicts)
     if (info.needsAuthorAction) {
         context.targetColumn = "Needs Author Action";
-        if (info.hasMergeConflict) post(Comments.MergeConflicted(info.headCommitAbbrOid, info.author));
-        if (info.failedCI) post(Comments.CIFailed(info.headCommitAbbrOid, info.author, info.ciUrl!));
-        if (info.hasChangereqs) post(Comments.ChangesRequest(info.headCommitAbbrOid, info.author));
+        if (info.hasMergeConflict) post(Comments.MergeConflicted(headCommitAbbrOid, info.author));
+        if (info.failedCI) post(Comments.CIFailed(headCommitAbbrOid, info.author, info.ciUrl!));
+        if (info.hasChangereqs) post(Comments.ChangesRequest(headCommitAbbrOid, info.author));
     }
     // CI is running; default column is Waiting for Reviewers
     else if (info.ciResult === CIResult.Pending) {
@@ -341,7 +340,7 @@ export function process(prInfo: BotNotFail,
             // post even when merging, so it won't get deleted
             post(Comments.OfferSelfMerge(info.author,
                                          (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners,
-                                         info.headCommitAbbrOid));
+                                         headCommitAbbrOid));
             if (info.hasValidMergeRequest) {
                 context.shouldMerge = true;
                 context.targetColumn = "Recently Merged";
@@ -358,7 +357,7 @@ export function process(prInfo: BotNotFail,
     }
 
     if (!context.shouldMerge && info.mergeRequestUser) {
-        post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, info.headCommitAbbrOid, urls.workflow));
+        post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, headCommitAbbrOid, urls.workflow));
     }
 
     // Timeline-related actions
