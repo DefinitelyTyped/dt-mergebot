@@ -4,8 +4,7 @@ const { queryPRInfo, deriveStateForPR } = require("../bin/pr-info");
 const compute = require("../bin/compute-pr-actions");
 const { executePrActions } = require("../bin/execute-pr-actions");
 const { mergeCodeOwnersOnGreen } = require("../bin/side-effects/merge-codeowner-prs");
-const verify = require("@octokit/webhooks/verify");
-const sign = require("@octokit/webhooks/sign");
+const Webhooks = require("@octokit/webhooks");
 const { runQueryToGetPRMetadataForSHA1 } = require("../bin/queries/SHA1-to-PR-query");
 
 const prHandlers = new Map();
@@ -26,10 +25,11 @@ const httpTrigger = async function (context, _req) {
 
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
-
+    const webhooks = new Webhooks({ secret });
+    
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
-    if (!isDev && !verify(secret, req.body, sign(secret, req.body))) {
+    if (!isDev && !webhooks.verify(req.body, webhooks.sign(req.body))) {
       context.res = {
         status: 500,
         body: "This webhook did not come from GitHub"
