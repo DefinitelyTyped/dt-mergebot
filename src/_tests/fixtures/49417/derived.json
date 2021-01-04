@@ -48,7 +48,7 @@
       "type": "stale",
       "reviewer": "tuuling",
       "date": "2020-11-07T21:37:04.000Z",
-      "oid": "525f75c2fecceb410d9fa026bb218476fbe1c66a"
+      "abbrOid": "525f75c"
     }
   ],
   "ciResult": "pass"

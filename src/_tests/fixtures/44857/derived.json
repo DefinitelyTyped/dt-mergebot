@@ -151,7 +151,7 @@
       "type": "stale",
       "reviewer": "SimonSchick",
       "date": "2020-05-19T23:20:53.000Z",
-      "oid": "b0cfd1831489d8d97e07f8f38ca5ea92a289d7f4"
+      "abbrOid": "b0cfd18"
     }
   ],
   "ciResult": "pass"

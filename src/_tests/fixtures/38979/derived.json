@@ -323,13 +323,13 @@
       "type": "stale",
       "reviewer": "sandersn",
       "date": "2019-10-22T22:56:09.000Z",
-      "oid": "3aba5ac906488433b92621605ef1eaceff29679b"
+      "abbrOid": "3aba5ac"
     },
     {
       "type": "stale",
       "reviewer": "weswigham",
       "date": "2019-10-22T22:20:55.000Z",
-      "oid": "0e6e7f4d543b37e7862868499883a4afb3f59e5c"
+      "abbrOid": "0e6e7f4"
     }
   ],
   "ciResult": "pass"

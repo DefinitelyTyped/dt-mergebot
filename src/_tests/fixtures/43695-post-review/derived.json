@@ -50,7 +50,7 @@
       "type": "stale",
       "reviewer": "RyanCavanaugh",
       "date": "2020-04-08T16:23:52.000Z",
-      "oid": "a5285cda2722912a390770722a334e6d6e43d1ab"
+      "abbrOid": "a5285cd"
     }
   ],
   "ciResult": "pass"

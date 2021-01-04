@@ -3,7 +3,7 @@ import * as urls from "./urls";
 import { PrInfo, BotNotFail, FileInfo } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
-import { noNullish, flatten, unique, sameUser, daysSince, sha256, min } from "./util/util";
+import { noNullish, flatten, unique, sameUser, daysSince, min, sha256, abbrOid } from "./util/util";
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -98,6 +98,7 @@ type ApproverKind = "maintainer" | "owner" | "other";
 // used to pass around pr info with additional values
 export interface ExtendedPrInfo extends PrInfo {
     readonly orig: PrInfo;
+    readonly headCommitAbbrOid: string;
     readonly editsInfra: boolean;
     readonly checkConfig: boolean;
     readonly authorIsOwner: boolean;
@@ -131,9 +132,9 @@ export interface ExtendedPrInfo extends PrInfo {
     readonly needsAuthorAction: boolean;
     readonly reviewColumn: ColumnName;
     readonly isAuthor: (user: string) => boolean; // specialized version of sameUser
-    readonly headCommitAbbrOid: string;
 }
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
+    const headCommitAbbrOid = abbrOid(info.headCommitOid);
     const isAuthor = (user: string) => sameUser(user, info.author);
     const authorIsOwner = info.pkgInfo.every(p => p.owners.some(isAuthor));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
@@ -168,15 +169,14 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     //      => could be dropped from the extended info and replaced with: info.staleness?.kind === "Abandoned"
     const staleness = getStaleness();
     const reviewColumn = getReviewColumn();
-    const headCommitAbbrOid = info.headCommitOid.slice(0, 7);
     return {
-        ...info, orig: info,
+        ...info, orig: info, headCommitAbbrOid,
         authorIsOwner, editsInfra, checkConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeSelfMerged, hasValidMergeRequest, pendingCriticalPackages, approved, approverKind,
         requireMaintainer, blessable, failedCI, staleness,
         packages, hasMultiplePackages, hasDefinitions, hasTests, isUntested, newPackages, hasNewPackages, hasEditedPackages,
         approvedReviews, changereqReviews, staleReviews, approvedBy, hasChangereqs,
-        needsAuthorAction, reviewColumn, isAuthor, headCommitAbbrOid
+        needsAuthorAction, reviewColumn, isAuthor
     };
 
     // Staleness timeline configurations (except for texts that are all in `comments.ts`)
@@ -351,9 +351,9 @@ export function process(prInfo: BotNotFail,
         }
         // Ping stale reviewers if any
         if (info.staleReviews.length > 0) {
-            const { oid } = min(info.staleReviews, (l, r) => +l.date - +r.date)!;
+            const { abbrOid } = min(info.staleReviews, (l, r) => +l.date - +r.date)!;
             const reviewers = info.staleReviews.map(r => r.reviewer);
-            post(Comments.PingStaleReviewer(oid.slice(0, 7), reviewers));
+            post(Comments.PingStaleReviewer(abbrOid, reviewers));
         }
     }
 
