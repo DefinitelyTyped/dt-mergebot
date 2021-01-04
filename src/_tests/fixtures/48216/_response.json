@@ -77,6 +77,51 @@
           "nodes": [],
           "__typename": "PullRequestReviewConnection"
         },
+        "commits": {
+          "totalCount": 1,
+          "nodes": [
+            {
+              "commit": {
+                "checkSuites": {
+                  "nodes": [
+                    {
+                      "app": {
+                        "name": "GitHub Actions",
+                        "__typename": "App"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/3f689bfb9d310612cdaf7c52c7ead41d1181b52f/checks?check_suite_id=1252086451",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/3f689bfb9d310612cdaf7c52c7ead41d1181b52f/checks?check_suite_id=1252086451",
+                      "__typename": "CheckSuite"
+                    },
+                    {
+                      "app": {
+                        "name": "Azure Pipelines",
+                        "__typename": "App"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/3f689bfb9d310612cdaf7c52c7ead41d1181b52f/checks?check_suite_id=1252086960",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/3f689bfb9d310612cdaf7c52c7ead41d1181b52f/checks?check_suite_id=1252086960",
+                      "__typename": "CheckSuite"
+                    }
+                  ],
+                  "__typename": "CheckSuiteConnection"
+                },
+                "status": null,
+                "authoredDate": "2020-08-28T18:17:12Z",
+                "committedDate": "2020-09-27T17:21:32Z",
+                "pushedDate": "2020-09-27T17:23:58Z",
+                "abbreviatedOid": "3f689bf",
+                "oid": "3f689bfb9d310612cdaf7c52c7ead41d1181b52f",
+                "__typename": "Commit"
+              },
+              "__typename": "PullRequestCommit"
+            }
+          ],
+          "__typename": "PullRequestCommitConnection"
+        },
         "comments": {
           "totalCount": 3,
           "nodes": [
@@ -163,45 +208,7 @@
           ],
           "__typename": "ProjectCardConnection"
         },
-        "__typename": "PullRequest",
-        "headRef": {
-          "target": {
-            "checkSuites": {
-              "nodes": [
-                {
-                  "app": {
-                    "name": "GitHub Actions",
-                    "__typename": "App"
-                  },
-                  "conclusion": "SUCCESS",
-                  "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/3f689bfb9d310612cdaf7c52c7ead41d1181b52f/checks?check_suite_id=1252086451",
-                  "status": "COMPLETED",
-                  "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/3f689bfb9d310612cdaf7c52c7ead41d1181b52f/checks?check_suite_id=1252086451",
-                  "__typename": "CheckSuite"
-                },
-                {
-                  "app": {
-                    "name": "Azure Pipelines",
-                    "__typename": "App"
-                  },
-                  "conclusion": "SUCCESS",
-                  "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/3f689bfb9d310612cdaf7c52c7ead41d1181b52f/checks?check_suite_id=1252086960",
-                  "status": "COMPLETED",
-                  "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/3f689bfb9d310612cdaf7c52c7ead41d1181b52f/checks?check_suite_id=1252086960",
-                  "__typename": "CheckSuite"
-                }
-              ],
-              "__typename": "CheckSuiteConnection"
-            },
-            "status": null,
-            "authoredDate": "2020-08-28T18:17:12Z",
-            "committedDate": "2020-09-27T17:21:32Z",
-            "pushedDate": "2020-09-27T17:23:58Z",
-            "abbreviatedOid": "3f689bf",
-            "oid": "3f689bfb9d310612cdaf7c52c7ead41d1181b52f",
-            "__typename": "Commit"
-          }
-        }
+        "__typename": "PullRequest"
       },
       "__typename": "Repository"
     }

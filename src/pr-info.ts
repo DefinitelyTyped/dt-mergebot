@@ -1,7 +1,7 @@
 import { GetPRInfo } from "./queries/pr-query";
-import { PR as PRQueryResult,
+import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest,
          PR_repository_pullRequest,
-         PR_repository_pullRequest_headRef_target_Commit_checkSuites,
+         PR_repository_pullRequest_commits_nodes_commit_checkSuites,
          PR_repository_pullRequest_timelineItems,
          PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent,
          PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent,
@@ -155,6 +155,10 @@ export type BotNotFail =
 
 export type BotResult = BotNotFail | BotFail;
 
+function getHeadCommit(pr: GraphqlPullRequest) {
+    return pr.commits.nodes?.find(c => c?.commit.oid === pr.headRefOid)?.commit;
+}
+
 // Just the networking
 export async function queryPRInfo(prNumber: number) {
     // The query can return a mergeable value of `UNKNOWN`, and then it takes a
@@ -198,8 +202,8 @@ export async function deriveStateForPR(
     if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft", true);
     if (prInfo.state !== PullRequestState.OPEN) return botEnsureRemovedFromProject(prInfo.number, "PR is not active", false);
 
-    const headCommit = prInfo.headRef?.target;
-    if (headCommit == null || headCommit.__typename !== "Commit") return botError(prInfo.number, "No head commit found");
+    const headCommit = getHeadCommit(prInfo);
+    if (headCommit == null) return botError(prInfo.number, "No head commit found");
 
     const author = prInfo.author.login;
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
@@ -476,7 +480,7 @@ function getReviews(prInfo: PR_repository_pullRequest) {
     return reviews;
 }
 
-function getCIResult(checkSuites: PR_repository_pullRequest_headRef_target_Commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string } {
+function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string } {
     const totalStatusChecks = checkSuites?.nodes?.find(check => check?.app?.name?.includes("GitHub Actions"));
     if (!totalStatusChecks) return { ciResult: CIResult.Missing, ciUrl: undefined };
     switch (totalStatusChecks.conclusion) {
