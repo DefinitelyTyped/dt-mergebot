@@ -73,19 +73,19 @@
       "type": "stale",
       "reviewer": "RyanCavanaugh",
       "date": "2020-10-29T23:54:49.000Z",
-      "oid": "fa21531bf01c1039bcd9c5d04bb2e985ba3de267"
+      "abbrOid": "fa21531"
     },
     {
       "type": "stale",
       "reviewer": "thorn0",
       "date": "2020-10-13T08:31:51.000Z",
-      "oid": "fa21531bf01c1039bcd9c5d04bb2e985ba3de267"
+      "abbrOid": "fa21531"
     },
     {
       "type": "stale",
       "reviewer": "falsyvalues",
       "date": "2020-10-12T07:07:50.000Z",
-      "oid": "753cdb3bd4c27ade5335dcc067a0aadd76a05283"
+      "abbrOid": "753cdb3"
     }
   ],
   "ciResult": "pass"

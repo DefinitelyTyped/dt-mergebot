@@ -37,7 +37,7 @@
       "type": "stale",
       "reviewer": "RReverser",
       "date": "2020-03-14T19:23:36.000Z",
-      "oid": "37d784d0adbacbfc8fc730c5db4754e1338c611e"
+      "abbrOid": "37d784d"
     }
   ],
   "ciResult": "pass"

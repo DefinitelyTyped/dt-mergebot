@@ -14,7 +14,7 @@ import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { ApolloQueryResult } from "@apollo/client/core";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNullish, findLast, sameUser, authorNotBot, max } from "./util/util";
+import { noNullish, findLast, sameUser, authorNotBot, max, abbrOid } from "./util/util";
 import * as comment from "./util/comment";
 import * as urls from "./urls";
 import * as HeaderParser from "@definitelytyped/header-parser";
@@ -78,7 +78,7 @@ export type ReviewInfo = {
 } & (
     | { type: "approved", isMaintainer: boolean }
     | { type: "changereq" }
-    | { type: "stale", oid: string }
+    | { type: "stale", abbrOid: string }
 );
 
 export interface PrInfo {
@@ -433,7 +433,7 @@ function getMergeOfferDate(comments: PR_repository_pullRequest_comments_nodes[],
     const offer = latestComment(comments.filter(c =>
         sameUser("typescript-bot", c.author?.login || "-")
         && comment.parse(c.body)?.tag === "merge-offer"
-        && c.body.includes(`(at ${headOid.slice(0, 7)})`)));
+        && c.body.includes(`(at ${abbrOid(headOid)})`)));
     return offer && new Date(offer.createdAt);
 }
 
@@ -461,7 +461,7 @@ function getReviews(prInfo: PR_repository_pullRequest) {
         if (reviews.find(r => sameUser(r.reviewer, reviewer))) continue;
         // collect reviews by type
         if (r.commit.oid !== headCommitOid) {
-            reviews.push({ type: "stale", reviewer, date, oid: r.commit.oid });
+            reviews.push({ type: "stale", reviewer, date, abbrOid: abbrOid(r.commit.oid) });
             continue;
         }
         if (r.state === PullRequestReviewState.CHANGES_REQUESTED) {
