@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import { print } from "graphql";
 import * as schema from "@octokit/graphql-schema/schema";
 import * as yargs from "yargs";
 import { process as computeActions } from "./compute-pr-actions";
@@ -88,7 +87,7 @@ const start = async function () {
         if (args["show-actions"]) show("Actions", actions);
         // Act on the actions
         const mutations = await executePrActions(actions, info.data, args.dry);
-        if (args["show-mutations"] ?? args.dry) show("Mutations", mutations.map(({ mutation, ...options }) => ({ mutation: print(mutation), ...options })));
+        if (args["show-mutations"] ?? args.dry) show("Mutations", mutations.map(m => m.asJson()));
     }
     if (args.dry || !args.cleanup) return;
     //
