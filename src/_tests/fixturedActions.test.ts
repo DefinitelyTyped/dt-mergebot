@@ -1,6 +1,5 @@
 import { readdirSync, readFileSync, lstatSync } from "fs";
 import { join } from "path";
-import { print } from "graphql";
 import { toMatchFile } from "jest-file-snapshot";
 import { process } from "../compute-pr-actions";
 import { deriveStateForPR, BotResult } from "../pr-info";
@@ -50,7 +49,7 @@ async function testFixture(dir: string) {
   expect(JSONString(derived)).toMatchFile(derivedPath);
 
   const mutations = await executePrActions(action, response.data, /*dry*/ true);
-  expect(JSONString(mutations.map(({ mutation, ...options }) => ({ mutation: print(mutation), ...options })))).toMatchFile(mutationsPath);
+  expect(JSONString(mutations.map(m => m.asJson()))).toMatchFile(mutationsPath);
 }
 
 describe("Test fixtures", () => {

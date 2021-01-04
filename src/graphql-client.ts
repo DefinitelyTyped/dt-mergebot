@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import { ApolloClient, gql, HttpLink, InMemoryCache, TypedDocumentNode } from "@apollo/client/core";
+import { print } from "graphql";
 import * as schema from "@octokit/graphql-schema/schema";
 
 const headers = {
@@ -10,28 +11,28 @@ const headers = {
 const uri = "https://api.github.com/graphql";
 
 const cache = new InMemoryCache();
-const link = new HttpLink({
-    uri,
-    headers,
-    fetch
-});
+const link = new HttpLink({ uri, headers, fetch });
 
-export const client = new ApolloClient({ cache, link, defaultOptions: {
-    query: {
-      errorPolicy: "all"
-    }
-  }
-});
+export const client = new ApolloClient({ cache, link, defaultOptions: { query: { errorPolicy: "all" } } });
 
-export function createMutation<T>(name: keyof schema.Mutation, input: T) {
+type Mutation<T> = {
+    mutation: TypedDocumentNode<void, { input: T }>,
+    variables: { input: T },
+    asJson: () => unknown
+};
+
+export function createMutation<T>(name: keyof schema.Mutation, input: T): Mutation<T> {
     return {
-        mutation: gql`mutation($input: ${name[0].toUpperCase() + name.slice(1)}Input!) { ${name}(input: $input) { __typename } }` as TypedDocumentNode<void, { input: T }>,
-        variables: { input }
+        mutation: gql`mutation($input: ${name[0].toUpperCase() + name.slice(1)}Input!) {
+                        ${name}(input: $input) { __typename } }
+                     ` as TypedDocumentNode<void, { input: T }>,
+        variables: { input },
+        asJson: function() { return { ...this, mutation: print(this.mutation) } }
     };
 }
 
 function getAuthToken() {
-    if (process.env.JEST_WORKER_ID) return "FAKE_TOKEN"
+    if (process.env.JEST_WORKER_ID) return "FAKE_TOKEN";
 
     const result = process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"];
     if (typeof result !== 'string') {
