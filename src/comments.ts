@@ -1,5 +1,3 @@
-import { sha256 } from "./util/util";
-
 // use `deletedWhenNotPresent` for comments that should be removed if not in the actions
 export const tagsToDeleteIfNotPosted: string[] = [];
 const deletedWhenNotPresent = <T>(tag: string, f: (tag: string) => T) => {
@@ -59,7 +57,7 @@ ${names.map(n => `${n}`).join(" ")}
 });
 
 export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) => ({
-    tag: `stale-ping-${sha256(reviewers.join("-")).substr(0, 6)}-${reviewedAbbrOid}`,
+    tag: `stale-ping-${reviewedAbbrOid}`,
     status: `@${reviewers.join(", @")} Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?`
 });
 
