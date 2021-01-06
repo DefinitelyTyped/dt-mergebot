@@ -54,7 +54,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0Mzg4MzgyMzYy",
-        "body": "@RReverser Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-f5a3ad-37d784d-->"
+        "body": "@RReverser Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-37d784d-->"
       }
     }
   }

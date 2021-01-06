@@ -666,7 +666,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@tuuling Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-98aca3-525f75c-->",
+              "body": "@tuuling Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-525f75c-->",
               "createdAt": "2020-11-08T07:57:39Z",
               "reactions": {
                 "nodes": [],

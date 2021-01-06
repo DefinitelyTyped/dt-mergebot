@@ -620,7 +620,7 @@
                 "__typename": "User",
                 "login": "typescript-bot"
               },
-              "body": "@ExE-Boss Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-e9b7ba-1ec185f-->",
+              "body": "@ExE-Boss Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-1ec185f-->",
               "createdAt": "2020-11-29T12:40:07Z",
               "reactions": {
                 "__typename": "ReactionConnection",
@@ -676,7 +676,7 @@
                 "__typename": "User",
                 "login": "typescript-bot"
               },
-              "body": "@rbuckton, @ExE-Boss Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-92b1d6-54b22fd-->",
+              "body": "@rbuckton, @ExE-Boss Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-54b22fd-->",
               "createdAt": "2020-12-08T17:41:30Z",
               "reactions": {
                 "__typename": "ReactionConnection",
@@ -768,7 +768,7 @@
                 "__typename": "User",
                 "login": "typescript-bot"
               },
-              "body": "@ExE-Boss, @rbuckton Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-fdfaf0-54b22fd-->",
+              "body": "@ExE-Boss, @rbuckton Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-54b22fd-->",
               "createdAt": "2021-01-01T13:52:27Z",
               "reactions": {
                 "__typename": "ReactionConnection",

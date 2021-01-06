@@ -649,7 +649,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@RyanCavanaugh Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-fbf110-a5285cd-->",
+              "body": "@RyanCavanaugh Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-a5285cd-->",
               "createdAt": "2020-04-15T16:26:50Z",
               "reactions": {
                 "nodes": [],
@@ -663,7 +663,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@RyanCavanaugh Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-fbf110-a5285cd-->",
+              "body": "@RyanCavanaugh Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-a5285cd-->",
               "createdAt": "2020-04-15T16:26:50Z",
               "reactions": {
                 "nodes": [],

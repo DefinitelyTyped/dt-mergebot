@@ -310,7 +310,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@peterblazejewicz Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-ef7ed8-5e68fad-->",
+              "body": "@peterblazejewicz Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-5e68fad-->",
               "createdAt": "2020-07-04T22:05:17Z",
               "reactions": {
                 "nodes": [],

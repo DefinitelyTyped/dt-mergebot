@@ -33,7 +33,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTI0NjE3Njcz",
-        "body": "@ExE-Boss, @rbuckton Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-fdfaf0-9ba9fdd-->"
+        "body": "@ExE-Boss, @rbuckton Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-9ba9fdd-->"
       }
     }
   }

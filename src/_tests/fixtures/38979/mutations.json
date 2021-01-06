@@ -51,11 +51,11 @@
     }
   },
   {
-    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
-        "subjectId": "MDExOlB1bGxSZXF1ZXN0MzI1ODk5Njc0",
-        "body": "@sandersn, @weswigham Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-764528-3aba5ac-->"
+        "id": "MDEyOklzc3VlQ29tbWVudDYyNzA5NzAxNw==",
+        "body": "@sandersn, @weswigham Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-3aba5ac-->"
       }
     }
   },

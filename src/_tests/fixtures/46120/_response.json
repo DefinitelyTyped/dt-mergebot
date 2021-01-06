@@ -2078,7 +2078,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@jgonggrijp Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-f6fb8c-7fbaab6-->",
+              "body": "@jgonggrijp Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-7fbaab6-->",
               "createdAt": "2020-07-17T05:47:20Z",
               "reactions": {
                 "nodes": [],
