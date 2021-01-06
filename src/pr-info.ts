@@ -484,7 +484,10 @@ function getReviews(prInfo: PR_repository_pullRequest) {
 }
 
 function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string } {
-    const totalStatusChecks = checkSuites?.nodes?.find(check => check?.app?.name?.includes("GitHub Actions"));
+    const totalStatusChecks = checkSuites?.nodes?.find(check =>
+        check?.app?.name?.includes("GitHub Actions") &&
+        check.checkRuns?.nodes?.[0]?.title === "test"
+    );
     if (!totalStatusChecks) return { ciResult: CIResult.Missing, ciUrl: undefined };
     switch (totalStatusChecks.conclusion) {
         case CheckConclusionState.SUCCESS:
