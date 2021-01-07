@@ -1,5 +1,3 @@
-// @ts-check
-
 const { queryPRInfo, deriveStateForPR } = require("../bin/pr-info");
 const compute = require("../bin/compute-pr-actions");
 const { executePrActions } = require("../bin/execute-pr-actions");
@@ -26,7 +24,7 @@ const httpTrigger = async function (context, _req) {
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
     const webhooks = new Webhooks({ secret });
-    
+
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
     if (!isDev && !webhooks.verify(req.body, webhooks.sign(req.body))) {

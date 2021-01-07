@@ -1,9 +1,10 @@
 {
-    "include": ["src"],
-    "exclude": ["src/use-pr-info.ts"],
+    "references": [
+        { "path": "src" },
+        { "path": "PR-Trigger" }
+    ],
     "compilerOptions": {
-        "outDir": "bin",
-        "rootDir": "src",
+        "composite": true,
         "strict": true,
         "module": "commonjs",
         "target": "es6",

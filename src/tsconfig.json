@@ -1,0 +1,10 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../bin"
+    },
+    "include": [
+        "./**/*.ts",
+        "./_tests/cachedQueries.json"
+    ]
+}
