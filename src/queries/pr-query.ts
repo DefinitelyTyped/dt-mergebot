@@ -89,6 +89,11 @@ query PR($pr_number: Int!) {
                   resourcePath
                   status
                   url
+                  checkRuns(last: 1) {
+                    nodes {
+                      title
+                    }
+                  }
                 }
               }
               status {

@@ -183,6 +183,22 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_node
   name: string;
 }
 
+export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_checkRuns_nodes {
+  __typename: "CheckRun";
+  /**
+   * A string representing the check run
+   */
+  title: string | null;
+}
+
+export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_checkRuns {
+  __typename: "CheckRunConnection";
+  /**
+   * A list of nodes.
+   */
+  nodes: (PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_checkRuns_nodes | null)[] | null;
+}
+
 export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes {
   __typename: "CheckSuite";
   /**
@@ -205,6 +221,10 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_node
    * The HTTP URL for this check suite
    */
   url: any;
+  /**
+   * The check runs associated with a check suite.
+   */
+  checkRuns: PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_checkRuns | null;
 }
 
 export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites {
