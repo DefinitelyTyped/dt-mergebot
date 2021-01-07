@@ -1,19 +1,16 @@
-const { queryPRInfo, deriveStateForPR } = require("../bin/pr-info");
-const compute = require("../bin/compute-pr-actions");
-const { executePrActions } = require("../bin/execute-pr-actions");
-const { mergeCodeOwnersOnGreen } = require("../bin/side-effects/merge-codeowner-prs");
-const {Webhooks} = require("@octokit/webhooks");
-const { runQueryToGetPRMetadataForSHA1 } = require("../bin/queries/SHA1-to-PR-query");
+import { queryPRInfo, deriveStateForPR } from "../src/pr-info";
+import { process as computeActions } from "../src/compute-pr-actions";
+import { executePrActions } from "../src/execute-pr-actions";
+import { mergeCodeOwnersOnGreen } from "../src/side-effects/merge-codeowner-prs";
+import { runQueryToGetPRMetadataForSHA1 } from "../src/queries/SHA1-to-PR-query";
+import { HttpRequest, Context } from "@azure/functions";
+import { Webhooks, EventPayloads } from "@octokit/webhooks";
 
 const prHandlers = new Map();
 
-/** @type {import("@azure/functions").AzureFunction} */
-const httpTrigger = async function (context, _req) {
-    /** @type {import("@azure/functions").HttpRequest} */
-    const req = _req;
+export async function httpTrigger(context: Context, req: HttpRequest) {
 
-    const result = process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"];
-    if (typeof result !== "string") {
+    if (!(process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"])) {
         throw new Error("Set either BOT_AUTH_TOKEN or AUTH_TOKEN to a valid auth token");
     }
 
@@ -37,26 +34,24 @@ const httpTrigger = async function (context, _req) {
 
     // Allow the bot to run side-effects which are not the 'core' function
     // of the review cycle, but are related to keeping DT running smoothly
-    const sideEffects = {
-        "check_suite": mergeCodeOwnersOnGreen
+    if (event === "check_suite") {
+        await mergeCodeOwnersOnGreen(req.body as EventPayloads.WebhookPayloadCheckSuite);
     }
 
-    if (sideEffects[event]) sideEffects[event](req.body);
-
     // https://developer.github.com/webhooks/
-    const acceptedEventsToActions = {
+    const acceptedEventsToActions: Record<string, string[] | undefined> = {
         "pull_request": ["opened", "closed", "reopened", "edited", "synchronized", "ready_for_review"],
         "pull_request_review": ["submitted", "dismissed"],
         "issue_comment": ["created", "edited", "deleted"],
         "project_card": ["moved"],
         "check_suite": ["completed"]
-    }
-
-    const acceptedEvents = Object.keys(acceptedEventsToActions);
+    };
+    const allowListedActions = acceptedEventsToActions[event];
 
     // Bail if not a PR
-    if (!acceptedEvents.includes(event)) {
-        context.log.info(`Skipped webhook ${event}, do not know how to handle the event - accepts: ${acceptedEvents.join(", ")}`);
+    if (!allowListedActions) {
+        context.log.info(`Skipped webhook ${event}, do not know how to handle the event - accepts: ${
+          Object.keys(acceptedEventsToActions).join(", ")}`);
         context.res = {
             status: 204,
             body: "NOOPing due to unknown event"
@@ -64,7 +59,6 @@ const httpTrigger = async function (context, _req) {
         return;
     }
 
-    /** @type {import("@octokit/webhooks").WebhookPayloadPullRequest | import("@octokit/webhooks").WebhookPayloadPullRequestReview | import("@octokit/webhooks").WebhookPayloadIssueComment | import("@octokit/webhooks").WebhookPayloadCheckSuite } */
     const webhook = req.body;
     const action = "action" in webhook ? webhook.action : "status";
 
@@ -77,7 +71,6 @@ const httpTrigger = async function (context, _req) {
         return;
     }
 
-    const allowListedActions = acceptedEventsToActions[event];
     if (!allowListedActions.includes(action) && !allowListedActions.includes("*")) {
         context.log.info(`Skipped webhook, ${action} on ${event}, do not know how to handle the action`);
         context.res = {
@@ -124,7 +117,7 @@ const httpTrigger = async function (context, _req) {
     if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`);
 
     if (prHandlers.has(prNumber)) prHandlers.get(prNumber)(); // cancel older handler for the same pr
-    let aborted = await new Promise(res => {
+    const aborted = await new Promise(res => {
         const timeout = setTimeout(() => res(false), 30000);
         prHandlers.set(prNumber, () => {
             clearTimeout(timeout);
@@ -166,18 +159,8 @@ const httpTrigger = async function (context, _req) {
         return;
     }
 
-    // Allow the state to declare that nothing should happen
-    if (state.type === "noop") {
-        context.log.info(`NOOPing because of: ${state.message}`);
-        context.res = {
-            status: 204,
-            body: `NOOPing because of: ${state.message}`
-        };
-        return;
-    }
-
     // Convert the info to a set of actions for the bot
-    const actions = compute.process(state);
+    const actions = computeActions(state);
 
     // Act on the actions
     await executePrActions(actions, info.data);
@@ -188,6 +171,4 @@ const httpTrigger = async function (context, _req) {
         status: 200,
         body: actions
     };
-};
-
-module.exports = httpTrigger;
+}

@@ -1,10 +1,12 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {
-        "outDir": "../bin/PR-Trigger",
-        "allowJs": true
+        "outDir": "."
     },
-    "files": [
-        "index.js"
+    "include": [
+        "./**/*.ts"
+    ],
+    "references": [
+        { "path": "../src" }
     ]
 }
