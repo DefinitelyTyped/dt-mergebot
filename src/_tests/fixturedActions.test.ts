@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, lstatSync } from "fs";
+import { readdirSync, readJsonSync } from "fs-extra";
 import { join } from "path";
 import { toMatchFile } from "jest-file-snapshot";
 import { process } from "../compute-pr-actions";
@@ -27,18 +27,17 @@ async function testFixture(dir: string) {
   const resultPath = join(dir, "result.json");
   const mutationsPath = join(dir, "mutations.json");
 
-  const readJSON = (file: string) => JSON.parse(readFileSync(file, "utf8"));
   const JSONString = (value: any) => scrubDiagnosticDetails(JSON.stringify(value, null, "  ") + "\n");
 
-  const response = readJSON(responsePath);
-  const files = readJSON(filesPath);
-  const downloads = readJSON(downloadsPath);
+  const response = readJsonSync(responsePath);
+  const files = readJsonSync(filesPath);
+  const downloads = readJsonSync(downloadsPath);
 
   const derived = await deriveStateForPR(
     response,
     (expr: string) => Promise.resolve(files[expr] as string),
     (name: string, _until?: Date) => name in downloads ? downloads[name] : 0,
-    (readJSON(derivedPath) as BotResult).now
+    (readJsonSync(derivedPath) as BotResult).now
   );
 
   if (derived.type === "fail") throw new Error("Should never happen");
@@ -54,10 +53,9 @@ async function testFixture(dir: string) {
 
 describe("Test fixtures", () => {
   const fixturesFolder = join(__dirname, "fixtures");
-  readdirSync(fixturesFolder).forEach(fixtureName => {
-    const fixture = join(fixturesFolder, fixtureName);
-    if (lstatSync(fixture).isDirectory()) {
-      it(`Fixture: ${fixtureName}`, async () => testFixture(fixture));
+  readdirSync(fixturesFolder, { withFileTypes: true }).forEach(dirent => {
+    if (dirent.isDirectory()) {
+      it(`Fixture: ${dirent.name}`, async () => testFixture(join(fixturesFolder, dirent.name)));
     }
   });
 });
