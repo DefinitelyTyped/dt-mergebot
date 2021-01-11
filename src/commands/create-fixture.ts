@@ -1,6 +1,6 @@
 import * as computeActions from "../compute-pr-actions";
 import { deriveStateForPR, BotResult, queryPRInfo } from "../pr-info";
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
+import { writeFileSync, mkdirSync, existsSync, readJsonSync } from "fs-extra";
 import { join } from "path";
 import { fetchFile } from "../util/fetchFile";
 import { getMonthlyDownloadCount } from "../util/npm";
@@ -21,7 +21,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   if (overwriteInfo || !existsSync(jsonFixturePath)) {
     writeJsonSync(jsonFixturePath, await queryPRInfo(prNumber));
   }
-  const response = JSON.parse(readFileSync(jsonFixturePath, "utf8"));
+  const response = readJsonSync(jsonFixturePath);
 
   const filesJSONPath = join(fixturePath, "_files.json");
   const filesFetched: {[expr: string]: string | undefined} = {};
@@ -62,7 +62,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     return filesFetched[expr];
   }
   function getFilesFromFile(expr: string) {
-    return JSON.parse(readFileSync(filesJSONPath, "utf8"))[expr];
+    return readJsonSync(filesJSONPath)[expr];
   }
 
   function initGetDownloadsAndWriteToFile() {
@@ -76,11 +76,11 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     return downloads;
   }
   function getDownloadsFromFile(packageName: string) {
-    return JSON.parse(readFileSync(downloadsJSONPath, "utf8"))[packageName];
+    return readJsonSync(downloadsJSONPath)[packageName];
   }
 
   function getTimeFromFile() {
-    return (JSON.parse(readFileSync(derivedFixturePath, "utf8")) as BotResult).now;
+    return (readJsonSync(derivedFixturePath) as BotResult).now;
   }
 }
 
