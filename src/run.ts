@@ -31,7 +31,7 @@ const args = yargs(process.argv.slice(2))
         if (pr.match(/^\d+$/)) return (n: number) => n === +pr;
         const m = pr.match(/^(\d+)-(\d+)$/);
         if (!m) throw new Error(`bad PR or PR range argument: "${pr}"`);
-        const lo = +m[1], hi = +m[2];
+        const lo = +m[1]!, hi = +m[2]!;
         return (n: number) => lo <= n && n <= hi;
     }))
     .help("h").alias("h", "help")

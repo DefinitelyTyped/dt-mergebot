@@ -70,9 +70,10 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     return getDownloadsAndWriteToFile;
   }
   async function getDownloadsAndWriteToFile(packageName: string, until?: Date) {
-      downloadsFetched[packageName] = await getMonthlyDownloadCount(packageName, until);
+    const downloads = await getMonthlyDownloadCount(packageName, until)
+    downloadsFetched[packageName] = downloads;
     writeJsonSync(downloadsJSONPath, downloadsFetched);
-    return downloadsFetched[packageName];
+    return downloads;
   }
   function getDownloadsFromFile(packageName: string) {
     return JSON.parse(readFileSync(downloadsJSONPath, "utf8"))[packageName];
@@ -85,9 +86,13 @@ export default async function main(directory: string, overwriteInfo: boolean) {
 
 
 if (!module.parent) {
-  const num = process.argv[2]
+  const num = process.argv[2];
+  if (!num) {
+    console.error("expecting a PR number");
+    process.exit(1);
+  }
   const overwriteInfo = process.argv.slice(2).includes("--overwrite-info")
   main(num, overwriteInfo).then(() => {
-    process.exit(0)
-  })
+    process.exit(0);
+  });
 }

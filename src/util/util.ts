@@ -23,16 +23,12 @@ export async function someAsync<T>(arr: ReadonlyArray<T>, f: (t: T) => Promise<b
     return false;
 }
 
-export function findLast<T, U extends T>(arr: readonly T[] | null | undefined, predicate: (item: T) => item is U): U | undefined;
-export function findLast<T>(arr: readonly T[] | null | undefined, predicate: (item: T) => boolean): T | undefined;
-export function findLast<T>(arr: readonly T[] | null | undefined, predicate: (item: T) => boolean) {
-    if (!arr) {
-        return undefined;
-    }
+export function findLast<T, U extends T>(arr: readonly T[] | null | undefined, predicate: (item?: T) => item is U): U | undefined;
+export function findLast<T>(arr: readonly T[] | null | undefined, predicate: (item?: T) => boolean): T | undefined;
+export function findLast<T>(arr: readonly T[] | null | undefined, predicate: (item?: T) => boolean) {
+    if (!arr) return undefined;
     for (let i = arr.length - 1; i >= 0; i--) {
-        if (predicate(arr[i])) {
-            return arr[i];
-        }
+        if (predicate(arr[i])) return arr[i];
     }
     return undefined;
 }

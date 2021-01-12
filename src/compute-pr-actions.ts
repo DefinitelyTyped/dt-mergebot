@@ -423,7 +423,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         : info.approverKind === "maintainer" ? "a DT maintainer"
         : criticalNum <= 1 ? "type definition owners or DT maintainers"
         : "all owners or a DT maintainer";
-    const RequiredApprover = requiredApprover[0].toUpperCase() + requiredApprover.substring(1);
+    const RequiredApprover = requiredApprover[0]!.toUpperCase() + requiredApprover.substring(1);
 
     if (info.isUntested) {
         post(Comments.SuggestTesting(info.author, testsLink));

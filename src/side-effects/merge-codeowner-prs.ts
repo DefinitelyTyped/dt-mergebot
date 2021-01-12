@@ -11,12 +11,12 @@ export const mergeCodeOwnersOnGreen = async (payload: EventPayloads.WebhookPaylo
         && payload.check_suite.conclusion === "success"
         && payload.check_suite.head_commit.author.name === "TS Bot"
         && payload.check_suite.head_commit.message === "Update CODEOWNERS"
-        && payload.check_suite.pull_requests[0].base.repo.id === payload.check_suite.pull_requests[0].head.repo.id) {
+        && payload.check_suite.pull_requests[0]!.base.repo.id === payload.check_suite.pull_requests[0]!.head.repo.id) {
         await client.mutate(createMutation<schema.MergePullRequestInput>("mergePullRequest", {
             commitHeadline: `🤖 Auto Merge`,
             expectedHeadOid: payload.check_suite.head_commit.id,
             mergeMethod: "SQUASH",
-            pullRequestId: payload.check_suite.pull_requests[0].id.toFixed(),
+            pullRequestId: payload.check_suite.pull_requests[0]!.id.toFixed(),
         }));
     }
 

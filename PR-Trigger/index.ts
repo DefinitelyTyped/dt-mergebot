@@ -17,6 +17,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
     context.log(`[${process.version}] HTTP trigger function received a request.`);
 
     const event = req.headers["x-github-event"];
+    if (!event) throw new Error(`Did not get a x-github-event header`);
 
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
