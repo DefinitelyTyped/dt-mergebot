@@ -227,7 +227,7 @@ export async function deriveStateForPR(
     const comments = noNullish(prInfo.comments.nodes);
     const mergeOfferDate = getMergeOfferDate(comments, prInfo.headRefOid);
     const mergeRequest = getMergeRequest(comments,
-                                         pkgInfo.length === 1 ? [author, ...pkgInfo[0].owners] : [author],
+                                         pkgInfo.length === 1 ? [author, ...pkgInfo[0]!.owners] : [author],
                                          max([createdDate, reopenedDate, lastPushDate]));
     const lastActivityDate = max([createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview]);
 
@@ -343,6 +343,7 @@ async function categorizeFile(path: string, contents: (oid?: string) => Promise<
     const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
     if (!match) return [null, { path, kind: "infrastructure" }];
     const [pkg, suffix] = match.slice(1); // `suffix` can be null
+    if (!pkg) return [null, { path, kind: "infrastructure" }];
     switch (suffix || "") {
         case "d.ts": return [pkg, { path, kind: "definition" }];
         case "ts": case "tsx": return [pkg, { path, kind: "test" }];
