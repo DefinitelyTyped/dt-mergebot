@@ -7,7 +7,7 @@ async function main() {
   const fixturesDir = path.join(__dirname, "../../src/_tests/fixtures");
   const fixtures = await fs.promises.readdir(fixturesDir, { withFileTypes: true });
   for (const dir of fixtures) {
-    if (!dir.isDirectory) continue;
+    if (!dir.isDirectory()) continue;
     console.log(`Updating ${dir.name}, ${overwriteInfo ? 'overwriting' : 'preserving'} the existing PR info...`);
     await createFixture(dir.name, overwriteInfo);
   }
