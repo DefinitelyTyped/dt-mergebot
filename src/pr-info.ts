@@ -391,7 +391,6 @@ configSuspicious["tsconfig.json"] = makeChecker(
     {
         compilerOptions: {
             module: "commonjs",
-            lib: ["es6"],
             noImplicitAny: true,
             noImplicitThis: true,
             strictFunctionTypes: true,
@@ -401,7 +400,13 @@ configSuspicious["tsconfig.json"] = makeChecker(
             forceConsistentCasingInFileNames: true
         }
     },
-    [ "/files", "/compilerOptions/paths", "/compilerOptions/baseUrl", "/compilerOptions/typeRoots" ],
+    [
+        "/files",
+        "/compilerOptions/lib",
+        "/compilerOptions/paths",
+        "/compilerOptions/baseUrl",
+        "/compilerOptions/typeRoots"
+    ],
     urls.tsconfigJson
 );
 
