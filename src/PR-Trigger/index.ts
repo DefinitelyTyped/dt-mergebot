@@ -1,8 +1,8 @@
-import { queryPRInfo, deriveStateForPR } from "../src/pr-info";
-import { process as computeActions } from "../src/compute-pr-actions";
-import { executePrActions } from "../src/execute-pr-actions";
-import { mergeCodeOwnersOnGreen } from "../src/side-effects/merge-codeowner-prs";
-import { runQueryToGetPRMetadataForSHA1 } from "../src/queries/SHA1-to-PR-query";
+import { queryPRInfo, deriveStateForPR } from "../pr-info";
+import { process as computeActions } from "../compute-pr-actions";
+import { executePrActions } from "../execute-pr-actions";
+import { mergeCodeOwnersOnGreen } from "../side-effects/merge-codeowner-prs";
+import { runQueryToGetPRMetadataForSHA1 } from "../queries/SHA1-to-PR-query";
 import { HttpRequest, Context } from "@azure/functions";
 import { Webhooks, EventPayloads } from "@octokit/webhooks";
 

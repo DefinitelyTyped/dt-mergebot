@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../bin/PR-Trigger/index.js"
+  "scriptFile": "../../bin/PR-Trigger/index.js"
 }

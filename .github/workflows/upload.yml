@@ -17,8 +17,6 @@ jobs:
       run: |
         npm install
         npm run build --if-present
-        # Replace "../src/x" with "../x"
-        sed -i 's/\/src//g' ./bin/PR-Trigger/index.js
         npm run test --if-present
     - uses: Azure/functions-action@v1
       with:
