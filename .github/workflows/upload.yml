@@ -17,6 +17,8 @@ jobs:
       run: |
         npm install
         npm run build --if-present
+        # Replace /src with /bin
+        sed -i 's/\/src/\/bin/g' ./bin/PR-Trigger/index.js
         npm run test --if-present
     - run: |
         sudo apt-get install tree
