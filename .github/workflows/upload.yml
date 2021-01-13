@@ -20,10 +20,6 @@ jobs:
         # Replace "../src/x" with "../x"
         sed -i 's/\/src//g' ./bin/PR-Trigger/index.js
         npm run test --if-present
-    - run: |
-        sudo apt-get install tree
-        tree bin
-        cat ./bin/PR-Trigger/index.js
     - uses: Azure/functions-action@v1
       with:
         app-name: DTMergeBot
