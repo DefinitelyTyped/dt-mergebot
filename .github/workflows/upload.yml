@@ -23,6 +23,7 @@ jobs:
     - run: |
         sudo apt-get install tree
         tree bin
+        cat ./bin/PR-Trigger/index.js
     - uses: Azure/functions-action@v1
       with:
         app-name: DTMergeBot
