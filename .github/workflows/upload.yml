@@ -12,14 +12,21 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/setup-node@v1
       with:
-        node-version: '10.x'
-    - name: 'run npm'
+        node-version: "10.x"
+    - name: "run npm"
       run: |
         npm install
         npm run build --if-present
-        # Replace "../src/x" with "../x"
-        sed -i 's/\/src//g' ./bin/PR-Trigger/index.js
         npm run test --if-present
+    - name: "minimize dependencies"
+      run: |
+        rm -rf "node_modules"
+        npm install --production
+    - name: "sanity listings"
+      run: |
+        node .github/workflows/print-tree.js bin
+        echo " ==== pr-trigger.js ===="
+        cat ./bin/pr-trigger.js
     - uses: Azure/functions-action@v1
       with:
         app-name: DTMergeBot

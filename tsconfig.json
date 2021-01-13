@@ -1,10 +1,8 @@
 {
-    "references": [
-        { "path": "./src" },
-        { "path": "./PR-Trigger" }
-    ],
+    "include": ["src"],
     "compilerOptions": {
-        "composite": true,
+        "outDir": "bin",
+        "rootDir": "src",
         "strict": true,
         "module": "commonjs",
         "target": "es6",
