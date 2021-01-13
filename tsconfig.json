@@ -1,7 +1,7 @@
 {
     "references": [
-        { "path": "src" },
-        { "path": "PR-Trigger" }
+        { "path": "./src" },
+        { "path": "./PR-Trigger" }
     ],
     "compilerOptions": {
         "composite": true,

@@ -18,6 +18,9 @@ jobs:
         npm install
         npm run build --if-present
         npm run test --if-present
+    - run: |
+        sudo apt-get install tree
+        tree bin
     - uses: Azure/functions-action@v1
       with:
         app-name: DTMergeBot
