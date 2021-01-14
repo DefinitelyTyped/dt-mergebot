@@ -204,14 +204,12 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
 
     function getApproverKind() {
         const blessed = blessable && info.maintainerBlessed;
-        const who: ApproverKind | undefined =
-            requireMaintainer ? "maintainer"
-            : info.popularityLevel === "Well-liked by everyone" ? "other"
-            : info.popularityLevel === "Popular" ? "owner"
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- is ahead of tsc which doesn't narrow this ternary -> "maintainer" | never
-            : info.popularityLevel === "Critical" ? "maintainer"
-            : undefined;
-        if (!who) throw new Error("Unknown popularity level " + info.popularityLevel);
+        const who: ApproverKind =
+            requireMaintainer ? "maintainer" : ({
+                "Well-liked by everyone": "other",
+                "Popular": "owner",
+                "Critical": "maintainer",
+            } as const)[info.popularityLevel];
         return who === "maintainer" && blessed && !noOtherOwners ? "owner"
             : who === "owner" && noOtherOwners ? "maintainer"
             : who;
