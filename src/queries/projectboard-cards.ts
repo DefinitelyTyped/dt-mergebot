@@ -42,7 +42,7 @@ export async function getProjectBoardCards() {
     });
 
     if (results.errors) {
-        throw new Error(JSON.stringify(results.errors));
+        throw new Error(results.errors.map(e => e.message).join("\n"));
     }
 
     const project = results.data.repository?.project;

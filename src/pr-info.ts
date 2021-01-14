@@ -172,6 +172,9 @@ export async function queryPRInfo(prNumber: number) {
             variables: { pr_number: prNumber },
             fetchPolicy: "network-only",
         });
+        if (info.errors) {
+            throw new Error(info.errors.map(e => e.message).join('\n'));
+        }
         const prInfo = info.data.repository?.pullRequest;
         if (!prInfo) return info; // let `deriveStateForPR` handle the missing result
         if (!(prInfo.state === "OPEN" && prInfo.mergeable === "UNKNOWN")) return info;
