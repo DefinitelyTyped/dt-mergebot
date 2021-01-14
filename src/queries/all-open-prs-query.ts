@@ -31,7 +31,7 @@ export async function getAllOpenPRsAndCardIDs() {
     });
 
     if (results.errors) {
-      throw new Error(results.errors.join('\n'));
+      throw new Error(results.errors.map(e => e.message).join('\n'));
     }
 
     if (!results.data.repository?.pullRequests.edges?.length) {
