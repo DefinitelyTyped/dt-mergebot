@@ -41,10 +41,6 @@ export async function getProjectBoardCards() {
         fetchPolicy: "network-only",
     });
 
-    if (results.errors) {
-        throw new Error(results.errors.map(e => e.message).join("\n"));
-    }
-
     const project = results.data.repository?.project;
 
     if (!project) {

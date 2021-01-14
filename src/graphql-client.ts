@@ -13,7 +13,7 @@ const uri = "https://api.github.com/graphql";
 const cache = new InMemoryCache();
 const link = new HttpLink({ uri, headers, fetch });
 
-export const client = new ApolloClient({ cache, link, defaultOptions: { query: { errorPolicy: "all" } } });
+export const client = new ApolloClient({ cache, link });
 
 export function createMutation<T>(name: keyof schema.Mutation, input: T): MutationOptions<void, { input: T }> {
     const mutation = {
