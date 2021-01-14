@@ -30,10 +30,6 @@ export async function getAllOpenPRsAndCardIDs() {
       variables: { after }
     });
 
-    if (results.errors) {
-      throw new Error(results.errors.map(e => e.message).join('\n'));
-    }
-
     if (!results.data.repository?.pullRequests.edges?.length) {
         return { prNumbers, cardIDs };
     }
