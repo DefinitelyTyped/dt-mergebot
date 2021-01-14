@@ -1,8 +1,10 @@
+import { ApolloQueryResult } from "@apollo/client/core";
 import { readdirSync, readJsonSync } from "fs-extra";
 import { join } from "path";
 import { toMatchFile } from "jest-file-snapshot";
 import { process } from "../compute-pr-actions";
 import { deriveStateForPR, BotResult } from "../pr-info";
+import { PR } from "../queries/schema/PR";
 import { scrubDiagnosticDetails } from "../util/util";
 import * as cachedQueries from "./cachedQueries.json";
 jest.mock("../util/cachedQueries", () => ({
@@ -29,25 +31,26 @@ async function testFixture(dir: string) {
 
   const JSONString = (value: any) => scrubDiagnosticDetails(JSON.stringify(value, null, "  ") + "\n");
 
-  const response = readJsonSync(responsePath);
+  const response: ApolloQueryResult<PR> = readJsonSync(responsePath);
   const files = readJsonSync(filesPath);
   const downloads = readJsonSync(downloadsPath);
 
+  const prInfo = response.data.repository?.pullRequest;
+  if (!prInfo) throw new Error("Should never happen");
+
   const derived = await deriveStateForPR(
-    response,
+    prInfo,
     (expr: string) => Promise.resolve(files[expr] as string),
     (name: string, _until?: Date) => name in downloads ? downloads[name] : 0,
     (readJsonSync(derivedPath) as BotResult).now
   );
-
-  if (derived.type === "fail") throw new Error("Should never happen");
 
   const action = process(derived);
 
   expect(JSONString(action)).toMatchFile(resultPath);
   expect(JSONString(derived)).toMatchFile(derivedPath);
 
-  const mutations = await executePrActions(action, response.data, /*dry*/ true);
+  const mutations = await executePrActions(action, prInfo, /*dry*/ true);
   expect(JSONString(mutations)).toMatchFile(mutationsPath);
 }
 

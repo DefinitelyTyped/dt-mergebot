@@ -1,6 +1,6 @@
 import { MutationOptions } from "@apollo/client/core";
 import * as schema from "@octokit/graphql-schema/schema";
-import { PR as PRQueryResult, PR_repository_pullRequest } from "./queries/schema/PR";
+import { PR_repository_pullRequest } from "./queries/schema/PR";
 import { Actions, LabelNames, LabelName } from "./compute-pr-actions";
 import { createMutation, client } from "./graphql-client";
 import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
@@ -11,8 +11,7 @@ import * as comment from "./util/comment";
 // https://github.com/DefinitelyTyped/DefinitelyTyped/projects/5
 const ProjectBoardNumber = 5;
 
-export async function executePrActions(actions: Actions, info: PRQueryResult, dry?: boolean) {
-    const pr = info.repository!.pullRequest!;
+export async function executePrActions(actions: Actions, pr: PR_repository_pullRequest, dry?: boolean) {
     const botComments: ParsedComment[] = getBotComments(pr);
     const mutations = noNullish([
         ...await getMutationsForLabels(actions, pr),

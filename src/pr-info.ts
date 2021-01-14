@@ -1,5 +1,5 @@
 import { GetPRInfo } from "./queries/pr-query";
-import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest,
+import { PR_repository_pullRequest as GraphqlPullRequest,
          PR_repository_pullRequest,
          PR_repository_pullRequest_commits_nodes_commit_checkSuites,
          PR_repository_pullRequest_timelineItems,
@@ -12,7 +12,6 @@ import { CIResult } from "./util/CIResult";
 import { PullRequestReviewState, PullRequestState, CommentAuthorAssociation, CheckConclusionState } from "./queries/schema/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
-import { ApolloQueryResult } from "@apollo/client/core";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
 import { noNullish, findLast, sameUser, authorNotBot, max, abbrOid } from "./util/util";
 import * as comment from "./util/comment";
@@ -27,13 +26,6 @@ export type PopularityLevel =
     | "Well-liked by everyone"
     | "Popular"
     | "Critical";
-
-// Complete failure, won't be passed to `process` (no PR found)
-interface BotFail {
-    readonly type: "fail";
-    readonly now: string;
-    readonly message: string;
-}
 
 // Some error found, will be passed to `process` to report in a comment
 interface BotError {
@@ -148,12 +140,10 @@ export interface PrInfo {
     readonly reviews: readonly ReviewInfo[];
 }
 
-export type BotNotFail =
+export type BotResult =
     | PrInfo
     | BotError
     | BotEnsureRemovedFromProject;
-
-export type BotResult = BotNotFail | BotFail;
 
 function getHeadCommit(pr: GraphqlPullRequest) {
     return pr.commits.nodes?.find(c => c?.commit.oid === pr.headRefOid)?.commit;
@@ -192,14 +182,11 @@ export async function queryPRInfo(prNumber: number) {
 
 // The GQL response => Useful data for us
 export async function deriveStateForPR(
-    info: ApolloQueryResult<PRQueryResult>,
+    prInfo: PR_repository_pullRequest,
     fetchFile = defaultFetchFile,
     getDownloads = getMonthlyDownloadCount,
     now = new Date().toISOString(),
 ): Promise<BotResult>  {
-    const prInfo = info.data.repository?.pullRequest;
-
-    if (!prInfo) return botFail(`No PR with this number exists, (${JSON.stringify(info)})`);
     if (prInfo.author == null) return botError(prInfo.number, "PR author does not exist");
 
     if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft", true);
@@ -251,12 +238,8 @@ export async function deriveStateForPR(
         ...getCIResult(headCommit.checkSuites)
     };
 
-    function botFail(message: string): BotFail {
-        return { type: "fail", now, message };
-    }
-
     function botError(pr_number: number, message: string): BotError {
-        return { type: "error", now, message, pr_number, author: prInfo?.author?.login };
+        return { type: "error", now, message, pr_number, author: prInfo.author?.login };
     }
 
     function botEnsureRemovedFromProject(pr_number: number, message: string, isDraft: boolean): BotEnsureRemovedFromProject {

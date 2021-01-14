@@ -1,7 +1,9 @@
 import * as computeActions from "../compute-pr-actions";
 import { deriveStateForPR, BotResult, queryPRInfo } from "../pr-info";
+import { ApolloQueryResult } from "@apollo/client/core";
 import { writeFileSync, mkdirSync, existsSync, readJsonSync } from "fs-extra";
 import { join } from "path";
+import { PR } from "../queries/schema/PR";
 import { fetchFile } from "../util/fetchFile";
 import { getMonthlyDownloadCount } from "../util/npm";
 import { scrubDiagnosticDetails } from "../util/util";
@@ -21,7 +23,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
   if (overwriteInfo || !existsSync(jsonFixturePath)) {
     writeJsonSync(jsonFixturePath, await queryPRInfo(prNumber));
   }
-  const response = readJsonSync(jsonFixturePath);
+  const response: ApolloQueryResult<PR> = readJsonSync(jsonFixturePath);
 
   const filesJSONPath = join(fixturePath, "_files.json");
   const filesFetched: {[expr: string]: string | undefined} = {};
@@ -31,8 +33,14 @@ export default async function main(directory: string, overwriteInfo: boolean) {
 
   const shouldOverwrite = (file: string) => overwriteInfo || !existsSync(file);
 
+  const prInfo = response.data.repository?.pullRequest;
+  if (!prInfo) {
+    console.error(`Could not get PR info for ${directory}, is the number correct?`);
+    return;
+  }
+
   const derivedInfo = await deriveStateForPR(
-    response,
+    prInfo,
     shouldOverwrite(filesJSONPath) ? initFetchFilesAndWriteToFile() : getFilesFromFile,
     shouldOverwrite(downloadsJSONPath) ? initGetDownloadsAndWriteToFile() : getDownloadsFromFile,
     shouldOverwrite(derivedFixturePath) ? undefined : getTimeFromFile(),
@@ -40,14 +48,12 @@ export default async function main(directory: string, overwriteInfo: boolean) {
 
   writeJsonSync(derivedFixturePath, derivedInfo);
 
-  if (derivedInfo.type === "fail") return;
-
   const resultFixturePath = join(fixturePath, "result.json");
   const actions = computeActions.process(derivedInfo);
   writeJsonSync(resultFixturePath, actions);
 
   const mutationsFixturePath = join(fixturePath, "mutations.json");
-  const mutations = await executePrActions(actions, response.data, /*dry*/ true);
+  const mutations = await executePrActions(actions, prInfo, /*dry*/ true);
   writeJsonSync(mutationsFixturePath, mutations);
 
   console.log(`Recorded`);
