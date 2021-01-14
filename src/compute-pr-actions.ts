@@ -425,7 +425,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
                 `This PR touches some part of DefinitelyTyped infrastructure, so ${requiredApprover} will need to review it. This is rare — did you mean to do this?`);
     }
 
-    const announceList = (what: string, xs: readonly string[]) => `${xs.length} ${what}${xs.length > 1 ? "s" : ""}`
+    const announceList = (what: string, xs: readonly string[]) => `${xs.length} ${what}${xs.length !== 1 ? "s" : ""}`
     const usersToString = (users: string[]) => users.map(u => (info.isAuthor(u) ? "✎" : "") + "@" + u).join(", ");
     const reviewLink = (f: FileInfo) =>
         `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${
@@ -435,6 +435,9 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
             `## ${announceList("package", info.packages)} in this PR`,
             ``);
     let addedSelfToManyOwners = 0;
+    if (info.pkgInfo.length === 0) {
+        display(`This PR is editing only infrastructure files!`);
+    }
     for (const p of info.pkgInfo) {
         if (p.name === null) continue;
         const kind = p.kind === "add" ? " (*new!*)" : p.kind === "delete" ? " (*probably deleted!*)" : "";
