@@ -141,21 +141,21 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
 
     // Generate the info for the PR from scratch
     const info = await queryPRInfo(prNumber);
-    const state = await deriveStateForPR(info);
+    const prInfo = info.data.repository?.pullRequest;
 
     // If it didn't work, bail early
-    if (state.type === "fail") {
-        const isIssueNotPR = state.message.startsWith("No PR with this number exists") && "issue" in webhook;
+    if (!prInfo) {
+        const isIssueNotPR = "issue" in webhook;
         if (isIssueNotPR) {
             context.res = {
                 status: 204,
                 body: `NOOPing due to ${prNumber} not being a PR`
             };
         } else {
-            context.log.error(`Failed because of: ${state.message}`);
+            context.log.error(`No PR with this number exists, (${JSON.stringify(info)})`);
             context.res = {
                 status: 422,
-                body: `Failed because of: ${state.message}`
+                body: `No PR with this number exists, (${JSON.stringify(info)})`
             };
         }
 
@@ -163,10 +163,11 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
     }
 
     // Convert the info to a set of actions for the bot
+    const state = await deriveStateForPR(prInfo);
     const actions = computeActions(state);
 
     // Act on the actions
-    await executePrActions(actions, info.data);
+    await executePrActions(actions, prInfo);
 
     // We are responding real late in the process, so it might show
     // as a timeout in GH a few times (e.g. after GH/DT/NPM lookups)

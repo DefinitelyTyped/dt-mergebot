@@ -70,13 +70,14 @@ const start = async function () {
         // Generate the info for the PR from scratch
         const info = await queryPRInfo(pr);
         if (args["show-raw"]) show("Raw Query Result", info);
-        const state = await deriveStateForPR(info);
-        if (args["show-basic"]) show("Basic PR Info", state);
+        const prInfo = info.data.repository?.pullRequest;
         // If it didn't work, bail early
-        if (state.type === "fail") {
-            console.error(`  Failed because of: ${state.message}`);
+        if (!prInfo) {
+            console.error(`  No PR with this number exists, (${JSON.stringify(info)})`);
             continue;
         }
+        const state = await deriveStateForPR(prInfo);
+        if (args["show-basic"]) show("Basic PR Info", state);
         // Show errors in log but keep processing to show in a comment too
         if (state.type === "error") console.error(`  Error: ${state.message}`);
         // Show other messages too
@@ -86,7 +87,7 @@ const start = async function () {
             args["show-extended"] ? i => show("Extended Info", i) : undefined);
         if (args["show-actions"]) show("Actions", actions);
         // Act on the actions
-        const mutations = await executePrActions(actions, info.data, args.dry);
+        const mutations = await executePrActions(actions, prInfo, args.dry);
         if (args["show-mutations"] ?? args.dry) show("Mutations", mutations);
     }
     if (args.dry || !args.cleanup) return;
