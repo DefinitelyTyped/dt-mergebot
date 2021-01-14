@@ -75,8 +75,7 @@ query PR($pr_number: Int!) {
           }
         }
 
-        # It's silly to get all commits when we want just the head, but see #311
-        commits(last: 100) {
+        commits(last: 1) {
           totalCount
           nodes {
             commit {
