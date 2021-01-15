@@ -18,6 +18,20 @@
         "unicorn"
     ],
     "rules": {
+        "no-trailing-spaces": "error",
+        "eol-last": "error",
+        "semi": "error",
+        "quotes": ["error", "double", { "allowTemplateLiterals": true }],
+        "arrow-body-style": "error",
+        "indent": ["error", 4, {
+          "CallExpression": { "arguments": "first" },
+          "FunctionDeclaration": {"parameters": "first"},
+          "FunctionExpression": {"parameters": "first"},
+          "SwitchCase": 1,
+          "ImportDeclaration": "first",
+          "ArrayExpression": "first",
+          "ignoredNodes": ["ConditionalExpression", "TemplateLiteral > *"]
+        }],
         "no-constant-condition": ["error", { "checkLoops": false }],
         "no-useless-escape": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",

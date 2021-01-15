@@ -7,8 +7,7 @@ import { PR_repository_pullRequest as GraphqlPullRequest,
          PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent,
          PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent,
          PR_repository_pullRequest_comments_nodes
-       } from "./queries/schema/PR";
-import { CIResult } from "./util/CIResult";
+} from "./queries/schema/PR";
 import { PullRequestReviewState, PullRequestState, CommentAuthorAssociation, CheckConclusionState } from "./queries/schema/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
@@ -71,6 +70,8 @@ export type ReviewInfo = {
     | { type: "changereq" }
     | { type: "stale", abbrOid: string }
 );
+
+export type CIResult = "unknown" | "pass" | "fail" | "missing";
 
 export interface PrInfo {
     readonly type: "info";
@@ -251,7 +252,7 @@ type ReadyForReviewEvent = PR_repository_pullRequest_timelineItems_nodes_ReadyFo
 function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems) {
     const lastItem = findLast(timelineItems.nodes, (item): item is ReopenedEvent | ReadyForReviewEvent => (
         item?.__typename === "ReopenedEvent" || item?.__typename === "ReadyForReviewEvent"
-      ));
+    ));
 
     return lastItem?.createdAt && new Date(lastItem.createdAt);
 }
@@ -267,9 +268,8 @@ function getLastCommentishActivityDate(prInfo: PR_repository_pullRequest) {
 
 type MovedColumnsInProjectEvent = PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent;
 function getLastMaintainerBlessingDate(timelineItems: PR_repository_pullRequest_timelineItems) {
-    const lastColumnChange = findLast(timelineItems.nodes, (item): item is MovedColumnsInProjectEvent => {
-        return item?.__typename === "MovedColumnsInProjectEvent" && authorNotBot(item!);
-    });
+    const lastColumnChange = findLast(timelineItems.nodes, (item): item is MovedColumnsInProjectEvent =>
+        item?.__typename === "MovedColumnsInProjectEvent" && authorNotBot(item!));
     // ------------------------------ TODO ------------------------------
     // Should add and use the `previousProjectColumnName` field to
     // verify that the move was away from "Needs Maintainer Review", but
@@ -408,7 +408,7 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
             try { data = JSON.parse(text); } catch (e) { return "couldn't parse json"; }
         }
         if (options && "ignore" in options) options.ignore(data);
-        try { return jsonDiff.compare(expectedForm, data); } catch (e) { return "couldn't diff json" }
+        try { return jsonDiff.compare(expectedForm, data); } catch (e) { return "couldn't diff json"; }
     };
     return (contents: string, oldText?: string) => {
         const theExpectedForm = `[the expected form](${expectedFormUrl})`;
@@ -480,16 +480,16 @@ function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit
     // Now that there is more than one GitHub Actions suite, we need to get the right one, but naively fall back
     // to the first if we can't find it, mostly to prevent breaking old tests.
     const totalStatusChecks = ghActionsChecks?.find(check => check?.checkRuns?.nodes?.[0]?.title === "test") || ghActionsChecks?.[0];
-    if (!totalStatusChecks) return { ciResult: CIResult.Missing, ciUrl: undefined };
+    if (!totalStatusChecks) return { ciResult: "missing", ciUrl: undefined };
     switch (totalStatusChecks.conclusion) {
         case CheckConclusionState.SUCCESS:
-            return { ciResult: CIResult.Pass };
+            return { ciResult: "pass" };
         case CheckConclusionState.FAILURE:
         case CheckConclusionState.SKIPPED:
         case CheckConclusionState.TIMED_OUT:
-            return { ciResult: CIResult.Fail, ciUrl: totalStatusChecks.url };
+            return { ciResult: "fail", ciUrl: totalStatusChecks.url };
         default:
-            return { ciResult: CIResult.Pending };
+            return { ciResult: "unknown" };
     }
 }
 

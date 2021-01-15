@@ -28,11 +28,11 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
     if (!isDev && !webhooks.verify(req.body, webhooks.sign(req.body))) {
-      context.res = {
-        status: 500,
-        body: "This webhook did not come from GitHub"
-      };
-      return;
+        context.res = {
+            status: 500,
+            body: "This webhook did not come from GitHub"
+        };
+        return;
     }
 
     // Allow the bot to run side-effects which are not the 'core' function
@@ -79,7 +79,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
         context.res = {
             status: 204,
             body: `NOOPing due to not supporting ${action} on ${event}`
-        }
+        };
         return;
     }
 
@@ -96,7 +96,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
         const cardURL = webhook.project_card.content_url;
         const numberInURL = cardURL.match(/\/\d+$/);
         if (!numberInURL) throw new Error(`Could not get PR for project card URL: ${cardURL}`);
-        prNumber = +numberInURL[0].substring(1)
+        prNumber = +numberInURL[0].substring(1);
     } else if ("check_suite" in webhook) {
         // See https://github.com/maintainers/early-access-feedback/issues/114 for more context on getting a PR from a SHA
         // TLDR: it's not in the API, and this search hack has been in used on Peril for the last ~3 years

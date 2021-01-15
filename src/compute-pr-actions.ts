@@ -1,7 +1,6 @@
 import * as Comments from "./comments";
 import * as urls from "./urls";
 import { PrInfo, BotResult, FileInfo } from "./pr-info";
-import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
 import { noNullish, flatten, unique, sameUser, daysSince, min, sha256, abbrOid } from "./util/util";
 
@@ -160,8 +159,8 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const pendingCriticalPackages = getPendingCriticalPackages();
     const approverKind = getApproverKind();
     const approved = getApproved();
-    const failedCI = info.ciResult === CIResult.Fail;
-    const canBeSelfMerged = info.ciResult === CIResult.Pass && !info.hasMergeConflict && approved;
+    const failedCI = info.ciResult === "fail";
+    const canBeSelfMerged = info.ciResult === "pass" && !info.hasMergeConflict && approved;
     const hasValidMergeRequest = !!(info.mergeOfferDate && info.mergeRequestDate && info.mergeRequestDate > info.mergeOfferDate);
     const needsAuthorAction = failedCI || info.hasMergeConflict || hasChangereqs;
     //      => could be dropped from the extended info and replaced with: info.staleness?.kind === "Abandoned"
@@ -218,7 +217,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     function getApproved() {
         if (approvedBy.includes("maintainer")) return true; // maintainer approval => no need for anything else
         return pendingCriticalPackages.length === 0 && approvedBy.length > 0
-            && (approverKind === "other" || approvedBy.includes("maintainer") || approvedBy.includes(approverKind))
+            && (approverKind === "other" || approvedBy.includes("maintainer") || approvedBy.includes(approverKind));
     }
 
     function getReviewColumn(): ColumnName {
@@ -317,15 +316,15 @@ export function process(prInfo: BotResult,
         if (info.hasChangereqs) post(Comments.ChangesRequest(headCommitAbbrOid, info.author));
     }
     // CI is running; default column is Waiting for Reviewers
-    else if (info.ciResult === CIResult.Pending) {
+    else if (info.ciResult === "unknown") {
         context.targetColumn = "Waiting for Code Reviews";
     }
     // CI is missing
-    else if (info.ciResult === CIResult.Missing) {
+    else if (info.ciResult === "missing") {
         label("Where is GH Actions?");
     }
     // CI is green
-    else if (info.ciResult === CIResult.Pass) {
+    else if (info.ciResult === "pass") {
         if (!info.canBeSelfMerged) {
             context.targetColumn = info.reviewColumn;
         } else {
@@ -357,7 +356,7 @@ export function process(prInfo: BotResult,
     info.staleness?.doTimelineActions(context);
 
     // This bot is faster than CI in coming back to give a response, and so the bot starts flipping between
-    // a 'where is CI'-ish state and a 'got CI deets' state. To work around this, we wait a 
+    // a 'where is CI'-ish state and a 'got CI deets' state. To work around this, we wait a
     // minute since the last timeline push action before label/project states can be updated
     const oneMinute = 60 * 1000;
     const tooEarlyForLabelsOrProjects = info.lastPushDate.getTime() + oneMinute < (new Date(prInfo.now)).getTime();
@@ -394,7 +393,7 @@ function makeStaleness(now: string, author: string, otherOwners: string[]) { // 
             }
         };
         return { kind, days, state, explanation, doTimelineActions } as const;
-    }
+    };
 }
 
 function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) => void) {
@@ -411,7 +410,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
             ``,
             `***This is a live comment which I will keep updated.***`);
 
-    const criticalNum = info.pkgInfo.reduce((num,pkg) => pkg.popularityLevel === "Critical" ? num+1 : num, 0)
+    const criticalNum = info.pkgInfo.reduce((num,pkg) => pkg.popularityLevel === "Critical" ? num+1 : num, 0);
     if (criticalNum === 0 && info.popularityLevel === "Critical") throw new Error("Internal Error: unexpected criticalNum === 0");
     const requiredApprover =
         info.approverKind === "other" ? "type definition owners, DT maintainers or others"
@@ -427,7 +426,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
                 `This PR touches some part of DefinitelyTyped infrastructure, so ${requiredApprover} will need to review it. This is rare — did you mean to do this?`);
     }
 
-    const announceList = (what: string, xs: readonly string[]) => `${xs.length} ${what}${xs.length !== 1 ? "s" : ""}`
+    const announceList = (what: string, xs: readonly string[]) => `${xs.length} ${what}${xs.length !== 1 ? "s" : ""}`;
     const usersToString = (users: string[]) => users.map(u => (info.isAuthor(u) ? "✎" : "") + "@" + u).join(", ");
     const reviewLink = (f: FileInfo) =>
         `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${
@@ -448,8 +447,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         display([`* \`${p.name}\`${kind}`,
                  `[on npm](https://www.npmjs.com/package/${urlPart}),`,
                  `[on unpkg](https://unpkg.com/browse/${urlPart}@latest/)`,
-                 ...authorIsOwner
-                ].join(" "));
+                 ...authorIsOwner].join(" "));
 
         const approvers = info.approvedReviews.filter(r => p.owners.some(o => sameUser(o, r.reviewer))).map(r => r.reviewer);
         if (approvers.length) {
@@ -505,8 +503,8 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
             ``,
             ` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
 
-    const expectedResults = info.ciResult === CIResult.Pending ? "finished" : "passed";
-    display(` * ${emoji(info.ciResult === CIResult.Pass)} Continuous integration tests have ${expectedResults}`);
+    const expectedResults = info.ciResult === "unknown" ? "finished" : "passed";
+    display(` * ${emoji(info.ciResult === "pass")} Continuous integration tests have ${expectedResults}`);
 
     const approved = emoji(info.approved);
 
@@ -555,7 +553,9 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
 
     display(``,
             `----------------------`,
-            `<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n${'```json\n' + JSON.stringify(shallowPresentationInfoCopy, undefined, 2) + '\n```'}\n\n</details>`);
+            `<details><summary>Diagnostic Information: What the bot saw about this PR</summary>\n\n${
+              "```json\n" + JSON.stringify(shallowPresentationInfoCopy, undefined, 2) + "\n```"
+            }\n\n</details>`);
 
     return content.trimEnd();
 

@@ -3,13 +3,13 @@ import { client } from "../graphql-client";
 import { GetPRForSHA1, GetPRForSHA1Variables } from "./schema/GetPRForSHA1";
 
 export const runQueryToGetPRMetadataForSHA1 = async (owner: string, repo: string, sha1: string) => {
-  const info = await client.query({
-      query: GetPRForSHA1Query,
-      variables: { query: `${sha1} type:pr repo:${owner}/${repo}` },
-      fetchPolicy: "network-only",
-  });
-  const pr = info.data.search.nodes?.[0];
-  return pr?.__typename === "PullRequest" ? pr : undefined;
+    const info = await client.query({
+        query: GetPRForSHA1Query,
+        variables: { query: `${sha1} type:pr repo:${owner}/${repo}` },
+        fetchPolicy: "network-only",
+    });
+    const pr = info.data.search.nodes?.[0];
+    return pr?.__typename === "PullRequest" ? pr : undefined;
 };
 
 export const GetPRForSHA1Query: TypedDocumentNode<GetPRForSHA1, GetPRForSHA1Variables> = gql`
