@@ -20,28 +20,28 @@ query GetAllOpenPRsAndCardIDs($after: String) {
 }`;
 
 export async function getAllOpenPRsAndCardIDs() {
-  const prNumbers: number[] = [];
-  const cardIDs: string[] = [];
-  let after: string | undefined;
-  while (true) {
-    const results = await client.query({
-      query: getAllOpenPRsAndCardIDsQuery,
-      fetchPolicy: "network-only",
-      variables: { after }
-    });
+    const prNumbers: number[] = [];
+    const cardIDs: string[] = [];
+    let after: string | undefined;
+    while (true) {
+        const results = await client.query({
+            query: getAllOpenPRsAndCardIDsQuery,
+            fetchPolicy: "network-only",
+            variables: { after }
+        });
 
-    if (!results.data.repository?.pullRequests.edges?.length) {
-        return { prNumbers, cardIDs };
+        if (!results.data.repository?.pullRequests.edges?.length) {
+            return { prNumbers, cardIDs };
+        }
+
+        for (const edge of results.data.repository.pullRequests.edges) {
+            if (!edge) continue;
+            const { node, cursor } = edge;
+            after = cursor;
+            if (!node) continue;
+
+            prNumbers.push(node.number);
+            node.projectCards.nodes?.forEach(n => n && cardIDs.push(n.id));
+        }
     }
-
-    for (const edge of results.data.repository.pullRequests.edges) {
-      if (!edge) continue;
-      const { node, cursor } = edge;
-      after = cursor;
-      if (!node) continue;
-
-      prNumbers.push(node.number);
-      node.projectCards.nodes?.forEach(n => n && cardIDs.push(n.id));
-    }
-  }
 }

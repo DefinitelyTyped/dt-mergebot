@@ -66,7 +66,7 @@ export function scrubDiagnosticDetails(s: string) {
 }
 
 export function sha256(s: string) {
-    return crypto.createHash("sha256").update(s).digest("hex")
+    return crypto.createHash("sha256").update(s).digest("hex");
 }
 
 export function abbrOid(s: string) {

@@ -23,4 +23,4 @@ export const runQueryToGetPRForCardId = async (id: string): Promise<CardPRInfo |
     return (node?.__typename === "ProjectCard" && node.content?.__typename === "PullRequest")
         ? { number: node.content.number, state: node.content.state }
         : undefined;
-}
+};

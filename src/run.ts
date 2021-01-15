@@ -47,7 +47,7 @@ const xform = (x: unknown, xlate: (s: string) => string): unknown => {
     if (Array.isArray(x)) return x.map(e => xform(e, xlate));
     const o = x as { [k: string]: unknown };
     return Object.fromEntries(Object.keys(o).map(k => [k, xform(o[k], xlate)]));
-}
+};
 
 const show = (name: string, value: unknown) => {
     console.log(`  === ${name} ===`);
@@ -102,7 +102,7 @@ const start = async function () {
         }
         const mutation = createMutation<schema.DeleteProjectCardInput>("deleteProjectCard", { cardId: id });
         await client.mutate(mutation);
-    }
+    };
     // Reduce "Recently Merged"
     {
         const recentlyMerged = columns.find(c => c.name === "Recently Merged");
@@ -110,8 +110,7 @@ const start = async function () {
             throw new Error(`Could not find the 'Recently Merged' column in ${columns.map(n => n.name)}`);
         }
         const { cards, totalCount } = recentlyMerged;
-        const afterFirst50 = cards.sort((l, r) => l.updatedAt.localeCompare(r.updatedAt))
-                                  .slice(50);
+        const afterFirst50 = cards.sort((l, r) => l.updatedAt.localeCompare(r.updatedAt)).slice(50);
         if (afterFirst50.length > 0) {
             console.log(`Cutting "Recently Merged" projects to the last 50`);
             if (cards.length < totalCount) {
