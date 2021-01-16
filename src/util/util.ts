@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import * as moment from "moment";
+import * as dayjs from "dayjs";
 
 export function noNullish<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined): T[] {
     if (arr == null) return [];
@@ -48,7 +48,7 @@ export function max<T>(arr: readonly T[], compare?: (a: T, b: T) => number) {
 }
 
 export function daysSince(date: Date, now: Date | string): number {
-    return Math.floor(moment(now).diff(moment(date), "days"));
+    return Math.floor(dayjs(now).diff(dayjs(date), "days"));
 }
 
 export function sameUser(u1: string, u2: string) {
