@@ -4,6 +4,9 @@ import { PrInfo, BotResult, FileInfo } from "./pr-info";
 import { CIResult } from "./util/CIResult";
 import { ReviewInfo } from "./pr-info";
 import { noNullish, flatten, unique, sameUser, daysSince, min, sha256, abbrOid } from "./util/util";
+import * as dayjs from "dayjs";
+import * as advancedFormat from "dayjs/plugin/advancedFormat";
+dayjs.extend(advancedFormat);
 
 type ColumnName =
     | "Needs Maintainer Action"
@@ -375,8 +378,7 @@ function makeStaleness(now: string, author: string, otherOwners: string[]) { // 
         const state = days <= freshDays ? "fresh" : days <= attnDays ? "attention" : days <= nearDays ? "nearly" : "done";
         const kindAndState = `${kind}:${state}`;
         const explanation = Comments.StalenessExplanations[kindAndState];
-        const expires = new Date(now);
-        expires.setDate(expires.getDate() + nearDays);
+        const expires = dayjs(now).add(nearDays, "days").format("MMM Do");
         const comment = Comments.StalenessComment(author, otherOwners, expires)[kindAndState];
         const doTimelineActions = (context: Actions) => {
             if (comment !== undefined) {
