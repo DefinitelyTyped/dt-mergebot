@@ -47,7 +47,7 @@
     "@typescript-eslint/parser": "^4.9.0",
     "apollo": "^2.32.0",
     "eslint": "^7.14.0",
-    "eslint-plugin-unicorn": "^23.0.0",
+    "eslint-plugin-unicorn": "^26.0.1",
     "jest": "^26.4.4",
     "jest-file-snapshot": "^0.3.8",
     "ts-jest": "^26.4.4"
