@@ -2,7 +2,7 @@ import * as Comments from "./comments";
 import * as urls from "./urls";
 import { PrInfo, BotResult, FileInfo } from "./pr-info";
 import { ReviewInfo } from "./pr-info";
-import { noNullish, flatten, unique, sameUser, daysSince, min, sha256, abbrOid } from "./util/util";
+import { noNullish, flatten, unique, sameUser, min, sha256, abbrOid } from "./util/util";
 import * as dayjs from "dayjs";
 import * as advancedFormat from "dayjs/plugin/advancedFormat";
 dayjs.extend(advancedFormat);
@@ -373,7 +373,7 @@ function makeStaleness(now: string, author: string, otherOwners: string[]) { // 
     return (kind: StalenessKind, since: Date,
             freshDays: number, attnDays: number, nearDays: number,
             doneColumn: ColumnName | "CLOSE") => {
-        const days = daysSince(since, now);
+        const days = dayjs(now).diff(since, "days");
         const state = days <= freshDays ? "fresh" : days <= attnDays ? "attention" : days <= nearDays ? "nearly" : "done";
         const kindAndState = `${kind}:${state}`;
         const explanation = Comments.StalenessExplanations[kindAndState];
