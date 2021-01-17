@@ -40,6 +40,7 @@
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-unnecessary-condition": ["error", { "allowConstantLoopConditions": true }],
         "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-        "unicorn/prefer-array-find": "error"
+        "unicorn/prefer-array-find": "error",
+        "unicorn/prefer-array-some": "error"
     }
 }
