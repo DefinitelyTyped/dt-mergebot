@@ -1,0 +1,140 @@
+{
+  "type": "info",
+  "now": "2021-01-18T21:07:50.342Z",
+  "pr_number": 49699,
+  "author": "AlCalzone",
+  "headCommitOid": "139c1679ecb5c2a475639582b7a312e4e7a1cde5",
+  "lastPushDate": "2021-01-15T23:24:04.000Z",
+  "lastActivityDate": "2021-01-15T23:58:14.000Z",
+  "maintainerBlessed": false,
+  "hasMergeConflict": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Critical",
+  "pkgInfo": [
+    {
+      "name": "node",
+      "kind": "edit",
+      "files": [
+        {
+          "path": "types/node/base.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/package.json",
+          "kind": "package-meta-ok"
+        },
+        {
+          "path": "types/node/test/util.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/node/ts3.4/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/ts3.4/util.promisify.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/ts3.6/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/ts3.9/base.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/ts3.9/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/ts3.9/node-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/node/ts3.9/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson)"
+        },
+        {
+          "path": "types/node/ts3.9/tslint.json",
+          "kind": "package-meta",
+          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson)"
+        },
+        {
+          "path": "types/node/util.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/node/util.promisify.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [
+        "Microsoft",
+        "DefinitelyTyped",
+        "jkomyno",
+        "a-tarasyuk",
+        "alvis",
+        "r3nya",
+        "btoueg",
+        "brunoscheufler",
+        "smac89",
+        "touffy",
+        "DeividasBakanas",
+        "eyqs",
+        "Flarna",
+        "Hannes-Magnusson-CK",
+        "KSXGitHub",
+        "hoo29",
+        "kjin",
+        "ajafff",
+        "islishude",
+        "mwiktorczyk",
+        "mohsen1",
+        "n-e",
+        "galkin",
+        "parambirs",
+        "eps1lon",
+        "SimonSchick",
+        "ThomasdenH",
+        "WilcoBakker",
+        "wwwy3y3",
+        "samuela",
+        "kuehlein",
+        "j-oliveras",
+        "bhongy",
+        "chyzwar",
+        "trivikr",
+        "nguymin4",
+        "yoursunny",
+        "qwelias",
+        "ExE-Boss",
+        "Ryan-Willpower",
+        "peterblazejewicz",
+        "addaleax",
+        "JasonHK",
+        "victorperin",
+        "ZYSzys"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
+    }
+  ],
+  "reviews": [
+    {
+      "type": "stale",
+      "reviewer": "ExE-Boss",
+      "date": "2021-01-15T07:34:48.000Z",
+      "abbrOid": "9ba9fdd"
+    },
+    {
+      "type": "stale",
+      "reviewer": "rbuckton",
+      "date": "2020-12-08T01:35:34.000Z",
+      "abbrOid": "54b22fd"
+    }
+  ],
+  "ciResult": "pass"
+}
