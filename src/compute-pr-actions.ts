@@ -49,7 +49,6 @@ export const LabelNames = [
 ] as const;
 
 export interface Actions {
-    pr_number: number;
     targetColumn?: ColumnName;
     labels: LabelName[];
     responseComments: Comments.Comment[];
@@ -60,9 +59,8 @@ export interface Actions {
     shouldRemoveFromActiveColumns: boolean;
 }
 
-function createDefaultActions(pr_number: number): Actions {
+function createDefaultActions(): Actions {
     return {
-        pr_number,
         targetColumn: "Other",
         labels: [],
         responseComments: [],
@@ -74,9 +72,8 @@ function createDefaultActions(pr_number: number): Actions {
     };
 }
 
-function createEmptyActions(prNumber: number): Actions {
+function createEmptyActions(): Actions {
     return {
-        pr_number: prNumber,
         labels: [],
         responseComments: [],
         shouldClose: false,
@@ -238,19 +235,19 @@ export function process(prInfo: BotResult,
     if (prInfo.type === "remove") {
         if (prInfo.isDraft) {
             return {
-                ...createEmptyActions(prInfo.pr_number),
+                ...createEmptyActions(),
                 targetColumn: "Needs Author Action",
                 shouldUpdateProjectColumn: true
             };
         } else {
             return {
-                ...createEmptyActions(prInfo.pr_number),
+                ...createEmptyActions(),
                 shouldRemoveFromActiveColumns: true
             };
         }
     }
 
-    const context = createDefaultActions(prInfo.pr_number);
+    const context = createDefaultActions();
     const post = (c: Comments.Comment) => context.responseComments.push(c);
 
     if (prInfo.type === "error") {
