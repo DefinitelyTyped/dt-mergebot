@@ -361,15 +361,14 @@ export function process(prInfo: BotResult,
     // This bot is faster than CI in coming back to give a response, and so the bot starts flipping between
     // a 'where is CI'-ish state and a 'got CI deets' state. To work around this, we wait a
     // minute since the last timeline push action before label/project states can be updated
-    const oneMinute = 60 * 1000;
-    const tooEarlyForLabelsOrProjects = info.lastPushDate.getTime() + oneMinute < (new Date(prInfo.now)).getTime();
-    context.shouldUpdateLabels = tooEarlyForLabelsOrProjects;
-    context.shouldUpdateProjectColumn = tooEarlyForLabelsOrProjects;
+    const tooEarlyForLabelsOrProjects = dayjs(info.now).diff(info.lastPushDate, "minutes") < 1;
+    context.shouldUpdateLabels = !tooEarlyForLabelsOrProjects;
+    context.shouldUpdateProjectColumn = !tooEarlyForLabelsOrProjects;
 
     return context;
 }
 
-function makeStaleness(now: string, author: string, otherOwners: string[]) { // curried for convenience
+function makeStaleness(now: Date, author: string, otherOwners: string[]) { // curried for convenience
     return (kind: StalenessKind, since: Date,
             freshDays: number, attnDays: number, nearDays: number,
             doneColumn: ColumnName | "CLOSE") => {

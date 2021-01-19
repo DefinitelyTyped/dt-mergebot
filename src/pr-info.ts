@@ -29,7 +29,7 @@ export type PopularityLevel =
 // Some error found, will be passed to `process` to report in a comment
 interface BotError {
     readonly type: "error";
-    readonly now: string;
+    readonly now: Date;
     readonly pr_number: number;
     readonly message: string;
     readonly author: string | undefined;
@@ -37,7 +37,7 @@ interface BotError {
 
 interface BotEnsureRemovedFromProject {
     readonly type: "remove";
-    readonly now: string;
+    readonly now: Date;
     readonly pr_number: number;
     readonly message: string;
     readonly isDraft: boolean;
@@ -77,7 +77,7 @@ export interface PrInfo {
     readonly type: "info";
 
     /** ISO8601 date string for the time the PR info was created at */
-    readonly now: string;
+    readonly now: Date;
 
     readonly pr_number: number;
 
@@ -183,7 +183,7 @@ export async function deriveStateForPR(
     prInfo: PR_repository_pullRequest,
     fetchFile = defaultFetchFile,
     getDownloads = getMonthlyDownloadCount,
-    now = new Date().toISOString(),
+    now = new Date(),
 ): Promise<BotResult>  {
     if (prInfo.author == null) return botError(prInfo.number, "PR author does not exist");
 
