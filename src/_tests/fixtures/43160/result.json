@@ -1,5 +1,4 @@
 {
-  "pr_number": 43160,
   "targetColumn": "Needs Author Action",
   "labels": [
     "The CI failed",
