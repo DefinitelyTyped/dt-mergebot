@@ -1,5 +1,5 @@
 import * as computeActions from "../compute-pr-actions";
-import { deriveStateForPR, BotResult, queryPRInfo } from "../pr-info";
+import { deriveStateForPR, queryPRInfo } from "../pr-info";
 import { ApolloQueryResult } from "@apollo/client/core";
 import { writeFileSync, mkdirSync, existsSync, readJsonSync } from "fs-extra";
 import { join } from "path";
@@ -86,7 +86,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     }
 
     function getTimeFromFile() {
-        return (readJsonSync(derivedFixturePath) as BotResult).now;
+        return new Date(readJsonSync(derivedFixturePath).now);
     }
 }
 

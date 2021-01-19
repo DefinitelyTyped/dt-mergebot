@@ -3,7 +3,7 @@ import { readdirSync, readJsonSync } from "fs-extra";
 import { join } from "path";
 import { toMatchFile } from "jest-file-snapshot";
 import { process } from "../compute-pr-actions";
-import { deriveStateForPR, BotResult } from "../pr-info";
+import { deriveStateForPR } from "../pr-info";
 import { PR } from "../queries/schema/PR";
 import { scrubDiagnosticDetails } from "../util/util";
 import * as cachedQueries from "./cachedQueries.json";
@@ -42,7 +42,7 @@ async function testFixture(dir: string) {
         prInfo,
         (expr: string) => Promise.resolve(files[expr] as string),
         (name: string, _until?: Date) => name in downloads ? downloads[name] : 0,
-        (readJsonSync(derivedPath) as BotResult).now
+        new Date(readJsonSync(derivedPath).now)
     );
 
     const action = process(derived);
