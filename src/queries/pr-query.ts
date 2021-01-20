@@ -52,6 +52,16 @@ query PR($pr_number: Int!) {
           }
         }
 
+        reviewRequests(last: 100) {
+          nodes {
+            requestedReviewer {
+              ... on Actor {
+                login
+              }
+            }
+          }
+        }
+
         reviews(last: 100) {
           nodes {
             author {

@@ -1,0 +1,28 @@
+{
+  "targetColumn": "Needs Maintainer Action",
+  "labels": [
+    "New Definition",
+    "Edits Infrastructure",
+    "Edits multiple packages",
+    "Unreviewed"
+  ],
+  "responseComments": [
+    {
+      "tag": "welcome",
+      "status": "@jablko Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\nThis PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n\n## 3 packages in this PR\n\n* `dojo` (*new!*) [on npm](https://www.npmjs.com/package/dojo), [on unpkg](https://unpkg.com/browse/dojo@latest/)\n* `mongoose` (*new!*) [on npm](https://www.npmjs.com/package/mongoose), [on unpkg](https://unpkg.com/browse/mongoose@latest/)\n* `uikit` (*new!*) [on npm](https://www.npmjs.com/package/uikit), [on unpkg](https://unpkg.com/browse/uikit@latest/)\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can approve changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 56 days — it is *still* unreviewed!\n\n----------------------\n... diagnostics scrubbed ..."
+    },
+    {
+      "tag": "pinging-reviewers-others",
+      "status": "🔔 @jablko — you're the only owner, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)"
+    },
+    {
+      "tag": "Unreviewed:done",
+      "status": "It has been more than two weeks and this PR still has no reviews.\n\nI'll bump it to the DT maintainer queue. Thank you for your patience, @jablko.\n\n(Ping «anyone?».)"
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
+  "shouldRemoveFromActiveColumns": false
+}

@@ -460,7 +460,12 @@ function getReviews(prInfo: PR_repository_pullRequest) {
             continue;
         }
         if (r.state === "CHANGES_REQUESTED") {
-            reviews.push({ type: "changereq", reviewer, date });
+            if (!prInfo.reviewRequests?.nodes?.some(reviewRequest =>
+                reviewRequest?.requestedReviewer
+                && "login" in reviewRequest.requestedReviewer
+                && sameUser(reviewRequest.requestedReviewer.login, reviewer))) {
+                reviews.push({ type: "changereq", reviewer, date });
+            }
             continue;
         }
         if (r.state !== "APPROVED") continue;
