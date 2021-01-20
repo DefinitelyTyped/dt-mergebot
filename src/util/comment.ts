@@ -1,7 +1,7 @@
 import { Comment } from "../comments";
 
-export const prefix = "\n<!--typescript_bot_";
-export const suffix = "-->";
+const prefix = "\n<!--typescript_bot_";
+const suffix = "-->";
 
 export function parse(body: string): Comment | undefined {
     const start = body.lastIndexOf(prefix);

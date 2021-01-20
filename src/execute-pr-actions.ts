@@ -124,7 +124,7 @@ async function getProjectBoardColumnIdByName(name: string): Promise<string> {
     return res;
 }
 
-export async function getLabelIdByName(name: string): Promise<string> {
+async function getLabelIdByName(name: string): Promise<string> {
     const labels = await getLabels();
     const res = labels.find(l => l.name === name)?.id;
     if (!res) throw new Error(`No label named "${name}" exists`);
