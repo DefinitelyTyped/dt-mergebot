@@ -1,7 +1,5 @@
 {
   "type": "remove",
   "now": "2020-04-28T22:49:39.000Z",
-  "pr_number": 44105,
-  "message": "PR is not active",
-  "isDraft": false
+  "message": "PR is not active"
 }
