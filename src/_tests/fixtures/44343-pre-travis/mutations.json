@@ -1,5 +1,16 @@
 [
   {
+    "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWwyMTU0ODU3ODAw"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDEwODAzMTcz"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
