@@ -13,15 +13,6 @@ export function unique<T>(xs: T[]) {
     return [...new Set(xs)];
 }
 
-export async function someAsync<T>(arr: ReadonlyArray<T>, f: (t: T) => Promise<boolean>): Promise<boolean> {
-    for (const x of arr) {
-        if (await f(x)) {
-            return true;
-        }
-    }
-    return false;
-}
-
 export function findLast<T, U extends T>(arr: readonly T[] | null | undefined, predicate: (item?: T) => item is U): U | undefined;
 export function findLast<T>(arr: readonly T[] | null | undefined, predicate: (item?: T) => boolean): T | undefined;
 export function findLast<T>(arr: readonly T[] | null | undefined, predicate: (item?: T) => boolean) {

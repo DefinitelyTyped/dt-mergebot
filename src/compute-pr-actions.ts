@@ -95,7 +95,7 @@ type Staleness = {
 type ApproverKind = "maintainer" | "owner" | "other";
 
 // used to pass around pr info with additional values
-export interface ExtendedPrInfo extends PrInfo {
+interface ExtendedPrInfo extends PrInfo {
     readonly orig: PrInfo;
     readonly editsInfra: boolean;
     readonly checkConfig: boolean;
