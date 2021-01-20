@@ -30,7 +30,6 @@ export type PopularityLevel =
 interface BotError {
     readonly type: "error";
     readonly now: Date;
-    readonly pr_number: number;
     readonly message: string;
     readonly author: string | undefined;
 }
@@ -38,7 +37,6 @@ interface BotError {
 interface BotEnsureRemovedFromProject {
     readonly type: "remove";
     readonly now: Date;
-    readonly pr_number: number;
     readonly message: string;
     readonly isDraft: boolean;
 }
@@ -185,13 +183,13 @@ export async function deriveStateForPR(
     getDownloads = getMonthlyDownloadCount,
     now = new Date(),
 ): Promise<BotResult>  {
-    if (prInfo.author == null) return botError(prInfo.number, "PR author does not exist");
+    if (prInfo.author == null) return botError("PR author does not exist");
 
-    if (prInfo.isDraft) return botEnsureRemovedFromProject(prInfo.number, "PR is a draft", true);
-    if (prInfo.state !== PullRequestState.OPEN) return botEnsureRemovedFromProject(prInfo.number, "PR is not active", false);
+    if (prInfo.isDraft) return botEnsureRemovedFromProject("PR is a draft");
+    if (prInfo.state !== PullRequestState.OPEN) return botEnsureRemovedFromProject("PR is not active");
 
     const headCommit = getHeadCommit(prInfo);
-    if (headCommit == null) return botError(prInfo.number, "No head commit found");
+    if (headCommit == null) return botError("No head commit found");
 
     const author = prInfo.author.login;
     const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
@@ -207,7 +205,7 @@ export async function deriveStateForPR(
     const pkgInfoEtc = await getPackageInfosEtc(
         noNullish(prInfo.files?.nodes).map(f => f.path).sort(),
         prInfo.headRefOid, fetchFile, async name => await getDownloads(name, lastPushDate));
-    if (pkgInfoEtc instanceof Error) return botError(prInfo.number, pkgInfoEtc.message);
+    if (pkgInfoEtc instanceof Error) return botError(pkgInfoEtc.message);
     const { pkgInfo, popularityLevel } = pkgInfoEtc;
 
     const reviews = getReviews(prInfo);
@@ -236,12 +234,12 @@ export async function deriveStateForPR(
         ...getCIResult(headCommit.checkSuites)
     };
 
-    function botError(pr_number: number, message: string): BotError {
-        return { type: "error", now, message, pr_number, author: prInfo.author?.login };
+    function botError(message: string): BotError {
+        return { type: "error", now, message, author: prInfo.author?.login };
     }
 
-    function botEnsureRemovedFromProject(pr_number: number, message: string, isDraft: boolean): BotEnsureRemovedFromProject {
-        return { type: "remove", now, pr_number, message, isDraft };
+    function botEnsureRemovedFromProject(message: string): BotEnsureRemovedFromProject {
+        return { type: "remove", now, message, isDraft: prInfo.isDraft };
     }
 }
 
