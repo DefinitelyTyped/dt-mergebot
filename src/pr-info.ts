@@ -8,7 +8,6 @@ import { PR_repository_pullRequest as GraphqlPullRequest,
          PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent,
          PR_repository_pullRequest_comments_nodes
 } from "./queries/schema/PR";
-import { PullRequestReviewState, PullRequestState, CommentAuthorAssociation, CheckConclusionState } from "./queries/schema/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
@@ -186,13 +185,13 @@ export async function deriveStateForPR(
     if (prInfo.author == null) return botError("PR author does not exist");
 
     if (prInfo.isDraft) return botEnsureRemovedFromProject("PR is a draft");
-    if (prInfo.state !== PullRequestState.OPEN) return botEnsureRemovedFromProject("PR is not active");
+    if (prInfo.state !== "OPEN") return botEnsureRemovedFromProject("PR is not active");
 
     const headCommit = getHeadCommit(prInfo);
     if (headCommit == null) return botError("No head commit found");
 
     const author = prInfo.author.login;
-    const isFirstContribution = prInfo.authorAssociation === CommentAuthorAssociation.FIRST_TIME_CONTRIBUTOR;
+    const isFirstContribution = prInfo.authorAssociation === "FIRST_TIME_CONTRIBUTOR";
 
     const createdDate = new Date(prInfo.createdAt);
     // apparently `headCommit.pushedDate` can be null in some cases (see #48708), use the PR creation time for that
@@ -460,14 +459,14 @@ function getReviews(prInfo: PR_repository_pullRequest) {
             reviews.push({ type: "stale", reviewer, date, abbrOid: abbrOid(r.commit.oid) });
             continue;
         }
-        if (r.state === PullRequestReviewState.CHANGES_REQUESTED) {
+        if (r.state === "CHANGES_REQUESTED") {
             reviews.push({ type: "changereq", reviewer, date });
             continue;
         }
-        if (r.state !== PullRequestReviewState.APPROVED) continue;
+        if (r.state !== "APPROVED") continue;
         const isMaintainer =
-            (r.authorAssociation === CommentAuthorAssociation.MEMBER)
-            || (r.authorAssociation === CommentAuthorAssociation.OWNER);
+            (r.authorAssociation === "MEMBER")
+            || (r.authorAssociation === "OWNER");
         reviews.push({ type: "approved", reviewer, date, isMaintainer });
     }
     return reviews;
@@ -480,11 +479,11 @@ function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit
     const totalStatusChecks = ghActionsChecks?.find(check => check?.checkRuns?.nodes?.[0]?.title === "test") || ghActionsChecks?.[0];
     if (!totalStatusChecks) return { ciResult: "missing", ciUrl: undefined };
     switch (totalStatusChecks.conclusion) {
-        case CheckConclusionState.SUCCESS:
+        case "SUCCESS":
             return { ciResult: "pass" };
-        case CheckConclusionState.FAILURE:
-        case CheckConclusionState.SKIPPED:
-        case CheckConclusionState.TIMED_OUT:
+        case "FAILURE":
+        case "SKIPPED":
+        case "TIMED_OUT":
             return { ciResult: "fail", ciUrl: totalStatusChecks.url };
         default:
             return { ciResult: "unknown" };
