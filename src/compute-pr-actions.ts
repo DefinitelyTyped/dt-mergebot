@@ -52,8 +52,7 @@ export interface Actions {
     projectColumn?: ColumnName | "*REMOVE*";
     labels: LabelName[];
     responseComments: Comments.Comment[];
-    shouldClose: boolean;
-    shouldMerge: boolean;
+    state?: "close" | "merge";
     shouldUpdateLabels: boolean;
 }
 
@@ -62,8 +61,6 @@ function createDefaultActions(): Actions {
         projectColumn: "Other",
         labels: [],
         responseComments: [],
-        shouldClose: false,
-        shouldMerge: false,
         shouldUpdateLabels: true,
     };
 }
@@ -72,8 +69,6 @@ function createEmptyActions(): Actions {
     return {
         labels: [],
         responseComments: [],
-        shouldClose: false,
-        shouldMerge: false,
         shouldUpdateLabels: false,
     };
 }
@@ -327,7 +322,7 @@ export function process(prInfo: BotResult,
                                          (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners,
                                          headCommitAbbrOid));
             if (info.hasValidMergeRequest) {
-                actions.shouldMerge = true;
+                actions.state = "merge";
                 actions.projectColumn = "Recently Merged";
             } else {
                 actions.projectColumn = "Waiting for Author to Merge";
@@ -341,7 +336,7 @@ export function process(prInfo: BotResult,
         }
     }
 
-    if (!actions.shouldMerge) {
+    if (!actions.state) {
         if (info.mergeRequestUser) {
             post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, headCommitAbbrOid, urls.workflow));
         }
@@ -371,7 +366,7 @@ function makeStaleness(now: Date, author: string, otherOwners: string[]) { // cu
             }
             if (state === "done") {
                 if (doneColumn === "CLOSE") {
-                    actions.shouldClose = true;
+                    actions.state = "close";
                     actions.projectColumn = "*REMOVE*";
                 } else {
                     actions.projectColumn = doneColumn;
