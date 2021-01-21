@@ -45,20 +45,20 @@ async function getMutationsForLabels(actions: Actions, pr: PR_repository_pullReq
 }
 
 async function getMutationsForProjectChanges(actions: Actions, pr: PR_repository_pullRequest) {
-    if (actions.shouldRemoveFromActiveColumns) {
-        const card = pr.projectCards.nodes?.find(card => card?.project.number === ProjectBoardNumber);
-        if (card?.column?.name === "Recently Merged") return [];
-        return [createMutation<schema.DeleteProjectCardInput>("deleteProjectCard", { cardId: card!.id })];
+    if (!actions.projectColumn) return [];
+    const card = pr.projectCards.nodes?.find(card => card?.project.number === ProjectBoardNumber);
+    if (actions.projectColumn === "*REMOVE*") {
+        if (!card || card.column?.name === "Recently Merged") return [];
+        return [createMutation<schema.DeleteProjectCardInput>("deleteProjectCard", { cardId: card.id })];
     }
-    if (!(actions.shouldUpdateProjectColumn && actions.targetColumn)) return [];
-    const existingCard = pr.projectCards.nodes?.find(n => !!n?.column && n.project.number === ProjectBoardNumber);
-    const targetColumnId = await getProjectBoardColumnIdByName(actions.targetColumn);
-    // No existing card => create a new one
-    if (!existingCard) return [createMutation<schema.AddProjectCardInput>("addProjectCard", { contentId: pr.id, projectColumnId: targetColumnId })];
     // Existing card is ok => do nothing
-    if (existingCard.column?.name === actions.targetColumn) return [];
-    // Move existing card
-    return [createMutation<schema.MoveProjectCardInput>("moveProjectCard", { cardId: existingCard.id, columnId: targetColumnId })];
+    if (card?.column?.name === actions.projectColumn) return [];
+    const columnId = await getProjectBoardColumnIdByName(actions.projectColumn);
+    return [card
+            // Move existing card
+            ? createMutation<schema.MoveProjectCardInput>("moveProjectCard", { cardId: card.id, columnId })
+            // No existing card => create a new one
+            : createMutation<schema.AddProjectCardInput>("addProjectCard", { contentId: pr.id, projectColumnId: columnId })];
 }
 
 type ParsedComment = { id: string, body: string, tag: string, status: string };

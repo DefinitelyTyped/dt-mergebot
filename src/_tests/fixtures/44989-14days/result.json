@@ -1,5 +1,5 @@
 {
-  "targetColumn": "Waiting for Author to Merge",
+  "projectColumn": "Waiting for Author to Merge",
   "labels": [
     "Popular package",
     "Owner Approved",
@@ -22,7 +22,5 @@
   ],
   "shouldClose": false,
   "shouldMerge": false,
-  "shouldUpdateLabels": true,
-  "shouldUpdateProjectColumn": true,
-  "shouldRemoveFromActiveColumns": false
+  "shouldUpdateLabels": true
 }

@@ -1,5 +1,5 @@
 {
-  "targetColumn": "Needs Maintainer Action",
+  "projectColumn": "Needs Maintainer Action",
   "labels": [
     "New Definition",
     "Unreviewed"
@@ -24,7 +24,5 @@
   ],
   "shouldClose": false,
   "shouldMerge": false,
-  "shouldUpdateLabels": true,
-  "shouldUpdateProjectColumn": true,
-  "shouldRemoveFromActiveColumns": false
+  "shouldUpdateLabels": true
 }

@@ -4,6 +4,5 @@
   "shouldClose": false,
   "shouldMerge": false,
   "shouldUpdateLabels": false,
-  "shouldUpdateProjectColumn": false,
-  "shouldRemoveFromActiveColumns": true
+  "projectColumn": "*REMOVE*"
 }

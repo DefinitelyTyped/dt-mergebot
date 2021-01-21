@@ -1,5 +1,5 @@
 {
-  "targetColumn": "Recently Merged",
+  "projectColumn": "Recently Merged",
   "labels": [
     "Maintainer Approved",
     "New Definition",
@@ -17,7 +17,5 @@
   ],
   "shouldClose": false,
   "shouldMerge": true,
-  "shouldUpdateLabels": true,
-  "shouldUpdateProjectColumn": true,
-  "shouldRemoveFromActiveColumns": false
+  "shouldUpdateLabels": true
 }
