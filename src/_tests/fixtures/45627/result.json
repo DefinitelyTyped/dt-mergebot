@@ -1,5 +1,5 @@
 {
-  "projectColumn": "*REMOVE*",
+  "projectColumn": "Recently Merged",
   "labels": [
     "Critical package",
     "Owner Approved",
@@ -20,13 +20,9 @@
     {
       "tag": "merge-offer",
       "status": "@spamshaker Everything looks good here. Great job! I am ready to merge this PR (at 15facc1) on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@tkqubo, @bumbleblym, @bcherny, @tommytroylin, @mohsen1, @jcreamer898, @alan-agius4, @dennispg, @christophehurpeau, @ZSkycat, @johnnyreilly, @rwaskiewicz, @kuehlein, @grgur, @rubenspgcavalcante, @andersk, @ofhouse, @danielthank, @sasurau4, @dionshihk, @peterblazejewicz: you can do this too.)"
-    },
-    {
-      "tag": "Unmerged:done",
-      "status": "After a month, no one has requested merging the PR 😞. I'm going to assume that the change is not wanted after all, and will therefore close it."
     }
   ],
-  "shouldClose": true,
+  "shouldClose": false,
   "shouldMerge": true,
   "shouldUpdateLabels": true
 }
