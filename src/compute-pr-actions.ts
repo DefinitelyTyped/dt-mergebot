@@ -341,12 +341,14 @@ export function process(prInfo: BotResult,
         }
     }
 
-    if (!actions.shouldMerge && info.mergeRequestUser) {
-        post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, headCommitAbbrOid, urls.workflow));
-    }
+    if (!actions.shouldMerge) {
+        if (info.mergeRequestUser) {
+            post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, headCommitAbbrOid, urls.workflow));
+        }
 
-    // Timeline-related actions
-    info.staleness?.doTimelineActions(actions);
+        // Timeline-related actions
+        info.staleness?.doTimelineActions(actions);
+    }
 
     return actions;
 }
