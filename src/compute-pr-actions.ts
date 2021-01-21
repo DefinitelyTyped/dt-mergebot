@@ -45,7 +45,7 @@ export const LabelNames = [
     "Too Many Owners",
     "Untested Change",
     "Check Config",
-    ...StalenessKinds
+    ...StalenessKinds,
 ] as const;
 
 export interface Actions {
@@ -173,7 +173,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
         requireMaintainer, blessable, failedCI, staleness,
         packages, hasMultiplePackages, hasDefinitions, hasTests, isUntested, newPackages, hasNewPackages, hasEditedPackages,
         approvedReviews, changereqReviews, staleReviews, approvedBy, hasChangereqs,
-        needsAuthorAction, reviewColumn, isAuthor
+        needsAuthorAction, reviewColumn, isAuthor,
     };
 
     // Staleness timeline configurations (except for texts that are all in `comments.ts`)
@@ -237,12 +237,12 @@ export function process(prInfo: BotResult,
             return {
                 ...createEmptyActions(),
                 targetColumn: "Needs Author Action",
-                shouldUpdateProjectColumn: true
+                shouldUpdateProjectColumn: true,
             };
         } else {
             return {
                 ...createEmptyActions(),
-                shouldRemoveFromActiveColumns: true
+                shouldRemoveFromActiveColumns: true,
             };
         }
     }

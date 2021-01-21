@@ -9,7 +9,7 @@ import { scrubDiagnosticDetails } from "../util/util";
 import * as cachedQueries from "./cachedQueries.json";
 jest.mock("../util/cachedQueries", () => ({
     getProjectBoardColumns: jest.fn(() => cachedQueries.getProjectBoardColumns),
-    getLabels: jest.fn(() => cachedQueries.getLabels)
+    getLabels: jest.fn(() => cachedQueries.getLabels),
 }));
 import { executePrActions } from "../execute-pr-actions";
 
@@ -42,7 +42,7 @@ async function testFixture(dir: string) {
         prInfo,
         (expr: string) => Promise.resolve(files[expr] as string),
         (name: string, _until?: Date) => name in downloads ? downloads[name] : 0,
-        new Date(readJsonSync(derivedPath).now)
+        new Date(readJsonSync(derivedPath).now),
     );
 
     const action = process(derived);

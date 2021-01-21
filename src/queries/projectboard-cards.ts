@@ -55,7 +55,7 @@ export async function getProjectBoardCards() {
         columns.push({
             name: col.name,
             totalCount: col.cards.totalCount,
-            cards
+            cards,
         });
     });
 

@@ -6,7 +6,7 @@ import { PR_repository_pullRequest as GraphqlPullRequest,
          PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent,
          PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent,
          PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent,
-         PR_repository_pullRequest_comments_nodes
+         PR_repository_pullRequest_comments_nodes,
 } from "./queries/schema/PR";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { client } from "./graphql-client";
@@ -230,7 +230,7 @@ export async function deriveStateForPR(
         popularityLevel,
         pkgInfo,
         reviews,
-        ...getCIResult(headCommit.checkSuites)
+        ...getCIResult(headCommit.checkSuites),
     };
 
     function botError(message: string): BotError {
@@ -354,7 +354,7 @@ const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
 configSuspicious["OTHER_FILES.txt"] = makeChecker(
     [],
     urls.otherFilesTxt,
-    { parse: text => text.split(/\r?\n/) },
+    { parse: text => text.split(/\r?\n/) }
 );
 configSuspicious["package.json"] = makeChecker(
     { private: true },
@@ -363,7 +363,7 @@ configSuspicious["package.json"] = makeChecker(
         delete data.dependencies;
         delete data.types;
         delete data.typesVersions;
-    } },
+    } }
 );
 configSuspicious["tslint.json"] = makeChecker(
     { extends: "dtslint/dt.json" },
@@ -380,7 +380,7 @@ configSuspicious["tsconfig.json"] = makeChecker(
             strictNullChecks: true,
             types: [],
             noEmit: true,
-            forceConsistentCasingInFileNames: true
+            forceConsistentCasingInFileNames: true,
         }
     },
     urls.tsconfigJson,
@@ -390,7 +390,7 @@ configSuspicious["tsconfig.json"] = makeChecker(
         delete data.compilerOptions.typeRoots;
         delete data.compilerOptions.paths;
         delete data.files;
-    } },
+    } }
 );
 
 // helper for file checkers: allow either a given "expectedForm", or any edits that get closer

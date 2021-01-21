@@ -32,6 +32,7 @@
           "ArrayExpression": "first",
           "ignoredNodes": ["ConditionalExpression", "TemplateLiteral > *"]
         }],
+        "comma-dangle": ["error", "only-multiline"],
         "no-constant-condition": ["error", { "checkLoops": false }],
         "no-useless-escape": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
