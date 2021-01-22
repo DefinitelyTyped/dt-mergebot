@@ -48,13 +48,24 @@ export const LabelNames = [
     ...StalenessKinds,
 ] as const;
 
-export interface Actions {
-    projectColumn?: ColumnName | "*REMOVE*";
+export type Actions = {
     labels: LabelName[];
     responseComments: Comments.Comment[];
-    state?: "close" | "merge";
     shouldUpdateLabels: boolean;
-}
+} & (
+    | {
+          state?: never;
+          projectColumn?: ColumnName | "*REMOVE*";
+      }
+    | {
+          state: "close";
+          projectColumn: "*REMOVE*";
+      }
+    | {
+          state: "merge";
+          projectColumn: "Recently Merged";
+      }
+);
 
 function createDefaultActions(): Actions {
     return {
@@ -62,14 +73,6 @@ function createDefaultActions(): Actions {
         labels: [],
         responseComments: [],
         shouldUpdateLabels: true,
-    };
-}
-
-function createEmptyActions(): Actions {
-    return {
-        labels: [],
-        responseComments: [],
-        shouldUpdateLabels: false,
     };
 }
 
@@ -223,7 +226,9 @@ export function process(prInfo: BotResult,
                         extendedCallback: (info: ExtendedPrInfo) => void = _i => {}): Actions {
     if (prInfo.type === "remove") {
         return {
-            ...createEmptyActions(),
+            labels: [],
+            responseComments: [],
+            shouldUpdateLabels: false,
             projectColumn: prInfo.isDraft ? "Needs Author Action" : "*REMOVE*",
         };
     }
