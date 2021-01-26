@@ -1,16 +1,15 @@
 import { gql, TypedDocumentNode } from "@apollo/client/core";
 import { client } from "../graphql-client";
-import { GetAllOpenPRsAndCardIDs, GetAllOpenPRsAndCardIDsVariables } from "./schema/GetAllOpenPRsAndCardIDs";
+import { GetAllOpenPRs, GetAllOpenPRsVariables } from "./schema/GetAllOpenPRs";
 import { noNullish } from "../util/util";
 
-export const getAllOpenPRsAndCardIDsQuery: TypedDocumentNode<GetAllOpenPRsAndCardIDs, GetAllOpenPRsAndCardIDsVariables> = gql`
-query GetAllOpenPRsAndCardIDs($endCursor: String) {
+export const getAllOpenPRsQuery: TypedDocumentNode<GetAllOpenPRs, GetAllOpenPRsVariables> = gql`
+query GetAllOpenPRs($endCursor: String) {
   repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
     id
     pullRequests(states: OPEN, orderBy: { field: UPDATED_AT, direction: DESC }, first: 100, after: $endCursor) {
       nodes {
         number
-        projectCards(first: 100) { nodes { id } }
       }
       pageInfo {
         hasNextPage
@@ -20,22 +19,18 @@ query GetAllOpenPRsAndCardIDs($endCursor: String) {
   }
 }`;
 
-export async function getAllOpenPRsAndCardIDs() {
+export async function getAllOpenPRs() {
     const prNumbers: number[] = [];
-    const cardIDs: string[] = [];
     let endCursor: string | undefined | null;
     while (true) {
         const result = await client.query({
-            query: getAllOpenPRsAndCardIDsQuery,
+            query: getAllOpenPRsQuery,
             fetchPolicy: "no-cache",
             variables: { endCursor },
         });
         prNumbers.push(...noNullish(result.data.repository?.pullRequests.nodes).map(pr => pr.number));
-        for (const pr of noNullish(result.data.repository?.pullRequests.nodes)) {
-            cardIDs.push(...noNullish(pr.projectCards.nodes).map(card => card.id));
-        }
         if (!result.data.repository?.pullRequests.pageInfo.hasNextPage) {
-            return { prNumbers, cardIDs };
+            return prNumbers;
         }
         endCursor = result.data.repository.pullRequests.pageInfo.endCursor;
     }

@@ -7,6 +7,20 @@
 // GraphQL query operation: GetProjectBoardCards
 // ====================================================
 
+export interface GetProjectBoardCards_repository_project_columns_nodes_cards_nodes_content_Issue {
+  __typename: "Issue";
+}
+
+export interface GetProjectBoardCards_repository_project_columns_nodes_cards_nodes_content_PullRequest {
+  __typename: "PullRequest";
+  /**
+   * Identifies the pull request number.
+   */
+  number: number;
+}
+
+export type GetProjectBoardCards_repository_project_columns_nodes_cards_nodes_content = GetProjectBoardCards_repository_project_columns_nodes_cards_nodes_content_Issue | GetProjectBoardCards_repository_project_columns_nodes_cards_nodes_content_PullRequest;
+
 export interface GetProjectBoardCards_repository_project_columns_nodes_cards_nodes {
   __typename: "ProjectCard";
   id: string;
@@ -14,6 +28,10 @@ export interface GetProjectBoardCards_repository_project_columns_nodes_cards_nod
    * Identifies the date and time when the object was last updated.
    */
   updatedAt: any;
+  /**
+   * The card content item
+   */
+  content: GetProjectBoardCards_repository_project_columns_nodes_cards_nodes_content | null;
 }
 
 export interface GetProjectBoardCards_repository_project_columns_nodes_cards {
