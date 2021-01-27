@@ -7,53 +7,53 @@
 // GraphQL query operation: GetAllOpenPRsAndCardIDs
 // ====================================================
 
-export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_edges_node_projectCards_nodes {
+export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_nodes_projectCards_nodes {
   __typename: "ProjectCard";
   id: string;
 }
 
-export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_edges_node_projectCards {
+export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_nodes_projectCards {
   __typename: "ProjectCardConnection";
   /**
    * A list of nodes.
    */
-  nodes: (GetAllOpenPRsAndCardIDs_repository_pullRequests_edges_node_projectCards_nodes | null)[] | null;
+  nodes: (GetAllOpenPRsAndCardIDs_repository_pullRequests_nodes_projectCards_nodes | null)[] | null;
 }
 
-export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_edges_node {
+export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_nodes {
   __typename: "PullRequest";
   /**
    * Identifies the pull request number.
    */
   number: number;
   /**
-   * Identifies the date and time when the object was last updated.
-   */
-  updatedAt: any;
-  /**
    * List of project cards associated with this pull request.
    */
-  projectCards: GetAllOpenPRsAndCardIDs_repository_pullRequests_edges_node_projectCards;
+  projectCards: GetAllOpenPRsAndCardIDs_repository_pullRequests_nodes_projectCards;
 }
 
-export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_edges {
-  __typename: "PullRequestEdge";
+export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_pageInfo {
+  __typename: "PageInfo";
   /**
-   * A cursor for use in pagination.
+   * When paginating forwards, are there more items?
    */
-  cursor: string;
+  hasNextPage: boolean;
   /**
-   * The item at the end of the edge.
+   * When paginating forwards, the cursor to continue.
    */
-  node: GetAllOpenPRsAndCardIDs_repository_pullRequests_edges_node | null;
+  endCursor: string | null;
 }
 
 export interface GetAllOpenPRsAndCardIDs_repository_pullRequests {
   __typename: "PullRequestConnection";
   /**
-   * A list of edges.
+   * A list of nodes.
    */
-  edges: (GetAllOpenPRsAndCardIDs_repository_pullRequests_edges | null)[] | null;
+  nodes: (GetAllOpenPRsAndCardIDs_repository_pullRequests_nodes | null)[] | null;
+  /**
+   * Information to aid in pagination.
+   */
+  pageInfo: GetAllOpenPRsAndCardIDs_repository_pullRequests_pageInfo;
 }
 
 export interface GetAllOpenPRsAndCardIDs_repository {
@@ -73,5 +73,5 @@ export interface GetAllOpenPRsAndCardIDs {
 }
 
 export interface GetAllOpenPRsAndCardIDsVariables {
-  after?: string | null;
+  endCursor?: string | null;
 }
