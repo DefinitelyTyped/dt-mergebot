@@ -1,19 +1,20 @@
 import { gql, TypedDocumentNode } from "@apollo/client/core";
 import { client } from "../graphql-client";
 import { GetAllOpenPRsAndCardIDs, GetAllOpenPRsAndCardIDsVariables } from "./schema/GetAllOpenPRsAndCardIDs";
+import { noNullish } from "../util/util";
 
 export const getAllOpenPRsAndCardIDsQuery: TypedDocumentNode<GetAllOpenPRsAndCardIDs, GetAllOpenPRsAndCardIDsVariables> = gql`
-query GetAllOpenPRsAndCardIDs($after: String) {
+query GetAllOpenPRsAndCardIDs($endCursor: String) {
   repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
     id
-    pullRequests(orderBy: { field: UPDATED_AT, direction: DESC }, states: [OPEN], first: 100, after: $after) {
-      edges {
-        cursor
-        node {
-          number
-          updatedAt
-          projectCards(first: 100) { nodes { id } }
-        }
+    pullRequests(states: OPEN, orderBy: { field: UPDATED_AT, direction: DESC }, first: 100, after: $endCursor) {
+      nodes {
+        number
+        projectCards(first: 100) { nodes { id } }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
       }
     }
   }
@@ -22,26 +23,20 @@ query GetAllOpenPRsAndCardIDs($after: String) {
 export async function getAllOpenPRsAndCardIDs() {
     const prNumbers: number[] = [];
     const cardIDs: string[] = [];
-    let after: string | undefined;
+    let endCursor: string | undefined | null;
     while (true) {
-        const results = await client.query({
+        const result = await client.query({
             query: getAllOpenPRsAndCardIDsQuery,
             fetchPolicy: "no-cache",
-            variables: { after }
+            variables: { endCursor }
         });
-
-        if (!results.data.repository?.pullRequests.edges?.length) {
+        prNumbers.push(...noNullish(result.data.repository?.pullRequests.nodes).map(pr => pr.number));
+        for (const pr of noNullish(result.data.repository?.pullRequests.nodes)) {
+            cardIDs.push(...noNullish(pr.projectCards.nodes).map(card => card.id));
+        }
+        if (!result.data.repository?.pullRequests.pageInfo.hasNextPage) {
             return { prNumbers, cardIDs };
         }
-
-        for (const edge of results.data.repository.pullRequests.edges) {
-            if (!edge) continue;
-            const { node, cursor } = edge;
-            after = cursor;
-            if (!node) continue;
-
-            prNumbers.push(node.number);
-            node.projectCards.nodes?.forEach(n => n && cardIDs.push(n.id));
-        }
+        endCursor = result.data.repository.pullRequests.pageInfo.endCursor;
     }
 }
