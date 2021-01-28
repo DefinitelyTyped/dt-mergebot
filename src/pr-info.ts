@@ -158,7 +158,7 @@ export async function queryPRInfo(prNumber: number) {
         const info = await client.query({
             query: GetPRInfo,
             variables: { pr_number: prNumber },
-            fetchPolicy: "network-only",
+            fetchPolicy: "no-cache",
         });
         const prInfo = info.data.repository?.pullRequest;
         if (!prInfo) return info; // let `deriveStateForPR` handle the missing result

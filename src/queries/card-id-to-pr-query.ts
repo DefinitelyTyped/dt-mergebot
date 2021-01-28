@@ -17,7 +17,7 @@ export const runQueryToGetPRForCardId = async (id: string): Promise<CardPRInfo |
                 }
             }` as TypedDocumentNode<CardIdToPr, CardIdToPrVariables>,
         variables: { id },
-        fetchPolicy: "network-only",
+        fetchPolicy: "no-cache",
     });
     const node = info.data.node;
     return (node?.__typename === "ProjectCard" && node.content?.__typename === "PullRequest")

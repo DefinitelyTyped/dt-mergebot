@@ -26,7 +26,7 @@ export async function getAllOpenPRsAndCardIDs() {
     while (true) {
         const results = await client.query({
             query: getAllOpenPRsAndCardIDsQuery,
-            fetchPolicy: "network-only",
+            fetchPolicy: "no-cache",
             variables: { after }
         });
 

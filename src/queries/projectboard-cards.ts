@@ -38,7 +38,7 @@ interface ColumnInfo {
 export async function getProjectBoardCards() {
     const results = await client.query({
         query: GetProjectBoardCardsQuery,
-        fetchPolicy: "network-only",
+        fetchPolicy: "no-cache",
     });
 
     const project = results.data.repository?.project;
