@@ -6,7 +6,7 @@ export const runQueryToGetPRMetadataForSHA1 = async (owner: string, repo: string
     const info = await client.query({
         query: GetPRForSHA1Query,
         variables: { query: `${sha1} type:pr repo:${owner}/${repo}` },
-        fetchPolicy: "network-only",
+        fetchPolicy: "no-cache",
     });
     const pr = info.data.search.nodes?.[0];
     return pr?.__typename === "PullRequest" ? pr : undefined;
