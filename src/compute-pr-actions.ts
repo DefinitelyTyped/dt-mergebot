@@ -321,7 +321,14 @@ export function process(prInfo: BotResult,
     }
     // CI is missing
     else if (info.ciResult === "missing") {
-        label("Where is GH Actions?");
+        // This bot is faster than CI in coming back to give a response, and so the bot starts flipping between
+        // a 'where is CI'-ish state and a 'got CI deets' state. To work around this, we wait a
+        // minute since the last timeline push action before label/project states can be updated
+        if (dayjs(info.now).diff(info.lastPushDate, "minutes") >= 1) {
+            label("Where is GH Actions?");
+        } else {
+            delete context.targetColumn;
+        }
     }
     // CI is green
     else if (info.ciResult === "pass") {
@@ -354,13 +361,6 @@ export function process(prInfo: BotResult,
 
     // Timeline-related actions
     info.staleness?.doTimelineActions(context);
-
-    // This bot is faster than CI in coming back to give a response, and so the bot starts flipping between
-    // a 'where is CI'-ish state and a 'got CI deets' state. To work around this, we wait a
-    // minute since the last timeline push action before label/project states can be updated
-    const tooEarlyForLabelsOrProjects = dayjs(info.now).diff(info.lastPushDate, "minutes") < 1;
-    context.shouldUpdateLabels = !tooEarlyForLabelsOrProjects;
-    context.shouldUpdateProjectColumn = !tooEarlyForLabelsOrProjects;
 
     return context;
 }

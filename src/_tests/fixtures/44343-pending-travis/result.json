@@ -13,7 +13,7 @@
   ],
   "shouldClose": false,
   "shouldMerge": false,
-  "shouldUpdateLabels": false,
-  "shouldUpdateProjectColumn": false,
+  "shouldUpdateLabels": true,
+  "shouldUpdateProjectColumn": true,
   "shouldRemoveFromActiveColumns": false
 }
