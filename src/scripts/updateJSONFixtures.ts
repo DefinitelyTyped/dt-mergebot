@@ -25,13 +25,13 @@ fixtureNames.forEach(fixture => {
     headCommit.checkSuites.nodes.push({
         "app": {
             "name": "GitHub Actions",
-            "__typename": "App"
+            "__typename": "App",
         },
         "conclusion": status,
         "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
         "status": status,
         "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/22c73c88cc9c09efd4c2998ec360607dd4c36c2e/checks?check_suite_id=731664306",
-        "__typename": "CheckSuite"
+        "__typename": "CheckSuite",
     });
 
     writeFileSync(responsePath, JSON.stringify(response, null, "  ") + "\n", "utf8");

@@ -7,8 +7,8 @@ export async function fetchFile(expr: string, limit?: number): Promise<string | 
         variables: {
             name: "DefinitelyTyped",
             owner: "DefinitelyTyped",
-            expr: `${expr}`
-        }
+            expr: `${expr}`,
+        },
     });
     const obj = info.data.repository?.object;
     if (!obj || obj.__typename !== "Blob") return undefined;

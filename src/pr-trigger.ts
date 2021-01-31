@@ -47,7 +47,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
         "pull_request_review": ["submitted", "dismissed"],
         "issue_comment": ["created", "edited", "deleted"],
         "project_card": ["moved"],
-        "check_suite": ["completed"]
+        "check_suite": ["completed"],
     };
     const allowListedActions = acceptedEventsToActions[event];
 

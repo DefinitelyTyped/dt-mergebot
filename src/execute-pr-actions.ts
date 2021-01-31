@@ -36,7 +36,7 @@ async function getMutationsForLabels(actions: Actions, pr: PR_repository_pullReq
         return labels.length === 0 ? null
             : createMutation<schema.AddLabelsToLabelableInput & schema.RemoveLabelsFromLabelableInput>(query, {
                 labelIds: await Promise.all(labels.map(label => getLabelIdByName(label))),
-                labelableId: pr.id, });
+                labelableId: pr.id });
     };
     return Promise.all([
         makeMutations((label => !labels.includes(label) && actions.labels.includes(label)), "addLabelsToLabelable"),
@@ -113,7 +113,7 @@ function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pull
             : null,
         actions.shouldClose
             ? createMutation<schema.ClosePullRequestInput>("closePullRequest", { pullRequestId: pr.id })
-            : null
+            : null,
     ];
 }
 

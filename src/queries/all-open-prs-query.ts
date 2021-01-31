@@ -28,7 +28,7 @@ export async function getAllOpenPRsAndCardIDs() {
         const result = await client.query({
             query: getAllOpenPRsAndCardIDsQuery,
             fetchPolicy: "no-cache",
-            variables: { endCursor }
+            variables: { endCursor },
         });
         prNumbers.push(...noNullish(result.data.repository?.pullRequests.nodes).map(pr => pr.number));
         for (const pr of noNullish(result.data.repository?.pullRequests.nodes)) {

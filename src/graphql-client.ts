@@ -5,7 +5,7 @@ import * as schema from "@octokit/graphql-schema/schema";
 
 const headers = {
     authorization: `Bearer ${getAuthToken()}`,
-    accept: "application/vnd.github.antiope-preview+json"
+    accept: "application/vnd.github.antiope-preview+json",
 };
 
 const uri = "https://api.github.com/graphql";
