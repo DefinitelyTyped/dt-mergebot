@@ -1,0 +1,85 @@
+[
+  {
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWw1ODYxNzcwNjM=",
+          "MDU6TGFiZWwyMTU0ODE2NTQ5"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWwxNjA4NTUyNDEw",
+          "MDU6TGFiZWw2OTcwMTg5NzI="
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: AddProjectCardInput!) {\n  addProjectCard(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "contentId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx",
+        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx",
+        "body": "Hey @ienzam,\n\n:unamused: Your PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Please consider [adding tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package) to cover the change you're making. Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.\n<!--typescript_bot_suggest-testing-->"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDcyOTI0NjE3Mw==",
+        "body": "@ienzam Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `jasmine` [on npm](https://www.npmjs.com/package/jasmine), [on unpkg](https://unpkg.com/browse/jasmine@latest/) (author is owner)\n  - owner-approval: @chivesrs\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect module config files ([`jasmine/tsconfig.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49639/files/c5e5c9885d23e7d1c1ea8f54b53c8283d5f4f856#diff-522bbd567aec6bfd3e2cd29af157310bd47eb79dbe6a670beb4da4e1a14d0f2d), [`jasmine/tslint.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49639/files/c5e5c9885d23e7d1c1ea8f54b53c8283d5f4f856#diff-0a3e03c56e43fc53245f1e4296782b62788ba4c9e70c9439d22b1998e681f55e))\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 8 days.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: AddPullRequestReviewThreadInput!) {\n  addPullRequestReviewThread(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx",
+        "path": "types/jasmine/tsconfig.json",
+        "line": 21,
+        "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it\n```suggestion\n        \"forceConsistentCasingInFileNames\": true,\n        \"strictFunctionTypes\": true\n```"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: AddPullRequestReviewThreadInput!) {\n  addPullRequestReviewThread(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx",
+        "path": "types/jasmine/tslint.json",
+        "line": 4,
+        "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) and not moving towards it\n```suggestion\n```"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: SubmitPullRequestReviewInput!) {\n  submitPullRequestReview(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTIyNzM5MjUx",
+        "body": "@ienzam I noticed these differences from the expected form. If you can revise your changes to avoid them, so much the better! Otherwise please reply with explanations why they're needed and a maintainer will take a look. Thanks!",
+        "event": "COMMENT"
+      }
+    }
+  }
+]

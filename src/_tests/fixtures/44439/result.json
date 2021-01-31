@@ -14,6 +14,7 @@
       "status": "🔔 @lith-light-g — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44439/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on."
     }
   ],
+  "explanations": [],
   "shouldClose": false,
   "shouldMerge": false,
   "shouldUpdateLabels": true,

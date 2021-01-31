@@ -23,6 +23,7 @@
       "status": "It has been more than two weeks and this PR still has no reviews.\n\nI'll bump it to the DT maintainer queue. Thank you for your patience, @ExE-Boss.\n\n(Ping @RReverser.)"
     }
   ],
+  "explanations": [],
   "shouldClose": false,
   "shouldMerge": false,
   "shouldUpdateLabels": true,

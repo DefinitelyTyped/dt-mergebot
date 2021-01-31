@@ -42,7 +42,11 @@
         {
           "path": "types/omise-js/tslint.json",
           "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson)"
+          "suspect": {
+            "startLine": 1,
+            "endLine": 8,
+            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson)\n```suggestion\n{ \"extends\": \"dtslint/dt.json\" }\n```"
+          }
         }
       ],
       "owners": [],
