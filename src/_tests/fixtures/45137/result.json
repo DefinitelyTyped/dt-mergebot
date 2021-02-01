@@ -1,5 +1,5 @@
 {
-  "targetColumn": "Needs Maintainer Review",
+  "projectColumn": "Needs Maintainer Review",
   "labels": [
     "Popular package",
     "Owner Approved",
@@ -19,7 +19,5 @@
   ],
   "shouldClose": false,
   "shouldMerge": false,
-  "shouldUpdateLabels": true,
-  "shouldUpdateProjectColumn": true,
-  "shouldRemoveFromActiveColumns": false
+  "shouldUpdateLabels": true
 }

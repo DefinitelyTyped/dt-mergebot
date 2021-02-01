@@ -1,5 +1,5 @@
 {
-  "targetColumn": "Waiting for Code Reviews",
+  "projectColumn": "Waiting for Code Reviews",
   "labels": [
     "Untested Change"
   ],
@@ -19,7 +19,5 @@
   ],
   "shouldClose": false,
   "shouldMerge": false,
-  "shouldUpdateLabels": true,
-  "shouldUpdateProjectColumn": true,
-  "shouldRemoveFromActiveColumns": false
+  "shouldUpdateLabels": true
 }

@@ -1,5 +1,5 @@
 {
-  "targetColumn": "Waiting for Code Reviews",
+  "projectColumn": "Waiting for Code Reviews",
   "labels": [],
   "responseComments": [
     {
@@ -13,7 +13,5 @@
   ],
   "shouldClose": false,
   "shouldMerge": false,
-  "shouldUpdateLabels": true,
-  "shouldUpdateProjectColumn": true,
-  "shouldRemoveFromActiveColumns": false
+  "shouldUpdateLabels": true
 }

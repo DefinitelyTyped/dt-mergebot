@@ -49,26 +49,22 @@ export const LabelNames = [
 ] as const;
 
 export interface Actions {
-    targetColumn?: ColumnName;
+    projectColumn?: ColumnName | "*REMOVE*";
     labels: LabelName[];
     responseComments: Comments.Comment[];
     shouldClose: boolean;
     shouldMerge: boolean;
     shouldUpdateLabels: boolean;
-    shouldUpdateProjectColumn: boolean;
-    shouldRemoveFromActiveColumns: boolean;
 }
 
 function createDefaultActions(): Actions {
     return {
-        targetColumn: "Other",
+        projectColumn: "Other",
         labels: [],
         responseComments: [],
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: true,
-        shouldUpdateProjectColumn: true,
-        shouldRemoveFromActiveColumns: false,
     };
 }
 
@@ -79,8 +75,6 @@ function createEmptyActions(): Actions {
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: false,
-        shouldUpdateProjectColumn: false,
-        shouldRemoveFromActiveColumns: false,
     };
 }
 
@@ -89,7 +83,7 @@ type Staleness = {
     readonly days: number;
     readonly state: "fresh" | "attention" | "nearly" | "done";
     readonly explanation?: string;
-    readonly doTimelineActions: (context: Actions) => void;
+    readonly doTimelineActions: (actions: Actions) => void;
 }
 
 type ApproverKind = "maintainer" | "owner" | "other";
@@ -233,28 +227,20 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
 export function process(prInfo: BotResult,
                         extendedCallback: (info: ExtendedPrInfo) => void = _i => {}): Actions {
     if (prInfo.type === "remove") {
-        if (prInfo.isDraft) {
-            return {
-                ...createEmptyActions(),
-                targetColumn: "Needs Author Action",
-                shouldUpdateProjectColumn: true,
-            };
-        } else {
-            return {
-                ...createEmptyActions(),
-                shouldRemoveFromActiveColumns: true,
-            };
-        }
+        return {
+            ...createEmptyActions(),
+            projectColumn: prInfo.isDraft ? "Needs Author Action" : "*REMOVE*",
+        };
     }
 
-    const context = createDefaultActions();
-    const post = (c: Comments.Comment) => context.responseComments.push(c);
+    const actions = createDefaultActions();
+    const post = (c: Comments.Comment) => actions.responseComments.push(c);
 
     if (prInfo.type === "error") {
-        context.targetColumn = "Other";
-        context.labels.push("Mergebot Error");
+        actions.projectColumn = "Other";
+        actions.labels.push("Mergebot Error");
         post(Comments.HadError(prInfo.author, prInfo.message));
-        return context;
+        return actions;
     }
 
     // Collect some additional info
@@ -263,9 +249,9 @@ export function process(prInfo: BotResult,
 
     // General labelling and housekeeping
     const label = (label: LabelName, cond: unknown = true) => {
-        const i = context.labels.indexOf(label);
-        if (cond && i < 0) context.labels.push(label);
-        else if (!cond && i >= 0) context.labels.splice(i, 1);
+        const i = actions.labels.indexOf(label);
+        if (cond && i < 0) actions.labels.push(label);
+        else if (!cond && i >= 0) actions.labels.splice(i, 1);
     };
     label("Has Merge Conflict", info.hasMergeConflict);
     label("The CI failed", info.failedCI);
@@ -306,18 +292,18 @@ export function process(prInfo: BotResult,
     }
 
     // Some step should override this
-    context.targetColumn = "Other";
+    actions.projectColumn = "Other";
 
     // Needs author attention (bad CI, merge conflicts)
     if (info.needsAuthorAction) {
-        context.targetColumn = "Needs Author Action";
+        actions.projectColumn = "Needs Author Action";
         if (info.hasMergeConflict) post(Comments.MergeConflicted(headCommitAbbrOid, info.author));
         if (info.failedCI) post(Comments.CIFailed(headCommitAbbrOid, info.author, info.ciUrl!));
         if (info.hasChangereqs) post(Comments.ChangesRequest(headCommitAbbrOid, info.author));
     }
     // CI is running; default column is Waiting for Reviewers
     else if (info.ciResult === "unknown") {
-        context.targetColumn = "Waiting for Code Reviews";
+        actions.projectColumn = "Waiting for Code Reviews";
     }
     // CI is missing
     else if (info.ciResult === "missing") {
@@ -327,13 +313,13 @@ export function process(prInfo: BotResult,
         if (dayjs(info.now).diff(info.lastPushDate, "minutes") >= 1) {
             label("Where is GH Actions?");
         } else {
-            delete context.targetColumn;
+            delete actions.projectColumn;
         }
     }
     // CI is green
     else if (info.ciResult === "pass") {
         if (!info.canBeSelfMerged) {
-            context.targetColumn = info.reviewColumn;
+            actions.projectColumn = info.reviewColumn;
         } else {
             label("Self Merge");
             // post even when merging, so it won't get deleted
@@ -341,10 +327,10 @@ export function process(prInfo: BotResult,
                                          (info.tooManyOwners || info.hasMultiplePackages) ? [] : info.otherOwners,
                                          headCommitAbbrOid));
             if (info.hasValidMergeRequest) {
-                context.shouldMerge = true;
-                context.targetColumn = "Recently Merged";
+                actions.shouldMerge = true;
+                actions.projectColumn = "Recently Merged";
             } else {
-                context.targetColumn = "Waiting for Author to Merge";
+                actions.projectColumn = "Waiting for Author to Merge";
             }
         }
         // Ping stale reviewers if any
@@ -355,14 +341,14 @@ export function process(prInfo: BotResult,
         }
     }
 
-    if (!context.shouldMerge && info.mergeRequestUser) {
+    if (!actions.shouldMerge && info.mergeRequestUser) {
         post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, headCommitAbbrOid, urls.workflow));
     }
 
     // Timeline-related actions
-    info.staleness?.doTimelineActions(context);
+    info.staleness?.doTimelineActions(actions);
 
-    return context;
+    return actions;
 }
 
 function makeStaleness(now: Date, author: string, otherOwners: string[]) { // curried for convenience
@@ -375,18 +361,18 @@ function makeStaleness(now: Date, author: string, otherOwners: string[]) { // cu
         const explanation = Comments.StalenessExplanations[kindAndState];
         const expires = dayjs(now).add(nearDays, "days").format("MMM Do");
         const comment = Comments.StalenessComment(author, otherOwners, expires)[kindAndState];
-        const doTimelineActions = (context: Actions) => {
+        const doTimelineActions = (actions: Actions) => {
             if (comment !== undefined) {
                 const tag = state === "done" ? kindAndState
                     : `${kindAndState}:${since.toISOString().replace(/T.*$/, "")}`;
-                context.responseComments.push({ tag, status: comment });
+                actions.responseComments.push({ tag, status: comment });
             }
             if (state === "done") {
                 if (doneColumn === "CLOSE") {
-                    context.shouldClose = true;
-                    context.shouldRemoveFromActiveColumns = true;
+                    actions.shouldClose = true;
+                    actions.projectColumn = "*REMOVE*";
                 } else {
-                    context.targetColumn = doneColumn;
+                    actions.projectColumn = doneColumn;
                 }
             }
         };

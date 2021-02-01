@@ -1,5 +1,5 @@
 {
-  "targetColumn": "Needs Author Action",
+  "projectColumn": "Needs Author Action",
   "labels": [
     "Revision needed",
     "Critical package",
@@ -22,7 +22,5 @@
   ],
   "shouldClose": false,
   "shouldMerge": false,
-  "shouldUpdateLabels": true,
-  "shouldUpdateProjectColumn": true,
-  "shouldRemoveFromActiveColumns": false
+  "shouldUpdateLabels": true
 }

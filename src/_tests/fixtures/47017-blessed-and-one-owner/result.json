@@ -1,5 +1,5 @@
 {
-  "targetColumn": "Waiting for Code Reviews",
+  "projectColumn": "Waiting for Code Reviews",
   "labels": [
     "Critical package",
     "Edits multiple packages"
@@ -12,7 +12,5 @@
   ],
   "shouldClose": false,
   "shouldMerge": false,
-  "shouldUpdateLabels": true,
-  "shouldUpdateProjectColumn": true,
-  "shouldRemoveFromActiveColumns": false
+  "shouldUpdateLabels": true
 }
