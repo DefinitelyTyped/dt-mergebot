@@ -1,8 +1,8 @@
 import * as schema from "@octokit/graphql-schema/schema";
-import { EventPayloads } from "@octokit/webhooks";
+import { CheckSuiteEvent } from "@octokit/webhooks-definitions/schema";
 import { createMutation, client } from "../graphql-client";
 
-export const mergeCodeOwnersOnGreen = async (payload: EventPayloads.WebhookPayloadCheckSuite) => {
+export const mergeCodeOwnersOnGreen = async (payload: CheckSuiteEvent) => {
     // Because we only care about GH actions, we can use the check suite API which means we get both the
     // commit and the PR, making it much less effort than other merge-on-greens
     // https://github.com/microsoft/TypeScript-repos-automation/blob/40ae8b3db63fd0150938e82e47dcb63ce65f7a2d/src/checks/mergeOnGreen.ts#L1
