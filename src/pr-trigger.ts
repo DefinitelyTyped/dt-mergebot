@@ -4,7 +4,6 @@ import { queryPRInfo, deriveStateForPR } from "./pr-info";
 import { process as computeActions } from "./compute-pr-actions";
 import { executePrActions } from "./execute-pr-actions";
 import { mergeCodeOwnersOnGreen } from "./side-effects/merge-codeowner-prs";
-import { runQueryToGetPRMetadataForSHA1 } from "./queries/SHA1-to-PR-query";
 import { HttpRequest, Context } from "@azure/functions";
 import { Webhooks, EventPayloads } from "@octokit/webhooks";
 
@@ -98,22 +97,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
         if (!numberInURL) throw new Error(`Could not get PR for project card URL: ${cardURL}`);
         prNumber = +numberInURL[0].substring(1);
     } else if ("check_suite" in webhook) {
-        // See https://github.com/maintainers/early-access-feedback/issues/114 for more context on getting a PR from a SHA
-        // TLDR: it's not in the API, and this search hack has been in used on Peril for the last ~3 years
-        // => Instead of an arbitrary search, use `associatedPullRequests` (https://developer.github.com/v4/changelog/2019-03-08-schema-changes/)
-        const owner = webhook.repository.owner.login;
-        const repo = webhook.repository.name;
-        const sha = webhook.check_suite.head_sha;
-        const pr = await runQueryToGetPRMetadataForSHA1(owner, repo, sha);
-        if (!pr || pr.closed) {
-            const whatFailed = !pr ? "a PR" : "an open PR";
-            context.log.info(`Skipped webhook, could not find ${whatFailed} for the sha referenced in the status (${sha})`);
-            context.res = {
-                status: 204,
-                body: `NOOPing due to not finding ${whatFailed} for the sha ${sha}`
-            };
-            return;
-        }
+        const pr = webhook.check_suite.pull_requests[0];
         prNumber = pr.number;
     }
 
