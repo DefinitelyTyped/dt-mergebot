@@ -7,7 +7,7 @@ import { mergeCodeOwnersOnGreen } from "./side-effects/merge-codeowner-prs";
 import { HttpRequest, Context } from "@azure/functions";
 import { Webhooks, EventPayloads } from "@octokit/webhooks";
 
-const prHandlers = new Map();
+const prHandlers: Map<number, () => void> = new Map();
 
 export async function httpTrigger(context: Context, req: HttpRequest) {
 
@@ -103,7 +103,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
 
     if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`);
 
-    if (prHandlers.has(prNumber)) prHandlers.get(prNumber)(); // cancel older handler for the same pr
+    prHandlers.get(prNumber)?.(); // cancel older handler for the same pr, if one exists
     const aborted = await new Promise(res => {
         const timeout = setTimeout(() => res(false), 30000);
         prHandlers.set(prNumber, () => {
