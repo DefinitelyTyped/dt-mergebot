@@ -7,8 +7,6 @@ import { mergeCodeOwnersOnGreen } from "./side-effects/merge-codeowner-prs";
 import { HttpRequest, Context } from "@azure/functions";
 import { Webhooks, EventPayloads } from "@octokit/webhooks";
 
-const prHandlers: Map<number, () => void> = new Map();
-
 export async function httpTrigger(context: Context, req: HttpRequest) {
 
     if (!(process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"])) {
@@ -103,15 +101,8 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
 
     if (prNumber === -1) throw new Error(`PR Number was not set from a webhook - ${event} on ${action}`);
 
-    prHandlers.get(prNumber)?.(); // cancel older handler for the same pr, if one exists
-    const aborted = await new Promise(res => {
-        const timeout = setTimeout(() => res(false), 30000);
-        prHandlers.set(prNumber, () => {
-            clearTimeout(timeout);
-            res(true);
-        });
-    });
-    if (aborted) {
+    // wait 30s to process a trigger; if a new trigger comes in for the same PR, it supersedes the old one
+    if (await debounce(30000, prNumber)) {
         context.log.info(`Skipped webhook, superseded by a newer one for ${prNumber}`);
         context.res = {
             status: 204,
@@ -119,7 +110,6 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
         };
         return;
     }
-    prHandlers.delete(prNumber);
 
     context.log.info(`Getting info for PR ${prNumber} - ${prTitle}`);
 
@@ -159,4 +149,19 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
         status: 200,
         body: actions
     };
+}
+
+const waiters: Map<unknown, () => void> = new Map();
+function debounce(delay: number, group: unknown) {
+    waiters.get(group)?.(); // cancel older handler for the same pr, if one exists
+    return new Promise(resolve => {
+        const timeout = setTimeout(() => {
+            waiters.delete(group);
+            resolve(false);
+        }, delay);
+        waiters.set(group, () => {
+            clearTimeout(timeout);
+            resolve(true);
+        });
+    });
 }
