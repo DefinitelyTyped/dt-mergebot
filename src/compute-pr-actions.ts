@@ -359,7 +359,7 @@ function makeStaleness(now: Date, author: string, otherOwners: string[]) { // cu
         const state = days <= freshDays ? "fresh" : days <= attnDays ? "attention" : days <= nearDays ? "nearly" : "done";
         const kindAndState = `${kind}:${state}`;
         const explanation = Comments.StalenessExplanations[kindAndState];
-        const expires = dayjs(now).add(nearDays, "days").format("MMM Do");
+        const expires = dayjs(since).add(nearDays, "days").format("MMM Do");
         const comment = Comments.StalenessComment(author, otherOwners, expires)[kindAndState];
         const doTimelineActions = (actions: Actions) => {
             if (comment !== undefined) {
