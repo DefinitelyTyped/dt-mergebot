@@ -26,7 +26,11 @@
         {
           "path": "types/react-native-sha1/tsconfig.json",
           "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson)"
+          "suspect": {
+            "startLine": 17,
+            "endLine": 17,
+            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson)"
+          }
         },
         {
           "path": "types/react-native-sha1/tslint.json",

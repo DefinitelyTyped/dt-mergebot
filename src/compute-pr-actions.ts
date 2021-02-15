@@ -1,7 +1,7 @@
 import * as Comments from "./comments";
 import * as urls from "./urls";
 import { PrInfo, BotResult, FileInfo } from "./pr-info";
-import { ReviewInfo } from "./pr-info";
+import { ReviewInfo, Explanation } from "./pr-info";
 import { noNullish, flatten, unique, sameUser, min, sha256, abbrOid } from "./util/util";
 import * as dayjs from "dayjs";
 import * as advancedFormat from "dayjs/plugin/advancedFormat";
@@ -52,6 +52,7 @@ export interface Actions {
     projectColumn?: ColumnName | "*REMOVE*";
     labels: LabelName[];
     responseComments: Comments.Comment[];
+    explanations: ({ path: string } & Explanation)[];
     shouldClose: boolean;
     shouldMerge: boolean;
     shouldUpdateLabels: boolean;
@@ -62,6 +63,7 @@ function createDefaultActions(): Actions {
         projectColumn: "Other",
         labels: [],
         responseComments: [],
+        explanations: [],
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: true,
@@ -72,6 +74,7 @@ function createEmptyActions(): Actions {
     return {
         labels: [],
         responseComments: [],
+        explanations: [],
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: false,
@@ -277,6 +280,10 @@ export function process(prInfo: BotResult,
     // Update intro comment
     post({ tag: "welcome", status: createWelcomeComment(info, post) });
 
+    // Propagate explanations into actions
+    context.explanations = noNullish(flatten(info.pkgInfo.map(pkg => pkg.files.map(({ path, suspect }) =>
+        suspect && { path, ...suspect }))));
+
     // Ping reviewers when needed
     const headCommitAbbrOid = abbrOid(info.headCommitOid);
     if (!(info.hasChangereqs || info.approvedBy.includes("owner") || info.approvedBy.includes("maintainer"))) {
@@ -412,9 +419,6 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
 
     const announceList = (what: string, xs: readonly string[]) => `${xs.length} ${what}${xs.length !== 1 ? "s" : ""}`;
     const usersToString = (users: string[]) => users.map(u => (info.isAuthor(u) ? "✎" : "") + "@" + u).join(", ");
-    const reviewLink = (f: FileInfo) =>
-        `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${
-          urls.review(info.pr_number)}/${info.headCommitOid}#diff-${sha256(f.path)})`;
 
     display(``,
             `## ${announceList("package", info.packages)} in this PR`,
@@ -444,15 +448,6 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         displayOwners("added", p.addedOwners);
         displayOwners("removed", p.deletedOwners);
         if (!info.authorIsOwner && p.owners.length >= 4 && p.addedOwners.some(info.isAuthor)) addedSelfToManyOwners++;
-
-        let showSuspects = false;
-        for (const file of p.files) {
-            if (!file.suspect) continue;
-            if (!showSuspects) display(`  - Config files to check:`);
-            display(`    - ${reviewLink(file)}: ${file.suspect}`);
-            showSuspects = true;
-        }
-
     }
     if (addedSelfToManyOwners > 0) {
         display(``,
@@ -491,6 +486,9 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     display(` * ${emoji(info.ciResult === "pass")} Continuous integration tests have ${expectedResults}`);
 
     const approved = emoji(info.approved);
+    const reviewLink = (f: FileInfo) =>
+        `[\`${f.path.replace(/^types\/(.*\/)/, "$1")}\`](${
+          urls.review(info.pr_number)}/${info.headCommitOid}#diff-${sha256(f.path)})`;
 
     if (info.hasNewPackages) {
         display(` * ${approved} Only ${requiredApprover} can approve changes when there are new packages added`);
@@ -511,7 +509,9 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     } else if (info.noOtherOwners) {
         display(` * ${approved} ${RequiredApprover} can merge changes when there are no other reviewers`);
     } else if (info.checkConfig) {
-        display(` * ${approved} ${RequiredApprover} needs to approve changes which affect module config files`);
+        const configFiles = flatten(info.pkgInfo.map(pkg => pkg.files.filter(({ kind }) => kind === "package-meta")));
+        const links = configFiles.map(reviewLink);
+        display(` * ${approved} ${RequiredApprover} needs to approve changes which affect module config files (${links.join(", ")})`);
     } else {
         display(` * ${approved} Only ${requiredApprover} can approve changes [without tests](${testsLink})`);
     }

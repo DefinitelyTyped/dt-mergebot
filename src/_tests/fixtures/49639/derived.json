@@ -1,0 +1,80 @@
+{
+  "type": "info",
+  "now": "2020-11-26T15:09:52.097Z",
+  "pr_number": 49639,
+  "author": "ienzam",
+  "headCommitOid": "c5e5c9885d23e7d1c1ea8f54b53c8283d5f4f856",
+  "lastPushDate": "2020-11-17T22:12:35.000Z",
+  "lastActivityDate": "2020-11-19T16:12:15.000Z",
+  "maintainerBlessed": false,
+  "hasMergeConflict": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Critical",
+  "pkgInfo": [
+    {
+      "name": "jasmine",
+      "kind": "edit",
+      "files": [
+        {
+          "path": "types/jasmine/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/jasmine/tsconfig.json",
+          "kind": "package-meta",
+          "suspect": {
+            "startLine": 21,
+            "endLine": 21,
+            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it"
+          }
+        },
+        {
+          "path": "types/jasmine/tslint.json",
+          "kind": "package-meta",
+          "suspect": {
+            "startLine": 4,
+            "endLine": 4,
+            "body": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) and not moving towards it"
+          }
+        }
+      ],
+      "owners": [
+        "borisyankov",
+        "theodorejb",
+        "davidparsson",
+        "gmoothart",
+        "lukas-zech-software",
+        "Engineer2B",
+        "cyungmann",
+        "Roaders",
+        "devoto13",
+        "fdim",
+        "kolodny",
+        "stephenfarrar",
+        "zvirja",
+        "djungowski",
+        "chivesrs",
+        "kirjs",
+        "ienzam"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
+    }
+  ],
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "sandersn",
+      "date": "2020-11-19T16:12:15.000Z",
+      "isMaintainer": false
+    },
+    {
+      "type": "approved",
+      "reviewer": "chivesrs",
+      "date": "2020-11-18T01:47:38.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
+}

@@ -20,6 +20,7 @@
       "status": "@martin-badin I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed on Nov 14th (in a week) if the issues aren't addressed."
     }
   ],
+  "explanations": [],
   "shouldClose": false,
   "shouldMerge": false,
   "shouldUpdateLabels": true
