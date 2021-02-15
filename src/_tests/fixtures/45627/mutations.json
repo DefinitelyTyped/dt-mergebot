@@ -13,10 +13,11 @@
     }
   },
   {
-    "mutation": "mutation ($input: DeleteProjectCardInput!) {\n  deleteProjectCard(input: $input) {\n    __typename\n  }\n}\n",
+    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
-        "cardId": "MDExOlByb2plY3RDYXJkNDA0NTk5NzM="
+        "cardId": "MDExOlByb2plY3RDYXJkNDA0NTk5NzM=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI1"
       }
     }
   },
@@ -48,29 +49,12 @@
     }
   },
   {
-    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "subjectId": "MDExOlB1bGxSZXF1ZXN0NDM3NTIxMTQ2",
-        "body": "After a month, no one has requested merging the PR 😞. I'm going to assume that the change is not wanted after all, and will therefore close it.\n<!--typescript_bot_Unmerged:done-->"
-      }
-    }
-  },
-  {
     "mutation": "mutation ($input: MergePullRequestInput!) {\n  mergePullRequest(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "commitHeadline": "🤖 Merge PR #45627 [webpack] fix for MultiCompiler doesn't define Multistats for callback/handler of run method by @spamshaker",
         "expectedHeadOid": "15facc177c957646a1ace95abe5e71326007c721",
         "mergeMethod": "SQUASH",
-        "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NDM3NTIxMTQ2"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: ClosePullRequestInput!) {\n  closePullRequest(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NDM3NTIxMTQ2"
       }
     }
