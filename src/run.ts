@@ -3,11 +3,10 @@
 import * as schema from "@octokit/graphql-schema/schema";
 import * as yargs from "yargs";
 import { process as computeActions } from "./compute-pr-actions";
-import { getAllOpenPRsAndCardIDs } from "./queries/all-open-prs-query";
+import { getAllOpenPRs } from "./queries/all-open-prs-query";
 import { queryPRInfo, deriveStateForPR } from "./pr-info";
 import { executePrActions } from "./execute-pr-actions";
 import { getProjectBoardCards } from "./queries/projectboard-cards";
-import { runQueryToGetPRForCardId } from "./queries/card-id-to-pr-query";
 import { createMutation, client } from "./graphql-client";
 import { render } from "prettyjson";
 import { inspect } from "util";
@@ -60,35 +59,39 @@ const show = (name: string, value: unknown) => {
     console.log(str);
 };
 
+async function processSingle(pr: number) {
+    // Generate the info for the PR from scratch
+    const info = await queryPRInfo(pr);
+    if (args["show-raw"]) show("Raw Query Result", info);
+    const prInfo = info.data.repository?.pullRequest;
+    // If it didn't work, bail early
+    if (!prInfo) {
+        console.error(`  No PR with this number exists, (${JSON.stringify(info)})`);
+        return;
+    }
+    const state = await deriveStateForPR(prInfo);
+    if (args["show-basic"]) show("Basic PR Info", state);
+    // Show errors in log but keep processing to show in a comment too
+    if (state.type === "error") console.error(`  Error: ${state.message}`);
+    // Show other messages too
+    if ("message" in state) console.log(`  ... ${state.message}`);
+    // Convert the info to a set of actions for the bot
+    const actions = computeActions(state,
+        args["show-extended"] ? i => show("Extended Info", i) : undefined);
+    if (args["show-actions"]) show("Actions", actions);
+    // Act on the actions
+    const mutations = await executePrActions(actions, prInfo, args.dry);
+    if (args["show-mutations"] ?? args.dry) show("Mutations", mutations);
+}
+
 const start = async function () {
     console.log(`Getting open PRs.`);
-    const { prNumbers: prs, cardIDs } = await getAllOpenPRsAndCardIDs();
+    const prs = await getAllOpenPRs();
     //
     for (const pr of prs) {
         if (!shouldRunOn(pr)) continue;
         console.log(`Processing #${pr} (${prs.indexOf(pr) + 1} of ${prs.length})...`);
-        // Generate the info for the PR from scratch
-        const info = await queryPRInfo(pr);
-        if (args["show-raw"]) show("Raw Query Result", info);
-        const prInfo = info.data.repository?.pullRequest;
-        // If it didn't work, bail early
-        if (!prInfo) {
-            console.error(`  No PR with this number exists, (${JSON.stringify(info)})`);
-            continue;
-        }
-        const state = await deriveStateForPR(prInfo);
-        if (args["show-basic"]) show("Basic PR Info", state);
-        // Show errors in log but keep processing to show in a comment too
-        if (state.type === "error") console.error(`  Error: ${state.message}`);
-        // Show other messages too
-        if ("message" in state) console.log(`  ... ${state.message}`);
-        // Convert the info to a set of actions for the bot
-        const actions = computeActions(state,
-            args["show-extended"] ? i => show("Extended Info", i) : undefined);
-        if (args["show-actions"]) show("Actions", actions);
-        // Act on the actions
-        const mutations = await executePrActions(actions, prInfo, args.dry);
-        if (args["show-mutations"] ?? args.dry) show("Mutations", mutations);
+        await processSingle(pr);
     }
     if (args.dry || !args.cleanup) return;
     //
@@ -110,7 +113,7 @@ const start = async function () {
             throw new Error(`Could not find the 'Recently Merged' column in ${columns.map(n => n.name)}`);
         }
         const { cards, totalCount } = recentlyMerged;
-        const afterFirst50 = cards.sort((l, r) => l.updatedAt.localeCompare(r.updatedAt)).slice(50);
+        const afterFirst50 = cards.sort((l, r) => Date.parse(l.updatedAt) - Date.parse(r.updatedAt)).slice(50);
         if (afterFirst50.length > 0) {
             console.log(`Cutting "Recently Merged" projects to the last 50`);
             if (cards.length < totalCount) {
@@ -122,15 +125,12 @@ const start = async function () {
     // Handle other columns
     for (const column of columns) {
         if (column.name === "Recently Merged") continue;
-        const ids = column.cards.map(c => c.id).filter(c => !cardIDs.includes(c));
-        if (ids.length === 0) continue;
+        const cleanup = column.cards.map(card => card.number).filter((number): number is NonNullable<typeof number> =>
+            !!number && !prs.includes(number));
+        if (cleanup.length === 0) continue;
         console.log(`Cleaning up closed PRs in "${column.name}"`);
-        // don't actually do the deletions, until I follow this and make sure that it's working fine
-        for (const id of ids) {
-            const info = await runQueryToGetPRForCardId(id);
-            await deleteObject(id, info === undefined ? "???"
-                               : info.state === "CLOSED" ? undefined
-                               : "#" + info.number);
+        for (const number of cleanup) {
+            await processSingle(number);
         }
     }
     console.log("Done");
