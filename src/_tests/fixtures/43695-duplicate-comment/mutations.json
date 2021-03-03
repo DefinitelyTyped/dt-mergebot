@@ -63,7 +63,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDAwMTAwMTk2",
-        "body": "It has been more than two weeks and this PR still has no reviews.\n\nI'll bump it to the DT maintainer queue. Thank you for your patience, @alexandercerutti.\n\n(Ping «anyone?».)\n<!--typescript_bot_Unreviewed:done-->"
+        "body": "It has been more than two weeks and this PR still has no reviews.\n\nI'll bump it to the DT maintainer queue. Thank you for your patience, @alexandercerutti.\n\n(Ping @«anyone?».)\n<!--typescript_bot_Unreviewed:done-->"
       }
     }
   }

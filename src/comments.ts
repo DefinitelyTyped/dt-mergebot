@@ -97,11 +97,11 @@ export const StalenessExplanations: { [k: string]: string } = {
 };
 
 // Comments to post for the staleness timeline (the tag is computed in `makeStaleness`)
-export const StalenessComment = (author: string, otherOwners: string[], expires: string) => {
-    const owners = otherOwners.length === 0 ? "«anyone?»" : otherOwners.map(o => "@"+o).join(", ");
+export const StalenessComment = (author: string, ownersToPing: string[], expires: string) => {
+    const ownerPing = ownersToPing.map(o => "@"+o).join(", ");
     return {
         // --Unmerged--
-        "Unmerged:nearly": `Re-ping @${author} / ${owners}:
+        "Unmerged:nearly": `Re-ping @${author} / ${ownerPing}:
 
 This PR has been ready to merge for over a week, and I haven't seen any requests to merge it. I will close it on ${expires} (in three weeks) if this doesn't happen.
 
@@ -111,7 +111,7 @@ This PR has been ready to merge for over a week, and I haven't seen any requests
         "Abandoned:nearly": `@${author} I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed on ${expires} (in a week) if the issues aren't addressed.`,
         "Abandoned:done": `@${author} To keep things tidy, we have to close PRs that aren't mergeable and don't have activity in the last month. No worries, though — please open a new PR if you'd like to continue with this change. Thank you!`,
         // --Unreviewed--
-        "Unreviewed:nearly": `Re-ping ${owners}:
+        "Unreviewed:nearly": `Re-ping ${ownerPing}:
 
 This PR has been out for over a week, yet I haven't seen any reviews.
 
@@ -120,5 +120,5 @@ Could someone please give it some attention? Thanks!`,
 
 I'll bump it to the DT maintainer queue. Thank you for your patience, @${author}.
 
-(Ping ${owners}.)`} as { [k: string]: string };
+(Ping ${ownerPing}.)`} as { [k: string]: string };
 };

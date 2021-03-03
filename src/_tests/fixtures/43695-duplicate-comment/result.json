@@ -19,7 +19,7 @@
     },
     {
       "tag": "Unreviewed:done",
-      "status": "It has been more than two weeks and this PR still has no reviews.\n\nI'll bump it to the DT maintainer queue. Thank you for your patience, @alexandercerutti.\n\n(Ping «anyone?».)"
+      "status": "It has been more than two weeks and this PR still has no reviews.\n\nI'll bump it to the DT maintainer queue. Thank you for your patience, @alexandercerutti.\n\n(Ping @«anyone?».)"
     }
   ],
   "shouldClose": false,

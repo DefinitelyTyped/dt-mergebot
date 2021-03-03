@@ -24,7 +24,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTIwODA1MjIx",
-        "body": "Re-ping «anyone?»:\n\nThis PR has been out for over a week, yet I haven't seen any reviews.\n\nCould someone please give it some attention? Thanks!\n<!--typescript_bot_Unreviewed:nearly:2020-11-16-->"
+        "body": "Re-ping @«anyone?»:\n\nThis PR has been out for over a week, yet I haven't seen any reviews.\n\nCould someone please give it some attention? Thanks!\n<!--typescript_bot_Unreviewed:nearly:2020-11-16-->"
       }
     }
   }
