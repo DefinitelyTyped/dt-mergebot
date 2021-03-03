@@ -172,7 +172,8 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
 
     // Staleness timeline configurations (except for texts that are all in `comments.ts`)
     function getStaleness() {
-        const mkStaleness = makeStaleness(info.now, info.author, otherOwners);
+        const ownersToPing = otherOwners.length === 0 ? ["«anyone?»"] : otherOwners;
+        const mkStaleness = makeStaleness(info.now, info.author, ownersToPing);
         if (canBeSelfMerged && info.mergeOfferDate) return mkStaleness(
             "Unmerged", info.mergeOfferDate, 4, 9, 30, "CLOSE");
         if (needsAuthorAction) return mkStaleness(
@@ -351,7 +352,7 @@ export function process(prInfo: BotResult,
     return actions;
 }
 
-function makeStaleness(now: Date, author: string, otherOwners: string[]) { // curried for convenience
+function makeStaleness(now: Date, author: string, ownersToPing: string[]) { // curried for convenience
     return (kind: StalenessKind, since: Date,
             freshDays: number, attnDays: number, nearDays: number,
             doneColumn: ColumnName | "CLOSE") => {
@@ -360,7 +361,7 @@ function makeStaleness(now: Date, author: string, otherOwners: string[]) { // cu
         const kindAndState = `${kind}:${state}`;
         const explanation = Comments.StalenessExplanations[kindAndState];
         const expires = dayjs(since).add(nearDays, "days").format("MMM Do");
-        const comment = Comments.StalenessComment(author, otherOwners, expires)[kindAndState];
+        const comment = Comments.StalenessComment(author, ownersToPing, expires)[kindAndState];
         const doTimelineActions = (actions: Actions) => {
             if (comment !== undefined) {
                 const tag = state === "done" ? kindAndState
