@@ -1,0 +1,28 @@
+{
+  "projectColumn": "Needs Maintainer Review",
+  "labels": [
+    "Critical package",
+    "Owner Approved",
+    "Author is Owner",
+    "Check Config",
+    "Untested Change",
+    "Unreviewed"
+  ],
+  "responseComments": [
+    {
+      "tag": "suggest-testing",
+      "status": "Hey @pkuczynski,\n\n:unamused: Your PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Please consider [adding tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package) to cover the change you're making. Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you."
+    },
+    {
+      "tag": "welcome",
+      "status": "@pkuczynski Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `koa` [on npm](https://www.npmjs.com/package/koa), [on unpkg](https://unpkg.com/browse/koa@latest/) (author is owner)\n  - owner-approval: @tellnes\n  - Config files to check:\n    - [`koa/tsconfig.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/51338/files/4a7712f61d17eb33e89171f317deeb31b3d555ae#diff-1730c5405d0220a98f28feeec2de3f5a511ebc6a04ceadf12415b81de841672e): not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect module config files\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 11 days — please try to get reviewers!\n\n----------------------\n... diagnostics scrubbed ..."
+    },
+    {
+      "tag": "Unreviewed:nearly:2021-02-19",
+      "status": "Re-ping @DavidCai1993, @jkeylu, @brikou, @harryparkdotio, @chatoo2412:\n\nThis PR has been out for over a week, yet I haven't seen any reviews.\n\nCould someone please give it some attention? Thanks!"
+    }
+  ],
+  "shouldClose": false,
+  "shouldMerge": false,
+  "shouldUpdateLabels": true
+}

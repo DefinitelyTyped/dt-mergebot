@@ -172,7 +172,8 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
 
     // Staleness timeline configurations (except for texts that are all in `comments.ts`)
     function getStaleness() {
-        const ownersToPing = otherOwners.length === 0 ? ["«anyone?»"] : otherOwners;
+        const ownersToPing = otherOwners.length === 0 ? ["«anyone?»"]
+            : otherOwners.filter(o => !approvedReviews.some(r => o === r.reviewer));
         const mkStaleness = makeStaleness(info.now, info.author, ownersToPing);
         if (canBeSelfMerged && info.mergeOfferDate) return mkStaleness(
             "Unmerged", info.mergeOfferDate, 4, 9, 30, "CLOSE");
