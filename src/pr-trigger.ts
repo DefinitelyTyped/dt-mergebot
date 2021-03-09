@@ -25,7 +25,7 @@ const eventNames = [
 ] as const;
 
 export async function httpTrigger(context: Context, req: HttpRequest) {
-    context.log(`[${process.version}] HTTP trigger function received a request.`);
+    context.log.info(`[${process.version}] HTTP trigger function received a request. (${context.invocationId})`);
 
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
@@ -50,6 +50,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
 }
 
 const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<typeof eventNames[number]>) => {
+    context.log.info(`Handling event: ${event.name}.${event.payload.action}`);
     if (event.payload.sender.login === "typescript-bot") {
         context.log.info(`Skipped webhook because it was triggered by typescript-bot`);
         context.res = {
