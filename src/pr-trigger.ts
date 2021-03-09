@@ -4,6 +4,7 @@ import { queryPRInfo, deriveStateForPR } from "./pr-info";
 import { process as computeActions } from "./compute-pr-actions";
 import { executePrActions } from "./execute-pr-actions";
 import { mergeCodeOwnersOnGreen } from "./side-effects/merge-codeowner-prs";
+import { runQueryToGetPRMetadataForSHA1 } from "./queries/SHA1-to-PR-query";
 import { HttpRequest, Context } from "@azure/functions";
 import { createEventHandler, EmitterWebhookEvent, verify } from "@octokit/webhooks";
 
@@ -64,8 +65,7 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
         await mergeCodeOwnersOnGreen(event.payload);
     }
 
-    const pr: { number: number, title?: string } | undefined = prFromEvent(event);
-    if (!pr) throw new Error(`PR Number was not set from a webhook - ${event.name} on ${event.payload.action}`);
+    const pr: { number: number, title?: string } = await prFromEvent(event);
 
     // wait 30s to process a trigger; if a new trigger comes in for the same PR, it supersedes the old one
     if (await debounce(30000, pr.number)) {
@@ -113,15 +113,30 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
     };
 };
 
-const prFromEvent = (event: EmitterWebhookEvent<typeof eventNames[number]>) => {
+const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>) => {
     switch (event.name) {
-        case "check_suite": return event.payload.check_suite.pull_requests[0];
+        case "check_suite": return await prFromCheckSuiteEvent(event);
         case "issue_comment": return event.payload.issue;
         // "Parse" project_card.content_url according to repository.pulls_url
         case "project_card": return { number: +event.payload.project_card.content_url.replace(/^.*\//, "") };
         case "pull_request": return event.payload.pull_request;
         case "pull_request_review": return event.payload.pull_request;
     }
+};
+
+const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">) => {
+    const pr0 = event.payload.check_suite.pull_requests[0];
+    if (pr0) return pr0;
+    // Sometimes we get a payload without any PRs, so find it:
+    // TLDR: it's not in the API, so do a search (used on Peril for >3 years)
+    // (there is an `associatedPullRequests` on a commit object, but that
+    // doesn't work for commits on forks)
+    const owner = event.payload.repository.owner.login;
+    const repo = event.payload.repository.name;
+    const sha = event.payload.check_suite.head_sha;
+    const pr = await runQueryToGetPRMetadataForSHA1(owner, repo, sha);
+    if (pr && !pr.closed) return pr;
+    throw new Error(`PR Number not found: no ${!pr ? "PR" : "open PR"} for sha in status (${sha})`);
 };
 
 const waiters: Map<unknown, () => void> = new Map();
