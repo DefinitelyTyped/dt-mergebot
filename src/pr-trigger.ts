@@ -65,15 +65,7 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
     }
 
     const pr: { number: number, title?: string } | undefined = prFromEvent(event);
-    if (!pr) {
-        let extra = "";
-        if (event.name === "check_suite") {
-            extra = ` (${JSON.stringify(event.payload.check_suite)})`;
-        }
-        throw new Error(`PR Number was not set from a webhook - ${event.name} on ${event.payload.action}${extra}`);
-    } else if (event.name === "check_suite") {
-        context.log(`---> check_suite worked, [length: ${event.payload.check_suite.pull_requests.length}, pr: ${pr}]`);
-    }
+    if (!pr) throw new Error(`PR Number was not set from a webhook - ${event.name} on ${event.payload.action}`);
 
     // wait 30s to process a trigger; if a new trigger comes in for the same PR, it supersedes the old one
     if (await debounce(30000, pr.number)) {
