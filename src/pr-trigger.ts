@@ -25,19 +25,20 @@ const eventNames = [
 ] as const;
 
 export async function httpTrigger(context: Context, req: HttpRequest) {
-    context.log.info(`[${process.version}] HTTP trigger function received a request. (${context.invocationId})`);
-    context.log.info(`--> ctxreq ${context.req === req ? "==" : "!="} req; ${JSON.stringify(req.method)} ${JSON.stringify(req.url)}`);
-    context.log.info(`--> Headers: ${JSON.stringify(req.headers)}`);
-    context.log.info(`--> Query: ${JSON.stringify(req.query)}`);
-    context.log.info(`--> Params: ${JSON.stringify(req.params)}`);
-    context.log.info(`--> Body: ${JSON.stringify(req.body)}`);
-
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
+    const { headers, body } = req;
+
+    context.log.info(`>>> HTTP Trigger [${
+                       headers["x-github-event"]
+                       }.${body.action
+                       }; gh: ${headers["x-github-delivery"]
+                       }; az: ${context.invocationId
+                       }; node: ${process.version}]`);
 
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
-    if (!isDev && !verify(secret!, req.body, req.headers["x-hub-signature-256"]!)) {
+    if (!isDev && !verify(secret!, body, headers["x-hub-signature-256"]!)) {
         context.res = {
             status: 500,
             body: "This webhook did not come from GitHub"
@@ -48,9 +49,9 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
     const eventHandler = createEventHandler({ log: context.log });
     eventHandler.on(eventNames as unknown as typeof eventNames[number], handleTrigger(context));
     return eventHandler.receive({
-        id: req.headers["x-github-delivery"],
-        name: req.headers["x-github-event"],
-        payload: req.body,
+        id: headers["x-github-delivery"],
+        name: headers["x-github-event"],
+        payload: body,
     } as EmitterWebhookEvent);
 }
 
@@ -71,7 +72,7 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
         await mergeCodeOwnersOnGreen(event.payload);
     }
 
-    const pr: { number: number, title?: string } = await prFromEvent(event);
+    const pr: { number: number, title?: string } = await prFromEvent(event, context);
 
     // wait 30s to process a trigger; if a new trigger comes in for the same PR, it supersedes the old one
     if (await debounce(30000, pr.number)) {
@@ -119,9 +120,10 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
     };
 };
 
-const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>) => {
+const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>,
+                           context: Context) => {
     switch (event.name) {
-        case "check_suite": return await prFromCheckSuiteEvent(event);
+        case "check_suite": return await prFromCheckSuiteEvent(event, context);
         case "issue_comment": return event.payload.issue;
         // "Parse" project_card.content_url according to repository.pulls_url
         case "project_card": return { number: +event.payload.project_card.content_url.replace(/^.*\//, "") };
@@ -130,7 +132,9 @@ const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>
     }
 };
 
-const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">) => {
+const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">,
+                                     context: Context) => {
+    context.log.info(`check_suite with ${event.payload.check_suite.pull_requests.length} PRs`);
     const pr0 = event.payload.check_suite.pull_requests[0];
     if (pr0) return pr0;
     // Sometimes we get a payload without any PRs, so find it:
