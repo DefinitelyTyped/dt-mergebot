@@ -34,7 +34,7 @@ There are three main stages once the app has a PR number:
 
 # How the bot works
 
-There is an Azure function in `PR-Trigger` which receives webhooks; its job is to find the PR number then it runs the above steps.
+There is an Azure function in `PR-Trigger` which receives webhooks; this function's job is to find the PR number then it runs the above steps.
 
 # Running Locally
 
