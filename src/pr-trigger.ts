@@ -26,6 +26,11 @@ const eventNames = [
 
 export async function httpTrigger(context: Context, req: HttpRequest) {
     context.log.info(`[${process.version}] HTTP trigger function received a request. (${context.invocationId})`);
+    context.log.info(`--> ctxreq ${context.req === req ? "==" : "!="} req; ${JSON.stringify(req.method)} ${JSON.stringify(req.url)}`);
+    context.log.info(`--> Headers: ${JSON.stringify(req.headers)}`);
+    context.log.info(`--> Query: ${JSON.stringify(req.query)}`);
+    context.log.info(`--> Params: ${JSON.stringify(req.params)}`);
+    context.log.info(`--> Body: ${JSON.stringify(req.body)}`);
 
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
