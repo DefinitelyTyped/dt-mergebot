@@ -136,11 +136,17 @@ const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">,
                                      context: Context) => {
     context.log.info(`check_suite with ${event.payload.check_suite.pull_requests.length} PRs`);
     if (event.payload.check_suite.pull_requests.length > 0) {
-        context.log.info(`PR nums: ${event.payload.check_suite.pull_requests.map(p => p.number).join(", ")}`);
+        context.log.info(`PR nums: ${event.payload.check_suite.pull_requests.map(p =>
+          `${p.base.repo.url}:${p.head.repo.url}#${p.number}`).join("; ")}`);
     }
-    const pr0 = event.payload.check_suite.pull_requests[0];
-    if (pr0) return pr0;
-    // Sometimes we get a payload without any PRs, so find it:
+    // Would be nice if we could use `check_suite.pull_requests` but it's only
+    // sometime populated, and when it is, it's with related PRs from other
+    // repos
+
+    // const pr0 = event.payload.check_suite.pull_requests[0];
+    // if (pr0) return pr0;
+
+    // So find it with a gql query instead:
     // TLDR: it's not in the API, so do a search (used on Peril for >3 years)
     // (there is an `associatedPullRequests` on a commit object, but that
     // doesn't work for commits on forks)
