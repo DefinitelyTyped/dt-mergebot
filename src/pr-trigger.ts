@@ -135,6 +135,9 @@ const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>
 const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">,
                                      context: Context) => {
     context.log.info(`check_suite with ${event.payload.check_suite.pull_requests.length} PRs`);
+    if (event.payload.check_suite.pull_requests.length > 0) {
+        context.log.info(`PR nums: ${event.payload.check_suite.pull_requests.map(p => p.number).join(", ")}`);
+    }
     const pr0 = event.payload.check_suite.pull_requests[0];
     if (pr0) return pr0;
     // Sometimes we get a payload without any PRs, so find it:
