@@ -24,6 +24,9 @@ const eventNames = [
     "pull_request_review.submitted",
 ] as const;
 
+// see https://github.com/octokit/webhooks.js/issues/491, and get rid of this when fixed
+const eventNamesSillyCopy = [...eventNames];
+
 export async function httpTrigger(context: Context, req: HttpRequest) {
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
@@ -47,7 +50,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
     }
 
     const eventHandler = createEventHandler({ log: context.log });
-    eventHandler.on(eventNames as unknown as typeof eventNames[number], handleTrigger(context));
+    eventHandler.on(eventNamesSillyCopy, handleTrigger(context));
     return eventHandler.receive({
         id: headers["x-github-delivery"],
         name: headers["x-github-event"],
