@@ -30,14 +30,13 @@ const eventNamesSillyCopy = [...eventNames];
 export async function httpTrigger(context: Context, req: HttpRequest) {
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
-    const { headers, body } = req;
+    const { headers, body } = req, evName = headers["x-github-event"], evAction = body.action;
 
-    context.log.info(`>>> HTTP Trigger [${
-                       headers["x-github-event"]
-                       }.${body.action
-                       }; gh: ${headers["x-github-delivery"]
-                       }; az: ${context.invocationId
-                       }; node: ${process.version}]`);
+    context.log(`>>> HTTP Trigger [${
+                  evName}.${evAction
+                  }; gh: ${headers["x-github-delivery"]
+                  }; az: ${context.invocationId
+                  }; node: ${process.version}]`);
 
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
@@ -53,15 +52,15 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
     eventHandler.on(eventNamesSillyCopy, handleTrigger(context));
     return eventHandler.receive({
         id: headers["x-github-delivery"],
-        name: headers["x-github-event"],
+        name: evName,
         payload: body,
     } as EmitterWebhookEvent);
 }
 
 const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<typeof eventNames[number]>) => {
-    context.log.info(`Handling event: ${event.name}.${event.payload.action}`);
+    context.log(`Handling event: ${event.name}.${event.payload.action}`);
     if (event.payload.sender.login === "typescript-bot") {
-        context.log.info(`Skipped webhook because it was triggered by typescript-bot`);
+        context.log(`Skipped webhook because it was triggered by typescript-bot`);
         context.res = {
             status: 204,
             body: `NOOPing because typescript-bot triggered the request`
@@ -79,7 +78,7 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
 
     // wait 30s to process a trigger; if a new trigger comes in for the same PR, it supersedes the old one
     if (await debounce(30000, pr.number)) {
-        context.log.info(`Skipped webhook, superseded by a newer one for ${pr.number}`);
+        context.log(`Skipped webhook, superseded by a newer one for ${pr.number}`);
         context.res = {
             status: 204,
             body: "NOOPing due to a newer webhook"
@@ -87,7 +86,7 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
         return;
     }
 
-    context.log.info(`Getting info for PR ${pr.number} - ${pr.title || "(title not fetched)"}`);
+    context.log(`Getting info for PR ${pr.number} - ${pr.title || "(title not fetched)"}`);
     const info = await queryPRInfo(pr.number);
     const prInfo = info.data.repository?.pullRequest;
 
@@ -137,9 +136,9 @@ const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>
 
 const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">,
                                      context: Context) => {
-    context.log.info(`check_suite with ${event.payload.check_suite.pull_requests.length} PRs`);
+    context.log(`check_suite with ${event.payload.check_suite.pull_requests.length} PRs`);
     if (event.payload.check_suite.pull_requests.length > 0) {
-        context.log.info(`PR nums: ${event.payload.check_suite.pull_requests.map(p =>
+        context.log(`PR nums: ${event.payload.check_suite.pull_requests.map(p =>
           `${p.base.repo.url}:${p.head.repo.url}#${p.number}`).join("; ")}`);
     }
     // Would be nice if we could use `check_suite.pull_requests` but it's only
