@@ -32,6 +32,10 @@ const reply = (context: Context, status: number, body: string) => {
     context.log.info(`${body} [${status}]`);
 };
 
+class IgnoredBecause {
+    constructor(public reason: string) { }
+}
+
 export async function httpTrigger(context: Context, req: HttpRequest) {
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
@@ -68,7 +72,9 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
         await mergeCodeOwnersOnGreen(event.payload);
     }
 
-    const pr: { number: number, title?: string } = await prFromEvent(event, context);
+    const pr: { number: number, title?: string } | IgnoredBecause = await prFromEvent(event);
+    if (pr instanceof IgnoredBecause)
+        return reply(context, 204, `Ignored: ${pr.reason}`);
 
     // wait 30s to process a trigger; if a new trigger comes in for the same PR, it supersedes the old one
     if (await debounce(30000, pr.number))
@@ -101,10 +107,9 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
     };
 };
 
-const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>,
-                           context: Context) => {
+const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>) => {
     switch (event.name) {
-        case "check_suite": return await prFromCheckSuiteEvent(event, context);
+        case "check_suite": return await prFromCheckSuiteEvent(event);
         case "issue_comment": return event.payload.issue;
         // "Parse" project_card.content_url according to repository.pulls_url
         case "project_card": return { number: +event.payload.project_card.content_url.replace(/^.*\//, "") };
@@ -113,20 +118,11 @@ const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>
     }
 };
 
-const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">,
-                                     context: Context) => {
-    context.log(`check_suite with ${event.payload.check_suite.pull_requests.length} PRs`);
-    if (event.payload.check_suite.pull_requests.length > 0) {
-        context.log(`PR nums: ${event.payload.check_suite.pull_requests.map(p =>
-          `${p.base.repo.url}:${p.head.repo.url}#${p.number}`).join("; ")}`);
-    }
-    // Would be nice if we could use `check_suite.pull_requests` but it's only
-    // sometime populated, and when it is, it's with related PRs from other
-    // repos
-
-    // const pr0 = event.payload.check_suite.pull_requests[0];
-    // if (pr0) return pr0;
-
+const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">) => {
+    // There is an `event.payload.check_suite.pull_requests` but it looks like
+    // it's only populated for PRs in the other direction: going from DT to
+    // forks (mostly by a pull bot).  See also `IgnoredBecause` below.
+    //
     // So find it with a gql query instead:
     // TLDR: it's not in the API, so do a search (used on Peril for >3 years)
     // (there is an `associatedPullRequests` on a commit object, but that
@@ -136,6 +132,10 @@ const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">,
     const sha = event.payload.check_suite.head_sha;
     const pr = await runQueryToGetPRMetadataForSHA1(owner, repo, sha);
     if (pr && !pr.closed) return pr;
+    // no such PR, and we got related reverse PRs => just ignore it
+    if (event.payload.check_suite.pull_requests.length > 0)
+        return new IgnoredBecause(`No PRs for sha and ${
+          event.payload.check_suite.pull_requests.length} reverse PRs (${sha})`);
     throw new Error(`PR Number not found: no ${!pr ? "PR" : "open PR"} for sha in status (${sha})`);
 };
 
