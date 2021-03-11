@@ -27,6 +27,11 @@ const eventNames = [
 // see https://github.com/octokit/webhooks.js/issues/491, and get rid of this when fixed
 const eventNamesSillyCopy = [...eventNames];
 
+const reply = (context: Context, status: number, body: string) => {
+    context.res = { status, body };
+    context.log.info(`${body} [${status}]`);
+};
+
 export async function httpTrigger(context: Context, req: HttpRequest) {
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
@@ -40,13 +45,8 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
 
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
-    if (!isDev && !verify(secret!, body, headers["x-hub-signature-256"]!)) {
-        context.res = {
-            status: 500,
-            body: "This webhook did not come from GitHub"
-        };
-        return;
-    }
+    if (!isDev && !verify(secret!, body, headers["x-hub-signature-256"]!))
+        return reply(context, 500, "This webhook did not come from GitHub");
 
     const eventHandler = createEventHandler({ log: context.log });
     eventHandler.on(eventNamesSillyCopy, handleTrigger(context));
@@ -59,14 +59,8 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
 
 const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<typeof eventNames[number]>) => {
     context.log(`Handling event: ${event.name}.${event.payload.action}`);
-    if (event.payload.sender.login === "typescript-bot") {
-        context.log(`Skipped webhook because it was triggered by typescript-bot`);
-        context.res = {
-            status: 204,
-            body: `NOOPing because typescript-bot triggered the request`
-        };
-        return;
-    }
+    if (event.payload.sender.login === "typescript-bot")
+        return reply(context, 204, "Skipped webhook because it was triggered by typescript-bot");
 
     // Allow the bot to run side-effects which are not the 'core' function
     // of the review cycle, but are related to keeping DT running smoothly
@@ -77,14 +71,8 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
     const pr: { number: number, title?: string } = await prFromEvent(event, context);
 
     // wait 30s to process a trigger; if a new trigger comes in for the same PR, it supersedes the old one
-    if (await debounce(30000, pr.number)) {
-        context.log(`Skipped webhook, superseded by a newer one for ${pr.number}`);
-        context.res = {
-            status: 204,
-            body: "NOOPing due to a newer webhook"
-        };
-        return;
-    }
+    if (await debounce(30000, pr.number))
+        return reply(context, 204, `Skipped webhook, superseded by a newer one for ${pr.number}`);
 
     context.log(`Getting info for PR ${pr.number} - ${pr.title || "(title not fetched)"}`);
     const info = await queryPRInfo(pr.number);
@@ -92,19 +80,10 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
 
     // If it didn't work, bail early
     if (!prInfo) {
-        if (event.name === "issue_comment") {
-            context.res = {
-                status: 204,
-                body: `NOOPing due to ${pr.number} not being a PR`
-            };
-        } else {
-            context.log.error(`No PR with this number exists, (${JSON.stringify(info)})`);
-            context.res = {
-                status: 422,
-                body: `No PR with this number exists, (${JSON.stringify(info)})`
-            };
-        }
-        return;
+        if (event.name === "issue_comment")
+            return reply(context, 204, `NOOPing due to ${pr.number} not being a PR`);
+        else
+            return reply(context, 422, `No PR with this number exists, (${JSON.stringify(info)})`);
     }
 
     // Convert the info to a set of actions for the bot
