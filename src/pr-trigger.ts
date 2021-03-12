@@ -39,11 +39,12 @@ class IgnoredBecause {
 export async function httpTrigger(context: Context, req: HttpRequest) {
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
-    const { headers, body } = req, evName = headers["x-github-event"], evAction = body.action;
+    const { headers, body } = req, githubId = headers["x-github-delivery"];
+    const evName = headers["x-github-event"], evAction = body.action;
 
     context.log(`>>> HTTP Trigger [${
                   evName}.${evAction
-                  }; gh: ${headers["x-github-delivery"]
+                  }; gh: ${githubId
                   }; az: ${context.invocationId
                   }; node: ${process.version}]`);
 
@@ -54,23 +55,19 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
 
     const eventHandler = createEventHandler({ log: context.log });
     eventHandler.on(eventNamesSillyCopy, handleTrigger(context));
-    return eventHandler.receive({
-        id: headers["x-github-delivery"],
-        name: evName,
-        payload: body,
-    } as EmitterWebhookEvent);
+    return eventHandler.receive({ id: githubId, name: evName, payload: body } as EmitterWebhookEvent);
 }
 
 const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<typeof eventNames[number]>) => {
-    context.log(`Handling event: ${event.name}.${event.payload.action}`);
-    if (event.payload.sender.login === "typescript-bot")
+    const fullName = event.name + "." + event.payload.action;
+    context.log(`Handling event: ${fullName}`);
+    if (event.payload.sender.login === "typescript-bot" && fullName !== "check_suite.completed")
         return reply(context, 204, "Skipped webhook because it was triggered by typescript-bot");
 
     // Allow the bot to run side-effects which are not the 'core' function
     // of the review cycle, but are related to keeping DT running smoothly
-    if (event.name === "check_suite") {
+    if (event.name === "check_suite")
         await mergeCodeOwnersOnGreen(event.payload);
-    }
 
     const pr: { number: number, title?: string } | IgnoredBecause = await prFromEvent(event);
     if (pr instanceof IgnoredBecause)
