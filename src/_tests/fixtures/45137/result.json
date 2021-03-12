@@ -14,7 +14,7 @@
     },
     {
       "tag": "welcome",
-      "status": "@lirbank Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `mongodb` [on npm](https://www.npmjs.com/package/mongodb), [on unpkg](https://unpkg.com/browse/mongodb@latest/) (author is owner)\n  - owner-approval: @LinusU\n  - 1 removed owner: ✎@lirbank\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ Only a DT maintainer can approve changes [without tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package)\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+      "status": "@lirbank Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `mongodb` [on npm](https://www.npmjs.com/package/mongodb), [on unpkg](https://unpkg.com/browse/mongodb@latest/) (author is owner)\n  - owner-approval: @LinusU\n  - 1 removed owner: ✎@lirbank\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Only a DT maintainer can approve changes [without tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package)\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
     }
   ],
   "shouldClose": false,
