@@ -1,4 +1,5 @@
 import * as Comments from "./comments";
+import * as emoji from "./emoji";
 import * as urls from "./urls";
 import { PrInfo, BotResult, FileInfo } from "./pr-info";
 import { ReviewInfo } from "./pr-info";
@@ -487,12 +488,14 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     display(``,
             `## Status`,
             ``,
-            ` * ${emoji(!info.hasMergeConflict)} No merge conflicts`);
+            ` * ${emoji.failed(info.hasMergeConflict)} No merge conflicts`);
 
-    const expectedResults = info.ciResult === "unknown" ? "finished" : "passed";
-    display(` * ${emoji(info.ciResult === "pass")} Continuous integration tests have ${expectedResults}`);
+    {
+        const result = emoji.result(info.ciResult);
+        display(` * ${result.emoji} Continuous integration tests ${result.text}`);
+    }
 
-    const approved = emoji(info.approved);
+    const approved = emoji.pending(!info.approved);
 
     if (info.hasNewPackages) {
         display(` * ${approved} Only ${requiredApprover} can approve changes when there are new packages added`);
@@ -504,7 +507,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect more than one package`);
         for (const p of info.pkgInfo) {
             if (!(p.name && p.popularityLevel === "Critical")) continue;
-            display(`   - ${emoji(!info.pendingCriticalPackages.includes(p.name))} ${p.name}`);
+            display(`   - ${emoji.pending(info.pendingCriticalPackages.includes(p.name))} ${p.name}`);
         }
     } else if (info.hasMultiplePackages) {
         display(` * ${approved} ${RequiredApprover} needs to approve changes which affect more than one package`);
@@ -544,8 +547,4 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
             }\n\n</details>`);
 
     return content.trimEnd();
-
-    function emoji(n: boolean) {
-        return n ? "✅" : "❌";
-    }
 }
