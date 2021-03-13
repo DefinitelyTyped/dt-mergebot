@@ -53,6 +53,14 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
     if (!isDev && !verify(secret!, body, headers["x-hub-signature-256"]!))
         return reply(context, 500, "This webhook did not come from GitHub");
 
+    if (evName === "check_run" && evAction === "completed") {
+        context.log(`>>>>>> name: ${body?.check_run?.name}, sha: ${body?.check_run?.head_sha}`);
+        if (body?.check_run?.head_sha && body?.repository?.full_name === "DefinitelyTyped/DefinitelyTyped") {
+            const pr = runQueryToGetPRMetadataForSHA1("DefinitelyTyped", "DefinitelyTyped", body?.check_run?.head_sha);
+            context.log(`>>>>>>>>> pr => ${pr}`);
+        }
+    }
+
     const eventHandler = createEventHandler({ log: context.log });
     eventHandler.on(eventNamesSillyCopy, handleTrigger(context));
     return eventHandler.receive({ id: githubId, name: evName, payload: body } as EmitterWebhookEvent);
