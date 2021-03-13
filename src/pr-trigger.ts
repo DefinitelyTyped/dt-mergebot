@@ -56,7 +56,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
     if (evName === "check_run" && evAction === "completed") {
         context.log(`>>>>>> name: ${body?.check_run?.name}, sha: ${body?.check_run?.head_sha}`);
         if (body?.check_run?.head_sha && body?.repository?.full_name === "DefinitelyTyped/DefinitelyTyped") {
-            const pr = runQueryToGetPRMetadataForSHA1("DefinitelyTyped", "DefinitelyTyped", body?.check_run?.head_sha);
+            const pr = await runQueryToGetPRMetadataForSHA1("DefinitelyTyped", "DefinitelyTyped", body?.check_run?.head_sha);
             context.log(`>>>>>>>>> pr => ${pr}`);
         }
     }
