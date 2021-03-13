@@ -57,7 +57,11 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
         context.log(`>>>>>> name: ${body?.check_run?.name}, sha: ${body?.check_run?.head_sha}`);
         if (body?.check_run?.head_sha && body?.repository?.full_name === "DefinitelyTyped/DefinitelyTyped") {
             const pr = await runQueryToGetPRMetadataForSHA1("DefinitelyTyped", "DefinitelyTyped", body?.check_run?.head_sha);
-            context.log(`>>>>>>>>> pr => ${pr}`);
+            if (pr) {
+                context.log(`>>>>>>>>> pr => num: ${pr.number}, title: "${pr.title}" closed: ${pr.closed}`);
+            } else {
+                context.log(`>>>>>>>>> pr => not found`);
+            }
         }
     }
 
