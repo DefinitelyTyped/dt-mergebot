@@ -53,7 +53,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
     writeJsonSync(resultFixturePath, actions);
 
     const mutationsFixturePath = join(fixturePath, "mutations.json");
-    const mutations = await executePrActions(actions, prInfo, /*dry*/ true);
+    const mutations = await executePrActions(response.data.repository!.id, actions, prInfo, /*dry*/ true);
     writeJsonSync(mutationsFixturePath, mutations);
 
     console.log("Recorded");

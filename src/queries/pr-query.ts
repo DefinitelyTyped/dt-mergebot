@@ -81,6 +81,7 @@ query PR($pr_number: Int!) {
             commit {
               checkSuites(first: 100) {
                 nodes {
+                  id
                   app {
                     name
                   }

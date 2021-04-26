@@ -11,7 +11,7 @@ import * as comment from "./util/comment";
 // https://github.com/DefinitelyTyped/DefinitelyTyped/projects/5
 const ProjectBoardNumber = 5;
 
-export async function executePrActions(actions: Actions, pr: PR_repository_pullRequest, dry?: boolean) {
+export async function executePrActions(repoId: string, actions: Actions, pr: PR_repository_pullRequest, dry?: boolean) {
     const botComments: ParsedComment[] = getBotComments(pr);
     const mutations = noNullish([
         ...await getMutationsForLabels(actions, pr),
@@ -19,6 +19,7 @@ export async function executePrActions(actions: Actions, pr: PR_repository_pullR
         ...getMutationsForComments(actions, pr.id, botComments),
         ...getMutationsForCommentRemovals(actions, botComments),
         ...getMutationsForChangingPRState(actions, pr),
+        ...getMutationsForReRunningCI(repoId, actions),
     ]);
     if (!dry) {
         // Perform mutations one at a time
@@ -113,6 +114,15 @@ function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pull
             : null,
         actions.shouldClose
             ? createMutation<schema.ClosePullRequestInput>("closePullRequest", { pullRequestId: pr.id })
+            : null,
+    ];
+}
+
+
+function getMutationsForReRunningCI(repoId: string, actions: Actions) {
+    return [
+        actions.reRunActionsCheckSuiteID
+            ? createMutation<schema.RerequestCheckSuiteInput>("rerequestCheckSuite", { checkSuiteId: actions.reRunActionsCheckSuiteID, repositoryId: repoId })
             : null,
     ];
 }

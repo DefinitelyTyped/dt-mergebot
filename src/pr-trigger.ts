@@ -106,7 +106,7 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
     const actions = computeActions(state);
 
     // Act on the actions
-    await executePrActions(actions, prInfo);
+    await executePrActions(info.data.repository!.id, actions, prInfo);
 
     // We are responding real late in the process, so it might show
     // as a timeout in GH a few times (e.g. after GH/DT/NPM lookups)

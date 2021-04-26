@@ -68,7 +68,7 @@ export type ReviewInfo = {
     | { type: "stale", abbrOid: string }
 );
 
-export type CIResult = "unknown" | "pass" | "fail" | "missing";
+export type CIResult = "unknown" | "pass" | "fail" | "missing" | "action_required";
 
 export interface PrInfo {
     readonly type: "info";
@@ -97,6 +97,11 @@ export interface PrInfo {
      * A link to the log for the failing CI if it exists
      */
     readonly ciUrl?: string;
+
+    /**
+     * An ID for a check suite which could need re-running
+     */
+    readonly reRunCheckSuiteID?: string;
 
     /**
      * True if the PR has a merge conflict
@@ -472,12 +477,17 @@ function getReviews(prInfo: PR_repository_pullRequest) {
     return reviews;
 }
 
-function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string } {
+function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string, reRunCheckSuiteID?: string } {
     const ghActionsChecks = checkSuites?.nodes?.filter(check => check?.app?.name.includes("GitHub Actions"));
     // Now that there is more than one GitHub Actions suite, we need to get the right one, but naively fall back
     // to the first if we can't find it, mostly to prevent breaking old tests.
     const totalStatusChecks = ghActionsChecks?.find(check => check?.checkRuns?.nodes?.[0]?.title === "test") || ghActionsChecks?.[0];
     if (!totalStatusChecks) return { ciResult: "missing", ciUrl: undefined };
+
+    // Freakin' crypto miners ruined GitHub Actions, and now we need to manually confirm new folks can run CI
+    const anyAreActionRequired = ghActionsChecks?.find(check => check?.conclusion === "ACTION_REQUIRED");
+    if (anyAreActionRequired) return { ciResult: "action_required", reRunCheckSuiteID: anyAreActionRequired.id };
+
     switch (totalStatusChecks.conclusion) {
         case "SUCCESS":
             return { ciResult: "pass" };

@@ -201,6 +201,7 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_node
 
 export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes {
   __typename: "CheckSuite";
+  id: string;
   /**
    * The GitHub App which created this check suite.
    */

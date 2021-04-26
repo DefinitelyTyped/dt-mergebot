@@ -46,6 +46,7 @@ export const LabelNames = [
     "Too Many Owners",
     "Untested Change",
     "Check Config",
+    "Needs Actions Permission",
     ...StalenessKinds,
 ] as const;
 
@@ -56,6 +57,7 @@ export interface Actions {
     shouldClose: boolean;
     shouldMerge: boolean;
     shouldUpdateLabels: boolean;
+    reRunActionsCheckSuiteID: string | undefined
 }
 
 function createDefaultActions(): Actions {
@@ -66,6 +68,7 @@ function createDefaultActions(): Actions {
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: true,
+        reRunActionsCheckSuiteID: undefined
     };
 }
 
@@ -76,6 +79,7 @@ function createEmptyActions(): Actions {
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: false,
+        reRunActionsCheckSuiteID: undefined
     };
 }
 
@@ -297,8 +301,15 @@ export function process(prInfo: BotResult,
     // Some step should override this
     actions.projectColumn = "Other";
 
+    // We detect whether CI actually ran
+    if (info.ciResult === "action_required") {
+        actions.projectColumn = "Needs Maintainer Action";
+        // And can auto-run when it doesn't edit infra
+        actions.reRunActionsCheckSuiteID = info.editsInfra ? undefined : info.reRunCheckSuiteID;
+    }
+
     // Needs author attention (bad CI, merge conflicts)
-    if (info.needsAuthorAction) {
+    else if (info.needsAuthorAction) {
         actions.projectColumn = "Needs Author Action";
         if (info.hasMergeConflict) post(Comments.MergeConflicted(headCommitAbbrOid, info.author));
         if (info.failedCI) post(Comments.CIFailed(headCommitAbbrOid, info.author, info.ciUrl!));

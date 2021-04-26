@@ -50,7 +50,7 @@ async function testFixture(dir: string) {
     expect(JSONString(action)).toMatchFile(resultPath);
     expect(JSONString(derived)).toMatchFile(derivedPath);
 
-    const mutations = await executePrActions(action, prInfo, /*dry*/ true);
+    const mutations = await executePrActions(response.data.repository!.id, action, prInfo, /*dry*/ true);
     expect(JSONString(mutations)).toMatchFile(mutationsPath);
 }
 
