@@ -300,7 +300,7 @@ export function process(prInfo: BotResult,
 
     if (info.ciResult === "action_required") {
         actions.projectColumn = "Needs Maintainer Action";
-    } 
+    }
     // Needs author attention (bad CI, merge conflicts)
     else if (info.needsAuthorAction) {
         actions.projectColumn = "Needs Author Action";

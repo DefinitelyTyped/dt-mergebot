@@ -479,7 +479,7 @@ function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit
     const totalStatusChecks = ghActionsChecks?.find(check => check?.checkRuns?.nodes?.[0]?.title === "test") || ghActionsChecks?.[0];
     if (!totalStatusChecks) return { ciResult: "missing", ciUrl: undefined };
 
-    // Freakin' bitcoin miners ruined GitHub Actions, and now we need to manually confirm new folks can run CI 
+    // Freakin' crypto miners ruined GitHub Actions, and now we need to manually confirm new folks can run CI
     const anyAreActionRequired = ghActionsChecks?.find(check => check?.conclusion === "ACTION_REQUIRED");
     if (anyAreActionRequired) return { ciResult: "action_required" };
 
