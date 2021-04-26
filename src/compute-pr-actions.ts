@@ -46,6 +46,7 @@ export const LabelNames = [
     "Too Many Owners",
     "Untested Change",
     "Check Config",
+    "Needs Actions Permission",
     ...StalenessKinds,
 ] as const;
 
@@ -297,8 +298,11 @@ export function process(prInfo: BotResult,
     // Some step should override this
     actions.projectColumn = "Other";
 
+    if (info.ciResult === "action_required") {
+        actions.projectColumn = "Needs Maintainer Action";
+    } 
     // Needs author attention (bad CI, merge conflicts)
-    if (info.needsAuthorAction) {
+    else if (info.needsAuthorAction) {
         actions.projectColumn = "Needs Author Action";
         if (info.hasMergeConflict) post(Comments.MergeConflicted(headCommitAbbrOid, info.author));
         if (info.failedCI) post(Comments.CIFailed(headCommitAbbrOid, info.author, info.ciUrl!));

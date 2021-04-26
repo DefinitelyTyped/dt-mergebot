@@ -68,7 +68,7 @@ export type ReviewInfo = {
     | { type: "stale", abbrOid: string }
 );
 
-export type CIResult = "unknown" | "pass" | "fail" | "missing";
+export type CIResult = "unknown" | "pass" | "fail" | "missing" | "action_required";
 
 export interface PrInfo {
     readonly type: "info";
@@ -478,6 +478,11 @@ function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit
     // to the first if we can't find it, mostly to prevent breaking old tests.
     const totalStatusChecks = ghActionsChecks?.find(check => check?.checkRuns?.nodes?.[0]?.title === "test") || ghActionsChecks?.[0];
     if (!totalStatusChecks) return { ciResult: "missing", ciUrl: undefined };
+
+    // Freakin' bitcoin miners ruined GitHub Actions, and now we need to manually confirm new folks can run CI 
+    const anyAreActionRequired = ghActionsChecks?.find(check => check?.conclusion === "ACTION_REQUIRED");
+    if (anyAreActionRequired) return { ciResult: "action_required" };
+
     switch (totalStatusChecks.conclusion) {
         case "SUCCESS":
             return { ciResult: "pass" };
