@@ -57,7 +57,7 @@ export interface Actions {
     shouldClose: boolean;
     shouldMerge: boolean;
     shouldUpdateLabels: boolean;
-    reRunActionsCheckSuiteID: string | undefined
+    reRunActionsCheckSuiteID: string | undefined;
 }
 
 function createDefaultActions(): Actions {
@@ -68,7 +68,7 @@ function createDefaultActions(): Actions {
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: true,
-        reRunActionsCheckSuiteID: undefined
+        reRunActionsCheckSuiteID: undefined,
     };
 }
 
@@ -79,7 +79,7 @@ function createEmptyActions(): Actions {
         shouldClose: false,
         shouldMerge: false,
         shouldUpdateLabels: false,
-        reRunActionsCheckSuiteID: undefined
+        reRunActionsCheckSuiteID: undefined,
     };
 }
 
@@ -307,7 +307,6 @@ export function process(prInfo: BotResult,
         // And can auto-run when it doesn't edit infra
         actions.reRunActionsCheckSuiteID = info.editsInfra ? undefined : info.reRunCheckSuiteID;
     }
-
     // Needs author attention (bad CI, merge conflicts)
     else if (info.needsAuthorAction) {
         actions.projectColumn = "Needs Author Action";

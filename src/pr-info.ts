@@ -479,14 +479,15 @@ function getReviews(prInfo: PR_repository_pullRequest) {
 
 function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string, reRunCheckSuiteID?: string } {
     const ghActionsChecks = checkSuites?.nodes?.filter(check => check?.app?.name.includes("GitHub Actions"));
+
+    // Freakin' crypto miners ruined GitHub Actions, and now we need to manually confirm new folks can run CI
+    const actionRequired = ghActionsChecks?.find(check => check?.conclusion === "ACTION_REQUIRED");
+    if (actionRequired) return { ciResult: "action_required", reRunCheckSuiteID: actionRequired.id };
+
     // Now that there is more than one GitHub Actions suite, we need to get the right one, but naively fall back
     // to the first if we can't find it, mostly to prevent breaking old tests.
     const totalStatusChecks = ghActionsChecks?.find(check => check?.checkRuns?.nodes?.[0]?.title === "test") || ghActionsChecks?.[0];
     if (!totalStatusChecks) return { ciResult: "missing", ciUrl: undefined };
-
-    // Freakin' crypto miners ruined GitHub Actions, and now we need to manually confirm new folks can run CI
-    const anyAreActionRequired = ghActionsChecks?.find(check => check?.conclusion === "ACTION_REQUIRED");
-    if (anyAreActionRequired) return { ciResult: "action_required", reRunCheckSuiteID: anyAreActionRequired.id };
 
     switch (totalStatusChecks.conclusion) {
         case "SUCCESS":
