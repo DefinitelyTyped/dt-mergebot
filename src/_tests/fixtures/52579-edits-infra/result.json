@@ -1,6 +1,7 @@
 {
   "projectColumn": "Needs Maintainer Action",
   "labels": [
+    "The CI is blocked",
     "New Definition",
     "Edits Infrastructure"
   ],

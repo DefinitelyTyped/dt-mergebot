@@ -87,7 +87,7 @@ const start = async function () {
             args["show-extended"] ? i => show("Extended Info", i) : undefined);
         if (args["show-actions"]) show("Actions", actions);
         // Act on the actions
-        const mutations = await executePrActions(info.data.repository!.id, actions, prInfo, args.dry);
+        const mutations = await executePrActions(actions, prInfo, args.dry);
         if (args["show-mutations"] ?? args.dry) show("Mutations", mutations);
     }
     if (args.dry || !args.cleanup) return;

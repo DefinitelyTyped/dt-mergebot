@@ -9,6 +9,7 @@
   "maintainerBlessed": false,
   "hasMergeConflict": false,
   "isFirstContribution": true,
+  "tooManyFiles": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
     {
@@ -42,5 +43,7 @@
   ],
   "reviews": [],
   "ciResult": "action_required",
-  "reRunCheckSuiteID": "123456"
+  "reRunCheckSuiteIDs": [
+    123456
+  ]
 }

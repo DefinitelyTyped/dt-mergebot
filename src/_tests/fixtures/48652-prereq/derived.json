@@ -11,6 +11,7 @@
   "mergeRequestUser": "mgol",
   "hasMergeConflict": false,
   "isFirstContribution": false,
+  "tooManyFiles": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
     {

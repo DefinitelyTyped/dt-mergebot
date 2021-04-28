@@ -74,7 +74,7 @@
                       "__typename": "CheckSuite"
                     },
                     {
-                      "id": "123456",
+                      "databaseId": 123456,
                       "app": {
                         "name": "GitHub Actions",
                         "__typename": "App"
