@@ -5,8 +5,9 @@ export function noNullish<T>(arr: ReadonlyArray<T | null | undefined> | null | u
     return arr.filter(arr => arr != null) as T[];
 }
 
-export function flatten<T extends any[]>(xs: T[]) {
-    return ([] as unknown as T).concat(...xs) as T;
+export function flatten<T>(xs: T[]) {
+    type U = T extends (infer U)[] ? U : T;
+    return ([] as U[]).concat(...xs as U[]);
 }
 
 export function unique<T>(xs: T[]) {

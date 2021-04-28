@@ -3,12 +3,13 @@
 import * as schema from "@octokit/graphql-schema/schema";
 import * as yargs from "yargs";
 import { process as computeActions } from "./compute-pr-actions";
-import { getAllOpenPRsAndCardIDs } from "./queries/all-open-prs-query";
+import { getAllOpenPRs } from "./queries/all-open-prs-query";
 import { queryPRInfo, deriveStateForPR } from "./pr-info";
 import { executePrActions } from "./execute-pr-actions";
 import { getProjectBoardCards } from "./queries/projectboard-cards";
 import { runQueryToGetPRForCardId } from "./queries/card-id-to-pr-query";
 import { createMutation, client } from "./graphql-client";
+import { flatten } from "./util/util";
 import { render } from "prettyjson";
 import { inspect } from "util";
 
@@ -26,20 +27,17 @@ const args = yargs(process.argv.slice(2))
         "show-actions": { alias: ["s4"], type: "boolean", desc: "display actions" },
         "show-mutations": { alias: ["s5"], type: "boolean", desc: "display mutations" },
     })
-    .coerce("_", (prs: (number|string)[]) => prs.map(pr => {
-        if (typeof pr === "number") return (n: number) => n === pr;
-        if (pr.match(/^\d+$/)) return (n: number) => n === +pr;
+    .coerce("_", (prs: (number|string)[]) => flatten(prs.map(pr => {
+        if (typeof pr === "number") return pr;
+        if (pr.match(/^\d+$/)) return +pr;
         const m = pr.match(/^(\d+)-(\d+)$/);
         if (!m) throw new Error(`bad PR or PR range argument: "${pr}"`);
         const lo = +m[1]!, hi = +m[2]!;
-        return (n: number) => lo <= n && n <= hi;
-    }))
+        return new Array(hi - lo + 1).map((empty, i) => lo + i);
+    })))
     .help("h").alias("h", "help")
     .strict()
     .argv;
-
-const shouldRunOn: (n: number) => boolean =
-    args._.length === 0 ? _n => true : n => args._.some(p => p(n));
 
 const xform = (x: unknown, xlate: (s: string) => string): unknown => {
     if (typeof x === "string") return xlate(x);
@@ -62,10 +60,9 @@ const show = (name: string, value: unknown) => {
 
 const start = async function () {
     console.log(`Getting open PRs.`);
-    const { prNumbers: prs, cardIDs } = await getAllOpenPRsAndCardIDs();
+    const prs = args._.length ? args._ : await getAllOpenPRs();
     //
     for (const pr of prs) {
-        if (!shouldRunOn(pr)) continue;
         console.log(`Processing #${pr} (${prs.indexOf(pr) + 1} of ${prs.length})...`);
         // Generate the info for the PR from scratch
         const info = await queryPRInfo(pr);
@@ -90,7 +87,7 @@ const start = async function () {
         const mutations = await executePrActions(actions, prInfo, args.dry);
         if (args["show-mutations"] ?? args.dry) show("Mutations", mutations);
     }
-    if (args.dry || !args.cleanup) return;
+    if (args.dry || !args.cleanup || args._.length) return;
     //
     console.log("Cleaning up cards");
     const columns = await getProjectBoardCards();
@@ -122,7 +119,7 @@ const start = async function () {
     // Handle other columns
     for (const column of columns) {
         if (column.name === "Recently Merged") continue;
-        const ids = column.cards.map(c => c.id).filter(c => !cardIDs.includes(c));
+        const ids = column.cards.filter(c => c.number && !prs.includes(c.number)).map(c => c.id);
         if (ids.length === 0) continue;
         console.log(`Cleaning up closed PRs in "${column.name}"`);
         // don't actually do the deletions, until I follow this and make sure that it's working fine

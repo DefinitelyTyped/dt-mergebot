@@ -1,6 +1,7 @@
 import { gql, TypedDocumentNode } from "@apollo/client/core";
 import { client } from "../graphql-client";
 import { GetProjectBoardCards } from "./schema/GetProjectBoardCards";
+import { noNullish } from "../util/util";
 
 const GetProjectBoardCardsQuery: TypedDocumentNode<GetProjectBoardCards, never> = gql`
   query GetProjectBoardCards {
@@ -17,6 +18,11 @@ const GetProjectBoardCardsQuery: TypedDocumentNode<GetProjectBoardCards, never> 
               nodes {
                 id
                 updatedAt
+                content {
+                  ... on PullRequest {
+                    number
+                  }
+                }
               }
             }
           }
@@ -24,16 +30,6 @@ const GetProjectBoardCardsQuery: TypedDocumentNode<GetProjectBoardCards, never> 
       }
     }
   }`;
-
-interface CardInfo {
-    id: string;
-    updatedAt: string;
-}
-interface ColumnInfo {
-    name: string;
-    totalCount: number;
-    cards: CardInfo[];
-}
 
 export async function getProjectBoardCards() {
     const results = await client.query({
@@ -47,17 +43,13 @@ export async function getProjectBoardCards() {
         throw new Error("No project found");
     }
 
-    const columns: ColumnInfo[] = [];
-    project.columns.nodes?.forEach(col => {
-        if (!col) return;
-        const cards: CardInfo[] = [];
-        col.cards.nodes?.forEach(card => card && cards.push({ id: card.id, updatedAt: card.updatedAt }));
-        columns.push({
-            name: col.name,
-            totalCount: col.cards.totalCount,
-            cards,
-        });
-    });
-
-    return columns;
+    return noNullish(project.columns.nodes).map(column => ({
+        name: column.name,
+        totalCount: column.cards.totalCount,
+        cards: noNullish(column.cards.nodes).map(card => ({
+            id: card.id,
+            updatedAt: card.updatedAt,
+            number: card.content && "number" in card.content ? card.content.number : undefined,
+        })),
+    }));
 }
