@@ -1,5 +1,16 @@
 [
   {
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWwyOTUzOTk4NzE4"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDEyMjY1MDE2"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
@@ -11,11 +22,20 @@
     }
   },
   {
+    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "cardId": "MDExOlByb2plY3RDYXJkMzczOTYzMTI=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYyMjUyNzAxNQ==",
-        "body": "@tomer-openfin Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `openfin` [on npm](https://www.npmjs.com/package/openfin), [on unpkg](https://unpkg.com/browse/openfin@latest/) (author is owner)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@tomer-openfin Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\nThis PR might touch some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n\n## 1 package in this PR\n\n\n***Note: this PR touches too many files, and I didn't see all of them!***\n* `openfin` [on npm](https://www.npmjs.com/package/openfin), [on unpkg](https://unpkg.com/browse/openfin@latest/) (author is owner)\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Only a DT maintainer can approve changes [without tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package)\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   }

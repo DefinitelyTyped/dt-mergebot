@@ -68,7 +68,7 @@ export type ReviewInfo = {
     | { type: "stale", abbrOid: string }
 );
 
-export type CIResult = "unknown" | "pass" | "fail" | "missing";
+export type CIResult = "unknown" | "pass" | "fail" | "missing" | "action_required";
 
 export interface PrInfo {
     readonly type: "info";
@@ -97,6 +97,11 @@ export interface PrInfo {
      * A link to the log for the failing CI if it exists
      */
     readonly ciUrl?: string;
+
+    /**
+     * An ID for a check suite which could need re-running
+     */
+    readonly reRunCheckSuiteIDs?: number[];
 
     /**
      * True if the PR has a merge conflict
@@ -130,6 +135,11 @@ export interface PrInfo {
     readonly mergeRequestUser?: string;
 
     readonly isFirstContribution: boolean;
+
+    /*
+     * True if there are more files than we can fetch from the initial query
+     */
+    readonly tooManyFiles: boolean;
 
     readonly popularityLevel: PopularityLevel;
 
@@ -200,6 +210,7 @@ export async function deriveStateForPR(
     const lastCommentDate = getLastCommentishActivityDate(prInfo);
     const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
+    const tooManyFiles = prInfo.files?.totalCount !== prInfo.files?.nodes?.length;
 
     const pkgInfoEtc = await getPackageInfosEtc(
         noNullish(prInfo.files?.nodes).map(f => f.path).sort(),
@@ -227,6 +238,7 @@ export async function deriveStateForPR(
         mergeOfferDate, mergeRequestDate: mergeRequest?.date, mergeRequestUser: mergeRequest?.user,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         isFirstContribution,
+        tooManyFiles,
         popularityLevel,
         pkgInfo,
         reviews,
@@ -472,12 +484,20 @@ function getReviews(prInfo: PR_repository_pullRequest) {
     return reviews;
 }
 
-function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string } {
+function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string, reRunCheckSuiteIDs?: number[] } {
     const ghActionsChecks = checkSuites?.nodes?.filter(check => check?.app?.name.includes("GitHub Actions"));
+
+    // Freakin' crypto miners ruined GitHub Actions, and now we need to manually confirm new folks can run CI
+    const actionRequiredIDs = noNullish(ghActionsChecks?.map(check =>
+        check?.conclusion === "ACTION_REQUIRED" ? check.databaseId : null));
+    if (actionRequiredIDs.length > 0)
+        return { ciResult: "action_required", reRunCheckSuiteIDs: actionRequiredIDs };
+
     // Now that there is more than one GitHub Actions suite, we need to get the right one, but naively fall back
     // to the first if we can't find it, mostly to prevent breaking old tests.
     const totalStatusChecks = ghActionsChecks?.find(check => check?.checkRuns?.nodes?.[0]?.title === "test") || ghActionsChecks?.[0];
     if (!totalStatusChecks) return { ciResult: "missing", ciUrl: undefined };
+
     switch (totalStatusChecks.conclusion) {
         case "SUCCESS":
             return { ciResult: "pass" };

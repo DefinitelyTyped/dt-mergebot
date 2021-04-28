@@ -1,0 +1,23 @@
+[
+  {
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWwyOTUzOTk2NDAx",
+          "MDU6TGFiZWwxNjA4MjA4ODM1"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NjIyODUxNTk2"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDgyNjM5OTk2OA==",
+        "body": "@Phong6698 Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\nThis PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n\n## 1 package in this PR\n\n* `vertx__eventbus-bridge-client.js` (*new!*) [on npm](https://www.npmjs.com/package/@vertx/eventbus-bridge-client.js), [on unpkg](https://unpkg.com/browse/@vertx/eventbus-bridge-client.js@latest/)\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * 🔐 Continuous integration tests waiting for a maintainer to authorize a run\n * 🕐 Only a DT maintainer can approve changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  }
+]

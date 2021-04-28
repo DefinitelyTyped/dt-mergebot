@@ -11,6 +11,7 @@
   "mergeRequestUser": "reubenrybnik",
   "hasMergeConflict": false,
   "isFirstContribution": false,
+  "tooManyFiles": false,
   "popularityLevel": "Popular",
   "pkgInfo": [
     {

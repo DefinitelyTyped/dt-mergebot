@@ -1,0 +1,24 @@
+[
+  {
+    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "cardId": "MDExOlByb2plY3RDYXJkNTk3OTk5NDQ=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTMw"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDgyNjM5OTk2OA==",
+        "body": "@Phong6698 Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `vertx__eventbus-bridge-client.js` (*new!*) [on npm](https://www.npmjs.com/package/@vertx/eventbus-bridge-client.js), [on unpkg](https://unpkg.com/browse/@vertx/eventbus-bridge-client.js@latest/)\n  - 1 added owner: ✎@Phong6698\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * 🕐 Continuous integration tests are still running\n * 🕐 Only a DT maintainer can approve changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "method": "POST",
+    "op": "check-suites/123456/rerequest"
+  }
+]

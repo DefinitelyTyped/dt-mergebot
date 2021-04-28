@@ -7,6 +7,7 @@ import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
 import { noNullish, flatten } from "./util/util";
 import { tagsToDeleteIfNotPosted } from "./comments";
 import * as comment from "./util/comment";
+import { request } from "https";
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/projects/5
 const ProjectBoardNumber = 5;
@@ -20,12 +21,15 @@ export async function executePrActions(actions: Actions, pr: PR_repository_pullR
         ...getMutationsForCommentRemovals(actions, botComments),
         ...getMutationsForChangingPRState(actions, pr),
     ]);
+    const restCalls = getMutationsForReRunningCI(actions);
     if (!dry) {
         // Perform mutations one at a time
         for (const mutation of mutations)
             await client.mutate(mutation as MutationOptions<void, typeof mutations[number]["variables"]>);
+        for (const restCall of restCalls)
+            await doRestCall(restCall);
     }
-    return mutations;
+    return [...mutations, ...restCalls];
 }
 
 async function getMutationsForLabels(actions: Actions, pr: PR_repository_pullRequest) {
@@ -129,4 +133,37 @@ async function getLabelIdByName(name: string): Promise<string> {
     const res = labels.find(l => l.name === name)?.id;
     if (!res) throw new Error(`No label named "${name}" exists`);
     return res;
+}
+
+// *** HACK ***
+// A GQL mutation of `rerequestCheckSuite` throws an error that it's only
+// allowed from a GH app, but a `rerequest` rest call works fine.  So do a rest
+// call for now, and hopefully GH will have a better way of handling these
+// first-time contributors.  This whole mess should then turn to a GQL mutation,
+// or better, be removed if there's some repo settings to allow test builds
+// based on paths or something similar.
+
+type RestMutation = { method: string, op: string };
+
+function doRestCall(call: RestMutation): Promise<void> {
+    const url = `https://api.github.com/repos/DefinitelyTyped/DefinitelyTyped/${call.op}`;
+    const headers = {
+        "accept": "application/vnd.github.v3+json",
+        "authorization": `token ${process.env.BOT_AUTH_TOKEN}`,
+        "user-agent": "dt-mergebot"
+    };
+    return new Promise((resolve, reject) => {
+        const req = request(url, { method: call.method, headers }, reply => {
+            const bad = !reply.statusCode || reply.statusCode < 200 || reply.statusCode >= 300;
+            if (bad) return reject(`doRestCall failed with a status of ${reply.statusCode}`);
+            return resolve();
+        });
+        req.on("error", reject);
+        req.end();
+    });
+}
+
+function getMutationsForReRunningCI(actions: Actions) {
+    return (actions.reRunActionsCheckSuiteIDs || []).map(id =>
+        ({ method: "POST", op: `check-suites/${id}/rerequest` }));
 }

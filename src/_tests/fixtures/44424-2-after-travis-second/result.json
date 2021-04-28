@@ -1,12 +1,13 @@
 {
   "projectColumn": "Waiting for Code Reviews",
   "labels": [
+    "Possibly Edits Infrastructure",
     "Author is Owner"
   ],
   "responseComments": [
     {
       "tag": "welcome",
-      "status": "@tomer-openfin Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `openfin` [on npm](https://www.npmjs.com/package/openfin), [on unpkg](https://unpkg.com/browse/openfin@latest/) (author is owner)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\n## Status\n\n * ✅ No merge conflicts\n * 🕐 Continuous integration tests are still running\n * 🕐 Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+      "status": "@tomer-openfin Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\nThis PR might touch some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n\n## 1 package in this PR\n\n\n***Note: this PR touches too many files, and I didn't see all of them!***\n* `openfin` [on npm](https://www.npmjs.com/package/openfin), [on unpkg](https://unpkg.com/browse/openfin@latest/) (author is owner)\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * 🕐 Continuous integration tests are still running\n * 🕐 Only a DT maintainer can approve changes [without tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package)\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
     },
     {
       "tag": "pinging-reviewers",

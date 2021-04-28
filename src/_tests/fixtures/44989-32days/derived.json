@@ -10,6 +10,7 @@
   "mergeOfferDate": "2020-05-23T10:05:30.000Z",
   "hasMergeConflict": false,
   "isFirstContribution": false,
+  "tooManyFiles": false,
   "popularityLevel": "Popular",
   "pkgInfo": [
     {

@@ -29,6 +29,7 @@ export const LabelNames = [
     "Mergebot Error",
     "Has Merge Conflict",
     "The CI failed",
+    "The CI is blocked",
     "Revision needed",
     "New Definition",
     "Edits Owners",
@@ -40,12 +41,14 @@ export const LabelNames = [
     "Popular package",
     "Critical package",
     "Edits Infrastructure",
+    "Possibly Edits Infrastructure",
     "Edits multiple packages",
     "Author is Owner",
     "No Other Owners",
     "Too Many Owners",
     "Untested Change",
     "Check Config",
+    "Needs Actions Permission",
     ...StalenessKinds,
 ] as const;
 
@@ -56,6 +59,7 @@ export interface Actions {
     shouldClose: boolean;
     shouldMerge: boolean;
     shouldUpdateLabels: boolean;
+    reRunActionsCheckSuiteIDs?: number[];
 }
 
 function createDefaultActions(): Actions {
@@ -93,6 +97,7 @@ type ApproverKind = "maintainer" | "owner" | "other";
 interface ExtendedPrInfo extends PrInfo {
     readonly orig: PrInfo;
     readonly editsInfra: boolean;
+    readonly possiblyEditsInfra: boolean; // if we can't be sure since there's too many files
     readonly checkConfig: boolean;
     readonly authorIsOwner: boolean;
     readonly allOwners: string[];
@@ -113,6 +118,7 @@ interface ExtendedPrInfo extends PrInfo {
     readonly approvedBy: ApproverKind[];
     readonly hasChangereqs: boolean;
     readonly failedCI: boolean;
+    readonly blockedCI: boolean;
     readonly staleness?: Staleness;
     readonly packages: readonly string[];
     readonly hasMultiplePackages: boolean; // not counting infra files
@@ -130,6 +136,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isAuthor = (user: string) => sameUser(user, info.author);
     const authorIsOwner = info.pkgInfo.every(p => p.owners.some(isAuthor));
     const editsInfra = info.pkgInfo.some(p => p.name === null);
+    const possiblyEditsInfra = editsInfra || info.tooManyFiles;
     const checkConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
     const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners)));
     const otherOwners = allOwners.filter(o => !isAuthor(o));
@@ -144,8 +151,8 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const newPackages = noNullish(info.pkgInfo.map(p => p.kind === "add" ? p.name : null));
     const hasNewPackages = newPackages.length > 0;
     const hasEditedPackages = packages.length > newPackages.length;
-    const requireMaintainer = editsInfra || checkConfig || hasMultiplePackages || isUntested || hasNewPackages || tooManyOwners;
-    const blessable = !(hasNewPackages || editsInfra || noOtherOwners);
+    const requireMaintainer = possiblyEditsInfra || checkConfig || hasMultiplePackages || isUntested || hasNewPackages || tooManyOwners;
+    const blessable = !(hasNewPackages || possiblyEditsInfra || noOtherOwners);
     const approvedReviews = info.reviews.filter(r => r.type === "approved") as ExtendedPrInfo["approvedReviews"];
     const changereqReviews = info.reviews.filter(r => r.type === "changereq") as ExtendedPrInfo["changereqReviews"];
     const staleReviews = info.reviews.filter(r => r.type === "stale") as ExtendedPrInfo["staleReviews"];
@@ -155,6 +162,9 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const approverKind = getApproverKind();
     const approved = getApproved();
     const failedCI = info.ciResult === "fail";
+    const blockedCI = info.ciResult === "action_required";
+    const ciResult = // override ciResult: treated as in-progress if it's approved (blockedCI distinguishes it from real unknown)
+        blockedCI && !possiblyEditsInfra ? "unknown" : info.ciResult;
     const canBeSelfMerged = info.ciResult === "pass" && !info.hasMergeConflict && approved;
     const hasValidMergeRequest = !!(info.mergeOfferDate && info.mergeRequestDate && info.mergeRequestDate > info.mergeOfferDate);
     const needsAuthorAction = failedCI || info.hasMergeConflict || hasChangereqs;
@@ -163,9 +173,10 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const reviewColumn = getReviewColumn();
     return {
         ...info, orig: info,
-        authorIsOwner, editsInfra, checkConfig, allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
+        authorIsOwner, editsInfra, possiblyEditsInfra, checkConfig,
+        allOwners, otherOwners, noOtherOwners, tooManyOwners, editsOwners,
         canBeSelfMerged, hasValidMergeRequest, pendingCriticalPackages, approved, approverKind,
-        requireMaintainer, blessable, failedCI, staleness,
+        requireMaintainer, blessable, failedCI, blockedCI, ciResult, staleness,
         packages, hasMultiplePackages, hasDefinitions, hasTests, isUntested, newPackages, hasNewPackages, hasEditedPackages,
         approvedReviews, changereqReviews, staleReviews, approvedBy, hasChangereqs,
         needsAuthorAction, reviewColumn, isAuthor,
@@ -258,6 +269,7 @@ export function process(prInfo: BotResult,
     };
     label("Has Merge Conflict", info.hasMergeConflict);
     label("The CI failed", info.failedCI);
+    label("The CI is blocked", info.ciResult === "action_required");
     label("Revision needed", info.hasChangereqs);
     label("Critical package", info.popularityLevel === "Critical");
     label("Popular package", info.popularityLevel === "Popular");
@@ -269,6 +281,7 @@ export function process(prInfo: BotResult,
     label("New Definition", info.hasNewPackages);
     label("Edits Owners", info.editsOwners);
     label("Edits Infrastructure", info.editsInfra);
+    label("Possibly Edits Infrastructure", info.possiblyEditsInfra && !info.editsInfra);
     label("Edits multiple packages", info.hasMultiplePackages);
     label("Author is Owner", info.authorIsOwner);
     label("No Other Owners", info.hasEditedPackages && info.noOtherOwners);
@@ -297,8 +310,12 @@ export function process(prInfo: BotResult,
     // Some step should override this
     actions.projectColumn = "Other";
 
+    // First-timers are blocked from CI runs until approved, this case is for infra edits (require a maintainer)
+    if (info.ciResult === "action_required") {
+        actions.projectColumn = "Needs Maintainer Action";
+    }
     // Needs author attention (bad CI, merge conflicts)
-    if (info.needsAuthorAction) {
+    else if (info.needsAuthorAction) {
         actions.projectColumn = "Needs Author Action";
         if (info.hasMergeConflict) post(Comments.MergeConflicted(headCommitAbbrOid, info.author));
         if (info.failedCI) post(Comments.CIFailed(headCommitAbbrOid, info.author, info.ciUrl!));
@@ -307,6 +324,8 @@ export function process(prInfo: BotResult,
     // CI is running; default column is Waiting for Reviewers
     else if (info.ciResult === "unknown") {
         actions.projectColumn = "Waiting for Code Reviews";
+        if (info.blockedCI) // => we should approve the tests (by rerunning)
+            actions.reRunActionsCheckSuiteIDs = info.reRunCheckSuiteIDs || undefined;
     }
     // CI is missing
     else if (info.ciResult === "missing") {
@@ -408,9 +427,10 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
 
     if (info.isUntested) {
         post(Comments.SuggestTesting(info.author, testsLink));
-    } else if (info.editsInfra) {
+    } else if (info.possiblyEditsInfra) {
         display(``,
-                `This PR touches some part of DefinitelyTyped infrastructure, so ${requiredApprover} will need to review it. This is rare — did you mean to do this?`);
+                `This PR ${info.editsInfra ? "touches" : "might touch"} some part of DefinitelyTyped infrastructure, so ${
+                 requiredApprover} will need to review it. This is rare — did you mean to do this?`);
     }
 
     const announceList = (what: string, xs: readonly string[]) => `${xs.length} ${what}${xs.length !== 1 ? "s" : ""}`;
@@ -422,6 +442,10 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     display(``,
             `## ${announceList("package", info.packages)} in this PR`,
             ``);
+    if (info.tooManyFiles) {
+        display(``,
+                `***Note: this PR touches too many files, and I didn't see all of them!***`);
+    }
     let addedSelfToManyOwners = 0;
     if (info.pkgInfo.length === 0) {
         display(`This PR is editing only infrastructure files!`);

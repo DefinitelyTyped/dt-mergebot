@@ -202,6 +202,10 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_node
 export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes {
   __typename: "CheckSuite";
   /**
+   * Identifies the primary key from the database.
+   */
+  databaseId: number | null;
+  /**
    * The GitHub App which created this check suite.
    */
   app: PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_app | null;
