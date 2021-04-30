@@ -36,5 +36,27 @@
         "body": "@SaltyAom The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/8454d0853c273f9a20b08bd68cfd5c6b4f70c018/checks?check_suite_id=1778052567).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n<!--typescript_bot_gh-actions-complaint-8454d08-->"
       }
     }
+  },
+  {
+    "mutation": "mutation ($input: AddPullRequestReviewThreadInput!) {\n  addPullRequestReviewThread(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTUwNDE0ODEz",
+        "path": "types/omise-js/tslint.json",
+        "startLine": 1,
+        "line": 8,
+        "body": "```suggestion\n{ \"extends\": \"dtslint/dt.json\" }\n```"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: SubmitPullRequestReviewInput!) {\n  submitPullRequestReview(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTUwNDE0ODEz",
+        "body": "@SaltyAom I noticed these differences from the expected form. If you can revise your changes to avoid them, so much the better! Otherwise please reply with explanations why they're needed and a maintainer will take a look. Thanks!",
+        "event": "COMMENT"
+      }
+    }
   }
 ]

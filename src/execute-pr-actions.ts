@@ -4,8 +4,8 @@ import { PR_repository_pullRequest } from "./queries/schema/PR";
 import { Actions, LabelNames, LabelName } from "./compute-pr-actions";
 import { createMutation, client } from "./graphql-client";
 import { getProjectBoardColumns, getLabels } from "./util/cachedQueries";
-import { noNullish, flatten } from "./util/util";
-import { tagsToDeleteIfNotPosted } from "./comments";
+import { authorNotBot, noNullish, flatten } from "./util/util";
+import * as comments from "./comments";
 import * as comment from "./util/comment";
 import { request } from "https";
 
@@ -19,6 +19,7 @@ export async function executePrActions(actions: Actions, pr: PR_repository_pullR
         ...await getMutationsForProjectChanges(actions, pr),
         ...getMutationsForComments(actions, pr.id, botComments),
         ...getMutationsForCommentRemovals(actions, botComments),
+        ...getMutationsForSuggestions(actions, pr),
         ...getMutationsForChangingPRState(actions, pr),
     ]);
     const restCalls = getMutationsForReRunningCI(actions);
@@ -70,7 +71,7 @@ type ParsedComment = { id: string, body: string, tag: string, status: string };
 function getBotComments(pr: PR_repository_pullRequest): ParsedComment[] {
     return noNullish(
         (pr.comments.nodes ?? [])
-            .filter(comment => comment?.author?.login === "typescript-bot")
+            .filter(comment => comment && !authorNotBot(comment))
             .map(c => {
                 const { id, body } = c!, parsed = comment.parse(body);
                 return parsed && { id, body, ...parsed };
@@ -100,25 +101,44 @@ function getMutationsForCommentRemovals(actions: Actions, botComments: ParsedCom
         // Remove stale CI 'your build is green' notifications
         if (tag.includes("ci-") && tag !== ciTagToKeep) return del();
         // tags for comments that should be removed when not included in the actions
-        if (tagsToDeleteIfNotPosted.includes(tag) && !postedTags.includes(tag)) return del();
+        if (comments.tagsToDeleteIfNotPosted.includes(tag) && !postedTags.includes(tag)) return del();
         return null;
     });
 }
 
-function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pullRequest) {
+function getMutationsForSuggestions(actions: Actions, pr: PR_repository_pullRequest) {
+    // Suggestions will be empty if we already reviewed this head
+    if (actions.suggestions.length === 0) return [];
+    if (!pr.author) throw new Error("Internal Error: expected to be checked");
     return [
-        actions.shouldMerge
-            ? createMutation<schema.MergePullRequestInput>("mergePullRequest", {
-                commitHeadline: `🤖 Merge PR #${pr.number} ${pr.title} by @${pr.author?.login ?? "(ghost)"}`,
-                expectedHeadOid: pr.headRefOid,
-                mergeMethod: "SQUASH",
+        ...actions.suggestions.map(({ path, startLine, endLine, text }) =>
+            createMutation<schema.AddPullRequestReviewThreadInput>("addPullRequestReviewThread", {
                 pullRequestId: pr.id,
+                path,
+                startLine: startLine === endLine ? undefined : startLine,
+                line: endLine,
+                body: "```suggestion\n" + text + "```",
             })
-            : null,
-        actions.shouldClose
-            ? createMutation<schema.ClosePullRequestInput>("closePullRequest", { pullRequestId: pr.id })
-            : null,
+        ),
+        createMutation<schema.SubmitPullRequestReviewInput>("submitPullRequestReview", {
+            pullRequestId: pr.id,
+            body: comments.suggestions(pr.author.login),
+            event: "COMMENT",
+        }),
     ];
+}
+
+function* getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pullRequest) {
+    if (actions.shouldMerge) {
+        if (!pr.author) throw new Error("Internal Error: expected to be checked");
+        yield createMutation<schema.MergePullRequestInput>("mergePullRequest", {
+            commitHeadline: `🤖 Merge PR #${pr.number} ${pr.title} by @${pr.author.login}`,
+            expectedHeadOid: pr.headRefOid,
+            mergeMethod: "SQUASH",
+            pullRequestId: pr.id,
+        });
+    }
+    if (actions.shouldClose) yield createMutation<schema.ClosePullRequestInput>("closePullRequest", { pullRequestId: pr.id });
 }
 
 async function getProjectBoardColumnIdByName(name: string): Promise<string> {
