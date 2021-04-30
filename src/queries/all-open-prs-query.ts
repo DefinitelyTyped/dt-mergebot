@@ -9,6 +9,7 @@ query GetAllOpenPRsAndCardIDs($endCursor: String) {
     id
     pullRequests(states: OPEN, orderBy: { field: UPDATED_AT, direction: DESC }, first: 100, after: $endCursor) {
       nodes {
+        isDraft
         number
         projectCards(first: 100) { nodes { id } }
       }
@@ -30,9 +31,9 @@ export async function getAllOpenPRsAndCardIDs() {
             fetchPolicy: "no-cache",
             variables: { endCursor },
         });
-        prNumbers.push(...noNullish(result.data.repository?.pullRequests.nodes).map(pr => pr.number));
+        prNumbers.push(...noNullish(result.data.repository?.pullRequests.nodes).filter(pr => !pr.isDraft).map(pr => pr.number));
         for (const pr of noNullish(result.data.repository?.pullRequests.nodes)) {
-            cardIDs.push(...noNullish(pr.projectCards.nodes).map(card => card.id));
+            if (!pr.isDraft) cardIDs.push(...noNullish(pr.projectCards.nodes).map(card => card.id));
         }
         if (!result.data.repository?.pullRequests.pageInfo.hasNextPage) {
             return { prNumbers, cardIDs };
