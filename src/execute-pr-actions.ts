@@ -106,19 +106,18 @@ function getMutationsForCommentRemovals(actions: Actions, botComments: ParsedCom
 }
 
 function getMutationsForChangingPRState(actions: Actions, pr: PR_repository_pullRequest) {
-    return [
-        actions.shouldMerge
-            ? createMutation<schema.MergePullRequestInput>("mergePullRequest", {
+    if (!actions.state) return [];
+    switch (actions.state) {
+        case "close":
+            return [createMutation<schema.ClosePullRequestInput>("closePullRequest", { pullRequestId: pr.id })];
+        case "merge":
+            return [createMutation<schema.MergePullRequestInput>("mergePullRequest", {
                 commitHeadline: `🤖 Merge PR #${pr.number} ${pr.title} by @${pr.author?.login ?? "(ghost)"}`,
                 expectedHeadOid: pr.headRefOid,
                 mergeMethod: "SQUASH",
                 pullRequestId: pr.id,
-            })
-            : null,
-        actions.shouldClose
-            ? createMutation<schema.ClosePullRequestInput>("closePullRequest", { pullRequestId: pr.id })
-            : null,
-    ];
+            })];
+    }
 }
 
 async function getProjectBoardColumnIdByName(name: string): Promise<string> {
