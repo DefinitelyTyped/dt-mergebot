@@ -15,7 +15,8 @@ type ColumnName =
     | "Waiting for Author to Merge"
     | "Needs Author Action"
     | "Recently Merged"
-    | "Waiting for Code Reviews";
+    | "Waiting for Code Reviews"
+    | "*REMOVE*"; // special value: indicates closing the PR
 
 type StalenessKind = typeof StalenessKinds[number];
 const StalenessKinds = [ // all are also label names
@@ -53,7 +54,7 @@ export const LabelNames = [
 ] as const;
 
 export interface Actions {
-    projectColumn?: ColumnName | "*REMOVE*";
+    projectColumn?: ColumnName;
     labels: LabelName[];
     responseComments: Comments.Comment[];
     shouldClose: boolean;
@@ -188,9 +189,9 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
             : otherOwners.filter(o => !approvedReviews.some(r => o === r.reviewer));
         const mkStaleness = makeStaleness(info.now, info.author, ownersToPing);
         if (canBeSelfMerged && info.mergeOfferDate) return mkStaleness(
-            "Unmerged", info.mergeOfferDate, 4, 9, 30, "CLOSE");
+            "Unmerged", info.mergeOfferDate, 4, 9, 30, "*REMOVE*");
         if (needsAuthorAction) return mkStaleness(
-            "Abandoned", info.lastActivityDate, 6, 22, 30, "CLOSE");
+            "Abandoned", info.lastActivityDate, 6, 22, 30, "*REMOVE*");
         if (!approved) return mkStaleness(
             "Unreviewed", info.lastPushDate, 6, 10, 17, "Needs Maintainer Action");
         return undefined;
@@ -307,8 +308,7 @@ export function process(prInfo: BotResult,
         }
     }
 
-    // Some step should override this
-    actions.projectColumn = "Other";
+    // Some step should override actions.projectColumn, the default "Other" indicates a probelm
 
     // First-timers are blocked from CI runs until approved, this case is for infra edits (require a maintainer)
     if (info.ciResult === "action_required") {
@@ -376,7 +376,7 @@ export function process(prInfo: BotResult,
 function makeStaleness(now: Date, author: string, ownersToPing: string[]) { // curried for convenience
     return (kind: StalenessKind, since: Date,
             freshDays: number, attnDays: number, nearDays: number,
-            doneColumn: ColumnName | "CLOSE") => {
+            doneColumn: ColumnName) => {
         const days = dayjs(now).diff(since, "days");
         const state = days <= freshDays ? "fresh" : days <= attnDays ? "attention" : days <= nearDays ? "nearly" : "done";
         const kindAndState = `${kind}:${state}`;
@@ -390,12 +390,8 @@ function makeStaleness(now: Date, author: string, ownersToPing: string[]) { // c
                 actions.responseComments.push({ tag, status: comment });
             }
             if (state === "done") {
-                if (doneColumn === "CLOSE") {
-                    actions.shouldClose = true;
-                    actions.projectColumn = "*REMOVE*";
-                } else {
-                    actions.projectColumn = doneColumn;
-                }
+                if (doneColumn === "*REMOVE*") actions.shouldClose = true; // close when reming
+                actions.projectColumn = doneColumn;
             }
         };
         return { kind, days, state, explanation, doTimelineActions } as const;
