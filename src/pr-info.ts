@@ -397,7 +397,8 @@ configSuspicious["tsconfig.json"] = makeChecker(
     },
     urls.tsconfigJson,
     { ignore: data => {
-        data.compilerOptions.lib = data.compilerOptions.lib.filter((value: unknown) => value !== "dom");
+        data.compilerOptions.lib = data.compilerOptions.lib.filter((value: unknown) =>
+            !(typeof value === "string" && value.toLowerCase() === "dom"));
         delete data.compilerOptions.baseUrl;
         delete data.compilerOptions.typeRoots;
         delete data.compilerOptions.paths;
