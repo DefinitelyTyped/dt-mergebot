@@ -436,7 +436,10 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
           urls.review(info.pr_number)}/${info.headCommitOid}#diff-${sha256(f.path)})`;
 
     display(``,
-            `## ${announceList("package", info.packages)} in this PR`,
+            `## ${announceList("package", info.packages)} in this PR${
+              info.editsInfra ? " (and infra files)"
+              : info.tooManyFiles ? " (and possibly others)"
+              : ""}`,
             ``);
     if (info.tooManyFiles) {
         display(``,
@@ -455,7 +458,6 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
                  `[on npm](https://www.npmjs.com/package/${urlPart}),`,
                  `[on unpkg](https://unpkg.com/browse/${urlPart}@latest/)`,
                  ...authorIsOwner].join(" "));
-
         const approvers = info.approvedReviews.filter(r => p.owners.some(o => sameUser(o, r.reviewer))).map(r => r.reviewer);
         if (approvers.length) {
             display(`  - owner-approval: ${usersToString(approvers)}`);
@@ -467,7 +469,6 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         displayOwners("added", p.addedOwners);
         displayOwners("removed", p.deletedOwners);
         if (!info.authorIsOwner && p.owners.length >= 4 && p.addedOwners.some(info.isAuthor)) addedSelfToManyOwners++;
-
         let showSuspects = false;
         for (const file of p.files) {
             if (!file.suspect) continue;
@@ -476,6 +477,11 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
             showSuspects = true;
         }
 
+    }
+    if (info.editsInfra) {
+        display(`* Infra files`);
+        for (const file of info.pkgInfo.find(p => p.name === null)!.files)
+            display(`  - ${reviewLink(file)}`);
     }
     if (addedSelfToManyOwners > 0) {
         display(``,
