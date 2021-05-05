@@ -451,7 +451,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         const kind = p.kind === "add" ? " (*new!*)" : p.kind === "delete" ? " (*probably deleted!*)" : "";
         const urlPart = p.name.replace(/^(.*?)__(.)/, "@$1/$2");
         const authorIsOwner = !p.owners.some(info.isAuthor) ? [] : [`(author is owner)`];
-        display([`* \`${p.name}\`${kind}`,
+        display([`* \`${p.name}\`${kind} —`,
                  `[on npm](https://www.npmjs.com/package/${urlPart}),`,
                  `[on unpkg](https://unpkg.com/browse/${urlPart}@latest/)`,
                  ...authorIsOwner].join(" "));
