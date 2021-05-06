@@ -1,6 +1,7 @@
 // GH webhook entry point
 
-import { queryPRInfo, deriveStateForPR } from "./pr-info";
+import { getPRInfo } from "./queries/pr-query";
+import { deriveStateForPR } from "./pr-info";
 import { process as computeActions } from "./compute-pr-actions";
 import { executePrActions } from "./execute-pr-actions";
 import { mergeCodeOwnersOnGreen } from "./side-effects/merge-codeowner-prs";
@@ -90,7 +91,7 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
         return reply(context, 204, `Skipped webhook, superseded by a newer one for ${pr.number}`);
 
     context.log(`Getting info for PR ${pr.number} - ${pr.title || "(title not fetched)"}`);
-    const info = await queryPRInfo(pr.number);
+    const info = await getPRInfo(pr.number);
     const prInfo = info.data.repository?.pullRequest;
 
     // If it didn't work, bail early

@@ -1,6 +1,4 @@
-import { GetPRInfo } from "./queries/pr-query";
-import { PR_repository_pullRequest as GraphqlPullRequest,
-         PR_repository_pullRequest,
+import { PR_repository_pullRequest,
          PR_repository_pullRequest_commits_nodes_commit_checkSuites,
          PR_repository_pullRequest_timelineItems,
          PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent,
@@ -9,7 +7,6 @@ import { PR_repository_pullRequest as GraphqlPullRequest,
          PR_repository_pullRequest_comments_nodes,
 } from "./queries/schema/PR";
 import { getMonthlyDownloadCount } from "./util/npm";
-import { client } from "./graphql-client";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
 import { noNullish, findLast, sameUser, authorNotBot, max, abbrOid } from "./util/util";
 import * as comment from "./util/comment";
@@ -153,36 +150,8 @@ export type BotResult =
     | BotError
     | BotEnsureRemovedFromProject;
 
-function getHeadCommit(pr: GraphqlPullRequest) {
+function getHeadCommit(pr: PR_repository_pullRequest) {
     return pr.commits.nodes?.find(c => c?.commit.oid === pr.headRefOid)?.commit;
-}
-
-// Just the networking
-export async function queryPRInfo(prNumber: number) {
-    // The query can return a mergeable value of `UNKNOWN`, and then it takes a
-    // while to get the actual value while GH refreshes the state (verified
-    // with GH that this is expected).  So implement a simple retry thing to
-    // get a proper value, or return a useless one if giving up.
-    let retries = 0;
-    while (true) {
-        const info = await client.query({
-            query: GetPRInfo,
-            variables: { pr_number: prNumber },
-            fetchPolicy: "no-cache",
-        });
-        const prInfo = info.data.repository?.pullRequest;
-        if (!prInfo) return info; // let `deriveStateForPR` handle the missing result
-        if (!(prInfo.state === "OPEN" && prInfo.mergeable === "UNKNOWN")) return info;
-        const { nodes, totalCount } = prInfo.files!;
-        if (nodes!.length < totalCount) console.warn(`  *** Note: ${totalCount - nodes!.length} files were not seen by this query!`);
-        if (++retries > 5) { // we already did 5 tries, so give up and...
-            info.data.repository = null;
-            return info; // ...return a bad result to avoid using the bogus information
-        }
-        // wait 3N..3N+1 seconds (based on trial runs: it usually works after one wait)
-        const wait = 1000 * (Math.random() + 3 * retries);
-        await new Promise(resolve => setTimeout(resolve, wait));
-    }
 }
 
 // The GQL response => Useful data for us
@@ -210,6 +179,8 @@ export async function deriveStateForPR(
     const lastCommentDate = getLastCommentishActivityDate(prInfo);
     const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
+    // we should generally have all files (except for draft PRs), but
+    // leave this bit in for a while
     const tooManyFiles = prInfo.files?.totalCount !== prInfo.files?.nodes?.length;
 
     const pkgInfoEtc = await getPackageInfosEtc(

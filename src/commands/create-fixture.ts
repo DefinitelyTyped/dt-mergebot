@@ -1,5 +1,6 @@
 import * as computeActions from "../compute-pr-actions";
-import { deriveStateForPR, queryPRInfo } from "../pr-info";
+import { getPRInfo } from "../queries/pr-query";
+import { deriveStateForPR } from "../pr-info";
 import { ApolloQueryResult } from "@apollo/client/core";
 import { writeFileSync, mkdirSync, existsSync, readJsonSync } from "fs-extra";
 import { join } from "path";
@@ -21,7 +22,7 @@ export default async function main(directory: string, overwriteInfo: boolean) {
 
     const jsonFixturePath = join(fixturePath, "_response.json");
     if (overwriteInfo || !existsSync(jsonFixturePath)) {
-        writeJsonSync(jsonFixturePath, await queryPRInfo(prNumber));
+        writeJsonSync(jsonFixturePath, await getPRInfo(prNumber));
     }
     const response: ApolloQueryResult<PR> = readJsonSync(jsonFixturePath);
 
