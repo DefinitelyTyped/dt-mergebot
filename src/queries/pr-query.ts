@@ -1,5 +1,8 @@
 import { gql, TypedDocumentNode } from "@apollo/client/core";
-import { PR, PRVariables } from "./schema/PR";
+import { client } from "../graphql-client";
+import { PR, PRVariables, PR_repository_pullRequest_files_nodes } from "./schema/PR";
+import { PRFiles, PRFilesVariables } from "./schema/PRFiles";
+import { noNullish } from "../util/util";
 
 // Note: If you want to work on this in a copy of GraphiQL (the IDE-like for GraphQL)
 // - You will need to download the electron app: https://github.com/skevy/graphiql-app
@@ -10,11 +13,11 @@ import { PR, PRVariables } from "./schema/PR";
 // - Now you're good to C&P the query below
 
 /** This is a GraphQL AST tree */
-export const GetPRInfo: TypedDocumentNode<PR, PRVariables> = gql`
-query PR($pr_number: Int!) {
+const GetPRInfoQueryFirst: TypedDocumentNode<PR, PRVariables> = gql`
+query PR($prNumber: Int!) {
     repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
       id
-      pullRequest(number: $pr_number) {
+      pullRequest(number: $prNumber) {
         id
         title
         createdAt
@@ -137,6 +140,7 @@ query PR($pr_number: Int!) {
             additions
             deletions
           }
+          pageInfo { hasNextPage endCursor }
         }
 
         projectCards(first: 10) {
@@ -157,4 +161,79 @@ query PR($pr_number: Int!) {
       }
     }
   }
-  `;
+`;
+
+export async function getPRInfo(prNumber: number) {
+    const info = await getPRInfoFirst(prNumber);
+    const prInfo = info.data.repository?.pullRequest;
+    // reasons to not bother with getting all files:
+    if (!prInfo) return info; // ... bad results (see below)
+    if (prInfo.isDraft) return info; // ... draft PRs
+    if (!prInfo.files) throw new Error("internal error while fetching PR info");
+    const { hasNextPage, endCursor } = prInfo.files.pageInfo;
+    if (!(hasNextPage && endCursor)) return info; // ... got all
+    // otherwise get the rest
+    prInfo.files.nodes = noNullish(prInfo.files.nodes);
+    await getPRInfoRest(prNumber, endCursor, prInfo.files.nodes);
+    return info;
+}
+
+export async function getPRInfoFirst(prNumber: number) {
+    // The query can return a mergeable value of `UNKNOWN`, and then it takes a
+    // while to get the actual value while GH refreshes the state (verified
+    // with GH that this is expected).  So implement a simple retry thing to
+    // get a proper value, or return a useless one if giving up.
+    let retries = 0;
+    while (true) {
+        const info = await client.query({
+            query: GetPRInfoQueryFirst,
+            variables: { prNumber },
+            fetchPolicy: "no-cache",
+        });
+        const prInfo = info.data.repository?.pullRequest;
+        if (!prInfo) return info; // let `deriveStateForPR` handle the missing result
+        if (!(prInfo.state === "OPEN" && prInfo.mergeable === "UNKNOWN")) return info;
+        if (++retries > 5) { // we already did 5 tries, so give up and...
+            info.data.repository = null;
+            return info; // ...return a bad result to avoid using the bogus information
+        }
+        // wait 3N..3N+1 seconds (based on trial runs: it usually works after one wait)
+        const wait = 1000 * (Math.random() + 3 * retries);
+        await new Promise(resolve => setTimeout(resolve, wait));
+    }
+}
+
+// Repeat just the file part, since that's all we need here
+const GetPRInfoQueryRest: TypedDocumentNode<PRFiles, PRFilesVariables> = gql`
+query PRFiles($prNumber: Int!, $endCursor: String) {
+    repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
+      pullRequest(number: $prNumber) {
+        files(first: 100, after: $endCursor) {
+          totalCount
+          nodes {
+            path
+            additions
+            deletions
+          }
+          pageInfo { hasNextPage endCursor }
+        }
+      }
+    }
+  }
+`;
+
+async function getPRInfoRest(prNumber: number, endCursor: string | null,
+                             files: (PR_repository_pullRequest_files_nodes | null) []) {
+    while (true) {
+        const result = await client.query({
+            query: GetPRInfoQueryRest,
+            variables: { prNumber, endCursor },
+            fetchPolicy: "no-cache",
+        });
+        const newFiles = result.data.repository?.pullRequest?.files;
+        if (!newFiles) return;
+        files.push(...noNullish(newFiles.nodes));
+        if (!newFiles.pageInfo.hasNextPage) return;
+        endCursor = newFiles.pageInfo.endCursor;
+    }
+}

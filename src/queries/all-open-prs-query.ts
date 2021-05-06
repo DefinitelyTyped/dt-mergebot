@@ -3,7 +3,7 @@ import { client } from "../graphql-client";
 import { GetAllOpenPRsAndCardIDs, GetAllOpenPRsAndCardIDsVariables } from "./schema/GetAllOpenPRsAndCardIDs";
 import { noNullish } from "../util/util";
 
-export const getAllOpenPRsAndCardIDsQuery: TypedDocumentNode<GetAllOpenPRsAndCardIDs, GetAllOpenPRsAndCardIDsVariables> = gql`
+const getAllOpenPRsAndCardIDsQuery: TypedDocumentNode<GetAllOpenPRsAndCardIDs, GetAllOpenPRsAndCardIDsVariables> = gql`
 query GetAllOpenPRsAndCardIDs($endCursor: String) {
   repository(owner: "DefinitelyTyped", name: "DefinitelyTyped") {
     id
@@ -12,10 +12,7 @@ query GetAllOpenPRsAndCardIDs($endCursor: String) {
         number
         projectCards(first: 100) { nodes { id } }
       }
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
+      pageInfo { hasNextPage endCursor }
     }
   }
 }`;
@@ -30,13 +27,13 @@ export async function getAllOpenPRsAndCardIDs() {
             fetchPolicy: "no-cache",
             variables: { endCursor },
         });
-        prNumbers.push(...noNullish(result.data.repository?.pullRequests.nodes).map(pr => pr.number));
-        for (const pr of noNullish(result.data.repository?.pullRequests.nodes)) {
+        const pullRequests = result.data.repository?.pullRequests;
+        const nodes = noNullish(pullRequests?.nodes);
+        prNumbers.push(...nodes.map(pr => pr.number));
+        for (const pr of nodes) {
             cardIDs.push(...noNullish(pr.projectCards.nodes).map(card => card.id));
         }
-        if (!result.data.repository?.pullRequests.pageInfo.hasNextPage) {
-            return { prNumbers, cardIDs };
-        }
-        endCursor = result.data.repository.pullRequests.pageInfo.endCursor;
+        if (!pullRequests?.pageInfo.hasNextPage) return { prNumbers, cardIDs };
+        endCursor = pullRequests.pageInfo.endCursor;
     }
 }

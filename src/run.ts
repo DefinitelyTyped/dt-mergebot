@@ -4,7 +4,8 @@ import * as schema from "@octokit/graphql-schema/schema";
 import * as yargs from "yargs";
 import { process as computeActions } from "./compute-pr-actions";
 import { getAllOpenPRsAndCardIDs } from "./queries/all-open-prs-query";
-import { queryPRInfo, deriveStateForPR } from "./pr-info";
+import { getPRInfo } from "./queries/pr-query";
+import { deriveStateForPR } from "./pr-info";
 import { executePrActions } from "./execute-pr-actions";
 import { getProjectBoardCards } from "./queries/projectboard-cards";
 import { runQueryToGetPRForCardId } from "./queries/card-id-to-pr-query";
@@ -68,7 +69,7 @@ const start = async function () {
         if (!shouldRunOn(pr)) continue;
         console.log(`Processing #${pr} (${prs.indexOf(pr) + 1} of ${prs.length})...`);
         // Generate the info for the PR from scratch
-        const info = await queryPRInfo(pr);
+        const info = await getPRInfo(pr);
         if (args["show-raw"]) show("Raw Query Result", info);
         const prInfo = info.data.repository?.pullRequest;
         // If it didn't work, bail early

@@ -408,6 +408,18 @@ export interface PR_repository_pullRequest_files_nodes {
   deletions: number;
 }
 
+export interface PR_repository_pullRequest_files_pageInfo {
+  __typename: "PageInfo";
+  /**
+   * When paginating forwards, are there more items?
+   */
+  hasNextPage: boolean;
+  /**
+   * When paginating forwards, the cursor to continue.
+   */
+  endCursor: string | null;
+}
+
 export interface PR_repository_pullRequest_files {
   __typename: "PullRequestChangedFileConnection";
   /**
@@ -418,6 +430,10 @@ export interface PR_repository_pullRequest_files {
    * A list of nodes.
    */
   nodes: (PR_repository_pullRequest_files_nodes | null)[] | null;
+  /**
+   * Information to aid in pagination.
+   */
+  pageInfo: PR_repository_pullRequest_files_pageInfo;
 }
 
 export interface PR_repository_pullRequest_projectCards_nodes_project {
@@ -556,5 +572,5 @@ export interface PR {
 }
 
 export interface PRVariables {
-  pr_number: number;
+  prNumber: number;
 }
