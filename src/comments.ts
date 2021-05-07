@@ -35,7 +35,9 @@ export const SuggestTesting = deletedWhenNotPresent("suggest-testing", tag =>
     (user: string, testsLink: string) => ({
         tag, status: `Hey @${user},
 
-:unamused: Your PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Please consider [adding tests](${testsLink}) to cover the change you're making. Including tests allows this PR to be merged by yourself and the owners of this module. This can potentially save days of time for you.`
+:unamused: Your PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Please consider [adding tests](${testsLink}) to cover the change you're making. Including tests allows this PR to be merged by yourself and the owners of this module.
+
+***This can potentially save days of time for you!***`
     }));
 
 export const PingReviewers = (names: readonly string[], reviewLink: string) => ({
