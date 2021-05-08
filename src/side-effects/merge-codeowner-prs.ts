@@ -1,5 +1,5 @@
 import * as schema from "@octokit/graphql-schema/schema";
-import { CheckSuiteEvent } from "@octokit/webhooks-definitions/schema";
+import { CheckSuiteEvent } from "@octokit/webhooks-types";
 import { createMutation, client } from "../graphql-client";
 
 export const mergeCodeOwnersOnGreen = async (payload: CheckSuiteEvent) => {

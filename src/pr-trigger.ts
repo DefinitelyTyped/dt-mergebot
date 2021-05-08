@@ -7,7 +7,8 @@ import { executePrActions } from "./execute-pr-actions";
 import { mergeCodeOwnersOnGreen } from "./side-effects/merge-codeowner-prs";
 import { runQueryToGetPRMetadataForSHA1 } from "./queries/SHA1-to-PR-query";
 import { HttpRequest, Context } from "@azure/functions";
-import { createEventHandler, EmitterWebhookEvent, verify } from "@octokit/webhooks";
+import { createEventHandler, EmitterWebhookEvent } from "@octokit/webhooks";
+import { verify } from "@octokit/webhooks-methods";
 
 const eventNames = [
     "check_suite.completed",
@@ -51,7 +52,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
 
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
-    if (!isDev && !verify(secret!, body, headers["x-hub-signature-256"]!))
+    if (!isDev && !(await verify(secret!, body, headers["x-hub-signature-256"]!)))
         return reply(context, 500, "This webhook did not come from GitHub");
 
     if (evName === "check_run" && evAction === "completed") {
@@ -122,7 +123,12 @@ const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>
         case "check_suite": return await prFromCheckSuiteEvent(event);
         case "issue_comment": return event.payload.issue;
         // "Parse" project_card.content_url according to repository.pulls_url
-        case "project_card": return { number: +event.payload.project_card.content_url.replace(/^.*\//, "") };
+        case "project_card": {
+            const url = event.payload.project_card.content_url;
+            return url ? { number: +url.replace(/^.*\//, "") }
+                : new IgnoredBecause(`Couldn't find PR number since contentent_url is missing: ${
+                                        JSON.stringify(event.payload.project_card)}`);
+        }
         case "pull_request": return event.payload.pull_request;
         case "pull_request_review": return event.payload.pull_request;
     }
