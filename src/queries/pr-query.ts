@@ -4,11 +4,11 @@ import { PR, PRVariables, PR_repository_pullRequest_files_nodes } from "./schema
 import { PRFiles, PRFilesVariables } from "./schema/PRFiles";
 import { noNullish } from "../util/util";
 
-// Note: If you want to work on this in a copy of GraphiQL (the IDE-like for GraphQL)
-// - You will need to download the electron app: https://github.com/skevy/graphiql-app
-// - Then set the two headers:
-//    accept: application/vnd.github.antiope-preview+json
-//    authorization: Bearer [token]
+// Note: If you want to work on this in local a copy of GraphiQL:
+// - Download the electron app: https://github.com/skevy/graphiql-app/releases
+// - Then set the headers:
+//     authorization: Bearer [token]
+//     accept: application/vnd.github.starfox-preview+json (if needed)
 // - Finally set the endpoint: https://api.github.com/graphql
 // - Now you're good to C&P the query below
 
@@ -51,6 +51,7 @@ query PR($prNumber: Int!) {
             ... on MovedColumnsInProjectEvent {
               actor { login }
               createdAt
+              projectColumnName
             }
           }
         }
