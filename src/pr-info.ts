@@ -1,14 +1,11 @@
 import { PR_repository_pullRequest,
          PR_repository_pullRequest_commits_nodes_commit_checkSuites,
          PR_repository_pullRequest_timelineItems,
-         PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent,
-         PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent,
-         PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent,
          PR_repository_pullRequest_comments_nodes,
 } from "./queries/schema/PR";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
-import { noNullish, findLast, sameUser, authorNotBot, max, abbrOid } from "./util/util";
+import { noNullish, someLast, sameUser, authorNotBot, max, abbrOid } from "./util/util";
 import * as comment from "./util/comment";
 import * as urls from "./urls";
 import * as HeaderParser from "@definitelytyped/header-parser";
@@ -225,16 +222,12 @@ export async function deriveStateForPR(
     }
 }
 
-type ReopenedEvent = PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent;
-type ReadyForReviewEvent = PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent;
-
 /** Either: when the PR was last opened, or switched to ready from draft */
 function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems) {
-    const lastItem = findLast(timelineItems.nodes, (item): item is ReopenedEvent | ReadyForReviewEvent => (
-        item?.__typename === "ReopenedEvent" || item?.__typename === "ReadyForReviewEvent"
-    ));
-
-    return lastItem?.createdAt && new Date(lastItem.createdAt);
+    return someLast(timelineItems.nodes, item => (
+        (item.__typename === "ReopenedEvent" || item.__typename === "ReadyForReviewEvent")
+        && new Date(item.createdAt)))
+        || undefined;
 }
 
 function getLastCommentishActivityDate(prInfo: PR_repository_pullRequest) {
@@ -246,19 +239,11 @@ function getLastCommentishActivityDate(prInfo: PR_repository_pullRequest) {
     return max([...latestIssueCommentDate, ...latestReviewCommentDate]);
 }
 
-type MovedColumnsInProjectEvent = PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent;
 function getLastMaintainerBlessingDate(timelineItems: PR_repository_pullRequest_timelineItems) {
-    const lastColumnChange = findLast(timelineItems.nodes, (item): item is MovedColumnsInProjectEvent =>
-        item?.__typename === "MovedColumnsInProjectEvent" && authorNotBot(item!));
-    // ------------------------------ TODO ------------------------------
-    // Should add and use the `previousProjectColumnName` field to
-    // verify that the move was away from "Needs Maintainer Review", but
-    // that is still in beta ATM.
-    // ------------------------------ TODO ------------------------------
-    if (lastColumnChange) {
-        return new Date(lastColumnChange.createdAt);
-    }
-    return undefined;
+    return someLast(timelineItems.nodes, item => (
+        item.__typename === "MovedColumnsInProjectEvent" && authorNotBot(item)
+        && new Date (item.createdAt)))
+        || undefined;
 }
 
 async function getPackageInfosEtc(
