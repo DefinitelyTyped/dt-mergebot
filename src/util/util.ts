@@ -13,12 +13,11 @@ export function unique<T>(xs: T[]) {
     return [...new Set(xs)];
 }
 
-export function findLast<T, U extends T>(arr: readonly T[] | null | undefined, predicate: (item?: T) => item is U): U | undefined;
-export function findLast<T>(arr: readonly T[] | null | undefined, predicate: (item?: T) => boolean): T | undefined;
-export function findLast<T>(arr: readonly T[] | null | undefined, predicate: (item?: T) => boolean) {
+export function someLast<T, U>(arr: ReadonlyArray<T | null | undefined> | null | undefined, f: (item: T) => U) {
     if (!arr) return undefined;
     for (let i = arr.length - 1; i >= 0; i--) {
-        if (predicate(arr[i])) return arr[i];
+        const x = arr[i], r = x && f(x);
+        if (r) return r;
     }
     return undefined;
 }
