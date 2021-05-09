@@ -79,6 +79,10 @@ export interface PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInPro
    * Identifies the date and time when the object was created.
    */
   createdAt: any;
+  /**
+   * Column name the issue or pull request was moved to.
+   */
+  projectColumnName: string;
 }
 
 export type PR_repository_pullRequest_timelineItems_nodes = PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent | PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent | PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent | PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent;

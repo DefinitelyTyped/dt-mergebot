@@ -3,12 +3,15 @@ import { ApolloClient, gql, HttpLink, InMemoryCache, MutationOptions, TypedDocum
 import { print } from "graphql";
 import * as schema from "@octokit/graphql-schema/schema";
 
-const headers = {
-    authorization: `Bearer ${getAuthToken()}`,
-    accept: "application/vnd.github.antiope-preview+json",
-};
+// get the values directly from the apollo config
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const apolloCfg = require("../apollo.config.js").client.service;
 
-const uri = "https://api.github.com/graphql";
+const uri = apolloCfg.url;
+const headers = {
+    ...apolloCfg.headers,
+    authorization: `Bearer ${getAuthToken()}`,
+};
 
 const cache = new InMemoryCache();
 const link = new HttpLink({ uri, headers, fetch });
