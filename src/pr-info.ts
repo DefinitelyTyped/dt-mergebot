@@ -377,8 +377,8 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
         const newDiff = diffFromExpected(contents);
         if (typeof newDiff === "string") return newDiff;
         if (newDiff.length === 0) return undefined;
-        const diffDescription = jsonDiff.compare([], ["foo","bar","baz"]).every(d => /^\/[0-9]+($|\/)/.test(d.path)) ? ""
-            : ` (check: ${newDiff.map(d => `\`${d.path.slice(1).replace(/\//g, ".")}\``)})`;
+        const diffDescription = newDiff.every(d => /^\/[0-9]+($|\/)/.test(d.path)) ? ""
+            : ` (check: ${newDiff.map(d => `\`${d.path.slice(1).replace(/\//g, ".")}\``).join(", ")})`;
         if (!oldText) return `not ${theExpectedForm}${diffDescription}`;
         const oldDiff = diffFromExpected(oldText);
         if (typeof oldDiff === "string") return oldDiff;
