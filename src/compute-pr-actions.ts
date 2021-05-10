@@ -145,7 +145,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
         const ownersToPing = otherOwners.length === 0 ? ["«anyone?»"]
             : otherOwners.filter(o => !approvedReviews.some(r => o === r.reviewer));
         const mkStaleness = makeStaleness(info.now, info.author, ownersToPing);
-        if (canBeSelfMerged && info.mergeOfferDate) return mkStaleness(
+        if (canBeSelfMerged) return info.mergeOfferDate && mkStaleness( // no merge offer yet: avoid the unreviewed timeline
             "Unmerged", info.mergeOfferDate, 4, 9, 30, "*REMOVE*");
         if (needsAuthorAction) return mkStaleness(
             "Abandoned", info.lastActivityDate, 6, 22, 30, "*REMOVE*");
