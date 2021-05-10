@@ -47,3 +47,7 @@ export const LabelNames = [
     "Needs Actions Permission",
     ...StalenessKinds,
 ] as const;
+
+export type ApproverKind = "maintainer" | "owner" | "other";
+
+export type BlessingKind = "merge" | "review" | undefined;
