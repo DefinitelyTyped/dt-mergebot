@@ -353,9 +353,7 @@ configSuspicious["tsconfig.json"] = makeChecker(
     { ignore: data => {
         data.compilerOptions.lib = data.compilerOptions.lib.filter((value: unknown) =>
             !(typeof value === "string" && value.toLowerCase() === "dom"));
-        delete data.compilerOptions.baseUrl;
-        delete data.compilerOptions.typeRoots;
-        delete data.compilerOptions.paths;
+        ["baseUrl", "typeRoots", "paths", "jsx"].forEach(k => delete data.compilerOptions[k]);
         delete data.files;
     } }
 );
@@ -379,11 +377,13 @@ function makeChecker(expectedForm: any, expectedFormUrl: string, options?: { par
         const newDiff = diffFromExpected(contents);
         if (typeof newDiff === "string") return newDiff;
         if (newDiff.length === 0) return undefined;
-        if (!oldText) return `not ${theExpectedForm}`;
+        const diffDescription = jsonDiff.compare([], ["foo","bar","baz"]).every(d => /^\/[0-9]+($|\/)/.test(d.path)) ? ""
+            : ` (check: ${newDiff.map(d => `\`${d.path.slice(1).replace(/\//g, ".")}\``)})`;
+        if (!oldText) return `not ${theExpectedForm}${diffDescription}`;
         const oldDiff = diffFromExpected(oldText);
         if (typeof oldDiff === "string") return oldDiff;
         if (jsonDiff.compare(oldDiff, newDiff).every(({ op }) => op === "remove")) return undefined;
-        return `not ${theExpectedForm} and not moving towards it`;
+        return `not ${theExpectedForm} and not moving towards it${diffDescription}`;
     };
 }
 
