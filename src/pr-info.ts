@@ -1,3 +1,4 @@
+import { ColumnName, PopularityLevel } from "./basic";
 import { PR_repository_pullRequest,
          PR_repository_pullRequest_commits_nodes_commit_checkSuites,
          PR_repository_pullRequest_timelineItems,
@@ -13,11 +14,6 @@ import * as jsonDiff from "fast-json-patch";
 
 const CriticalPopularityThreshold = 5_000_000;
 const NormalPopularityThreshold = 200_000;
-
-export type PopularityLevel =
-    | "Well-liked by everyone"
-    | "Popular"
-    | "Critical";
 
 // Some error found, will be passed to `process` to report in a comment
 interface BotError {
@@ -113,9 +109,9 @@ export interface PrInfo {
     readonly lastActivityDate: Date;
 
     /**
-     * True if a maintainer blessed this PR
+     * Name of column used if a maintainer blessed this PR
      */
-    readonly maintainerBlessed: boolean;
+    readonly maintainerBlessed?: ColumnName;
 
     /**
      * The time we posted a merge offer, if any (required for merge request in addition to passing CI and a review)
@@ -174,7 +170,7 @@ export async function deriveStateForPR(
     // (it would be bad to use `committedDate`/`authoredDate`, since these can be set to arbitrary values)
     const lastPushDate = new Date(headCommit.pushedDate || prInfo.createdAt);
     const lastCommentDate = getLastCommentishActivityDate(prInfo);
-    const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
+    const blessing = getLastMaintainerBlessing(lastPushDate, prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
     // we should generally have all files (except for draft PRs), but
     // leave this bit in for a while
@@ -193,7 +189,7 @@ export async function deriveStateForPR(
     const mergeRequest = getMergeRequest(comments,
                                          pkgInfo.length === 1 ? [author, ...pkgInfo[0]!.owners] : [author],
                                          max([createdDate, reopenedDate, lastPushDate]));
-    const lastActivityDate = max([createdDate, lastPushDate, lastCommentDate, lastBlessing, reopenedDate, latestReview]);
+    const lastActivityDate = max([createdDate, lastPushDate, lastCommentDate, blessing?.date, reopenedDate, latestReview]);
 
     return {
         type: "info",
@@ -202,7 +198,7 @@ export async function deriveStateForPR(
         author,
         headCommitOid: prInfo.headRefOid,
         lastPushDate, lastActivityDate,
-        maintainerBlessed: lastBlessing ? lastBlessing > lastPushDate : false,
+        maintainerBlessed: blessing?.column,
         mergeOfferDate, mergeRequestDate: mergeRequest?.date, mergeRequestUser: mergeRequest?.user,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         isFirstContribution,
@@ -239,11 +235,13 @@ function getLastCommentishActivityDate(prInfo: PR_repository_pullRequest) {
     return max([...latestIssueCommentDate, ...latestReviewCommentDate]);
 }
 
-function getLastMaintainerBlessingDate(timelineItems: PR_repository_pullRequest_timelineItems) {
-    return someLast(timelineItems.nodes, item => (
-        item.__typename === "MovedColumnsInProjectEvent" && authorNotBot(item)
-        && new Date (item.createdAt)))
-        || undefined;
+function getLastMaintainerBlessing(after: Date, timelineItems: PR_repository_pullRequest_timelineItems) {
+    return someLast(timelineItems.nodes, item => {
+        if (!(item.__typename === "MovedColumnsInProjectEvent" && authorNotBot(item))) return undefined;
+        const d = new Date(item.createdAt);
+        if (d <= after) return undefined;
+        return { date: d, column: item.projectColumnName as ColumnName };
+    }) || undefined;
 }
 
 async function getPackageInfosEtc(

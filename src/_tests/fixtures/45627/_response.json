@@ -97,7 +97,8 @@
                 "login": "elibarzilay",
                 "__typename": "User"
               },
-              "createdAt": "2020-07-06T07:23:32Z"
+              "createdAt": "2020-07-06T07:23:32Z",
+              "projectColumnName": "Waiting for Code Reviews"
             },
             {
               "__typename": "IssueComment",

@@ -176,7 +176,8 @@
                 "login": "orta",
                 "__typename": "User"
               },
-              "createdAt": "2020-10-16T18:15:57Z"
+              "createdAt": "2020-10-16T18:15:57Z",
+              "projectColumnName": "Waiting for Code Reviews"
             },
             {
               "__typename": "MovedColumnsInProjectEvent",

@@ -1,3 +1,4 @@
+import { ColumnName, LabelName, StalenessKind } from "./basic";
 import * as Comments from "./comments";
 import * as emoji from "./emoji";
 import * as urls from "./urls";
@@ -7,51 +8,6 @@ import { noNullish, flatten, unique, sameUser, min, sha256, abbrOid } from "./ut
 import * as dayjs from "dayjs";
 import * as advancedFormat from "dayjs/plugin/advancedFormat";
 dayjs.extend(advancedFormat);
-
-type ColumnName =
-    | "Needs Maintainer Action"
-    | "Needs Maintainer Review"
-    | "Other"
-    | "Waiting for Author to Merge"
-    | "Needs Author Action"
-    | "Recently Merged"
-    | "Waiting for Code Reviews"
-    | "*REMOVE*"; // special value: indicates closing the PR
-
-type StalenessKind = typeof StalenessKinds[number];
-const StalenessKinds = [ // all are also label names
-    "Unmerged",
-    "Abandoned",
-    "Unreviewed",
-] as const;
-
-export type LabelName = typeof LabelNames[number];
-export const LabelNames = [
-    "Mergebot Error",
-    "Has Merge Conflict",
-    "The CI failed",
-    "The CI is blocked",
-    "Revision needed",
-    "New Definition",
-    "Edits Owners",
-    "Where is GH Actions?",
-    "Owner Approved",
-    "Other Approved",
-    "Maintainer Approved",
-    "Self Merge",
-    "Popular package",
-    "Critical package",
-    "Edits Infrastructure",
-    "Possibly Edits Infrastructure",
-    "Edits multiple packages",
-    "Author is Owner",
-    "No Other Owners",
-    "Too Many Owners",
-    "Untested Change",
-    "Check Config",
-    "Needs Actions Permission",
-    ...StalenessKinds,
-] as const;
 
 export interface Actions {
     projectColumn?: ColumnName;

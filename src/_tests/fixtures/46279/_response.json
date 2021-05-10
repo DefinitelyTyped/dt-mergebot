@@ -61,7 +61,8 @@
                 "login": "sheetalkamat",
                 "__typename": "User"
               },
-              "createdAt": "2020-07-23T18:40:41Z"
+              "createdAt": "2020-07-23T18:40:41Z",
+              "projectColumnName": "Waiting for Code Reviews"
             }
           ],
           "__typename": "PullRequestTimelineItemsConnection"

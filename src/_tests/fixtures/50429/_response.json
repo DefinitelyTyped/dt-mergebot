@@ -44,7 +44,8 @@
                 "__typename": "User",
                 "login": "typescript-bot"
               },
-              "createdAt": "2021-01-06T13:00:38Z"
+              "createdAt": "2021-01-06T13:00:38Z",
+              "projectColumnName": "Waiting for Code Reviews"
             }
           ]
         },

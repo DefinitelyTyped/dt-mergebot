@@ -100,7 +100,8 @@
                 "login": "elibarzilay",
                 "__typename": "User"
               },
-              "createdAt": "2020-08-26T20:01:58Z"
+              "createdAt": "2020-08-26T20:01:58Z",
+              "projectColumnName": "Waiting for Code Reviews"
             }
           ],
           "__typename": "PullRequestTimelineItemsConnection"
