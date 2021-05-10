@@ -22,7 +22,7 @@
         {
           "path": "types/koa/tsconfig.json",
           "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it"
+          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it (check: `compilerOptions.esModuleInterop`)"
         }
       ],
       "owners": [
