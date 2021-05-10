@@ -18,8 +18,9 @@ _Disclaimer: This could be out of date, the source of truth is always [compute-p
 - PRs which change DT types and there are no other Definition Owners
 - PRs which change a DT module's infra (`tsconfig.json` etc)
 
-PRs that are blessed (see `info.maintainerBlessed`) are excluded when
-possible.
+PRs that are blessed (see `info.blessingKind`) as `review` are excluded
+when possible, and PRs that are blessed as `merge` can be merged without
+reviews.
 
 ### Stale PRs
 
