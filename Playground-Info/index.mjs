@@ -4,8 +4,16 @@ import { getPRInfo } from "../bin/queries/pr-query.js";
 
 /** @type {import("@azure/functions").AzureFunction} */
 const httpTrigger = async function (context) {
-    const prNumber = context.req.query.number;
-    const info = await getPRInfo(prNumber);
+    const prNumber = Number(context.req.query.number);
+    if (!prNumber || prNumber === NaN)  {
+        context.res = {
+            status: 404,
+            body: "PR not found"
+        };
+        return;
+    }
+
+    const info = await getPRInfo(prNumber)
     const prInfo = info.data.repository?.pullRequest;
 
     if (!prInfo) {
@@ -15,8 +23,8 @@ const httpTrigger = async function (context) {
         };
         return;
     }
-    const state = await deriveStateForPR(prInfo);
 
+    const state = await deriveStateForPR(prInfo);
     if (!context.res) throw new Error("No Res");
 
     // Allow all others to access this,  we can 
