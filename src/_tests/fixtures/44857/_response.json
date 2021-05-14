@@ -757,7 +757,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@SimonSchick Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-37410c-b0cfd18-->",
+              "body": "@SimonSchick Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-b0cfd18-->",
               "createdAt": "2020-05-21T11:57:32Z",
               "reactions": {
                 "nodes": [],

@@ -4,7 +4,7 @@ import * as emoji from "./emoji";
 import * as urls from "./urls";
 import { PrInfo, BotResult, FileInfo } from "./pr-info";
 import { ReviewInfo } from "./pr-info";
-import { noNullish, flatten, unique, sameUser, min, sha256, abbrOid } from "./util/util";
+import { noNullish, flatten, unique, sameUser, max, sha256, abbrOid } from "./util/util";
 import * as dayjs from "dayjs";
 import * as advancedFormat from "dayjs/plugin/advancedFormat";
 dayjs.extend(advancedFormat);
@@ -320,7 +320,7 @@ export function process(prInfo: BotResult,
         }
         // Ping stale reviewers if any
         if (info.staleReviews.length > 0) {
-            const { abbrOid } = min(info.staleReviews, (l, r) => +l.date - +r.date)!;
+            const { abbrOid } = max(info.staleReviews, (l, r) => +l.date - +r.date)!;
             const reviewers = info.staleReviews.map(r => r.reviewer);
             post(Comments.PingStaleReviewer(abbrOid, reviewers));
         }

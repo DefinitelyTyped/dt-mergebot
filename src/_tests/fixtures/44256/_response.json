@@ -448,7 +448,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@marcobeltempo Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-bf970f-ab5d8bc-->",
+              "body": "@marcobeltempo Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-ab5d8bc-->",
               "createdAt": "2020-04-30T00:59:09Z",
               "reactions": {
                 "nodes": [],

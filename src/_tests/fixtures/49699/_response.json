@@ -1,0 +1,945 @@
+{
+  "data": {
+    "repository": {
+      "__typename": "Repository",
+      "id": "MDEwOlJlcG9zaXRvcnk2MDkzMzE2",
+      "pullRequest": {
+        "__typename": "PullRequest",
+        "id": "MDExOlB1bGxSZXF1ZXN0NTI0NjE3Njcz",
+        "title": "[node]: Base promisify signature on rest arguments and conditional types",
+        "createdAt": "2020-11-20T10:46:15Z",
+        "author": {
+          "__typename": "User",
+          "login": "AlCalzone"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "baseRef": {
+          "__typename": "Ref",
+          "name": "master"
+        },
+        "labels": {
+          "__typename": "LabelConnection",
+          "nodes": [
+            {
+              "__typename": "Label",
+              "name": "Check Config"
+            },
+            {
+              "__typename": "Label",
+              "name": "Critical package"
+            },
+            {
+              "__typename": "Label",
+              "name": "The CI failed"
+            }
+          ]
+        },
+        "isDraft": false,
+        "mergeable": "MERGEABLE",
+        "number": 49699,
+        "state": "OPEN",
+        "headRefOid": "139c1679ecb5c2a475639582b7a312e4e7a1cde5",
+        "timelineItems": {
+          "__typename": "PullRequestTimelineItemsConnection",
+          "nodes": [
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-20T10:47:46Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-29T10:30:16Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-29T10:50:55Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-29T11:19:23Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-29T12:17:27Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-29T12:40:05Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-12-01T18:27:46Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-12-01T18:54:39Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-12-08T01:36:07Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-12-08T17:33:34Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-12-08T17:41:28Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-12-09T12:46:06Z"
+            },
+            {
+              "__typename": "ReopenedEvent",
+              "createdAt": "2020-12-09T13:00:56Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2021-01-01T13:50:27Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2021-01-01T13:52:25Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "elibarzilay"
+              },
+              "createdAt": "2021-01-01T19:24:49Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2021-01-04T13:24:54Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2021-01-04T22:17:31Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2021-01-15T23:08:24Z"
+            }
+          ]
+        },
+        "reviews": {
+          "__typename": "PullRequestReviewConnection",
+          "nodes": [
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "ExE-Boss"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "1ec185ff30c89dbe8ceb03862043a434da4e8b99"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "ExE-Boss"
+                    },
+                    "createdAt": "2020-11-29T11:18:34Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "CHANGES_REQUESTED",
+              "submittedAt": "2020-11-29T11:18:44Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699#pullrequestreview-540470063"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "ExE-Boss"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "54b22fd03abac34c70b4b420b8b3d93ae96f9a16"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "ExE-Boss"
+                    },
+                    "createdAt": "2020-12-02T15:11:05Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-12-02T15:11:05Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699#pullrequestreview-542933901"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "AlCalzone"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "54b22fd03abac34c70b4b420b8b3d93ae96f9a16"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "AlCalzone"
+                    },
+                    "createdAt": "2020-12-02T15:12:29Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-12-02T15:12:30Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699#pullrequestreview-542935409"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "AlCalzone"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "54b22fd03abac34c70b4b420b8b3d93ae96f9a16"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "AlCalzone"
+                    },
+                    "createdAt": "2020-12-02T22:04:53Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-12-02T22:04:53Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699#pullrequestreview-543276124"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "rbuckton"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "54b22fd03abac34c70b4b420b8b3d93ae96f9a16"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "rbuckton"
+                    },
+                    "createdAt": "2020-12-08T01:30:14Z"
+                  }
+                ]
+              },
+              "authorAssociation": "COLLABORATOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-12-08T01:30:15Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699#pullrequestreview-546675733"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "rbuckton"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "54b22fd03abac34c70b4b420b8b3d93ae96f9a16"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "rbuckton"
+                    },
+                    "createdAt": "2020-12-08T01:32:18Z"
+                  }
+                ]
+              },
+              "authorAssociation": "COLLABORATOR",
+              "state": "CHANGES_REQUESTED",
+              "submittedAt": "2020-12-08T01:35:34Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699#pullrequestreview-546676436"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "AlCalzone"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "54b22fd03abac34c70b4b420b8b3d93ae96f9a16"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "AlCalzone"
+                    },
+                    "createdAt": "2020-12-08T17:07:03Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-12-08T17:07:03Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699#pullrequestreview-547443237"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "AlCalzone"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "54b22fd03abac34c70b4b420b8b3d93ae96f9a16"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "AlCalzone"
+                    },
+                    "createdAt": "2020-12-08T17:08:01Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-12-08T17:08:01Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699#pullrequestreview-547444131"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "ExE-Boss"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "2e0ee3aa5bce2071d1688a6f891352b5728b6227"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "ExE-Boss"
+                    },
+                    "createdAt": "2020-12-08T20:36:23Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-12-08T20:36:23Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699#pullrequestreview-547608540"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "ExE-Boss"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "9ba9fdd301b80eeb2348ba491c4cd7e969523007"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "ExE-Boss"
+                    },
+                    "createdAt": "2021-01-15T07:34:48Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2021-01-15T07:34:48Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699#pullrequestreview-568998305"
+            }
+          ]
+        },
+        "commits": {
+          "__typename": "PullRequestCommitConnection",
+          "totalCount": 8,
+          "nodes": [
+            {
+              "__typename": "PullRequestCommit",
+              "commit": {
+                "__typename": "Commit",
+                "checkSuites": {
+                  "__typename": "CheckSuiteConnection",
+                  "nodes": [
+                    {
+                      "__typename": "CheckSuite",
+                      "app": {
+                        "__typename": "App",
+                        "name": "GitHub Actions"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/139c1679ecb5c2a475639582b7a312e4e7a1cde5/checks?check_suite_id=1839569975",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/139c1679ecb5c2a475639582b7a312e4e7a1cde5/checks?check_suite_id=1839569975",
+                      "checkRuns": {
+                        "__typename": "CheckRunConnection",
+                        "nodes": [
+                          {
+                            "__typename": "CheckRun",
+                            "title": "test"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "__typename": "CheckSuite",
+                      "app": {
+                        "__typename": "App",
+                        "name": "Azure Pipelines"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/139c1679ecb5c2a475639582b7a312e4e7a1cde5/checks?check_suite_id=1839570738",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/139c1679ecb5c2a475639582b7a312e4e7a1cde5/checks?check_suite_id=1839570738",
+                      "checkRuns": {
+                        "__typename": "CheckRunConnection",
+                        "nodes": [
+                          {
+                            "__typename": "CheckRun",
+                            "title": "Build #20210115.76 failed"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "status": null,
+                "authoredDate": "2021-01-15T22:37:22Z",
+                "committedDate": "2021-01-15T23:23:54Z",
+                "pushedDate": "2021-01-15T23:24:04Z",
+                "oid": "139c1679ecb5c2a475639582b7a312e4e7a1cde5"
+              }
+            }
+          ]
+        },
+        "comments": {
+          "__typename": "IssueCommentConnection",
+          "totalCount": 20,
+          "nodes": [
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczMTA5NDQ0NQ==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@AlCalzone Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `node` [on npm](https://www.npmjs.com/package/node), [on unpkg](https://unpkg.com/browse/node@latest/)\n  - Config files to check:\n    - [`node/ts3.9/tsconfig.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699/files/139c1679ecb5c2a475639582b7a312e4e7a1cde5#diff-7d194a0ca3b6db7e32fc4eb435e98e205402ead7b75989483e1511b93b957a0b): not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson)\n    - [`node/ts3.9/tslint.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699/files/139c1679ecb5c2a475639582b7a312e4e7a1cde5#diff-eb53a23489cce7c707fb8bdd6f8eda9ce727019af8d141241a5dbbc741f786c7): not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson)\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * ❌ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect module config files\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
+              "createdAt": "2020-11-20T10:46:49Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczMTA5NDQ1NQ==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "🔔 @Microsoft @DefinitelyTyped @jkomyno @a-tarasyuk @alvis @r3nya @btoueg @brunoscheufler @smac89 @touffy @DeividasBakanas @eyqs @Flarna @Hannes-Magnusson-CK @KSXGitHub @hoo29 @kjin @ajafff @islishude @mwiktorczyk @mohsen1 @n-e @galkin @parambirs @eps1lon @SimonSchick @ThomasdenH @WilcoBakker @wwwy3y3 @samuela @kuehlein @j-oliveras @bhongy @chyzwar @trivikr @nguymin4 @yoursunny @qwelias @ExE-Boss @Ryan-Willpower @peterblazejewicz @addaleax @JasonHK @victorperin @ZYSzys — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
+              "createdAt": "2020-11-20T10:46:50Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczMTA5NDg4OA==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@AlCalzone The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/86aa4c0b3a5bf263cae09daac15562ede4004b31/checks?check_suite_id=1534481828).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n<!--typescript_bot_gh-actions-complaint-86aa4c0-->",
+              "createdAt": "2020-11-20T10:47:48Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczNTM3NzM2Nw==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@AlCalzone One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits or comments. If you disagree with the reviewer's comments, you can \"dismiss\" the review using GitHub's review UI. Thank you!\n<!--typescript_bot_reviewer-complaint-1ec185f-->",
+              "createdAt": "2020-11-29T11:19:25Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczNTM4NDY5Ng==",
+              "author": {
+                "__typename": "User",
+                "login": "AlCalzone"
+              },
+              "body": "> You just need to override the promisify function.\r\n\r\nThat would be simpler, but wouldn't that just add another overload instead of replacing the existing ones? ",
+              "createdAt": "2020-11-29T12:16:23Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczNTM4NzYwMg==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@ExE-Boss Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-1ec185f-->",
+              "createdAt": "2020-11-29T12:40:07Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczNTY1MzkzNw==",
+              "author": {
+                "__typename": "User",
+                "login": "ExE-Boss"
+              },
+              "body": "> > You just need to override the promisify function.\r\n> \r\n> That would be simpler, but wouldn't that just add another overload instead of replacing the existing ones?\r\n\r\nYou can do what’s being done with [the `globals.global.d.ts` file](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/node/globals.global.d.ts) to provide different definitions of `declare var global` between **TypeScript 3.7+** and **TypeScript ≤3.6** by utilising `util.promisify.d.ts`.",
+              "createdAt": "2020-11-30T09:04:37Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczNjczNTk2OQ==",
+              "author": {
+                "__typename": "User",
+                "login": "AlCalzone"
+              },
+              "body": "@ExE-Boss I've tried what you suggested - hope it is correct this time. All the interdependencies between the different types-versions are confusing.\r\n\r\nI've also solved the problem that promisify returned `Promisify<...>` instead of the function signature type.",
+              "createdAt": "2020-12-01T18:27:06Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc0MDMwMjYzMg==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@AlCalzone One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!\n<!--typescript_bot_reviewer-complaint-54b22fd-->",
+              "createdAt": "2020-12-08T01:36:09Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc0MDc5MDc3Mg==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@rbuckton, @ExE-Boss Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-54b22fd-->",
+              "createdAt": "2020-12-08T17:41:30Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc0MTc0ODEzOA==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@AlCalzone The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/8ca68ab70898720a5a948665c08af4a52fae3e55/checks?check_suite_id=1635337343).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n<!--typescript_bot_gh-actions-complaint-8ca68ab-->",
+              "createdAt": "2020-12-09T12:46:08Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc0MTc1NTA1Mg==",
+              "author": {
+                "__typename": "User",
+                "login": "AlCalzone"
+              },
+              "body": "Huh, the tests work on my machine:\r\n![grafik](https://user-images.githubusercontent.com/17641229/101632970-e4febc80-3a26-11eb-9930-0e1b95bb31cd.png)\r\n",
+              "createdAt": "2020-12-09T13:00:35Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc0MjY5MTc5Mg==",
+              "author": {
+                "__typename": "User",
+                "login": "ExE-Boss"
+              },
+              "body": "The failure is in `@types/morgan`: <https://github.com/DefinitelyTyped/DefinitelyTyped/blob/4cfc24cb27ee7a6b8c8b8c8e7247d850cf8929b8/types/morgan/morgan-tests.ts#L107-L108>\r\n\r\nAnd `@types/serve‑static`: (<https://github.com/DefinitelyTyped/DefinitelyTyped/pull/50061>) <https://github.com/DefinitelyTyped/DefinitelyTyped/blob/4cfc24cb27ee7a6b8c8b8c8e7247d850cf8929b8/types/serve-static/serve-static-tests.ts#L18-L19><https://github.com/DefinitelyTyped/DefinitelyTyped/blob/4cfc24cb27ee7a6b8c8b8c8e7247d850cf8929b8/types/serve-static/serve-static-tests.ts#L48-L49>",
+              "createdAt": "2020-12-10T18:00:35Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc1Mjc3NTYxMw==",
+              "author": {
+                "__typename": "User",
+                "login": "AlCalzone"
+              },
+              "body": "Anything I need to do here?",
+              "createdAt": "2020-12-30T22:19:45Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc1MzI5MjczMQ==",
+              "author": {
+                "__typename": "User",
+                "login": "ExE-Boss"
+              },
+              "body": "@AlCalzone Simply rebase on top of the latest `master` branch.",
+              "createdAt": "2021-01-01T09:30:52Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": [
+                  {
+                    "__typename": "Reaction",
+                    "user": {
+                      "__typename": "User",
+                      "login": "AlCalzone"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc1MzMxOTI3OA==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@ExE-Boss, @rbuckton Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-54b22fd-->",
+              "createdAt": "2021-01-01T13:52:27Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc2MDM5MTU4Nw==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "Re-ping @Microsoft, @DefinitelyTyped, @jkomyno, @a-tarasyuk, @alvis, @r3nya, @btoueg, @brunoscheufler, @smac89, @touffy, @DeividasBakanas, @eyqs, @Flarna, @Hannes-Magnusson-CK, @KSXGitHub, @hoo29, @kjin, @ajafff, @islishude, @mwiktorczyk, @mohsen1, @n-e, @galkin, @parambirs, @eps1lon, @SimonSchick, @ThomasdenH, @WilcoBakker, @wwwy3y3, @samuela, @kuehlein, @j-oliveras, @bhongy, @chyzwar, @trivikr, @nguymin4, @yoursunny, @qwelias, @ExE-Boss, @Ryan-Willpower, @peterblazejewicz, @addaleax, @JasonHK, @victorperin, @ZYSzys:\n\nThis PR has been out for over a week, yet I haven't seen any reviews.\n\nCould someone please give it some attention? Thanks!\n<!--typescript_bot_Unreviewed:nearly:2021-01-01-->",
+              "createdAt": "2021-01-14T18:38:39Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc2MTI0NDQwNQ==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@AlCalzone The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/c8af2dd851cc9db15026c03c090caac9bee35bcd/checks?check_suite_id=1839376193).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n<!--typescript_bot_gh-actions-complaint-c8af2dd-->",
+              "createdAt": "2021-01-15T23:08:26Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc2MTI1OTk3Mg==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@AlCalzone The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/139c1679ecb5c2a475639582b7a312e4e7a1cde5/checks?check_suite_id=1839569975).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n<!--typescript_bot_gh-actions-complaint-139c167-->",
+              "createdAt": "2021-01-15T23:51:38Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc2MTI2NDM5Mg==",
+              "author": {
+                "__typename": "User",
+                "login": "AlCalzone"
+              },
+              "body": "Build error happens in MONGOOSE, not sure if that is related.",
+              "createdAt": "2021-01-15T23:58:14Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            }
+          ]
+        },
+        "files": {
+          "__typename": "PullRequestChangedFileConnection",
+          "totalCount": 13,
+          "nodes": [
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/base.d.ts",
+              "additions": 4,
+              "deletions": 1
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/package.json",
+              "additions": 5,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/test/util.ts",
+              "additions": 32,
+              "deletions": 6
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/ts3.4/index.d.ts",
+              "additions": 1,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/ts3.4/util.promisify.d.ts",
+              "additions": 24,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/ts3.6/index.d.ts",
+              "additions": 1,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/ts3.9/base.d.ts",
+              "additions": 4,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/ts3.9/index.d.ts",
+              "additions": 8,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/ts3.9/node-tests.ts",
+              "additions": 3,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/ts3.9/tsconfig.json",
+              "additions": 25,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/ts3.9/tslint.json",
+              "additions": 6,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/util.d.ts",
+              "additions": 1,
+              "deletions": 22
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/node/util.promisify.d.ts",
+              "additions": 49,
+              "deletions": 0
+            }
+          ]
+        },
+        "projectCards": {
+          "__typename": "ProjectCardConnection",
+          "nodes": [
+            {
+              "__typename": "ProjectCard",
+              "id": "MDExOlByb2plY3RDYXJkNDk3NTYzNzU=",
+              "project": {
+                "__typename": "Project",
+                "id": "MDc6UHJvamVjdDM3NDExMDQ=",
+                "number": 5,
+                "name": "New Pull Request Status Board"
+              },
+              "column": {
+                "__typename": "ProjectColumn",
+                "id": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI0",
+                "name": "Needs Author Action"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "loading": false,
+  "networkStatus": 7
+}

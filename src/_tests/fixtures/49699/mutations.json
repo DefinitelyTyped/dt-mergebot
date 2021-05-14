@@ -1,0 +1,40 @@
+[
+  {
+    "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWwyMDk2NzQzNjAw"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NTI0NjE3Njcz"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "cardId": "MDExOlByb2plY3RDYXJkNDk3NTYzNzU=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDczMTA5NDQ0NQ==",
+        "body": "@AlCalzone Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `node` [on npm](https://www.npmjs.com/package/node), [on unpkg](https://unpkg.com/browse/node@latest/)\n  - Config files to check:\n    - [`node/ts3.9/tsconfig.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699/files/139c1679ecb5c2a475639582b7a312e4e7a1cde5#diff-7d194a0ca3b6db7e32fc4eb435e98e205402ead7b75989483e1511b93b957a0b): not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson)\n    - [`node/ts3.9/tslint.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49699/files/139c1679ecb5c2a475639582b7a312e4e7a1cde5#diff-eb53a23489cce7c707fb8bdd6f8eda9ce727019af8d141241a5dbbc741f786c7): not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson)\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ❌ A DT maintainer needs to approve changes which affect module config files\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NTI0NjE3Njcz",
+        "body": "@ExE-Boss, @rbuckton Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-9ba9fdd-->"
+      }
+    }
+  }
+]

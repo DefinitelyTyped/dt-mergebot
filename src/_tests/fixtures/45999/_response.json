@@ -419,7 +419,7 @@
                 "login": "typescript-bot",
                 "__typename": "User"
               },
-              "body": "@eps1lon Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-2d81fa-eb19530-->",
+              "body": "@eps1lon Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-eb19530-->",
               "createdAt": "2020-07-10T13:31:50Z",
               "reactions": {
                 "nodes": [],
