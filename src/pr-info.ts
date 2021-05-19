@@ -193,7 +193,7 @@ export async function deriveStateForPR(
                                          pkgInfo.length === 1 ? [author, ...pkgInfo[0]!.owners] : [author],
                                          max([createdDate, reopenedDate, lastPushDate]));
     const lastActivityDate = max([createdDate, lastPushDate, lastCommentDate, blessing?.date, reopenedDate, latestReview]);
-    const mainBotCommentID = getMainCommentID(comments)
+    const mainBotCommentID = getMainCommentID(comments);
     return {
         type: "info",
         now,
@@ -231,9 +231,9 @@ function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems)
 }
 
 function getMainCommentID(comments: PR_repository_pullRequest_comments_nodes[]) {
-    const comment = comments.find(c => !authorNotBot(c) && c.body.includes("<!--typescript_bot_welcome-->"))
-    if (!comment) return undefined
-    return comment.databaseId!
+    const comment = comments.find(c => !authorNotBot(c) && c.body.includes("<!--typescript_bot_welcome-->"));
+    if (!comment) return undefined;
+    return comment.databaseId!;
 }
 
 function getLastCommentishActivityDate(prInfo: PR_repository_pullRequest) {

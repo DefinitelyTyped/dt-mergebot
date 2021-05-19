@@ -78,7 +78,7 @@ and I'll merge this PR almost instantly. Thanks for helping out! :heart:
 ${otherOwners.length === 0 ? "" : `
 (${otherOwners.map(o => "@" + o).join(", ")}: you can do this too.)`}`}));
 
-export const WaitUntilMergeIsOK = (user: string, abbrOid: string, uri: string, mainCommentUri: string | undefined) => ({
+export const WaitUntilMergeIsOK = (user: string, abbrOid: string, uri: string, mainCommentUri: number | undefined) => ({
     // at most one reminder per update
     tag: `wait-for-merge-offer-${abbrOid}`,
     status: `:passport_control: Hi @${user},
