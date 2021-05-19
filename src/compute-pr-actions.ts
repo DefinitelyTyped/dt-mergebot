@@ -476,6 +476,10 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         display("This PR can be merged once it's reviewed.");
     }
 
+    if (!info.tooManyFiles) {
+        display(``,`You can test the changes in this [PR in the Playground](http://typescriptlang.org/play/?dtPR=${info.pr_number}&install-plugin=playground-dt-review).`);
+    }
+
     display(``,
             `## Status`,
             ``,
