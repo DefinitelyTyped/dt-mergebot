@@ -137,7 +137,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
         requireMaintainer, blessable, blessingKind, failedCI, blockedCI, ciResult, staleness,
         packages, hasMultiplePackages, hasDefinitions, hasTests, isUntested, newPackages, hasNewPackages, hasEditedPackages,
         approvedReviews, changereqReviews, staleReviews, approvedBy, hasChangereqs,
-        needsAuthorAction, reviewColumn, isAuthor,
+        needsAuthorAction, reviewColumn, isAuthor
     };
 
     // Staleness timeline configurations (except for texts that are all in `comments.ts`)
@@ -327,7 +327,7 @@ export function process(prInfo: BotResult,
     }
 
     if (!actions.shouldMerge && info.mergeRequestUser) {
-        post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, headCommitAbbrOid, urls.workflow));
+        post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, headCommitAbbrOid, urls.workflow, info.mainBotCommentID));
     }
 
     // Timeline-related actions

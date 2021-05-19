@@ -15,7 +15,7 @@
     },
     {
       "tag": "wait-for-merge-offer-06d8d67",
-      "status": ":passport_control: Hi @mgol,\n\nI can't [accept a merge request](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-make-a-pull-request) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.\n\nThanks, and happy typing!"
+      "status": ":passport_control: Hi @mgol,\n\nI can't [accept a pull request](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-make-a-pull-request) until all of the checks in the \"Status\" section of [this comment](#) are green. I will let you know once that happens.\n\nThanks, and happy typing!"
     }
   ],
   "shouldClose": false,

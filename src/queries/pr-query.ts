@@ -124,6 +124,7 @@ query PR($prNumber: Int!) {
             author {
               login
             }
+            databaseId
             body
             createdAt
             reactions(first: 100, content: THUMBS_UP) {

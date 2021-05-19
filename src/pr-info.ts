@@ -136,6 +136,9 @@ export interface PrInfo {
     readonly pkgInfo: readonly PackageInfo[];
 
     readonly reviews: readonly ReviewInfo[];
+
+    // The ID of the main comment so that it can be linked to by other comments
+    readonly mainBotCommentID?: number;
 }
 
 export type BotResult =
@@ -190,7 +193,7 @@ export async function deriveStateForPR(
                                          pkgInfo.length === 1 ? [author, ...pkgInfo[0]!.owners] : [author],
                                          max([createdDate, reopenedDate, lastPushDate]));
     const lastActivityDate = max([createdDate, lastPushDate, lastCommentDate, blessing?.date, reopenedDate, latestReview]);
-
+    const mainBotCommentID = getMainCommentID(comments)
     return {
         type: "info",
         now,
@@ -206,6 +209,7 @@ export async function deriveStateForPR(
         popularityLevel,
         pkgInfo,
         reviews,
+        mainBotCommentID,
         ...getCIResult(headCommit.checkSuites),
     };
 
@@ -224,6 +228,12 @@ function getReopenedDate(timelineItems: PR_repository_pullRequest_timelineItems)
         (item.__typename === "ReopenedEvent" || item.__typename === "ReadyForReviewEvent")
         && new Date(item.createdAt)))
         || undefined;
+}
+
+function getMainCommentID(comments: PR_repository_pullRequest_comments_nodes[]) {
+    const comment = comments.find(c => !authorNotBot(c) && c.body.includes("<!--typescript_bot_welcome-->"))
+    if (!comment) return undefined
+    return comment.databaseId!
 }
 
 function getLastCommentishActivityDate(prInfo: PR_repository_pullRequest) {

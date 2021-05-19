@@ -10,7 +10,7 @@ import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequest
 // ====================================================
 
 export interface PR_repository_pullRequest_author {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
   /**
    * The username of the actor.
    */
@@ -62,7 +62,7 @@ export interface PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEve
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent_actor {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
   /**
    * The username of the actor.
    */
@@ -96,7 +96,7 @@ export interface PR_repository_pullRequest_timelineItems {
 }
 
 export interface PR_repository_pullRequest_reviews_nodes_author {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
   /**
    * The username of the actor.
    */
@@ -112,7 +112,7 @@ export interface PR_repository_pullRequest_reviews_nodes_commit {
 }
 
 export interface PR_repository_pullRequest_reviews_nodes_comments_nodes_author {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
   /**
    * The username of the actor.
    */
@@ -244,7 +244,7 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites {
 }
 
 export interface PR_repository_pullRequest_commits_nodes_commit_status_contexts_creator {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
   /**
    * The username of the actor.
    */
@@ -332,7 +332,7 @@ export interface PR_repository_pullRequest_commits {
 }
 
 export interface PR_repository_pullRequest_comments_nodes_author {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
   /**
    * The username of the actor.
    */
@@ -370,6 +370,10 @@ export interface PR_repository_pullRequest_comments_nodes {
    * The actor who authored the comment.
    */
   author: PR_repository_pullRequest_comments_nodes_author | null;
+  /**
+   * Identifies the primary key from the database.
+   */
+  databaseId: number | null;
   /**
    * The body as Markdown.
    */
