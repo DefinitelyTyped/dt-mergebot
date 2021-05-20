@@ -26,7 +26,7 @@ const httpTrigger = async function (context) {
     }
     
     // Extract the JSON from the comment
-    const jsonText = welcomeComment.split("```json")[1].split("```")[0]
+    const jsonText = welcomeComment.body.split("```json")[1].split("```")[0]
 
     // Allow all others to access this, we can 
     // tighten this down to the TS URLs if the route is abused
