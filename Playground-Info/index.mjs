@@ -16,18 +16,19 @@ const httpTrigger = async function (context) {
     const info = await getPRInfo(prNumber)
     const prInfo = info.data.repository?.pullRequest;
 
-    if (!prInfo) {
+    const welcomeComment = prInfo.comments.nodes.filter(c => c.author.login === "typescript-bot" && c.body.includes("<!--typescript_bot_welcome-->"))
+    if (!welcomeComment) {
         context.res = {
             status: 404,
             body: "PR not found"
         };
         return;
     }
+    
+    // Extract the JSON from the comment
+    const jsonText = welcomeComment.split("```json")[1].split("```")[0]
 
-    const state = await deriveStateForPR(prInfo);
-    if (!context.res) throw new Error("No Res");
-
-    // Allow all others to access this,  we can 
+    // Allow all others to access this, we can 
     // tighten this down to the TS URLs if the route is abused
     const headers = {
         "Content-Type": "text/json",
@@ -35,7 +36,7 @@ const httpTrigger = async function (context) {
         "Access-Control-Allow-Origin": "*",
     }
 
-    context.res = { status: 200, headers, body: { state, info } };
+    context.res = { status: 200, headers, body: JSON.parse(jsonText) };
 };
 
 export default httpTrigger;
