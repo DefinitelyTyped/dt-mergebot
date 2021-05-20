@@ -17,10 +17,11 @@ const httpTrigger = async function (context) {
     const prInfo = info.data.repository?.pullRequest;
 
     const welcomeComment = prInfo.comments.nodes.filter(c => c.author.login === "typescript-bot" && c.body.includes("<!--typescript_bot_welcome-->"))
-    if (!welcomeComment) {
+    console.log({ welcomeComment })
+    if (!welcomeComment || !welcomeComment.body || !welcomeComment.body.includes("```json")) {
         context.res = {
             status: 404,
-            body: "PR not found"
+            body: "PR comment with JSON not found"
         };
         return;
     }
