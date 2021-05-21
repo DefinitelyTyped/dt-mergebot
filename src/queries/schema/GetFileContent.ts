@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface GetFileContent_repository_object_Commit {
-  __typename: "Commit" | "Tree" | "Tag";
+  __typename: "Commit" | "Tag" | "Tree";
 }
 
 export interface GetFileContent_repository_object_Blob {

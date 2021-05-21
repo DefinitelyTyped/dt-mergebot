@@ -78,12 +78,12 @@ and I'll merge this PR almost instantly. Thanks for helping out! :heart:
 ${otherOwners.length === 0 ? "" : `
 (${otherOwners.map(o => "@" + o).join(", ")}: you can do this too.)`}`}));
 
-export const WaitUntilMergeIsOK = (user: string, abbrOid: string, uri: string) => ({
+export const WaitUntilMergeIsOK = (user: string, abbrOid: string, uri: string, mainCommentID: number | undefined) => ({
     // at most one reminder per update
     tag: `wait-for-merge-offer-${abbrOid}`,
     status: `:passport_control: Hi @${user},
 
-I can't [accept a merge request](${uri}) until the PR has a green CI and was appropriately reviewed. I will let you know once that happens.
+I can't [accept a pull request](${uri}) until all of the checks in the "Status" section of [this comment](#issuecomment-${mainCommentID || "???"}) are green. I will let you know once that happens.
 
 Thanks, and happy typing!`
 });

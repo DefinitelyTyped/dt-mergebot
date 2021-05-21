@@ -126,7 +126,7 @@ const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>
         case "project_card": {
             const url = event.payload.project_card.content_url;
             return url ? { number: +url.replace(/^.*\//, "") }
-                : new IgnoredBecause(`Couldn't find PR number since contentent_url is missing: ${
+                : new IgnoredBecause(`Couldn't find PR number since content_url is missing: ${
                                         JSON.stringify(event.payload.project_card)}`);
         }
         case "pull_request": return event.payload.pull_request;
