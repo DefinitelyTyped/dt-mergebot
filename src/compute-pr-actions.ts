@@ -477,7 +477,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     }
 
     if (!info.tooManyFiles) {
-        display(``,`You can test the changes in this [PR in the Playground](http://typescriptlang.org/play/?dtPR=${info.pr_number}&install-plugin=playground-dt-review).`);
+        display(``,`You can test the changes in this [PR in the Playground](https://www.typescriptlang.org/play/?dtPR=${info.pr_number}&install-plugin=playground-dt-review).`);
     }
 
     display(``,
