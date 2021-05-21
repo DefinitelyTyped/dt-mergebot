@@ -83,7 +83,7 @@ export const WaitUntilMergeIsOK = (user: string, abbrOid: string, uri: string, m
     tag: `wait-for-merge-offer-${abbrOid}`,
     status: `:passport_control: Hi @${user},
 
-I can't [accept a pull request](${uri}) until all of the checks in the "Status" section of [this comment](#issuecomment-${mainCommentID || ""}) are green. I will let you know once that happens.
+I can't [accept a pull request](${uri}) until all of the checks in the "Status" section of [this comment](#issuecomment-${mainCommentID || "???"}) are green. I will let you know once that happens.
 
 Thanks, and happy typing!`
 });

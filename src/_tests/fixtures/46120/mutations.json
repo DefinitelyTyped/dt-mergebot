@@ -31,7 +31,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDQ5ODI3NTQ3",
-        "body": ":passport_control: Hi @reubenrybnik,\n\nI can't [accept a pull request](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-make-a-pull-request) until all of the checks in the \"Status\" section of [this comment](#issuecomment-) are green. I will let you know once that happens.\n\nThanks, and happy typing!\n<!--typescript_bot_wait-for-merge-offer-5ef8fe2-->"
+        "body": ":passport_control: Hi @reubenrybnik,\n\nI can't [accept a pull request](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-make-a-pull-request) until all of the checks in the \"Status\" section of [this comment](#issuecomment-???) are green. I will let you know once that happens.\n\nThanks, and happy typing!\n<!--typescript_bot_wait-for-merge-offer-5ef8fe2-->"
       }
     }
   }
