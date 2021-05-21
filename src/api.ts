@@ -27,11 +27,11 @@ const httpTrigger: import("@azure/functions").AzureFunction = async function (co
 
     if (!prInfo)  return notFound("No PR metadata");
 
-    const welcomeComment = prInfo.comments.nodes!.find(c =>  c && c.author?.login === "typescript-bot" && c.body.includes("<!--typescript_bot_welcome-->"));
+    const welcomeComment = prInfo.comments.nodes!.find(c =>  c && c.author?.login === "typescript-bot" && c.body.endsWith("<!--typescript_bot_welcome-->"));
     if (!welcomeComment || !welcomeComment.body || !welcomeComment.body.includes("```json")) return notFound("PR comment with JSON not found");
 
     // Extract the JSON from the comment
-    const jsonText = welcomeComment.body.split("```json")[1]!.split("```")[0]!;
+    const jsonText = welcomeComment.body.replace(/^[^]*```json\n([^]*)\n```[^]*$/, "$1");
 
     const response = { title: prInfo.title, ...JSON.parse(jsonText) };
     context.res = { status: 200, headers, body: response };
