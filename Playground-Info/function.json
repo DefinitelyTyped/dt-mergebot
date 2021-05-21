@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "./index.mjs"
+  "scriptFile": "../bin/api.js"
 }
