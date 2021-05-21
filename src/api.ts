@@ -33,7 +33,9 @@ const httpTrigger: import("@azure/functions").AzureFunction = async function (co
     
     // Extract the JSON from the comment
     const jsonText = welcomeComment.body.split("```json")[1]!.split("```")[0]!
-    context.res = { status: 200, headers, body: JSON.parse(jsonText) };
+
+    const response = { title: prInfo.title, ...JSON.parse(jsonText) }
+    context.res = { status: 200, headers, body: response };
 };
 
 export default httpTrigger;
