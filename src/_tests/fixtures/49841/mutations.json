@@ -55,7 +55,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTI4OTE2Mjg5",
-        "body": "@shekari-ah The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/4849e8876b0ab7adc889ccc35b55fde6f0274837/checks?check_suite_id=1574877739).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n<!--typescript_bot_gh-actions-complaint-4849e88-->"
+        "body": "@shekari-ah The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/4849e8876b0ab7adc889ccc35b55fde6f0274837/checks?check_suite_id=1574877739).\n\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n\n**Note: builds which are failing do not end up on the list of PRs for the DT maintainers to review.**\n<!--typescript_bot_gh-actions-complaint-4849e88-->"
       }
     }
   }

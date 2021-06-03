@@ -18,7 +18,11 @@ export const HadError = (user: string | undefined, error: string) => ({
 
 export const CIFailed = (abbrOid: string, user: string, ciUrl: string) => ({
     tag: `gh-actions-complaint-${abbrOid}`,
-    status: `@${user} The CI build failed! Please [review the logs for more information](${ciUrl}).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!`
+    status: `@${user} The CI build failed! Please [review the logs for more information](${ciUrl}).
+
+Once you've pushed the fixes, the build will automatically re-run. Thanks!
+
+**Note: builds which are failing do not end up on the list of PRs for the DT maintainers to review.**`
 });
 
 export const MergeConflicted = (abbrOid: string, user: string) => ({
