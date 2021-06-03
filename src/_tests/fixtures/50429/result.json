@@ -16,7 +16,7 @@
     },
     {
       "tag": "gh-actions-complaint-8454d08",
-      "status": "@SaltyAom The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/8454d0853c273f9a20b08bd68cfd5c6b4f70c018/checks?check_suite_id=1778052567).\r\n\r\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!"
+      "status": "@SaltyAom The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/8454d0853c273f9a20b08bd68cfd5c6b4f70c018/checks?check_suite_id=1778052567).\n\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n\n**Note: builds which are failing do not end up on the list of PRs for the DT maintainers to review.**"
     }
   ],
   "shouldClose": false,
