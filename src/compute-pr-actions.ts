@@ -4,7 +4,7 @@ import * as emoji from "./emoji";
 import * as urls from "./urls";
 import { PrInfo, BotResult, FileInfo } from "./pr-info";
 import { ReviewInfo } from "./pr-info";
-import { noNullish, flatten, unique, sameUser, min, sha256, abbrOid } from "./util/util";
+import { noNullish, flatten, unique, sameUser, min, sha256, abbrOid, txt } from "./util/util";
 import * as dayjs from "dayjs";
 import * as advancedFormat from "dayjs/plugin/advancedFormat";
 dayjs.extend(advancedFormat);
@@ -370,7 +370,8 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     const testsLink = info.hasNewPackages ? urls.testingNewPackages : urls.testingEditedPackages;
 
     const specialWelcome = !info.isFirstContribution ? `` :
-        ` I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.`;
+        txt`| I see this is your first time submitting to DefinitelyTyped 👋
+             — I'm the local bot who will help you through the process of getting things through.`;
     display(`@${info.author} Thank you for submitting this PR!${specialWelcome}`,
             ``,
             `***This is a live comment which I will keep updated.***`);
@@ -448,7 +449,9 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     }
     if (addedSelfToManyOwners > 0) {
         display(``,
-                `@${info.author}: I see that you have added yourself as an owner${addedSelfToManyOwners > 1 ? " to several packages" : ""}, are you sure you want to [become an owner](${urls.definitionOwners})?`);
+                txt`@${info.author}: I see that you have added yourself as an
+                    owner${addedSelfToManyOwners > 1 ? " to several packages" : ""},
+                    are you sure you want to [become an owner](${urls.definitionOwners})?`);
     }
 
     // Lets the author know who needs to review this
@@ -458,18 +461,26 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     if (info.blessingKind === "merge") {
         display("This PR can be merged.");
     } else if (info.hasNewPackages) {
-        display(`This PR adds a new definition, so it needs to be reviewed by ${requiredApprover} before it can be merged.`);
+        display(txt`This PR adds a new definition, so it needs to be reviewed by
+                    ${requiredApprover} before it can be merged.`);
     } else if (info.popularityLevel === "Critical" && info.blessingKind !== "review") {
-        display(`Because this is a widely-used package, ${requiredApprover} will need to review it before it can be merged.`);
+        display(txt`Because this is a widely-used package, ${requiredApprover}
+                    will need to review it before it can be merged.`);
     } else if (!info.requireMaintainer) {
-        const and = info.hasDefinitions && info.hasTests ? "and updated the tests (👏)" : "and there were no type definition changes";
-        display(`Because you edited one package ${and}, I can help you merge this PR once someone else signs off on it.`);
+        const and = info.hasDefinitions && info.hasTests
+            ? "and updated the tests (👏)"
+            : "and there were no type definition changes";
+        display(txt`Because you edited one package ${and}, I can help you merge this PR
+                    once someone else signs off on it.`);
     } else if (info.noOtherOwners && info.blessingKind !== "review") {
-        display(`There aren't any other owners of this package, so ${requiredApprover} will review it.`);
+        display(txt`There aren't any other owners of this package,
+                    so ${requiredApprover} will review it.`);
     } else if (info.hasMultiplePackages && info.blessingKind !== "review") {
-        display(`Because this PR edits multiple packages, it can be merged once it's reviewed by ${requiredApprover}.`);
+        display(txt`Because this PR edits multiple packages, it can be merged
+                    once it's reviewed by ${requiredApprover}.`);
     } else if (info.checkConfig && info.blessingKind !== "review") {
-        display(`Because this PR edits the configuration file, it can be merged once it's reviewed by ${requiredApprover}.`);
+        display(txt`Because this PR edits the configuration file, it can be merged
+                    once it's reviewed by ${requiredApprover}.`);
     } else if (info.blessingKind !== "review") {
         display(`This PR can be merged once it's reviewed by ${requiredApprover}.`);
     } else {
@@ -518,9 +529,12 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
 
     display(``);
     if (!info.canBeSelfMerged) {
-        display(`Once every item on this list is checked, I'll ask you for permission to merge and publish the changes.`);
+        display(txt`Once every item on this list is checked,
+                    I'll ask you for permission to merge and publish the changes.`);
     } else {
-        display(`All of the items on the list are green. **To merge, you need to post a comment including the string "Ready to merge"** to bring in your changes.`);
+        display(txt`All of the items on the list are green.
+                    **To merge, you need to post a comment including the string "Ready to merge"**
+                    to bring in your changes.`);
     }
 
     if (info.staleness && info.staleness.state !== "fresh") {
