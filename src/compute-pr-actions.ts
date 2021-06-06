@@ -212,8 +212,7 @@ export function process(prInfo: BotResult,
     }
 
     const actions = createDefaultActions();
-    const post = (c: Comments.Comment, prepend = false) =>
-        actions.responseComments[prepend ? "unshift" : "push"](c);
+    const post = (c: Comments.Comment) => actions.responseComments.push(c);
 
     if (prInfo.type === "error") {
         actions.projectColumn = "Other";
@@ -255,8 +254,8 @@ export function process(prInfo: BotResult,
     label("Untested Change", info.isUntested);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
 
-    // Update intro comment (should be first)
-    post({ tag: "welcome", status: createWelcomeComment(info, post) }, true);
+    // Update intro comment
+    post({ tag: "welcome", status: createWelcomeComment(info, post) });
 
     // Ping reviewers when needed
     const headCommitAbbrOid = abbrOid(info.headCommitOid);

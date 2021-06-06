@@ -1,5 +1,14 @@
 [
   {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDY1NjYxODM0MQ==",
+        "body": "@alexpyzhianov Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `react` — [on npm](https://www.npmjs.com/package/react), [on unpkg](https://unpkg.com/browse/react@latest/)\n  - owner-approval: @ferdaber, @eps1lon\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes in this [PR in the Playground](https://www.typescriptlang.org/play/?dtPR=45999&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners or DT maintainers\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
@@ -16,15 +25,6 @@
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkNDE2MzMxNDk=",
         "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIz"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "id": "MDEyOklzc3VlQ29tbWVudDY1NjYxODM0MQ==",
-        "body": "@alexpyzhianov Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `react` — [on npm](https://www.npmjs.com/package/react), [on unpkg](https://unpkg.com/browse/react@latest/)\n  - owner-approval: @ferdaber, @eps1lon\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes in this [PR in the Playground](https://www.typescriptlang.org/play/?dtPR=45999&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners or DT maintainers\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },

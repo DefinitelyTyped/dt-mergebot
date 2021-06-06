@@ -1,5 +1,14 @@
 [
   {
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0Mzg4MzgyMzYy",
+        "body": "@larsrh Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `estree` — [on npm](https://www.npmjs.com/package/estree), [on unpkg](https://unpkg.com/browse/estree@latest/)\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\nYou can test the changes in this [PR in the Playground](https://www.typescriptlang.org/play/?dtPR=43136&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Most recent commit is approved by a DT maintainer\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
@@ -28,15 +37,6 @@
       "input": {
         "contentId": "MDExOlB1bGxSZXF1ZXN0Mzg4MzgyMzYy",
         "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "subjectId": "MDExOlB1bGxSZXF1ZXN0Mzg4MzgyMzYy",
-        "body": "@larsrh Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `estree` — [on npm](https://www.npmjs.com/package/estree), [on unpkg](https://unpkg.com/browse/estree@latest/)\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\nYou can test the changes in this [PR in the Playground](https://www.typescriptlang.org/play/?dtPR=43136&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Most recent commit is approved by a DT maintainer\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },
