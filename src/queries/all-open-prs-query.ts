@@ -18,7 +18,7 @@ query GetAllOpenPRsAndCardIDs($endCursor: String) {
 }`;
 
 export async function getAllOpenPRsAndCardIDs() {
-    const prNumbers: number[] = [];
+    const prs: number[] = [];
     const cardIDs: string[] = [];
     let endCursor: string | undefined | null;
     while (true) {
@@ -29,11 +29,11 @@ export async function getAllOpenPRsAndCardIDs() {
         });
         const pullRequests = result.data.repository?.pullRequests;
         const nodes = noNullish(pullRequests?.nodes);
-        prNumbers.push(...nodes.map(pr => pr.number));
+        prs.push(...nodes.map(pr => pr.number));
         for (const pr of nodes) {
             cardIDs.push(...noNullish(pr.projectCards.nodes).map(card => card.id));
         }
-        if (!pullRequests?.pageInfo.hasNextPage) return { prNumbers, cardIDs };
+        if (!pullRequests?.pageInfo.hasNextPage) return { prs, cardIDs };
         endCursor = pullRequests.pageInfo.endCursor;
     }
 }
