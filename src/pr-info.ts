@@ -175,9 +175,11 @@ export async function deriveStateForPR(
     const lastCommentDate = getLastCommentishActivityDate(prInfo);
     const blessing = getLastMaintainerBlessing(lastPushDate, prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
-    // we should generally have all files (except for draft PRs), but
-    // leave this bit in for a while
-    const tooManyFiles = prInfo.files?.totalCount !== prInfo.files?.nodes?.length;
+    // we should generally have all files (except for draft PRs)
+    const fileCount = prInfo.files?.totalCount;
+    const tooManyFiles = !fileCount // should never happen, make it look fishy if it does
+        || fileCount !== prInfo.files?.nodes?.length // didn't get all files somehow
+        || fileCount > 500; // suspiciously many files
 
     const pkgInfoEtc = await getPackageInfosEtc(
         noNullish(prInfo.files?.nodes).map(f => f.path).sort(),
