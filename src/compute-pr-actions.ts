@@ -407,7 +407,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
             ``);
     if (info.tooManyFiles) {
         display(``,
-                `***Note: this PR touches too many files, and I didn't see all of them!***`);
+                `***Note: this PR touches too many files, check it!***`);
     }
     let addedSelfToManyOwners = 0;
     if (info.pkgInfo.length === 0) {
@@ -489,7 +489,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
 
     if (!info.tooManyFiles) {
         display(``,
-                `You can test the changes in this [PR in the Playground](https://www.typescriptlang.org/play/?dtPR=${info.pr_number}&install-plugin=playground-dt-review).`);
+                `You can test the changes of this PR [in the Playground](${urls.playground(info.pr_number)}).`);
     }
 
     display(``,
