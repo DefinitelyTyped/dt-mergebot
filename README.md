@@ -123,3 +123,16 @@ npm run update-all-fixtures
 
 Be careful with this, because PRs may now be in a different state e.g. it's now merged and it used to be a specific
 weird state.
+
+## Running with real webhooks
+
+You need a tool like [ngrok](https://ngrok.com) to expose a URL from the [webhooks section](https://github.com/DefinitelyTyped/DefinitelyTyped/settings/hooks/new) on DT. 
+
+Start two terminal sessions with:
+
+- `yarn watch` (for TypeScript changes)
+- `yarn start` (for the app)
+
+Then start a third with your localhost router like ngrok:
+
+- `ngrok http 7071`
