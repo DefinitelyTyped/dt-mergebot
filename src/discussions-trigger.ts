@@ -37,7 +37,6 @@ export async function run(context: Context, req: HttpRequest) {
 export const canHandleRequest = (event: string, action: string) => {
     const name = "discussion";
     const actions = ["created", "edited"];
-    console.log({ action, event });
     return event == name && actions.includes(action);
 };
 
@@ -75,10 +74,8 @@ Pinging the DT module owners: ${owners.join(", ")}.
 `;
 
 
-
 async function pingAuthorsAndSetUpDiscussion(discussion: Discussion) {
     const aboutNPMRef = extractNPMReference(discussion);
-
     if (!aboutNPMRef) {
         // https://gist.github.com/smashwilson/311e1487ddb40a455fc54d294cc63ad4#adddiscussioncomment
         await updateOrCreateMainComment(discussion, couldNotFindMessage);
@@ -121,11 +118,9 @@ async function addLabel(discussion: Discussion, labelName: string, description?:
         // https://docs.github.com/en/graphql/reference/input-objects#createlabelinput
         const color = crypto.randomBytes(Math.ceil(6/2)).toString("hex").slice(0,6);
 
-        const newLabel = await client.mutate(createMutation<any>("createLabel" as any, { name: labelName, repositoryId: dtRepoID, color, description })) // as any;
-          console.log(newLabel)
-            const newID = newLabel.data.label.id;
-            await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [newID] }));
-        }
+        const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: dtRepoID, color, description })) as any;
+        const newID = newLabel.data.label.id;
+        await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [newID] }));
     }
 }
 
