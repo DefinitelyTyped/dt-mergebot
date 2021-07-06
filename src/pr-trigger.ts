@@ -158,7 +158,7 @@ const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">) 
 const waiters: Map<unknown, () => void> = new Map();
 function debounce(delay: number, group: unknown) {
     waiters.get(group)?.(); // cancel older handler for the same pr, if one exists
-    return new Promise(resolve => {
+    return new Promise<boolean>(resolve => {
         const timeout = setTimeout(() => {
             waiters.delete(group);
             resolve(false);

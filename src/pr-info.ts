@@ -127,7 +127,7 @@ export interface PrInfo {
     readonly isFirstContribution: boolean;
 
     /*
-     * True if there are more files than we can fetch from the initial query
+     * True if there are more files than we can fetch from the initial query (or no files)
      */
     readonly tooManyFiles: boolean;
 
@@ -177,6 +177,9 @@ export async function deriveStateForPR(
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
     // we should generally have all files (except for draft PRs)
     const fileCount = prInfo.files?.totalCount;
+    // we fetch all files so this shouldn't happen, but GH might a limit of 3k files even with
+    // pagination (documented in the rest api docs.github.com/en/rest/reference/pulls#list-pull-requests-files,
+    // but not in the gql one); so be safe and check it, and warn if there are many files (or zero)
     const tooManyFiles = !fileCount // should never happen, make it look fishy if it does
         || fileCount !== prInfo.files?.nodes?.length // didn't get all files somehow
         || fileCount > 500; // suspiciously many files
