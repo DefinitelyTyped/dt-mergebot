@@ -201,7 +201,7 @@ export async function getPRInfoFirst(prNumber: number) {
         }
         // wait 3N..3N+1 seconds (based on trial runs: it usually works after one wait)
         const wait = 1000 * (Math.random() + 3 * retries);
-        await new Promise(resolve => setTimeout(resolve, wait));
+        await new Promise<void>(resolve => setTimeout(resolve, wait));
     }
 }
 
