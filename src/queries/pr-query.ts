@@ -34,8 +34,9 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
         number
         state
         headRefOid
-        
-        timelineItems(last: 100, itemTypes: [ISSUE_COMMENT, REOPENED_EVENT, READY_FOR_REVIEW_EVENT]) {
+
+        timelineItems(last: 200, itemTypes: [ISSUE_COMMENT, REOPENED_EVENT, READY_FOR_REVIEW_EVENT,
+                                             MOVED_COLUMNS_IN_PROJECT_EVENT]) {
           nodes {
             __typename
             ... on IssueComment {
@@ -46,6 +47,10 @@ export const GetPRInfo = gql`query PR($pr_number: Int!) {
               createdAt
             }
             ... on ReadyForReviewEvent {
+              createdAt
+            }
+            ... on MovedColumnsInProjectEvent {
+              actor { login }
               createdAt
             }
           }

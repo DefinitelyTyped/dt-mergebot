@@ -22,6 +22,7 @@
   "stalenessInDays": 2,
   "lastCommitDate": "2020-03-17T13:51:37.000Z",
   "lastCommentDate": "2020-03-17T13:51:37.000Z",
+  "maintainerBlessed": false,
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43175/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,

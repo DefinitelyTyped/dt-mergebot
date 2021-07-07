@@ -12,6 +12,7 @@
   "lastCommitDate": "1970-01-01T00:00:00.000Z",
   "reopenedDate": "2020-04-30T23:08:16.000Z",
   "lastCommentDate": "2020-05-01T00:19:19.000Z",
+  "maintainerBlessed": false,
   "reviewLink": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/43695/files",
   "hasMergeConflict": false,
   "authorIsOwner": false,

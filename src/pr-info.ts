@@ -1,7 +1,14 @@
 import { GetPRInfo } from "./queries/pr-query";
-
-import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest, PR_repository_pullRequest_commits_nodes_commit, PR_repository_pullRequest, PR_repository_pullRequest_timelineItems, PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent, PR_repository_pullRequest_reviews, PR_repository_pullRequest_timelineItems_nodes_IssueComment, PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent } from "./queries/schema/PR";
-
+import { PR as PRQueryResult, PR_repository_pullRequest as GraphqlPullRequest,
+         PR_repository_pullRequest_commits_nodes_commit,
+         PR_repository_pullRequest,
+         PR_repository_pullRequest_timelineItems,
+         PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent,
+         PR_repository_pullRequest_reviews,
+         PR_repository_pullRequest_timelineItems_nodes_IssueComment,
+         PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent,
+         PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent
+       } from "./queries/schema/PR";
 import { CIResult } from "./util/CIResult";
 import { StatusState, PullRequestReviewState, CommentAuthorAssociation, CheckConclusionState, PullRequestState } from "./queries/graphql-global-types";
 import { getMonthlyDownloadCount } from "./util/npm";
@@ -9,7 +16,6 @@ import { client } from "./graphql-client";
 import { ApolloQueryResult } from "apollo-boost";
 import { getOwnersOfPackages, OwnerInfo } from "./util/getOwnersOfPackages";
 import { findLast, forEachReverse, daysSince, authorNotBot } from "./util/util";
-
 
 export enum ApprovalFlags {
     None = 0,
@@ -148,6 +154,11 @@ export interface PrInfo {
     readonly anyPackageIsNew: boolean;
 
     /**
+     * True if a maintainer blessed this PR
+     */
+    readonly maintainerBlessed: boolean;
+
+    /**
      * True if the author has dismissed any reviews against the head commit
      */
     readonly hasDismissedReview: boolean;
@@ -176,7 +187,7 @@ export async function queryPRInfo(prNumber: number) {
     });
 }
 
-// The GQL response -> Useful data for us
+// The GQL response => Useful data for us
 export async function deriveStateForPR(
     info: ApolloQueryResult<PRQueryResult>,
     getOwners?: (packages: readonly string[]) => OwnerInfo | Promise<OwnerInfo>,
@@ -228,6 +239,8 @@ export async function deriveStateForPR(
     const now = getNow().toISOString();
     const reviewAnalysis = analyzeReviews(prInfo, isOwner);
 
+    const lastBlessing = getLastMaintainerBlessingDate(prInfo.timelineItems);
+
     return {
         type: "info",
         now,
@@ -241,6 +254,7 @@ export async function deriveStateForPR(
         stalenessInDays: Math.min(...[lastCommitDate, lastCommentDate, reopenedDate, reviewAnalysis.lastReviewDate]
                                      .map(date => daysSince(date || lastCommitDate, now))),
         lastCommitDate, reopenedDate, lastCommentDate,
+        maintainerBlessed: lastBlessing ? lastBlessing.getTime() > lastCommitDate.getTime() : false,
         reviewLink: `https://github.com/DefinitelyTyped/DefinitelyTyped/pull/${prInfo.number}/files`,
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         authorIsOwner,
@@ -301,6 +315,22 @@ function getLastCommentishActivityDate(timelineItems: PR_repository_pullRequest_
     }
     if (lastIssueComment || lastReviewComment) {
         return new Date((lastIssueComment || lastReviewComment)?.createdAt);
+    }
+    return undefined;
+}
+
+type MovedColumnsInProjectEvent = PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent;
+function getLastMaintainerBlessingDate(timelineItems: PR_repository_pullRequest_timelineItems) {
+    const lastColumnChange = findLast(timelineItems.nodes, (item): item is MovedColumnsInProjectEvent => {
+        return item?.__typename === "MovedColumnsInProjectEvent" && authorNotBot(item!);
+    });
+    // ------------------------------ TODO ------------------------------
+    // Should add and used the `previousProjectColumnName` field to
+    // verify that the move was away from "Needs Maintainer Review", but
+    // that is still in beta ATM.
+    // ------------------------------ TODO ------------------------------
+    if (lastColumnChange) {
+        return new Date(lastColumnChange.createdAt);
     }
     return undefined;
 }
@@ -520,5 +550,3 @@ function getPopularityLevelFromDownloads(downloadsPerPackage: Record<string, num
     }
     return popularityLevel;
 }
-
-
