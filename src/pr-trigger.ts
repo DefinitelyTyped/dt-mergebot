@@ -41,7 +41,7 @@ class IgnoredBecause {
 export async function httpTrigger(context: Context, req: HttpRequest) {
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
-    const { headers, body } = req, githubId = headers["x-github-delivery"];
+    const { headers, body, rawBody } = req, githubId = headers["x-github-delivery"];
     const evName = headers["x-github-event"], evAction = body.action;
 
     context.log(`>>> HTTP Trigger [${
@@ -52,7 +52,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
 
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
-    if (!isDev && !(await verify(secret!, body, headers["x-hub-signature-256"]!)))
+    if (!isDev && !(await verify(secret!, rawBody, headers["x-hub-signature-256"]!)))
         return reply(context, 500, "This webhook did not come from GitHub");
 
     if (evName === "check_run" && evAction === "completed") {
