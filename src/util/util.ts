@@ -51,12 +51,8 @@ export function daysSince(date: Date, now: Date | string): number {
     return Math.floor(moment(now).diff(moment(date), "days"));
 }
 
-export function authorNotBot(commentable: { login: string } | { author?: { login: string } | null}): boolean {
-    if ("author" in commentable) {
-        return commentable.author!.login !== "typescript-bot";
-    }  
-    if ("login" in commentable) {
-        return commentable.login !== "typescript-bot";
-    }
-    return false
+export function authorNotBot(node: { login: string } | { author?: { login: string } | null} | { actor?: { login: string } | null}): boolean {
+    return ("author" in node && node.author!.login !== "typescript-bot")
+        || ("actor" in node && node.actor!.login !== "typescript-bot")
+        || ("login" in node && node.login !== "typescript-bot");
 }

@@ -42,7 +42,7 @@ export interface PR_repository_pullRequest_labels {
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent {
-  __typename: "AddedToProjectEvent" | "AssignedEvent" | "AutomaticBaseChangeFailedEvent" | "AutomaticBaseChangeSucceededEvent" | "BaseRefChangedEvent" | "BaseRefForcePushedEvent" | "ClosedEvent" | "CommentDeletedEvent" | "ConnectedEvent" | "ConvertToDraftEvent" | "ConvertedNoteToIssueEvent" | "CrossReferencedEvent" | "DemilestonedEvent" | "DeployedEvent" | "DeploymentEnvironmentChangedEvent" | "DisconnectedEvent" | "HeadRefDeletedEvent" | "HeadRefForcePushedEvent" | "HeadRefRestoredEvent" | "LabeledEvent" | "LockedEvent" | "MarkedAsDuplicateEvent" | "MentionedEvent" | "MergedEvent" | "MilestonedEvent" | "MovedColumnsInProjectEvent" | "PinnedEvent" | "PullRequestCommit" | "PullRequestCommitCommentThread" | "PullRequestReview" | "PullRequestReviewThread" | "PullRequestRevisionMarker" | "ReferencedEvent" | "RemovedFromProjectEvent" | "RenamedTitleEvent" | "ReviewDismissedEvent" | "ReviewRequestRemovedEvent" | "ReviewRequestedEvent" | "SubscribedEvent" | "TransferredEvent" | "UnassignedEvent" | "UnlabeledEvent" | "UnlockedEvent" | "UnmarkedAsDuplicateEvent" | "UnpinnedEvent" | "UnsubscribedEvent" | "UserBlockedEvent";
+  __typename: "AddedToProjectEvent" | "AssignedEvent" | "AutomaticBaseChangeFailedEvent" | "AutomaticBaseChangeSucceededEvent" | "BaseRefChangedEvent" | "BaseRefForcePushedEvent" | "ClosedEvent" | "CommentDeletedEvent" | "ConnectedEvent" | "ConvertToDraftEvent" | "ConvertedNoteToIssueEvent" | "CrossReferencedEvent" | "DemilestonedEvent" | "DeployedEvent" | "DeploymentEnvironmentChangedEvent" | "DisconnectedEvent" | "HeadRefDeletedEvent" | "HeadRefForcePushedEvent" | "HeadRefRestoredEvent" | "LabeledEvent" | "LockedEvent" | "MarkedAsDuplicateEvent" | "MentionedEvent" | "MergedEvent" | "MilestonedEvent" | "PinnedEvent" | "PullRequestCommit" | "PullRequestCommitCommentThread" | "PullRequestReview" | "PullRequestReviewThread" | "PullRequestRevisionMarker" | "ReferencedEvent" | "RemovedFromProjectEvent" | "RenamedTitleEvent" | "ReviewDismissedEvent" | "ReviewRequestRemovedEvent" | "ReviewRequestedEvent" | "SubscribedEvent" | "TransferredEvent" | "UnassignedEvent" | "UnlabeledEvent" | "UnlockedEvent" | "UnmarkedAsDuplicateEvent" | "UnpinnedEvent" | "UnsubscribedEvent" | "UserBlockedEvent";
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_IssueComment_author {
@@ -81,7 +81,27 @@ export interface PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEve
   createdAt: any;
 }
 
-export type PR_repository_pullRequest_timelineItems_nodes = PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent | PR_repository_pullRequest_timelineItems_nodes_IssueComment | PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent | PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent;
+export interface PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent_actor {
+  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  /**
+   * The username of the actor.
+   */
+  login: string;
+}
+
+export interface PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent {
+  __typename: "MovedColumnsInProjectEvent";
+  /**
+   * Identifies the actor who performed the event.
+   */
+  actor: PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent_actor | null;
+  /**
+   * Identifies the date and time when the object was created.
+   */
+  createdAt: any;
+}
+
+export type PR_repository_pullRequest_timelineItems_nodes = PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent | PR_repository_pullRequest_timelineItems_nodes_IssueComment | PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent | PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEvent | PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent;
 
 export interface PR_repository_pullRequest_timelineItems {
   __typename: "PullRequestTimelineItemsConnection";
