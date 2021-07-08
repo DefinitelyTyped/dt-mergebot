@@ -38,6 +38,7 @@ query PR($prNumber: Int!) {
         number
         state
         headRefOid
+        changedFiles
 
         timelineItems(last: 200, itemTypes: [REOPENED_EVENT, READY_FOR_REVIEW_EVENT,
                                              MOVED_COLUMNS_IN_PROJECT_EVENT]) {

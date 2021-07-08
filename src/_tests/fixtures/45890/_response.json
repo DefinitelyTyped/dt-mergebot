@@ -33,6 +33,7 @@
         "number": 45890,
         "state": "OPEN",
         "headRefOid": "146c312eac4c4ac8931b4ec6b2762457f8f4b6e6",
+        "changedFiles": 4,
         "timelineItems": {
           "nodes": [
             {

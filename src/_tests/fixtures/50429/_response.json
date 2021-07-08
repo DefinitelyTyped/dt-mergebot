@@ -35,6 +35,7 @@
         "number": 50429,
         "state": "OPEN",
         "headRefOid": "8454d0853c273f9a20b08bd68cfd5c6b4f70c018",
+        "changedFiles": 7,
         "timelineItems": {
           "__typename": "PullRequestTimelineItemsConnection",
           "nodes": [
