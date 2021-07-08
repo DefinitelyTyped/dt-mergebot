@@ -29,5 +29,14 @@
         "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NTUwNjA3Mzgw"
       }
     }
+  },
+  {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDc1NjM2ODA4NA==",
+        "body": "@shockdevv: Everything looks good here. I am ready to merge this PR (at 130c088) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n<!--typescript_bot_merge-offer-->"
+      }
+    }
   }
 ]
