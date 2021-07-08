@@ -37,6 +37,7 @@
         "number": 44316,
         "state": "OPEN",
         "headRefOid": "55357f7d60d059b5c84a23bd92854276a8f9a419",
+        "changedFiles": 3,
         "timelineItems": {
           "nodes": [
             {

@@ -176,10 +176,11 @@ export async function deriveStateForPR(
     const blessing = getLastMaintainerBlessing(lastPushDate, prInfo.timelineItems);
     const reopenedDate = getReopenedDate(prInfo.timelineItems);
     // we should generally have all files (except for draft PRs)
-    const fileCount = prInfo.files?.totalCount;
-    // we fetch all files so this shouldn't happen, but GH might a limit of 3k files even with
-    // pagination (documented in the rest api docs.github.com/en/rest/reference/pulls#list-pull-requests-files,
-    // but not in the gql one); so be safe and check it, and warn if there are many files (or zero)
+    const fileCount = prInfo.changedFiles;
+    // we fetch all files so this shouldn't happen, but GH has a limit of 3k files even with
+    // pagination (docs.github.com/en/rest/reference/pulls#list-pull-requests-files) and in
+    // that case `files.totalCount` would be 3k so it'd fit the count but `changedFiles` would
+    // be correct; so to be safe: check it, and warn if there are many files (or zero)
     const tooManyFiles = !fileCount // should never happen, make it look fishy if it does
         || fileCount !== prInfo.files?.nodes?.length // didn't get all files somehow
         || fileCount > 500; // suspiciously many files

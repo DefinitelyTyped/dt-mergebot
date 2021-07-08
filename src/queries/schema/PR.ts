@@ -10,7 +10,7 @@ import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequest
 // ====================================================
 
 export interface PR_repository_pullRequest_author {
-  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -62,7 +62,7 @@ export interface PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEve
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent_actor {
-  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -96,7 +96,7 @@ export interface PR_repository_pullRequest_timelineItems {
 }
 
 export interface PR_repository_pullRequest_reviews_nodes_author {
-  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -112,7 +112,7 @@ export interface PR_repository_pullRequest_reviews_nodes_commit {
 }
 
 export interface PR_repository_pullRequest_reviews_nodes_comments_nodes_author {
-  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -244,7 +244,7 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites {
 }
 
 export interface PR_repository_pullRequest_commits_nodes_commit_status_contexts_creator {
-  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -332,7 +332,7 @@ export interface PR_repository_pullRequest_commits {
 }
 
 export interface PR_repository_pullRequest_comments_nodes_author {
-  __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -537,6 +537,10 @@ export interface PR_repository_pullRequest {
    * Identifies the oid of the head ref associated with the pull request, even if the ref has been deleted.
    */
   headRefOid: any;
+  /**
+   * The number of changed files in this pull request.
+   */
+  changedFiles: number;
   /**
    * A list of events, comments, commits, etc. associated with the pull request.
    */
