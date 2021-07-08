@@ -96,8 +96,8 @@ export const OfferSelfMerge = deletedWhenNotPresent("merge-offer", tag =>
     (user: string, otherOwners: string[], abbrOid: string) => ({
         // Note: pr-info.ts searches for the `(at ${abbrOid})`
         tag, status: txt`
-            |@${user} Everything looks good here. Great job! I am ready to merge this PR
-             (at ${abbrOid}) on your behalf.
+            |@${user}: Everything looks good here. I am ready to merge this PR
+             (at ${abbrOid}) on your behalf whenever you think it's ready.
             |
             |If you'd like that to happen, please post a comment saying:
             |

@@ -13,7 +13,7 @@
     },
     {
       "tag": "merge-offer",
-      "status": "@johnnyreilly Everything looks good here. Great job! I am ready to merge this PR (at eb92456) on your behalf.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@Berkays, @unindented, @kamontat, @theweirdone, @whoaa512: you can do this too.)"
+      "status": "@johnnyreilly: Everything looks good here. I am ready to merge this PR (at eb92456) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@Berkays, @unindented, @kamontat, @theweirdone, @whoaa512: you can do this too.)"
     }
   ],
   "shouldClose": false,
