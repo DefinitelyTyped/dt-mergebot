@@ -52,6 +52,8 @@ set BOT_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 export BOT_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
+Then to run locally you'll need to install the [Azure Functions cli](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=macos%2Ccsharp%2Cbash).
+
 # Development
 
 ```sh

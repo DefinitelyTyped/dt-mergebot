@@ -10,7 +10,6 @@ const apolloCfg = require("../apollo.config.js").client.service;
 const uri = apolloCfg.url;
 const headers = {
     ...apolloCfg.headers,
-    Accept: "application/vnd.github.bane-preview+json",
     authorization: `Bearer ${getAuthToken()}`,
 };
 
