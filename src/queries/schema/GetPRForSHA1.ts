@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface GetPRForSHA1_search_nodes_App {
-  __typename: "App" | "Issue" | "MarketplaceListing" | "Organization" | "Repository" | "User";
+  __typename: "App" | "Discussion" | "Issue" | "MarketplaceListing" | "Organization" | "Repository" | "User";
 }
 
 export interface GetPRForSHA1_search_nodes_PullRequest {

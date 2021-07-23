@@ -44,6 +44,7 @@
         "number": 44105,
         "state": "CLOSED",
         "headRefOid": "77ac4d3554fe492d2ac23bf993d218ad4cd58873",
+        "changedFiles": 2,
         "timelineItems": {
           "nodes": [
             {

@@ -24,6 +24,7 @@
           ],
           "__typename": "LabelConnection"
         },
+        "changedFiles": 4,
         "isDraft": false,
         "mergeable": "MERGEABLE",
         "number": 52579,

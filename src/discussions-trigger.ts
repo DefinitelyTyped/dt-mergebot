@@ -3,9 +3,9 @@ import { Discussion, DiscussionWebhook } from "./types/discussions";
 import { createMutation, client } from "./graphql-client";
 import fetch from "node-fetch";
 import { gql } from "@apollo/client/core";
-import * as crypto from "crypto";
 import { reply } from "./util/reply";
 import { httpLog, shouldRunRequest } from "./util/verify";
+import { sha256 } from "./util/util";
 
 export async function run(context: Context, req: HttpRequest) {
     httpLog(context, req);
@@ -67,7 +67,7 @@ async function pingAuthorsAndSetUpDiscussion(discussion: Discussion) {
     } else {
         const message = gotAReferenceMessage(aboutNPMRef, []);
         await updateOrCreateMainComment(discussion, message);
-        await addLabel(discussion, aboutNPMRef, `Discussions related to ${aboutNPMRef}`);
+        await addLabel(discussion, "Pkg: " + aboutNPMRef, `Discussions related to ${aboutNPMRef}`);
         return;
     }
 }
@@ -95,17 +95,18 @@ async function updateOrCreateMainComment(discussion: Discussion, message: string
 async function addLabel(discussion: Discussion, labelName: string, description?: string) {
 
     const existingLabel = await getLabelByName(labelName);
-    if (existingLabel && existingLabel.name === labelName) {
-        await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [existingLabel.id] }));
-    } else {
-        const dtRepoID = "MDEwOlJlcG9zaXRvcnk2MDkzMzE2";
-        // https://docs.github.com/en/graphql/reference/input-objects#createlabelinput
-        const color = crypto.randomBytes(Math.ceil(6/2)).toString("hex").slice(0,6);
+    let labelID = existingLabel && (existingLabel.name === labelName) && existingLabel.id;
 
+    if (!labelID) {
+        const dtRepoID = "MDEwOlJlcG9zaXRvcnk2MDkzMzE2";
+        const color = sha256(labelName).substring(0,6);
+
+        // https://docs.github.com/en/graphql/reference/input-objects#createlabelinput
         const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: dtRepoID, color, description })) as any;
-        const newID = newLabel.data.label.id;
-        await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [newID] }));
+        labelID = newLabel.data.label.id;
     }
+
+    await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [labelID] }));
 }
 
 
@@ -138,7 +139,7 @@ query GetDiscussionComments($discussionNumber: Int!) {
   repository(name: "DefinitelyTyped", owner: "DefinitelyTyped") {
     name
     discussion(number: $discussionNumber) {
-      comments(first: 100) {
+      comments(first: 100, orderBy: { field: UPDATED_AT, direction: DESC },) {
         nodes {
           author {
             login

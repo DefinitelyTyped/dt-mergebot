@@ -38,6 +38,7 @@ query PR($prNumber: Int!) {
         number
         state
         headRefOid
+        changedFiles
 
         timelineItems(last: 200, itemTypes: [REOPENED_EVENT, READY_FOR_REVIEW_EVENT,
                                              MOVED_COLUMNS_IN_PROJECT_EVENT]) {
@@ -201,7 +202,7 @@ export async function getPRInfoFirst(prNumber: number) {
         }
         // wait 3N..3N+1 seconds (based on trial runs: it usually works after one wait)
         const wait = 1000 * (Math.random() + 3 * retries);
-        await new Promise(resolve => setTimeout(resolve, wait));
+        await new Promise<void>(resolve => setTimeout(resolve, wait));
     }
 }
 
