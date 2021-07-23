@@ -8,7 +8,8 @@ import { mergeCodeOwnersOnGreen } from "./side-effects/merge-codeowner-prs";
 import { runQueryToGetPRMetadataForSHA1 } from "./queries/SHA1-to-PR-query";
 import { HttpRequest, Context } from "@azure/functions";
 import { createEventHandler, EmitterWebhookEvent } from "@octokit/webhooks";
-import { verify } from "@octokit/webhooks-methods";
+import { reply } from "./util/reply";
+import { httpLog, shouldRunRequest } from "./util/verify";
 
 const eventNames = [
     "check_suite.completed",
@@ -29,31 +30,18 @@ const eventNames = [
 // see https://github.com/octokit/webhooks.js/issues/491, and get rid of this when fixed
 const eventNamesSillyCopy = [...eventNames];
 
-const reply = (context: Context, status: number, body: string) => {
-    context.res = { status, body };
-    context.log.info(`${body} [${status}]`);
-};
-
 class IgnoredBecause {
     constructor(public reason: string) { }
 }
 
 export async function httpTrigger(context: Context, req: HttpRequest) {
-    const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
-    const secret = process.env.GITHUB_WEBHOOK_SECRET;
+    httpLog(context, req);
     const { headers, body } = req, githubId = headers["x-github-delivery"];
     const evName = headers["x-github-event"], evAction = body.action;
 
-    context.log(`>>> HTTP Trigger [${
-                  evName}.${evAction
-                  }; gh: ${githubId
-                  }; az: ${context.invocationId
-                  }; node: ${process.version}]`);
-
-    // For process.env.GITHUB_WEBHOOK_SECRET see
-    // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
-    if (!isDev && !(await verify(secret!, body, headers["x-hub-signature-256"]!)))
-        return reply(context, 500, "This webhook did not come from GitHub");
+    if (!(await shouldRunRequest(req))) {
+        reply(context, 204, "Can't handle this request");
+    }
 
     if (evName === "check_run" && evAction === "completed") {
         context.log(`>>>>>> name: ${body?.check_run?.name}, sha: ${body?.check_run?.head_sha}`);

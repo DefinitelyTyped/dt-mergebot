@@ -12,7 +12,9 @@
   "bugs": {
     "url": "https://github.com/DefinitelyTyped/dt-mergebot/issues"
   },
-  
+  "engines": {
+    "node": ">=14.16.1"
+  },
   "dependencies": {
     "@apollo/client": "^3.3.6",
     "@definitelytyped/header-parser": "^0.0.64",

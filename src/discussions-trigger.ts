@@ -1,37 +1,21 @@
-import { verify } from "@octokit/webhooks-methods";
 import { HttpRequest, Context } from "@azure/functions";
 import { Discussion, DiscussionWebhook } from "./types/discussions";
 import { createMutation, client } from "./graphql-client";
 import fetch from "node-fetch";
 import { gql } from "@apollo/client/core";
 import * as crypto from "crypto";
-
-const reply = (context: Context, status: number, body: string) => {
-    context.res = { status, body };
-    context.log.info(`${body} [${status}]`);
-};
+import { reply } from "./util/reply";
+import { httpLog, shouldRunRequest } from "./util/verify";
 
 export async function run(context: Context, req: HttpRequest) {
-    const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
-    const secret = process.env.GITHUB_WEBHOOK_SECRET;
-    const { headers, body } = req;
-    const githubId = headers["x-github-delivery"];
-    const event = headers["x-github-event"]!;
-    const action = body.action;
+    httpLog(context, req);
 
-    context.log(
-    `>>> HTTP Trigger [${event}.${action}; gh: ${githubId}; az: ${context.invocationId}; node: ${process.version}]`
-    );
+    if (!(await shouldRunRequest(req, canHandleRequest))) {
+        reply(context, 204, "Can't handle this request");
+    }
 
-    // For process.env.GITHUB_WEBHOOK_SECRET see
-    // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
-    if (!isDev && !(await verify(secret!, body, headers["x-hub-signature-256"]!)))
-        return reply(context, 500, "This webhook did not come from GitHub");
-
-    if (!canHandleRequest(event, action))
-        return reply(context, 204, "Can't handle this request");
-
-    return handleTrigger({ event, action, body }, context);
+    const { body, headers } = req;
+    return handleTrigger({ event: headers["x-github-event"]!, action: body.action, body }, context);
 }
 
 export const canHandleRequest = (event: string, action: string) => {
