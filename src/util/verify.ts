@@ -18,13 +18,13 @@ export async function shouldRunRequest(req: HttpRequest, canHandleRequest?: (eve
     const { headers, body } = req;
     const event = headers["x-github-event"]!;
     const action = body.action;
-    if (!isDev && await verifyIsFromGitHub(req)) return false;
+    if (!isDev && !(await verifyIsFromGitHub(req))) return false;
     // Optional function for early bailing if it returns false
     if (canHandleRequest && !canHandleRequest(event, action)) return false;
     return true;
 }
 
-export async function verifyIsFromGitHub(req: HttpRequest) {
+async function verifyIsFromGitHub(req: HttpRequest) {
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
     const secret = process.env.GITHUB_WEBHOOK_SECRET;
