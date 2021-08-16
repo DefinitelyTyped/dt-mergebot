@@ -72,7 +72,7 @@ const gotAReferenceMessage = (module: string, owners: string[]) => txt`
   | 
   | - [npm](https://www.npmjs.com/package/${module})
   | - [DT](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/${module})
-  | - [Related discussions](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions?discussions_q=label%3A%22Pkg%3A+${module}%22/)
+  | - [Related discussions](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions?discussions_q=label%3A%22Pkg%3A+${module}%22)
   |
   |Pinging the DT module owners: ${owners.map(o => "@" + o).join(", ")}.
 `;
