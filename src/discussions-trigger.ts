@@ -53,6 +53,8 @@ const couldNotFindMessage = txt`
   |- \`"[@typescript/vfs] Does not x, y"\`
   |- \`"Missing x inside [node]"\`
   |- \`"[express] Broken support for template types"\`
+  |
+  |By doing this, I can ping the folks who maintain the types you are referring to.
 `;
 
 const errorsGettingOwners = (str: string) =>  txt`
