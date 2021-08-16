@@ -39,7 +39,7 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
     const { headers, body } = req, githubId = headers["x-github-delivery"];
     const evName = headers["x-github-event"], evAction = body.action;
 
-    if (!(await shouldRunRequest(req))) {
+    if (!(await shouldRunRequest(context, req))) {
         reply(context, 204, "Can't handle this request");
     }
 

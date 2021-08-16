@@ -12,7 +12,7 @@ import { fetchFile } from "./util/fetchFile";
 export async function run(context: Context, req: HttpRequest) {
     httpLog(context, req);
 
-    if (!(await shouldRunRequest(req, canHandleRequest))) {
+    if (!(await shouldRunRequest(context, req, canHandleRequest))) {
         reply(context, 204, "Can't handle this request");
     }
 
