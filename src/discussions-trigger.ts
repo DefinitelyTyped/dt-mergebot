@@ -116,14 +116,13 @@ async function updateOrCreateMainComment(discussion: Discussion, message: string
 
 async function addLabel(discussion: Discussion, labelName: string, description?: string) {
     const existingLabel = await getLabelByName(labelName);
-    if (existingLabel && existingLabel.name === labelName) {
-        await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [existingLabel.id] }));
+    if (existingLabel.label && existingLabel.label.name === labelName) {
+        await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [existingLabel.label.id] }));
     } else {
-        const dtRepoID = "MDEwOlJlcG9zaXRvcnk2MDkzMzE2";
         // https://docs.github.com/en/graphql/reference/input-objects#createlabelinput
 
         const color = "111111";
-        const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: dtRepoID, color, description })) as any;
+        const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: existingLabel.repoID, color, description })) as any;
         const newID = newLabel.data.label.id;
         await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [newID] }));
     }
@@ -134,6 +133,7 @@ async function getLabelByName(name: string) {
         query: gql`
           query GetLabel($name: String!) {
             repository(name: "DefinitelyTyped", owner: "DefinitelyTyped") {
+              id
               name
               labels(query: $name, first: 1) {
                 nodes {
@@ -147,7 +147,8 @@ async function getLabelByName(name: string) {
         fetchPolicy: "no-cache",
     });
 
-    return info.data.repository.labels.nodes[0] as { id: string, name: string } | undefined;
+    const label: { id: string, name: string } | undefined =  info.data.repository.labels.nodes[0];
+    return { repoID: info.data.repository.id, label };
 }
 
 async function getCommentsForDiscussionNumber(number: number) {
