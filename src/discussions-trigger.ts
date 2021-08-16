@@ -116,16 +116,15 @@ async function updateOrCreateMainComment(discussion: Discussion, message: string
 
 async function addLabel(discussion: Discussion, labelName: string, description?: string) {
     const existingLabel = await getLabelByName(labelName);
+    let labelID = null;
     if (existingLabel.label && existingLabel.label.name === labelName) {
-        await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [existingLabel.label.id] }));
+        labelID = existingLabel.label.id;
     } else {
-        // https://docs.github.com/en/graphql/reference/input-objects#createlabelinput
-
-        const color = "111111";
+        const color = "eeeeee";
         const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: existingLabel.repoID, color, description })) as any;
-        const newID = newLabel.data.label.id;
-        await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [newID] }));
+        labelID = newLabel.data.label.id;
     }
+    await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [labelID] }));
 }
 
 async function getLabelByName(name: string) {
