@@ -1,11 +1,11 @@
 import { HttpRequest, Context } from "@azure/functions";
-import { Discussion, DiscussionWebhook } from "./types/discussions";
-import { createMutation, client } from "./graphql-client";
 import fetch from "node-fetch";
 import { gql } from "@apollo/client/core";
+import { Discussion, DiscussionWebhook } from "./types/discussions";
+import { createMutation, client } from "./graphql-client";
 import { reply } from "./util/reply";
 import { httpLog, shouldRunRequest } from "./util/verify";
-import { sha256 } from "./util/util";
+import { txt } from "./util/util";
 
 export async function run(context: Context, req: HttpRequest) {
     httpLog(context, req);
@@ -43,18 +43,21 @@ function extractNPMReference(discussion: Discussion) {
     return undefined;
 }
 
-const couldNotFindMessage = `Hi, we could not find a reference to the types you are talking about in this discussion. 
-Please edit the title to include the name on npm inside square brackets. 
-
-E.g. 
- - \`"[@typescript/vfs] Does not x, y"\`
- - \`"Missing x inside [node]"\`
- - \`"[express] Broken support for template types"\`
+const couldNotFindMessage = txt`
+  |Hi, we could not find a reference to the types you are talking about in this discussion. 
+  |Please edit the title to include the name on npm inside square brackets.
+  |
+  |E.g.
+  |- \`"[@typescript/vfs] Does not x, y"\`
+  |- \`"Missing x inside [node]"\`
+  |- \`"[express] Broken support for template types"\`
 `;
 
-const gotAReferenceMessage = (module: string, owners: string[]) => `Thanks for the discussion about "${module}", some useful links for everyone: [npm](https://www.npmjs.com/package/${module}) / etc
-
-Pinging the DT module owners: ${owners.join(", ")}.
+const gotAReferenceMessage = (module: string, owners: string[]) => txt`
+  |Thanks for the discussion about "${module}", some useful links for everyone:
+   [npm](https://www.npmjs.com/package/${module}) / etc
+  |
+  |Pinging the DT module owners: ${owners.join(", ")}.
 `;
 
 
@@ -95,36 +98,33 @@ async function updateOrCreateMainComment(discussion: Discussion, message: string
 async function addLabel(discussion: Discussion, labelName: string, description?: string) {
 
     const existingLabel = await getLabelByName(labelName);
-    let labelID = existingLabel && (existingLabel.name === labelName) && existingLabel.id;
-
-    if (!labelID) {
+    if (existingLabel && existingLabel.name === labelName) {
+        await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [existingLabel.id] }));
+    } else {
         const dtRepoID = "MDEwOlJlcG9zaXRvcnk2MDkzMzE2";
-        const color = sha256(labelName).substring(0,6);
-
         // https://docs.github.com/en/graphql/reference/input-objects#createlabelinput
+
+        const color = "111111";
         const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: dtRepoID, color, description })) as any;
-        labelID = newLabel.data.label.id;
+        const newID = newLabel.data.label.id;
+        await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [newID] }));
     }
-
-    await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [labelID] }));
 }
-
 
 async function getLabelByName(name: string) {
     const info = await client.query({
         query: gql`
-      query GetLabel($name: String!) {
-        repository(name: "DefinitelyTyped", owner: "DefinitelyTyped") {
-          name
-          labels(query: $name, first: 1) {
-            nodes {
-              id
+          query GetLabel($name: String!) {
+            repository(name: "DefinitelyTyped", owner: "DefinitelyTyped") {
               name
+              labels(query: $name, first: 1) {
+                nodes {
+                  id
+                  name
+                }
+              }
             }
-          }
-        }
-      }      
-`,
+          }`,
         variables: { name },
         fetchPolicy: "no-cache",
     });
@@ -135,23 +135,22 @@ async function getLabelByName(name: string) {
 async function getCommentsForDiscussionNumber(number: number) {
     const info = await client.query({
         query: gql`
-query GetDiscussionComments($discussionNumber: Int!) {
-  repository(name: "DefinitelyTyped", owner: "DefinitelyTyped") {
-    name
-    discussion(number: $discussionNumber) {
-      comments(first: 100, orderBy: { field: UPDATED_AT, direction: DESC },) {
-        nodes {
-          author {
-            login
-          }
-          id
-          body
-        }
-      }
-    }
-  }
-}
-`,
+          query GetDiscussionComments($discussionNumber: Int!) {
+            repository(name: "DefinitelyTyped", owner: "DefinitelyTyped") {
+              name
+              discussion(number: $discussionNumber) {
+                comments(first: 100, orderBy: { field: UPDATED_AT, direction: DESC }) {
+                  nodes {
+                    author {
+                      login
+                    }
+                    id
+                    body
+                  }
+                }
+              }
+            }
+          }`,
         variables: { discussionNumber: number },
         fetchPolicy: "no-cache",
     });

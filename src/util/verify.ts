@@ -6,10 +6,11 @@ export async function httpLog(context: Context, req: HttpRequest) {
     const githubId = headers["x-github-delivery"];
     const event = headers["x-github-event"]!;
     const action = body.action;
-
-    context.log(
-    `>>> HTTP Trigger [${context.executionContext.functionName}] [${event}.${action}; gh: ${githubId}; az: ${context.invocationId}; node: ${process.version}]`
-    );
+    context.log(`>>> HTTP Trigger ${context.executionContext.functionName} [${
+                  event}.${action
+                  }; gh: ${githubId
+                  }; az: ${context.invocationId
+                  }; node: ${process.version}]`);
 }
 
 export async function shouldRunRequest(req: HttpRequest, canHandleRequest?: (event: string, action: string) => boolean) {
