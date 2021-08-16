@@ -122,8 +122,9 @@ async function addLabel(discussion: Discussion, labelName: string, description?:
         labelID = existingLabel.label.id;
     } else {
         const color = "eeeeee";
-        const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: existingLabel.repoID, color, description })) as any;
-        labelID = newLabel.data.label.id;
+        const responseSubquery = "... on Discussion { id }";
+        const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: existingLabel.repoID, color, description }, responseSubquery)) as any;
+        labelID = newLabel.data.id;
     }
     await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [labelID] }));
 }

@@ -18,12 +18,13 @@ const link = new HttpLink({ uri, headers, fetch });
 
 export const client = new ApolloClient({ cache, link });
 
-export function createMutation<T>(name: keyof schema.Mutation, input: T): MutationOptions<void, { input: T }> {
+export function createMutation<T>(name: keyof schema.Mutation, input: T, subquery?: string): MutationOptions<void, { input: T }> {
     const mutation = {
         toJSON: () => print(mutation),
         ...(gql`mutation($input: ${name[0]!.toUpperCase() + name.slice(1)}Input!) {
                     ${name}(input: $input) {
                         __typename
+                        ${subquery || ""}
                     }
                 }` as TypedDocumentNode<void, { input: T }>),
     };
