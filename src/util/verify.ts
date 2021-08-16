@@ -22,7 +22,8 @@ export async function shouldRunRequest(context: Context, req: HttpRequest, canHa
 
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
-    if (!isDev && await verifyIsFromGitHub(req)) {
+    const fromGitHub = await verifyIsFromGitHub(req);
+    if (!isDev && !fromGitHub) {
         context.log("Request did not come from GitHub");
         return false;
     }
