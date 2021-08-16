@@ -157,7 +157,7 @@ async function getCommentsForDiscussionNumber(number: number) {
             repository(name: "DefinitelyTyped", owner: "DefinitelyTyped") {
               name
               discussion(number: $discussionNumber) {
-                comments(first: 100, orderBy: { field: UPDATED_AT, direction: DESC }) {
+                comments(first: 100) {
                   nodes {
                     author {
                       login
