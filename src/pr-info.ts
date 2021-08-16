@@ -487,7 +487,7 @@ function downloadsToPopularityLevel(monthlyDownloads: number): PopularityLevel {
         : "Well-liked by everyone";
 }
 
-async function getOwnersOfPackage(packageName: string, version: string, fetchFile: typeof defaultFetchFile): Promise<string[] | null | Error> {
+export async function getOwnersOfPackage(packageName: string, version: string, fetchFile: typeof defaultFetchFile): Promise<string[] | null | Error> {
     const indexDts = `${version}:types/${packageName}/index.d.ts`;
     const indexDtsContent = await fetchFile(indexDts, 10240); // grab at most 10k
     if (indexDtsContent === undefined) return null;

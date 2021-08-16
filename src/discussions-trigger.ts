@@ -6,6 +6,8 @@ import { createMutation, client } from "./graphql-client";
 import { reply } from "./util/reply";
 import { httpLog, shouldRunRequest } from "./util/verify";
 import { txt } from "./util/util";
+import { getOwnersOfPackage } from "./pr-info";
+import { fetchFile } from "./util/fetchFile";
 
 export async function run(context: Context, req: HttpRequest) {
     httpLog(context, req);
@@ -31,14 +33,14 @@ const handleTrigger = (info: { event: string; action: string; body: DiscussionWe
     } else if (categoryID === "request-a-new-types-package" && info.action === "created") {
         return updateDiscordWithRequest(info.body.discussion);
     }
-
     return reply(context, 204, "Can't handle this specific request");
 };
 
-function extractNPMReference(discussion: Discussion) {
+export function extractNPMReference(discussion: { title: string }) {
     const title = discussion.title;
     if (title.includes("[") && title.includes("]")) {
-        return title.split("[")[1]!.split("]")[0];
+        const full = title.split("[")[1]!.split("]")[0];
+        return full!.replace("@types/", "");
     }
     return undefined;
 }
@@ -53,9 +55,21 @@ const couldNotFindMessage = txt`
   |- \`"[express] Broken support for template types"\`
 `;
 
+const errorsGettingOwners = (str: string) =>  txt`
+  |Hi, we could not find [${str}] in DefinitelyTyped, is there possibly a typo? 
+`;
+
+const couldNotFindOwners = (str: string) =>  txt`
+  |Hi, we had an issue getting the owners for [${str}] - please raise an issue on DefinitelyTyped/dt-mergebot if this 
+`;
+
+
 const gotAReferenceMessage = (module: string, owners: string[]) => txt`
   |Thanks for the discussion about "${module}", some useful links for everyone:
-   [npm](https://www.npmjs.com/package/${module}) / etc
+  | 
+  | - [npm](https://www.npmjs.com/package/${module})
+  | - [DT](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/${module})
+  | - [Related discussions](https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aopen+is%3Aissue+label%3A%22Pkg%3A+${module}%22/)
   |
   |Pinging the DT module owners: ${owners.join(", ")}.
 `;
@@ -64,14 +78,19 @@ const gotAReferenceMessage = (module: string, owners: string[]) => txt`
 async function pingAuthorsAndSetUpDiscussion(discussion: Discussion) {
     const aboutNPMRef = extractNPMReference(discussion);
     if (!aboutNPMRef) {
-        // https://gist.github.com/smashwilson/311e1487ddb40a455fc54d294cc63ad4#adddiscussioncomment
+        // Could not find a types reference
         await updateOrCreateMainComment(discussion, couldNotFindMessage);
-        return;
     } else {
-        const message = gotAReferenceMessage(aboutNPMRef, []);
-        await updateOrCreateMainComment(discussion, message);
-        await addLabel(discussion, "Pkg: " + aboutNPMRef, `Discussions related to ${aboutNPMRef}`);
-        return;
+        const owners = await getOwnersOfPackage(aboutNPMRef, "master", fetchFile);
+        if (owners instanceof Error) {
+            await updateOrCreateMainComment(discussion, errorsGettingOwners(aboutNPMRef));
+        }  else if (!owners) {
+            await updateOrCreateMainComment(discussion, couldNotFindOwners(aboutNPMRef));
+        } else {
+            const message = gotAReferenceMessage(aboutNPMRef, owners);
+            await updateOrCreateMainComment(discussion, message);
+            await addLabel(discussion, "Pkg: " + aboutNPMRef, `Discussions related to ${aboutNPMRef}`);
+        }
     }
 }
 
@@ -96,7 +115,6 @@ async function updateOrCreateMainComment(discussion: Discussion, message: string
 }
 
 async function addLabel(discussion: Discussion, labelName: string, description?: string) {
-
     const existingLabel = await getLabelByName(labelName);
     if (existingLabel && existingLabel.name === labelName) {
         await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [existingLabel.id] }));
