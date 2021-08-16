@@ -13,7 +13,7 @@ export async function httpLog(context: Context, req: HttpRequest) {
                   }; node: ${process.version}]`);
 }
 
-export async function shouldRunRequest(req: HttpRequest, canHandleRequest?: (event: string, action: string) => boolean) {
+export async function shouldRunRequest(context: Context, req: HttpRequest, canHandleRequest?: (event: string, action: string) => boolean) {
     const isDev = process.env.AZURE_FUNCTIONS_ENVIRONMENT === "Development";
     const { headers, body } = req;
 
@@ -22,12 +22,16 @@ export async function shouldRunRequest(req: HttpRequest, canHandleRequest?: (eve
 
     // For process.env.GITHUB_WEBHOOK_SECRET see
     // https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot
-    if (!isDev && await verifyIsFromGitHub(req))
+    if (!isDev && await verifyIsFromGitHub(req)) {
+        context.log("Request did not come from GitHub");
         return false;
+    }
 
     // Optional function for early bailing if it returns false
-    if (canHandleRequest && !canHandleRequest(event, action))
+    if (canHandleRequest && !canHandleRequest(event, action)) {
+        context.log("canHandleRequest returned false");
         return false;
+    }
 
     return true;
 }
