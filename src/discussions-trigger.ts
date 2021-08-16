@@ -60,7 +60,8 @@ const errorsGettingOwners = (str: string) =>  txt`
 `;
 
 const couldNotFindOwners = (str: string) =>  txt`
-  |Hi, we had an issue getting the owners for [${str}] - please raise an issue on DefinitelyTyped/dt-mergebot if this 
+  |Hi, we had an issue getting the owners for [${str}] - first check if you have a typeo, otherwise please raise an issue on 
+  |DefinitelyTyped/dt-mergebot if the module exists on DT but this bot could not find information for it.
 `;
 
 
@@ -69,9 +70,9 @@ const gotAReferenceMessage = (module: string, owners: string[]) => txt`
   | 
   | - [npm](https://www.npmjs.com/package/${module})
   | - [DT](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/${module})
-  | - [Related discussions](https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aopen+is%3Aissue+label%3A%22Pkg%3A+${module}%22/)
+  | - [Related discussions](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions?discussions_q=label%3A%22Pkg%3A+${module}%22/)
   |
-  |Pinging the DT module owners: ${owners.join(", ")}.
+  |Pinging the DT module owners: ${owners.map(o => "@" + o).join(", ")}.
 `;
 
 
@@ -89,8 +90,8 @@ async function pingAuthorsAndSetUpDiscussion(discussion: Discussion) {
         } else {
             const message = gotAReferenceMessage(aboutNPMRef, owners);
             await updateOrCreateMainComment(discussion, message);
-            await addLabel(discussion, "Pkg: " + aboutNPMRef, `Discussions related to ${aboutNPMRef}`);
         }
+        await addLabel(discussion, "Pkg: " + aboutNPMRef, `Discussions related to ${aboutNPMRef}`);
     }
 }
 
