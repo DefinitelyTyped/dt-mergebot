@@ -2,3 +2,4 @@
 /node_modules/
 /coverage/
 tsconfig.tsbuildinfo
+.DS_Store
