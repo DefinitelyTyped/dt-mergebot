@@ -132,7 +132,7 @@ export const RemindPeopleTheyCanUnblockPR = (user: string, approvalUsers: string
         |
         |If you would like to short-circuit this wait, you can edit some of the [test files](${urls.testsTs})
          in the package which verify how the \`.d.ts\` files work. This would allow the PR to be
-         merged by you or the DT module owners.`
+         merged by you or the DT module owners after a re-review.`
 });
 
 // Explanation for the stalness count in the welcome message

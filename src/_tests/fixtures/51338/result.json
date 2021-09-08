@@ -19,7 +19,7 @@
     },
     {
       "tag": "wait-for-merge-offer-4a7712f",
-      "status": ":hourglass_flowing_sand: Hi @pkuczynski,\n\nIt's been a few days since this PR was approved by tellnes and we're waiting on a DT maintainer to give a review.\n\nIf you would like to short-circuit this wait, you can edit some of the [test files](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-my-package-teststs) in the package which verify how the `.d.ts` files work. This would allow the PR to be merged by you or the DT module owners."
+      "status": ":hourglass_flowing_sand: Hi @pkuczynski,\n\nIt's been a few days since this PR was approved by tellnes and we're waiting on a DT maintainer to give a review.\n\nIf you would like to short-circuit this wait, you can edit some of the [test files](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-my-package-teststs) in the package which verify how the `.d.ts` files work. This would allow the PR to be merged by you or the DT module owners after a re-review."
     },
     {
       "tag": "Unreviewed:nearly:2021-02-19",
