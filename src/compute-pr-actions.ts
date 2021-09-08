@@ -332,7 +332,7 @@ export function process(prInfo: BotResult,
 
     // Has it: got no DT tests but is approved by DT modules and basically blocked by the DT maintainers - and it has been over 3 days?
     // Send a message reminding them that they can un-block themselves by adding tests.
-    if (!info.hasTests && !info.hasMultiplePackages && info.approvedBy.includes("owner") && !info.editsInfra  && info.approverKind === "maintainer"  && info.staleness && info.staleness.days > 3) {
+    if (!info.hasTests && !info.hasMultiplePackages && info.approvedBy.includes("owner") && !info.editsInfra  && info.approverKind === "maintainer" && info.staleness && info.staleness.days > 3) {
         post(Comments.RemindPeopleTheyCanUnblockPR(info.author, info.approvedReviews.map(r => r.reviewer), headCommitAbbrOid));
     }
 

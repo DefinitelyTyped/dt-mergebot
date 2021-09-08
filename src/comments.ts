@@ -1,4 +1,5 @@
 import { sha256, txt } from "./util/util";
+import * as urls from "./urls";
 
 // use `deletedWhenNotPresent` for comments that should be removed if not in the actions
 export const tagsToDeleteIfNotPosted: string[] = [];
@@ -126,11 +127,13 @@ export const RemindPeopleTheyCanUnblockPR = (user: string, approvalUsers: string
     status: txt`
         |:hourglass_flowing_sand: Hi @${user},
         |
-        |It's been a few days since this PR was approved by ${approvalUsers.join(", ")} and we're waiting on a DT maintainer to give a review.
+        |It's been a few days since this PR was approved by ${approvalUsers.join(", ")}
+         and we're waiting on a DT maintainer to give a review.
         |
-        |If you would like to short-circuit this wait, you can edit some of the [test files](https://github.com/DefinitelyTyped/DefinitelyTyped#my-package-teststs) in the package which verify how the .d.ts files work. This would allow the PR to be merged by you or the DT module owners.`
+        |If you would like to short-circuit this wait, you can edit some of the [test files](${urls.testsTs})
+         in the package which verify how the \`.d.ts\` files work. This would allow the PR to be
+         merged by you or the DT module owners.`
 });
-
 
 // Explanation for the stalness count in the welcome message
 export const StalenessExplanations: { [k: string]: string } = {
