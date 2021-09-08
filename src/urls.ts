@@ -11,6 +11,7 @@ export const otherFilesTxt = readmeLink("`OTHER_FILES.txt`");
 export const packageJson = readmeLink("`package.json`");
 export const linterJson = readmeLink("Linter: `tslint.json`");
 export const tsconfigJson = readmeLink("`tsconfig.json`");
+export const testsTs = readmeLink("`<my-package>-tests.ts`");
 
 export const playground = (prNum: number) =>
     `https://www.typescriptlang.org/play/?dtPR=${prNum}&install-plugin=playground-dt-review`;

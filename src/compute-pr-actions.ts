@@ -271,7 +271,7 @@ export function process(prInfo: BotResult,
         }
     }
 
-    // Some step should override actions.projectColumn, the default "Other" indicates a probelm
+    // Some step should override actions.projectColumn, the default "Other" indicates a problem
 
     // First-timers are blocked from CI runs until approved, this case is for infra edits (require a maintainer)
     if (info.ciResult === "action_required") {
@@ -328,6 +328,12 @@ export function process(prInfo: BotResult,
 
     if (!actions.shouldMerge && info.mergeRequestUser) {
         post(Comments.WaitUntilMergeIsOK(info.mergeRequestUser, headCommitAbbrOid, urls.workflow, info.mainBotCommentID));
+    }
+
+    // Has it: got no DT tests but is approved by DT modules and basically blocked by the DT maintainers - and it has been over 3 days?
+    // Send a message reminding them that they can un-block themselves by adding tests.
+    if (!info.hasTests && !info.hasMultiplePackages && info.approvedBy.includes("owner") && !info.editsInfra  && info.approverKind === "maintainer" && info.staleness && info.staleness.days > 3) {
+        post(Comments.RemindPeopleTheyCanUnblockPR(info.author, info.approvedReviews.map(r => r.reviewer), headCommitAbbrOid));
     }
 
     // Timeline-related actions
