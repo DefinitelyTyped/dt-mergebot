@@ -370,6 +370,9 @@ configSuspicious["tsconfig.json"] = makeChecker(
         data.compilerOptions.lib = data.compilerOptions.lib.filter((value: unknown) =>
             !(typeof value === "string" && value.toLowerCase() === "dom"));
         ["baseUrl", "typeRoots", "paths", "jsx"].forEach(k => delete data.compilerOptions[k]);
+        if (typeof data.compilerOptions?.target === "string" && data.compilerOptions.target.toLowerCase() === "es6") {
+            delete data.compilerOptions.target;
+        }
         delete data.files;
     } }
 );
