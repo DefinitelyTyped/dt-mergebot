@@ -130,6 +130,10 @@ export interface PrInfo {
      * True if there are more files than we can fetch from the initial query (or no files)
      */
     readonly tooManyFiles: boolean;
+    /*
+     * True for PRs with over 5k line chanbges (top ~3%)
+     */
+    readonly hugeChange: boolean;
 
     readonly popularityLevel: PopularityLevel;
 
@@ -184,6 +188,7 @@ export async function deriveStateForPR(
     const tooManyFiles = !fileCount // should never happen, make it look fishy if it does
         || fileCount !== prInfo.files?.nodes?.length // didn't get all files somehow
         || fileCount > 500; // suspiciously many files
+    const hugeChange = prInfo.additions + prInfo.deletions > 5000;
 
     const pkgInfoEtc = await getPackageInfosEtc(
         noNullish(prInfo.files?.nodes).map(f => f.path).sort(),
@@ -212,6 +217,7 @@ export async function deriveStateForPR(
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         isFirstContribution,
         tooManyFiles,
+        hugeChange,
         popularityLevel,
         pkgInfo,
         reviews,

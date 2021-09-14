@@ -252,6 +252,7 @@ export function process(prInfo: BotResult,
     label("Too Many Owners", info.tooManyOwners);
     label("Check Config", info.checkConfig);
     label("Untested Change", info.isUntested);
+    label("Huge Change", info.hugeChange);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
 
     // Update intro comment
@@ -488,6 +489,9 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
                     once it's reviewed by ${requiredApprover}.`);
     } else if (info.checkConfig && info.blessingKind !== "review") {
         display(txt`Because this PR edits the configuration file, it can be merged
+                    once it's reviewed by ${requiredApprover}.`);
+    } else if (info.hugeChange && info.blessingKind !== "review") {
+        display(txt`Because this is a huge PR, it can be merged
                     once it's reviewed by ${requiredApprover}.`);
     } else if (info.blessingKind !== "review") {
         display(`This PR can be merged once it's reviewed by ${requiredApprover}.`);

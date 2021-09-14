@@ -542,6 +542,14 @@ export interface PR_repository_pullRequest {
    */
   changedFiles: number;
   /**
+   * The number of additions in this pull request.
+   */
+  additions: number;
+  /**
+   * The number of deletions in this pull request.
+   */
+  deletions: number;
+  /**
    * A list of events, comments, commits, etc. associated with the pull request.
    */
   timelineItems: PR_repository_pullRequest_timelineItems;

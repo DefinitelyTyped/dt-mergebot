@@ -13,6 +13,7 @@
   "hasMergeConflict": false,
   "isFirstContribution": false,
   "tooManyFiles": false,
+  "hugeChange": false,
   "popularityLevel": "Critical",
   "pkgInfo": [
     {
