@@ -10,6 +10,7 @@
   "hasMergeConflict": true,
   "isFirstContribution": false,
   "tooManyFiles": false,
+  "hugeChange": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
     {

@@ -16,12 +16,28 @@ export interface GetLabels_repository_labels_nodes {
   name: string;
 }
 
+export interface GetLabels_repository_labels_pageInfo {
+  __typename: "PageInfo";
+  /**
+   * When paginating forwards, are there more items?
+   */
+  hasNextPage: boolean;
+  /**
+   * When paginating forwards, the cursor to continue.
+   */
+  endCursor: string | null;
+}
+
 export interface GetLabels_repository_labels {
   __typename: "LabelConnection";
   /**
    * A list of nodes.
    */
   nodes: (GetLabels_repository_labels_nodes | null)[] | null;
+  /**
+   * Information to aid in pagination.
+   */
+  pageInfo: GetLabels_repository_labels_pageInfo;
 }
 
 export interface GetLabels_repository {
@@ -38,4 +54,8 @@ export interface GetLabels {
    * Lookup a given repository by the owner and repository name.
    */
   repository: GetLabels_repository | null;
+}
+
+export interface GetLabelsVariables {
+  endCursor?: string | null;
 }
