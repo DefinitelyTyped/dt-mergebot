@@ -481,22 +481,24 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
             : "and there were no type definition changes";
         display(txt`Because you edited one package ${and}, I can help you merge this PR
                     once someone else signs off on it.`);
-    } else if (info.noOtherOwners && info.blessingKind !== "review") {
-        display(txt`There aren't any other owners of this package,
-                    so ${requiredApprover} will review it.`);
-    } else if (info.hasMultiplePackages && info.blessingKind !== "review") {
-        display(txt`Because this PR edits multiple packages, it can be merged
-                    once it's reviewed by ${requiredApprover}.`);
-    } else if (info.checkConfig && info.blessingKind !== "review") {
-        display(txt`Because this PR edits the configuration file, it can be merged
-                    once it's reviewed by ${requiredApprover}.`);
-    } else if (info.hugeChange && info.blessingKind !== "review") {
-        display(txt`Because this is a huge PR, it can be merged
-                    once it's reviewed by ${requiredApprover}.`);
-    } else if (info.blessingKind !== "review") {
-        display(`This PR can be merged once it's reviewed by ${requiredApprover}.`);
-    } else {
+    } else if (info.blessingKind === "review") {
         display("This PR can be merged once it's reviewed.");
+    } else {
+        if (info.noOtherOwners) {
+            display(txt`There aren't any other owners of this package,
+                        so ${requiredApprover} will review it.`);
+        } else if (info.hasMultiplePackages) {
+            display(txt`Because this PR edits multiple packages, it can be merged
+                        once it's reviewed by ${requiredApprover}.`);
+        } else if (info.checkConfig) {
+            display(txt`Because this PR edits the configuration file, it can be merged
+                        once it's reviewed by ${requiredApprover}.`);
+        } else if (info.hugeChange) {
+            display(txt`Because this is a huge PR, it can be merged
+                        once it's reviewed by ${requiredApprover}.`);
+        } else {
+            display(`This PR can be merged once it's reviewed by ${requiredApprover}.`);
+        }
     }
 
     if (!info.tooManyFiles) {
