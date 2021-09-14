@@ -65,10 +65,11 @@ export const PingReviewers = (names: readonly string[], reviewLink: string) => (
          in the GitHub UI so I know what's going on.`
 });
 
-export const PingReviewersOther = (user: string, reviewLink: string) => ({
+export const PingReviewersOther = (user: string, authorIsOwner: boolean, reviewLink: string) => ({
     tag: "pinging-reviewers-others",
     status: txt`
-        |🔔 @${user} — you're the only owner, but it would still be good if you find someone to
+        |🔔 @${user} — ${authorIsOwner ? "you're the only owner" : "there are no owners"},
+         but it would still be good if you find someone to
          [review this PR](${reviewLink}) in the next few days, otherwise a maintainer will look at it.
          (And if you do find someone, maybe even recruit them to be a second owner to make future
          changes easier...)`

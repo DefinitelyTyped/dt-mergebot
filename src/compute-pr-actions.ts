@@ -262,7 +262,8 @@ export function process(prInfo: BotResult,
     if (!(info.hasChangereqs || info.approvedBy.includes("owner") || info.approvedBy.includes("maintainer"))) {
         if (info.noOtherOwners) {
             if (info.popularityLevel !== "Critical") {
-                post(Comments.PingReviewersOther(info.author, urls.review(info.pr_number)));
+                const authorIsNewOwner = flatten(info.pkgInfo.map(p => p.addedOwners)).includes(info.author);
+                post(Comments.PingReviewersOther(info.author, info.authorIsOwner || authorIsNewOwner, urls.review(info.pr_number)));
             }
         } else if (info.tooManyOwners) {
             post(Comments.PingReviewersTooMany(info.otherOwners));
