@@ -31,7 +31,8 @@
         },
         {
           "path": "types/is-secret/tslint.json",
-          "kind": "package-meta-ok"
+          "kind": "package-meta",
+          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) (check: `extends`)"
         }
       ],
       "owners": [],
