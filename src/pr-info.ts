@@ -354,7 +354,7 @@ configSuspicious["package.json"] = makeChecker(
     } }
 );
 configSuspicious["tslint.json"] = makeChecker(
-    { extends: "dtslint/dt.json" },
+    { extends: "@definitelytyped/dtslint/dt.json" },
     urls.linterJson
 );
 configSuspicious["tsconfig.json"] = makeChecker(
