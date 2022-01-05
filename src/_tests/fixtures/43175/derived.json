@@ -4,6 +4,7 @@
   "pr_number": 43175,
   "author": "ankhler",
   "headCommitOid": "b4b3bc8a617e2e0810d60e389415818d903e6362",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-03-17T13:51:37.000Z",
   "lastActivityDate": "2020-03-17T13:51:37.000Z",
   "hasMergeConflict": false,

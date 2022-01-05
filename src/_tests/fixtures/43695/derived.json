@@ -4,6 +4,7 @@
   "pr_number": 43695,
   "author": "alexandercerutti",
   "headCommitOid": "a5285cda2722912a390770722a334e6d6e43d1ab",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-04-07T07:41:37.000Z",
   "lastActivityDate": "2020-04-08T16:23:52.000Z",
   "hasMergeConflict": false,

@@ -4,6 +4,7 @@
   "pr_number": 43314,
   "author": "metonym",
   "headCommitOid": "432f23fe1b87b12fe58bb1a8958f77ee3242741e",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-03-22T16:48:44.000Z",
   "lastActivityDate": "2020-03-22T16:50:35.000Z",
   "hasMergeConflict": false,

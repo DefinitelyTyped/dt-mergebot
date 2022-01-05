@@ -4,6 +4,7 @@
   "pr_number": 44424,
   "author": "tomer-openfin",
   "headCommitOid": "af636941dac21c0752befa1617297dfdac3e0a52",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-05-01T19:20:22.000Z",
   "lastActivityDate": "2020-05-01T19:23:41.000Z",
   "hasMergeConflict": false,

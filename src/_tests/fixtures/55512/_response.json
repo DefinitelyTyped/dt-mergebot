@@ -38,6 +38,7 @@
         "state": "OPEN",
         "headRefOid": "e90d61bddfd00fa6db114993d0689cdb367be7e5",
         "changedFiles": 1,
+        "commitIds": {},
         "timelineItems": {
           "nodes": [
             {

@@ -4,6 +4,7 @@
   "pr_number": 44989,
   "author": "petr-motejlek",
   "headCommitOid": "9ca60862ea56c9ff8d6b0f26c28b7e0bdaef4b34",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-05-23T08:41:39.000Z",
   "lastActivityDate": "2020-05-23T10:05:48.000Z",
   "mergeOfferDate": "2020-05-23T10:05:30.000Z",

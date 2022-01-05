@@ -25,6 +25,7 @@
           "__typename": "LabelConnection"
         },
         "changedFiles": 4,
+        "commitIds": {},
         "isDraft": false,
         "mergeable": "MERGEABLE",
         "number": 52579,

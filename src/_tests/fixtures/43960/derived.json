@@ -4,6 +4,7 @@
   "pr_number": 43960,
   "author": "aaltepet",
   "headCommitOid": "129f84e4492a76e7cd5af9d946c4583a60e6eb88",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-04-16T17:21:54.000Z",
   "lastActivityDate": "2020-04-29T20:48:52.000Z",
   "hasMergeConflict": false,

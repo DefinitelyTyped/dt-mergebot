@@ -39,6 +39,7 @@
         "state": "MERGED",
         "headRefOid": "0b87d3682a6ccb97d475a639c3640a6829a138c4",
         "changedFiles": 2,
+        "commitIds": {},
         "timelineItems": {
           "nodes": [
             {

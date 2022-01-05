@@ -4,6 +4,7 @@
   "pr_number": 44857,
   "author": "ExE-Boss",
   "headCommitOid": "4aff18f9b99fdfc26209485631ba429f5d3d29ba",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-07-28T16:54:29.000Z",
   "lastActivityDate": "2020-07-29T16:31:48.000Z",
   "hasMergeConflict": false,

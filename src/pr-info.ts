@@ -74,6 +74,11 @@ export interface PrInfo {
     readonly headCommitOid: string;
 
     /**
+     * merge-base-like commit for config comparisons (see getBaseId() below)
+     */
+    readonly mergeBaseOid: string;
+
+    /**
      * The GitHub login of the PR author
      */
     readonly author: string;
@@ -153,6 +158,23 @@ export type BotResult =
 function getHeadCommit(pr: PR_repository_pullRequest) {
     return pr.commits.nodes?.find(c => c?.commit.oid === pr.headRefOid)?.commit;
 }
+function getBaseId(pr: PR_repository_pullRequest): string | undefined {
+    // Finds a revision to compare config files against (similar to git merge-base, but simple (linear
+    // history on master, assume sane merges at most): finds the most recent sha1 that is not part of
+    // the PR -- not too reliable, but better than always using "master").
+    const nodes = pr.commitIds.nodes;
+    if (!nodes) return;
+    const prCommits = noNullish(nodes.map(node => node?.commit.oid));
+    if (!prCommits.length) return;
+    for (const node of nodes.slice(0).reverse()) {
+        const parents = node?.commit.parents.nodes;
+        if (!parents) continue;
+        for (const parent of parents) {
+            if (parent?.oid && !prCommits.includes(parent.oid)) return parent.oid;
+        }
+    }
+    return;
+}
 
 // The GQL response => Useful data for us
 export async function deriveStateForPR(
@@ -168,6 +190,7 @@ export async function deriveStateForPR(
 
     const headCommit = getHeadCommit(prInfo);
     if (headCommit == null) return botError("No head commit found");
+    const baseId = getBaseId(prInfo) || "master";
 
     const author = prInfo.author.login;
     const isFirstContribution = prInfo.authorAssociation === "FIRST_TIME_CONTRIBUTOR";
@@ -192,7 +215,8 @@ export async function deriveStateForPR(
 
     const pkgInfoEtc = await getPackageInfosEtc(
         noNullish(prInfo.files?.nodes).map(f => f.path).sort(),
-        prInfo.headRefOid, fetchFile, async name => await getDownloads(name, lastPushDate));
+        prInfo.headRefOid, baseId,
+        fetchFile, async name => await getDownloads(name, lastPushDate));
     if (pkgInfoEtc instanceof Error) return botError(pkgInfoEtc.message);
     const { pkgInfo, popularityLevel } = pkgInfoEtc;
 
@@ -211,6 +235,7 @@ export async function deriveStateForPR(
         pr_number: prInfo.number,
         author,
         headCommitOid: prInfo.headRefOid,
+        mergeBaseOid: baseId, // not needed, kept for debugging
         lastPushDate, lastActivityDate,
         maintainerBlessed: blessing?.column,
         mergeOfferDate, mergeRequestDate: mergeRequest?.date, mergeRequestUser: mergeRequest?.user,
@@ -267,18 +292,18 @@ function getLastMaintainerBlessing(after: Date, timelineItems: PR_repository_pul
 }
 
 async function getPackageInfosEtc(
-    paths: string[], headId: string, fetchFile: typeof defaultFetchFile, getDownloads: typeof getMonthlyDownloadCount
+    paths: string[], headId: string, baseId: string, fetchFile: typeof defaultFetchFile, getDownloads: typeof getMonthlyDownloadCount
 ): Promise<{pkgInfo: PackageInfo[], popularityLevel: PopularityLevel} | Error> {
     const infos = new Map<string|null, FileInfo[]>();
     for (const path of paths) {
-        const [pkg, fileInfo] = await categorizeFile(path, async (oid: string = headId) => fetchFile(`${oid}:${path}`));
+        const [pkg, fileInfo] = await categorizeFile(path, headId, baseId, fetchFile);
         if (!infos.has(pkg)) infos.set(pkg, []);
         infos.get(pkg)!.push(fileInfo);
     }
     const result: PackageInfo[] = [];
     let maxDownloads = 0;
     for (const [name, files] of infos) {
-        const oldOwners = !name ? null : await getOwnersOfPackage(name, "master", fetchFile);
+        const oldOwners = !name ? null : await getOwnersOfPackage(name, baseId, fetchFile);
         if (oldOwners instanceof Error) return oldOwners;
         const newOwners0 = !name ? null
             : !paths.includes(`types/${name}/index.d.ts`) ? oldOwners
@@ -306,7 +331,8 @@ async function getPackageInfosEtc(
     return { pkgInfo: result, popularityLevel: downloadsToPopularityLevel(maxDownloads) };
 }
 
-async function categorizeFile(path: string, contents: (oid?: string) => Promise<string | undefined>): Promise<[string|null, FileInfo]> {
+async function categorizeFile(path: string, newId: string, oldId: string,
+                              fetchFile: typeof defaultFetchFile): Promise<[string|null, FileInfo]> {
     // https://regex101.com/r/eFvtrz/1
     const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
     if (!match) return [null, { path, kind: "infrastructure" }];
@@ -317,26 +343,27 @@ async function categorizeFile(path: string, contents: (oid?: string) => Promise<
         case "ts": case "tsx": return [pkg, { path, kind: "test" }];
         case "md": return [pkg, { path, kind: "markdown" }];
         default: {
-            const suspect = await configSuspicious(path, contents);
+            const contentGetter = (oid: string) => async () => fetchFile(`${oid}:${path}`);
+            const suspect = await configSuspicious(path, contentGetter(newId), contentGetter(oldId));
             return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", suspect }];
         }
     }
 }
 
 interface ConfigSuspicious {
-    (path: string, getContents: (oid?: string) => Promise<string | undefined>): Promise<string | undefined>;
+    (path: string, getNew: () => Promise<string | undefined>, getOld: () => Promise<string | undefined>): Promise<string | undefined>;
     [basename: string]: (text: string, oldText?: string) => string | undefined;
 }
-const configSuspicious = <ConfigSuspicious>(async (path, getContents) => {
+const configSuspicious = <ConfigSuspicious>(async (path, newContents, oldContents) => {
     const basename = path.replace(/.*\//, "");
     const checker = configSuspicious[basename];
     if (!checker) return `edited`;
-    const text = await getContents();
+    const text = await newContents();
     // Removing tslint.json, tsconfig.json, package.json and
     // OTHER_FILES.txt is checked by the CI. Specifics are in my commit
     // message.
     if (text === undefined) return undefined;
-    const oldText = await getContents("master");
+    const oldText = await oldContents();
     return checker(text, oldText);
 });
 configSuspicious["OTHER_FILES.txt"] = makeChecker(
@@ -496,8 +523,8 @@ function downloadsToPopularityLevel(monthlyDownloads: number): PopularityLevel {
         : "Well-liked by everyone";
 }
 
-export async function getOwnersOfPackage(packageName: string, version: string, fetchFile: typeof defaultFetchFile): Promise<string[] | null | Error> {
-    const indexDts = `${version}:types/${packageName}/index.d.ts`;
+export async function getOwnersOfPackage(packageName: string, oid: string, fetchFile: typeof defaultFetchFile): Promise<string[] | null | Error> {
+    const indexDts = `${oid}:types/${packageName}/index.d.ts`;
     const indexDtsContent = await fetchFile(indexDts, 10240); // grab at most 10k
     if (indexDtsContent === undefined) return null;
     let parsed: HeaderParser.Header;
