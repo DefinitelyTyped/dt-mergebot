@@ -4,6 +4,7 @@
   "pr_number": 45884,
   "author": "sgratzl",
   "headCommitOid": "1dcf44a05908783324ca99231837267af495cdb7",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-07-04T08:33:11.000Z",
   "lastActivityDate": "2020-07-06T06:50:47.000Z",
   "maintainerBlessed": "Waiting for Code Reviews",

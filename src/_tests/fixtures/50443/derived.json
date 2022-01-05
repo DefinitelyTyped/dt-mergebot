@@ -4,6 +4,7 @@
   "pr_number": 50443,
   "author": "shockdevv",
   "headCommitOid": "130c0882b07fc556c9690dac5f5ac231905c0636",
+  "mergeBaseOid": "master",
   "lastPushDate": "2021-01-06T18:43:31.000Z",
   "lastActivityDate": "2021-01-07T21:14:55.000Z",
   "mergeOfferDate": "2021-01-07T20:34:53.000Z",

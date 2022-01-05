@@ -39,6 +39,7 @@
         "state": "CLOSED",
         "headRefOid": "129f84e4492a76e7cd5af9d946c4583a60e6eb88",
         "changedFiles": 2,
+        "commitIds": {},
         "timelineItems": {
           "nodes": [
             {

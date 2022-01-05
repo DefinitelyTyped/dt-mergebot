@@ -4,6 +4,7 @@
   "pr_number": 46191,
   "author": "jordanoverbye",
   "headCommitOid": "3cc81dbde57a1b0eda6f69f539fa49b8d420adff",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-07-20T06:54:57.000Z",
   "lastActivityDate": "2020-07-20T07:08:31.000Z",
   "hasMergeConflict": false,

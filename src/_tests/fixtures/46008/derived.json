@@ -4,6 +4,7 @@
   "pr_number": 46008,
   "author": "risingBirdSong",
   "headCommitOid": "3e19cb9cae4689fb736fd6682f7f76d8efafcaa2",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-07-10T00:44:49.000Z",
   "lastActivityDate": "2020-07-11T02:09:10.000Z",
   "maintainerBlessed": "Waiting for Code Reviews",

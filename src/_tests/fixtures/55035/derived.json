@@ -4,6 +4,7 @@
   "pr_number": 55035,
   "author": "shoopapa",
   "headCommitOid": "7eca0aa421c535497e59aa231b955ea2b47712e4",
+  "mergeBaseOid": "master",
   "lastPushDate": "2021-08-10T17:10:15.000Z",
   "lastActivityDate": "2021-08-16T10:04:47.000Z",
   "hasMergeConflict": false,

@@ -4,6 +4,7 @@
   "pr_number": 44299,
   "author": "geopic",
   "headCommitOid": "683fb3b1298223256be3a49823686f35bd94a730",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-04-29T10:57:59.000Z",
   "lastActivityDate": "2020-04-29T10:57:59.000Z",
   "hasMergeConflict": false,

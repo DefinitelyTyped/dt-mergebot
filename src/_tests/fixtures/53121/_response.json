@@ -30,6 +30,7 @@
         "state": "OPEN",
         "headRefOid": "c13f5d7c969561db0ac38464086406b6554e711c",
         "changedFiles": 2,
+        "commitIds": {},
         "timelineItems": {
           "nodes": [],
           "__typename": "PullRequestTimelineItemsConnection"

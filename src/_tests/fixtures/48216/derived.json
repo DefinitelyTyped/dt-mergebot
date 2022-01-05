@@ -4,6 +4,7 @@
   "pr_number": 48216,
   "author": "jablko",
   "headCommitOid": "3f689bfb9d310612cdaf7c52c7ead41d1181b52f",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-09-27T17:23:58.000Z",
   "lastActivityDate": "2020-09-27T19:01:23.000Z",
   "hasMergeConflict": false,

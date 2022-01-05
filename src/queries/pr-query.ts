@@ -42,6 +42,8 @@ query PR($prNumber: Int!) {
         additions
         deletions
 
+        commitIds: commits(last: 100) { nodes { commit { oid parents(first: 3) { nodes { oid }}}}}
+
         timelineItems(last: 200, itemTypes: [REOPENED_EVENT, READY_FOR_REVIEW_EVENT,
                                              MOVED_COLUMNS_IN_PROJECT_EVENT]) {
           nodes {

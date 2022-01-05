@@ -4,6 +4,7 @@
   "pr_number": 44402,
   "author": "sandersn",
   "headCommitOid": "5dfb9945fc5c243f011a9436cbcc12d1ad12b012",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-04-30T23:17:43.000Z",
   "lastActivityDate": "2020-05-01T05:46:07.000Z",
   "hasMergeConflict": false,

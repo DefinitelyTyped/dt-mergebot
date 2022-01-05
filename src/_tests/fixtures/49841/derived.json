@@ -4,6 +4,7 @@
   "pr_number": 49841,
   "author": "shekari-ah",
   "headCommitOid": "4849e8876b0ab7adc889ccc35b55fde6f0274837",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-11-28T09:12:34.000Z",
   "lastActivityDate": "2020-11-28T09:17:28.000Z",
   "hasMergeConflict": false,

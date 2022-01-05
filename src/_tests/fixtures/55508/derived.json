@@ -4,6 +4,7 @@
   "pr_number": 55508,
   "author": "avi12",
   "headCommitOid": "7288ad262198cd40a8457837580b67f9d1b68c7b",
+  "mergeBaseOid": "master",
   "lastPushDate": "2021-09-01T12:30:10.000Z",
   "lastActivityDate": "2021-09-01T14:59:00.000Z",
   "hasMergeConflict": false,

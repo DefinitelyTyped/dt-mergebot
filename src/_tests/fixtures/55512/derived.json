@@ -4,6 +4,7 @@
   "pr_number": 55512,
   "author": "philibea",
   "headCommitOid": "e90d61bddfd00fa6db114993d0689cdb367be7e5",
+  "mergeBaseOid": "master",
   "lastPushDate": "2021-08-31T15:13:30.000Z",
   "lastActivityDate": "2021-08-31T18:33:55.000Z",
   "hasMergeConflict": false,

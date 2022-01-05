@@ -4,6 +4,7 @@
   "pr_number": 44411,
   "author": "peterblazejewicz",
   "headCommitOid": "d0d51a062525a6a4b83b297cd0e75adb4d5628f6",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-05-01T10:24:23.000Z",
   "lastActivityDate": "2020-05-01T10:24:45.000Z",
   "hasMergeConflict": false,

@@ -4,6 +4,7 @@
   "pr_number": 55741,
   "author": "kasumisk",
   "headCommitOid": "aded751196aea4180928204085f088eb530d7b88",
+  "mergeBaseOid": "master",
   "lastPushDate": "2021-09-13T08:39:37.000Z",
   "lastActivityDate": "2021-09-13T20:35:23.000Z",
   "hasMergeConflict": false,

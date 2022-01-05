@@ -4,6 +4,7 @@
   "pr_number": 44316,
   "author": "mattleff",
   "headCommitOid": "55357f7d60d059b5c84a23bd92854276a8f9a419",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-04-29T15:19:08.000Z",
   "lastActivityDate": "2020-04-29T15:19:08.000Z",
   "hasMergeConflict": false,

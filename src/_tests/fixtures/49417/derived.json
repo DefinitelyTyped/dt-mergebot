@@ -4,6 +4,7 @@
   "pr_number": 49417,
   "author": "Methuselah96",
   "headCommitOid": "2b9d0980329843dc436a18460f85bb2e2d2f688c",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-11-08T07:52:53.000Z",
   "lastActivityDate": "2020-11-16T07:38:51.000Z",
   "hasMergeConflict": false,

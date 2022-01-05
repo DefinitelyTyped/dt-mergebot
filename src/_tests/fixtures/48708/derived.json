@@ -4,6 +4,7 @@
   "pr_number": 48708,
   "author": "martin-badin",
   "headCommitOid": "eb13547e342b1316aeea85df84983a534cfb092f",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-10-12T12:27:56.000Z",
   "lastActivityDate": "2020-10-15T15:53:50.000Z",
   "hasMergeConflict": false,

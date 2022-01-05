@@ -4,6 +4,7 @@
   "pr_number": 45836,
   "author": "mmorearty",
   "headCommitOid": "6c7735e2b8f39640cb73e40ae04cb6642a8ab2cd",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-07-01T23:06:38.000Z",
   "lastActivityDate": "2020-07-08T18:13:23.000Z",
   "mergeOfferDate": "2020-04-30T01:31:41.000Z",
