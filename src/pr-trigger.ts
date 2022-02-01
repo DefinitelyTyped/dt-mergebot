@@ -36,12 +36,12 @@ class IgnoredBecause {
 
 export async function httpTrigger(context: Context, req: HttpRequest) {
     httpLog(context, req);
-    const { headers, body } = req, githubId = headers["x-github-delivery"];
-    const evName = headers["x-github-event"], evAction = body.action;
-
     if (!(await shouldRunRequest(context, req))) {
         return reply(context, 204, "Can't handle this request");
     }
+
+    const { headers, body } = req, githubId = headers["x-github-delivery"];
+    const evName = headers["x-github-event"], evAction = body.action;
 
     if (evName === "check_run" && evAction === "completed") {
         context.log(`>>>>>> name: ${body?.check_run?.name}, sha: ${body?.check_run?.head_sha}`);
