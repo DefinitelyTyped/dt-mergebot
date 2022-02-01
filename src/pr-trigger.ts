@@ -44,9 +44,9 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
     const evName = headers["x-github-event"], evAction = body.action;
 
     if (evName === "check_run" && evAction === "completed") {
-        context.log(`>>>>>> name: ${body?.check_run?.name}, sha: ${body?.check_run?.head_sha}`);
-        if (body?.check_run?.head_sha && body?.repository?.full_name === "DefinitelyTyped/DefinitelyTyped") {
-            const pr = await runQueryToGetPRMetadataForSHA1("DefinitelyTyped", "DefinitelyTyped", body?.check_run?.head_sha);
+        context.log(`>>>>>> name: ${body.check_run?.name}, sha: ${body.check_run?.head_sha}`);
+        if (body.check_run?.head_sha && body.repository?.full_name === "DefinitelyTyped/DefinitelyTyped") {
+            const pr = await runQueryToGetPRMetadataForSHA1("DefinitelyTyped", "DefinitelyTyped", body.check_run?.head_sha);
             if (pr) {
                 context.log(`>>>>>>>>> pr => num: ${pr.number}, title: "${pr.title}" closed: ${pr.closed}`);
             } else {
