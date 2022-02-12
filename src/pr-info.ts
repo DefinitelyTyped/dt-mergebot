@@ -454,10 +454,10 @@ function getMergeOfferDate(comments: PR_repository_pullRequest_comments_nodes[],
 function getMergeRequest(comments: PR_repository_pullRequest_comments_nodes[], users: string[], sinceDate: Date) {
     const request = latestComment(comments.filter(comment =>
         users.some(u => comment.author && sameUser(u, comment.author.login))
-        && comment.body.trim().toLowerCase().startsWith("ready to merge")));
+        && comment.body.split("\n").some(line => line.trim().toLowerCase().startsWith("ready to merge"))));
     if (!request) return request;
     const date = new Date(request.createdAt);
-    return date > sinceDate ? { date, user: request.author!.login  } : undefined;
+    return date > sinceDate ? { date, user: request.author!.login } : undefined;
 }
 
 function getReviews(prInfo: PR_repository_pullRequest) {
