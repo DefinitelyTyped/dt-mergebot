@@ -151,6 +151,7 @@ export const StalenessExplanations: { [k: string]: string } = {
 
 // Comments to post for the staleness timeline (the tag is computed in `makeStaleness`)
 export const StalenessComment = (author: string, ownersToPing: string[], expires: string) => {
+    if (author === "github-actions") return {};
     const ownerPing = ownersToPing.map(o => "@"+o).join(", ");
     return {
         // --Unmerged--

@@ -335,9 +335,13 @@ export function process(prInfo: BotResult,
     // Has it: got no DT tests but is approved by DT modules and basically blocked by the DT maintainers - and it has been over 3 days?
     // Send a message reminding them that they can un-block themselves by adding tests.
     if (!info.hasTests && !info.hasMultiplePackages && info.approvedBy.includes("owner") && !info.editsInfra
-        && info.approverKind === "maintainer" && (info.staleness?.days ?? 0) > 3) {
+        && info.approverKind === "maintainer" && (info.staleness?.days ?? 0) > 3 && info.author !== "github-actions") {
         post(Comments.RemindPeopleTheyCanUnblockPR(info.author, info.approvedReviews.map(r => r.reviewer),
                                                    info.ciResult === "pass", headCommitAbbrOid));
+    }
+
+    if (info.author === "github-actions") {
+        actions.projectColumn = "Needs Maintainer Action";
     }
 
     // Timeline-related actions
@@ -379,9 +383,10 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
 
     const testsLink = info.hasNewPackages ? urls.testingNewPackages : urls.testingEditedPackages;
 
-    const specialWelcome = !info.isFirstContribution ? `` :
-        txt`| I see this is your first time submitting to DefinitelyTyped 👋
-             — I'm the local bot who will help you through the process of getting things through.`;
+    const specialWelcome = info.isFirstContribution
+        ? txt`| I see this is your first time submitting to DefinitelyTyped 👋
+             — I'm the local bot who will help you through the process of getting things through.`
+        : info.author === "github-actions" ? "From one bot to another, beep bloop boople bloop." : "";
     display(`@${info.author} Thank you for submitting this PR!${specialWelcome}`,
             ``,
             `***This is a live comment which I will keep updated.***`);
