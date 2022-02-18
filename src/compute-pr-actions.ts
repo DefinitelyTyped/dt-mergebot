@@ -274,6 +274,10 @@ export function process(prInfo: BotResult,
     }
 
     // Some step should override actions.projectColumn, the default "Other" indicates a problem
+    if (info.author === "github-actions") {
+        actions.projectColumn = "Needs Maintainer Action";
+        return actions;
+    }
 
     // First-timers are blocked from CI runs until approved, this case is for infra edits (require a maintainer)
     if (info.ciResult === "action_required") {
@@ -335,13 +339,9 @@ export function process(prInfo: BotResult,
     // Has it: got no DT tests but is approved by DT modules and basically blocked by the DT maintainers - and it has been over 3 days?
     // Send a message reminding them that they can un-block themselves by adding tests.
     if (!info.hasTests && !info.hasMultiplePackages && info.approvedBy.includes("owner") && !info.editsInfra
-        && info.approverKind === "maintainer" && (info.staleness?.days ?? 0) > 3 && info.author !== "github-actions") {
+        && info.approverKind === "maintainer" && (info.staleness?.days ?? 0) > 3) {
         post(Comments.RemindPeopleTheyCanUnblockPR(info.author, info.approvedReviews.map(r => r.reviewer),
                                                    info.ciResult === "pass", headCommitAbbrOid));
-    }
-
-    if (info.author === "github-actions") {
-        actions.projectColumn = "Needs Maintainer Action";
     }
 
     // Timeline-related actions

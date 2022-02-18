@@ -9,6 +9,17 @@
     }
   },
   {
+    "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWwyMDk2NzQ1NzQx"
+        ],
+        "labelableId": "PR_kwDOAFz6BM4yvxmj"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
