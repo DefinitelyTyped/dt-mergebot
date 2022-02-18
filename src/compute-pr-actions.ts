@@ -274,6 +274,10 @@ export function process(prInfo: BotResult,
     }
 
     // Some step should override actions.projectColumn, the default "Other" indicates a problem
+    if (info.author === "github-actions") {
+        actions.projectColumn = "Needs Maintainer Action";
+        return actions;
+    }
 
     // First-timers are blocked from CI runs until approved, this case is for infra edits (require a maintainer)
     if (info.ciResult === "action_required") {
@@ -379,9 +383,10 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
 
     const testsLink = info.hasNewPackages ? urls.testingNewPackages : urls.testingEditedPackages;
 
-    const specialWelcome = !info.isFirstContribution ? `` :
-        txt`| I see this is your first time submitting to DefinitelyTyped 👋
-             — I'm the local bot who will help you through the process of getting things through.`;
+    const specialWelcome = info.isFirstContribution
+        ? txt`| I see this is your first time submitting to DefinitelyTyped 👋
+             — I'm the local bot who will help you through the process of getting things through.`
+        : info.author === "github-actions" ? "From one bot to another, beep bloop boople bloop." : "";
     display(`@${info.author} Thank you for submitting this PR!${specialWelcome}`,
             ``,
             `***This is a live comment which I will keep updated.***`);
