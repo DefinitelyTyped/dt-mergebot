@@ -225,7 +225,7 @@ export async function deriveStateForPR(
     const comments = noNullish(prInfo.comments.nodes);
     const mergeOfferDate = getMergeOfferDate(comments, prInfo.headRefOid);
     const mergeRequest = getMergeRequest(comments,
-                                         pkgInfo.length === 1 ? [author, ...pkgInfo[0]!.owners] : [author],
+                                         pkgInfo.filter(p => p.name).length === 1 ? [author, ...pkgInfo.find(p => p.name)!.owners] : [author],
                                          max([createdDate, reopenedDate, lastPushDate]));
     const lastActivityDate = max([createdDate, lastPushDate, lastCommentDate, blessing?.date, reopenedDate, latestReview]);
     const mainBotCommentID = getMainCommentID(comments);
