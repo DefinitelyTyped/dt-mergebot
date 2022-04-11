@@ -4,7 +4,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDY2MDg0NjQ2NA==",
-        "body": "@jordanoverbye Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `apollo-upload-client` — [on npm](https://www.npmjs.com/package/apollo-upload-client), [on unpkg](https://unpkg.com/browse/apollo-upload-client@latest/)\n  - 1 added owner: ✎@jordanoverbye\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed by a DT maintainer.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=46191&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ❌ Continuous integration tests have failed\n * 🕐 Only a DT maintainer can approve changes [without tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package)\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@jordanoverbye Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `apollo-upload-client` — [on npm](https://www.npmjs.com/package/apollo-upload-client), [on unpkg](https://unpkg.com/browse/apollo-upload-client@latest/)\n  - 1 added owner: ✎@jordanoverbye\n  - Config files to check:\n    - [`apollo-upload-client/package.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46191/files/3cc81dbde57a1b0eda6f69f539fa49b8d420adff#diff-0d0b1d4f9d8da9e7246d2115ee91690b7804f3d3679c06d620469b448336b93a): not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-packagejson) and not moving towards it (check: `dependencies`)\n\n## Code Reviews\n\nBecause this PR edits the configuration file, it can be merged once it's reviewed by a DT maintainer.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=46191&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ❌ Continuous integration tests have failed\n * 🕐 A DT maintainer needs to approve changes which affect module config files\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },
@@ -15,17 +15,6 @@
         "labelIds": [
           "MDU6TGFiZWwyNDk1OTc2ODI5",
           "MDU6TGFiZWwyMTU0NzUwNDcz"
-        ],
-        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDUzMTM0NTI0"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "labelIds": [
-          "MDU6TGFiZWwyMTU0ODE2NTQ5"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDUzMTM0NTI0"
       }

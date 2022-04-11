@@ -23,7 +23,8 @@
         },
         {
           "path": "types/apollo-upload-client/package.json",
-          "kind": "package-meta-ok"
+          "kind": "package-meta",
+          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-packagejson) and not moving towards it (check: `dependencies`)"
         },
         {
           "path": "types/apollo-upload-client/tsconfig.json",
