@@ -375,7 +375,6 @@ configSuspicious["package.json"] = makeChecker(
     { private: true },
     urls.packageJson,
     { ignore: data => {
-        delete data.dependencies;
         delete data.types;
         delete data.typesVersions;
     } }
