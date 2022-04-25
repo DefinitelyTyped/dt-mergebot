@@ -1,5 +1,5 @@
 {
-  "projectColumn": "Needs Maintainer Action",
+  "projectColumn": "Needs Maintainer Review",
   "labels": [
     "Critical package",
     "Author is Owner",
