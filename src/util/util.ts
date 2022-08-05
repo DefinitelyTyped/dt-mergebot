@@ -47,7 +47,8 @@ export function authorNotBot(node: { login: string } | { author?: { login: strin
 }
 
 export function scrubDiagnosticDetails(s: string) {
-    return s.replace(/<details><summary>Diagnostic Information.*?<\/summary>(?:\\n)+```json\\n{.*?\\n}\\n```(?:\\n)+<\/details>/sg, "... diagnostics scrubbed ...");
+    return s.replace(/<details><summary>Diagnostic Information.*?<\/summary>(?:\\n)+```json\\n{.*?\\n}\\n```(?:\\n)+<\/details>/sg,
+                     "... diagnostics scrubbed ...");
 }
 
 export function sha256(s: string) {
@@ -56,4 +57,19 @@ export function sha256(s: string) {
 
 export function abbrOid(s: string) {
     return s.slice(0, 7);
+}
+
+// Remove when the fix propagates to a published version
+interface HACK {
+    raw(template: { raw: readonly string[] | ArrayLike<string>}, ...substitutions: any[]): string;
+}
+
+// Convenient utility for long texts: trimmed, then remove all spaces up to a
+// "|" on each line, and lines that have no "|" at the beginning are joined with
+// the previous line (with a single space).  (Should really be mapped only on `strs`
+// only, otherwise there're compositionality problems (one place in comments.ts).)
+export function txt(strs: TemplateStringsArray, ...xs: any) {
+    return (String as HACK).raw({ raw: strs }, ...xs)
+        .trim().replace(/(^|\n) *([^\s])/g, (_m, pfx, sfx) =>
+            sfx === "|" ? pfx : pfx ? " " + sfx : sfx);
 }

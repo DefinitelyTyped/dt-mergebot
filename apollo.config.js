@@ -10,7 +10,7 @@ module.exports = {
                     process.env["BOT_AUTH_TOKEN"] ||
                     process.env["AUTH_TOKEN"]
                 }`,
-                accept: "application/vnd.github.starfox-preview+json",
+                accept: "application/vnd.github.starfox-preview+json, application/vnd.github.bane-preview+json",
             },
         }
     }

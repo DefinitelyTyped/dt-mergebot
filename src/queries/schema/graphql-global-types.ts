@@ -28,6 +28,7 @@ export enum CheckConclusionState {
 export enum CheckStatusState {
   COMPLETED = "COMPLETED",
   IN_PROGRESS = "IN_PROGRESS",
+  PENDING = "PENDING",
   QUEUED = "QUEUED",
   REQUESTED = "REQUESTED",
   WAITING = "WAITING",

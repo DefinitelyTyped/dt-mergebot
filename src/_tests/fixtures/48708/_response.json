@@ -36,6 +36,8 @@
         "number": 48708,
         "state": "OPEN",
         "headRefOid": "eb13547e342b1316aeea85df84983a534cfb092f",
+        "changedFiles": 3,
+        "commitIds": {},
         "timelineItems": {
           "nodes": [
             {

@@ -38,6 +38,11 @@ query PR($prNumber: Int!) {
         number
         state
         headRefOid
+        changedFiles
+        additions
+        deletions
+
+        commitIds: commits(last: 100) { nodes { commit { oid parents(first: 3) { nodes { oid }}}}}
 
         timelineItems(last: 200, itemTypes: [REOPENED_EVENT, READY_FOR_REVIEW_EVENT,
                                              MOVED_COLUMNS_IN_PROJECT_EVENT]) {
@@ -124,6 +129,7 @@ query PR($prNumber: Int!) {
             author {
               login
             }
+            databaseId
             body
             createdAt
             reactions(first: 100, content: THUMBS_UP) {
@@ -200,7 +206,7 @@ export async function getPRInfoFirst(prNumber: number) {
         }
         // wait 3N..3N+1 seconds (based on trial runs: it usually works after one wait)
         const wait = 1000 * (Math.random() + 3 * retries);
-        await new Promise(resolve => setTimeout(resolve, wait));
+        await new Promise<void>(resolve => setTimeout(resolve, wait));
     }
 }
 

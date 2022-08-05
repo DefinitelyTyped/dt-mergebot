@@ -4,12 +4,14 @@
   "pr_number": 46019,
   "author": "peterblazejewicz",
   "headCommitOid": "ceca9f768be945932c692d7dd48fa14b6ff38096",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-07-11T20:43:23.000Z",
   "lastActivityDate": "2020-07-12T02:01:31.000Z",
   "mergeOfferDate": "2020-07-12T04:07:31.000Z",
   "hasMergeConflict": false,
   "isFirstContribution": false,
   "tooManyFiles": false,
+  "hugeChange": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
     {
@@ -30,7 +32,8 @@
         },
         {
           "path": "types/is-secret/tslint.json",
-          "kind": "package-meta-ok"
+          "kind": "package-meta",
+          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) (check: `extends`)"
         }
       ],
       "owners": [],

@@ -4,11 +4,13 @@
   "pr_number": 49841,
   "author": "shekari-ah",
   "headCommitOid": "4849e8876b0ab7adc889ccc35b55fde6f0274837",
+  "mergeBaseOid": "master",
   "lastPushDate": "2020-11-28T09:12:34.000Z",
   "lastActivityDate": "2020-11-28T09:17:28.000Z",
   "hasMergeConflict": false,
   "isFirstContribution": false,
   "tooManyFiles": false,
+  "hugeChange": false,
   "popularityLevel": "Well-liked by everyone",
   "pkgInfo": [
     {
@@ -25,8 +27,7 @@
         },
         {
           "path": "types/react-native-sha1/tsconfig.json",
-          "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) (check: `compilerOptions.target`)"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/react-native-sha1/tslint.json",

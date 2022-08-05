@@ -1,5 +1,14 @@
 [
   {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYxMDIzNDI3MA==",
+        "body": "@alexandercerutti Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `accedo__accedo-one` (*new!*) — [on npm](https://www.npmjs.com/package/@accedo/accedo-one), [on unpkg](https://unpkg.com/browse/@accedo/accedo-one@latest/)\n  - 1 added owner: ✎@alexandercerutti\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=43695&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Only a DT maintainer can approve changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 24 days — it is *still* unreviewed!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
@@ -28,15 +37,6 @@
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkMzU4NjkxNTQ=",
         "columnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "id": "MDEyOklzc3VlQ29tbWVudDYxMDIzNDI3MA==",
-        "body": "@alexandercerutti Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `accedo__accedo-one` (*new!*) — [on npm](https://www.npmjs.com/package/@accedo/accedo-one), [on unpkg](https://unpkg.com/browse/@accedo/accedo-one@latest/)\n  - 1 added owner: ✎@alexandercerutti\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\nYou can test the changes in this [PR in the Playground](https://www.typescriptlang.org/play/?dtPR=43695&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Only a DT maintainer can approve changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 24 days — it is *still* unreviewed!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },

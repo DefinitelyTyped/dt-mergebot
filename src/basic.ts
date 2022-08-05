@@ -44,6 +44,7 @@ export const LabelNames = [
     "Too Many Owners",
     "Untested Change",
     "Check Config",
+    "Huge Change",
     "Needs Actions Permission",
     ...StalenessKinds,
 ] as const;

@@ -39,259 +39,264 @@
   ],
   "getLabels": [
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw0MDUzNDEwNjk=",
-      "name": "@types"
+      "name": "@types",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw2NDQxMTYxNzA=",
-      "name": "Abandoned"
+      "name": "Abandoned",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw3OTg3Mzc0Nzg=",
-      "name": "Author is Owner"
+      "name": "Author is Owner",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyMTU0ODE2NTQ5",
-      "name": "Check Config"
+      "name": "Check Config",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNjA4NjM0NDg0",
-      "name": "Critical package"
+      "name": "Critical package",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNTY4Nzg5MA==",
-      "name": "Definition:Bug"
+      "name": "Definition:Bug",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw4ODk3OTYxOA==",
-      "name": "Definition:Creating"
+      "name": "Definition:Creating",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNTY4Nzg5Mg==",
-      "name": "Definition:Enhancement"
+      "name": "Definition:Enhancement",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyOTM4NjAwOA==",
-      "name": "Definition:Missing"
+      "name": "Definition:Missing",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyMzcwODQxMw==",
-      "name": "Definition:Request"
+      "name": "Definition:Request",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyMTg2MTM4MjI0",
-      "name": "dependencies"
+      "name": "dependencies",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw1NjcxNzAyMQ==",
-      "name": "Discussion"
+      "name": "Discussion",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw3NTcxMTk0Ng==",
-      "name": "Documents"
+      "name": "Documents",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwzMDI2OTUyNQ==",
-      "name": "Duplicate"
+      "name": "Duplicate",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNjA4MjA4ODM1",
-      "name": "Edits Infrastructure"
+      "name": "Edits Infrastructure",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNjA4MjEwODMz",
-      "name": "Edits multiple packages"
+      "name": "Edits multiple packages",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyNDk1OTc2ODI5",
-      "name": "Edits Owners"
+      "name": "Edits Owners",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw1ODMyOTQ0NzQ=",
-      "name": "Has Merge Conflict"
+      "name": "Has Merge Conflict",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
+      "id": "MDU6TGFiZWwzMzUzMTYyNTAy",
+      "name": "Huge Change",
+      "__typename": "Label"
+    },
+    {
       "id": "MDU6TGFiZWwzMDI2OTc0NQ==",
-      "name": "Infrastructure"
+      "name": "Infrastructure",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwzMDI2OTUzOA==",
-      "name": "invalid"
+      "name": "invalid",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw1NjcxNDU5MQ==",
-      "name": "Level:Advanced"
+      "name": "Level:Advanced",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw1NjcxNDU3Mg==",
-      "name": "Level:Intermediate"
+      "name": "Level:Intermediate",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw1NjcxNDU3MQ==",
-      "name": "Level:Starter"
+      "name": "Level:Starter",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNjA4NTUyNDEw",
-      "name": "Maintainer Approved"
+      "name": "Maintainer Approved",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyMTk3MzU2OTA1",
-      "name": "Mergebot Error"
+      "name": "Mergebot Error",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyNTI5Mjc2Njc2",
-      "name": "Multiple Languages"
+      "name": "Multiple Languages",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw2NDY3ODg4ODg=",
-      "name": "New Definition"
+      "name": "New Definition",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyMTU0ODU3ODAw",
-      "name": "No Other Owners"
+      "name": "No Other Owners",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw1ODYxNzcwNjM=",
-      "name": "Other Approved"
+      "name": "Other Approved",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw5MDUzMzQwOTU=",
-      "name": "Owner Approved"
+      "name": "Owner Approved",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNTk2MTk1ODI0",
-      "name": "Perf: Better"
+      "name": "Perf: Better",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNTk2MTk4NTgw",
-      "name": "Perf: Mixed"
+      "name": "Perf: Mixed",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNTk2MTk0NzQ0",
-      "name": "Perf: Same"
+      "name": "Perf: Same",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNTk2MTk5Mjg2",
-      "name": "Perf: Worse"
+      "name": "Perf: Worse",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw2ODQzMjE1NzY=",
-      "name": "Popular package"
+      "name": "Popular package",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyOTUzOTk4NzE4",
-      "name": "Possibly Edits Infrastructure"
+      "name": "Possibly Edits Infrastructure",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwxNTY4Nzg5NA==",
-      "name": "Question"
+      "name": "Question",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwzOTU2NzkwNTk=",
-      "name": "Revision needed"
+      "name": "Revision needed",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw2OTcwMTg5NzI=",
-      "name": "Self Merge"
+      "name": "Self Merge",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw1NjcxNDI1Mg==",
-      "name": "Target:Browser"
+      "name": "Target:Browser",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw1NjcxNDI0NQ==",
-      "name": "Target:NodeJS"
+      "name": "Target:NodeJS",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyMDk2NzQzNjAw",
-      "name": "The CI failed"
+      "name": "The CI failed",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyOTUzOTk2NDAx",
-      "name": "The CI is blocked"
+      "name": "The CI is blocked",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyMTU2MzIyMzcx",
-      "name": "Too Many Owners"
+      "name": "Too Many Owners",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwzMjAzMjg3Mg==",
-      "name": "TypeScript-Core"
+      "name": "TypeScript-Core",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw2NDQwOTUzNDI=",
-      "name": "Unmergeable"
+      "name": "Unmergeable",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw2NDQwOTU4ODI=",
-      "name": "Unmerged"
+      "name": "Unmerged",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWw2NDY3ODkyMDU=",
-      "name": "Unowned"
+      "name": "Unowned",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyNDYyODA0MzE1",
-      "name": "Unreviewed"
+      "name": "Unreviewed",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyMTU0NzUwNDcz",
-      "name": "Untested Change"
+      "name": "Untested Change",
+      "__typename": "Label"
     },
     {
-      "__typename": "Label",
       "id": "MDU6TGFiZWwyMDk2NzQ1NzQx",
-      "name": "Where is GH Actions?"
+      "name": "Where is GH Actions?",
+      "__typename": "Label"
     }
   ]
 }

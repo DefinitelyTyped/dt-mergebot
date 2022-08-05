@@ -16,11 +16,18 @@ const ProjectBoardNumber = 5;
 export async function executePrActions(actions: Actions, pr: PR_repository_pullRequest, dry?: boolean) {
     const botComments: ParsedComment[] = getBotComments(pr);
     const mutations = noNullish([
+        // the mutations are ordered for presentation in the timeline:
+        // * welcome comment is always first
+        // * then labels, as a short "here's what I noticed"
+        // * column changes after that (follow the labels since this is the consequence)
+        // * state changes next, similar to column changes
+        // * finally, any other comments (better to see label changes and then a comment that explains what happens now)
+        ...getMutationsForComments(actions, pr.id, botComments, true),
         ...await getMutationsForLabels(actions, pr),
         ...await getMutationsForProjectChanges(actions, pr),
-        ...getMutationsForComments(actions, pr.id, botComments),
         ...getMutationsForCommentRemovals(actions, botComments),
         ...getMutationsForChangingPRState(actions, pr),
+        ...getMutationsForComments(actions, pr.id, botComments, false),
     ]);
     const restCalls = getMutationsForReRunningCI(actions);
     if (!dry) {
@@ -78,8 +85,9 @@ function getBotComments(pr: PR_repository_pullRequest): ParsedComment[] {
             }));
 }
 
-function getMutationsForComments(actions: Actions, prId: string, botComments: ParsedComment[]) {
+function getMutationsForComments(actions: Actions, prId: string, botComments: ParsedComment[], onlyWelcome: boolean) {
     return flatten(actions.responseComments.map(wantedComment => {
+        if ((wantedComment.tag === "welcome") !== onlyWelcome) return [];
         const sameTagComments = botComments.filter(comment => comment.tag === wantedComment.tag);
         return sameTagComments.length === 0
             ? [createMutation<schema.AddCommentInput>("addComment", {

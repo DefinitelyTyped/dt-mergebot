@@ -28,6 +28,8 @@
         "number": 49841,
         "state": "OPEN",
         "headRefOid": "4849e8876b0ab7adc889ccc35b55fde6f0274837",
+        "changedFiles": 4,
+        "commitIds": {},
         "timelineItems": {
           "nodes": [
             {

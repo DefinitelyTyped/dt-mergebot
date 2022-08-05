@@ -10,7 +10,7 @@ import { CommentAuthorAssociation, MergeableState, PullRequestState, PullRequest
 // ====================================================
 
 export interface PR_repository_pullRequest_author {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -41,8 +41,52 @@ export interface PR_repository_pullRequest_labels {
   nodes: (PR_repository_pullRequest_labels_nodes | null)[] | null;
 }
 
+export interface PR_repository_pullRequest_commitIds_nodes_commit_parents_nodes {
+  __typename: "Commit";
+  /**
+   * The Git object ID
+   */
+  oid: any;
+}
+
+export interface PR_repository_pullRequest_commitIds_nodes_commit_parents {
+  __typename: "CommitConnection";
+  /**
+   * A list of nodes.
+   */
+  nodes: (PR_repository_pullRequest_commitIds_nodes_commit_parents_nodes | null)[] | null;
+}
+
+export interface PR_repository_pullRequest_commitIds_nodes_commit {
+  __typename: "Commit";
+  /**
+   * The Git object ID
+   */
+  oid: any;
+  /**
+   * The parents of a commit.
+   */
+  parents: PR_repository_pullRequest_commitIds_nodes_commit_parents;
+}
+
+export interface PR_repository_pullRequest_commitIds_nodes {
+  __typename: "PullRequestCommit";
+  /**
+   * The Git commit object
+   */
+  commit: PR_repository_pullRequest_commitIds_nodes_commit;
+}
+
+export interface PR_repository_pullRequest_commitIds {
+  __typename: "PullRequestCommitConnection";
+  /**
+   * A list of nodes.
+   */
+  nodes: (PR_repository_pullRequest_commitIds_nodes | null)[] | null;
+}
+
 export interface PR_repository_pullRequest_timelineItems_nodes_AddedToProjectEvent {
-  __typename: "AddedToProjectEvent" | "AssignedEvent" | "AutoMergeDisabledEvent" | "AutoMergeEnabledEvent" | "AutoRebaseEnabledEvent" | "AutoSquashEnabledEvent" | "AutomaticBaseChangeFailedEvent" | "AutomaticBaseChangeSucceededEvent" | "BaseRefChangedEvent" | "BaseRefDeletedEvent" | "BaseRefForcePushedEvent" | "ClosedEvent" | "CommentDeletedEvent" | "ConnectedEvent" | "ConvertToDraftEvent" | "ConvertedNoteToIssueEvent" | "CrossReferencedEvent" | "DemilestonedEvent" | "DeployedEvent" | "DeploymentEnvironmentChangedEvent" | "DisconnectedEvent" | "HeadRefDeletedEvent" | "HeadRefForcePushedEvent" | "HeadRefRestoredEvent" | "IssueComment" | "LabeledEvent" | "LockedEvent" | "MarkedAsDuplicateEvent" | "MentionedEvent" | "MergedEvent" | "MilestonedEvent" | "PinnedEvent" | "PullRequestCommit" | "PullRequestCommitCommentThread" | "PullRequestReview" | "PullRequestReviewThread" | "PullRequestRevisionMarker" | "ReferencedEvent" | "RemovedFromProjectEvent" | "RenamedTitleEvent" | "ReviewDismissedEvent" | "ReviewRequestRemovedEvent" | "ReviewRequestedEvent" | "SubscribedEvent" | "TransferredEvent" | "UnassignedEvent" | "UnlabeledEvent" | "UnlockedEvent" | "UnmarkedAsDuplicateEvent" | "UnpinnedEvent" | "UnsubscribedEvent" | "UserBlockedEvent";
+  __typename: "AddedToProjectEvent" | "AssignedEvent" | "AutoMergeDisabledEvent" | "AutoMergeEnabledEvent" | "AutoRebaseEnabledEvent" | "AutoSquashEnabledEvent" | "AutomaticBaseChangeFailedEvent" | "AutomaticBaseChangeSucceededEvent" | "BaseRefChangedEvent" | "BaseRefDeletedEvent" | "BaseRefForcePushedEvent" | "ClosedEvent" | "CommentDeletedEvent" | "ConnectedEvent" | "ConvertToDraftEvent" | "ConvertedNoteToIssueEvent" | "ConvertedToDiscussionEvent" | "CrossReferencedEvent" | "DemilestonedEvent" | "DeployedEvent" | "DeploymentEnvironmentChangedEvent" | "DisconnectedEvent" | "HeadRefDeletedEvent" | "HeadRefForcePushedEvent" | "HeadRefRestoredEvent" | "IssueComment" | "LabeledEvent" | "LockedEvent" | "MarkedAsDuplicateEvent" | "MentionedEvent" | "MergedEvent" | "MilestonedEvent" | "PinnedEvent" | "PullRequestCommit" | "PullRequestCommitCommentThread" | "PullRequestReview" | "PullRequestReviewThread" | "PullRequestRevisionMarker" | "ReferencedEvent" | "RemovedFromProjectEvent" | "RenamedTitleEvent" | "ReviewDismissedEvent" | "ReviewRequestRemovedEvent" | "ReviewRequestedEvent" | "SubscribedEvent" | "TransferredEvent" | "UnassignedEvent" | "UnlabeledEvent" | "UnlockedEvent" | "UnmarkedAsDuplicateEvent" | "UnpinnedEvent" | "UnsubscribedEvent" | "UserBlockedEvent";
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_ReopenedEvent {
@@ -62,7 +106,7 @@ export interface PR_repository_pullRequest_timelineItems_nodes_ReadyForReviewEve
 }
 
 export interface PR_repository_pullRequest_timelineItems_nodes_MovedColumnsInProjectEvent_actor {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -96,7 +140,7 @@ export interface PR_repository_pullRequest_timelineItems {
 }
 
 export interface PR_repository_pullRequest_reviews_nodes_author {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -112,7 +156,7 @@ export interface PR_repository_pullRequest_reviews_nodes_commit {
 }
 
 export interface PR_repository_pullRequest_reviews_nodes_comments_nodes_author {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -244,7 +288,7 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites {
 }
 
 export interface PR_repository_pullRequest_commits_nodes_commit_status_contexts_creator {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -332,7 +376,7 @@ export interface PR_repository_pullRequest_commits {
 }
 
 export interface PR_repository_pullRequest_comments_nodes_author {
-  __typename: "EnterpriseUserAccount" | "Organization" | "User" | "Mannequin" | "Bot";
+  __typename: "EnterpriseUserAccount" | "Organization" | "Bot" | "Mannequin" | "User";
   /**
    * The username of the actor.
    */
@@ -370,6 +414,10 @@ export interface PR_repository_pullRequest_comments_nodes {
    * The actor who authored the comment.
    */
   author: PR_repository_pullRequest_comments_nodes_author | null;
+  /**
+   * Identifies the primary key from the database.
+   */
+  databaseId: number | null;
   /**
    * The body as Markdown.
    */
@@ -533,6 +581,22 @@ export interface PR_repository_pullRequest {
    * Identifies the oid of the head ref associated with the pull request, even if the ref has been deleted.
    */
   headRefOid: any;
+  /**
+   * The number of changed files in this pull request.
+   */
+  changedFiles: number;
+  /**
+   * The number of additions in this pull request.
+   */
+  additions: number;
+  /**
+   * The number of deletions in this pull request.
+   */
+  deletions: number;
+  /**
+   * A list of commits present in this pull request's head branch not present in the base branch.
+   */
+  commitIds: PR_repository_pullRequest_commitIds;
   /**
    * A list of events, comments, commits, etc. associated with the pull request.
    */
