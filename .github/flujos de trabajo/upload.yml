@@ -23,7 +23,8 @@ jobs:
         npm prune --production
     - name: "sanity listings"
       run: |
-        node .github/workflows/print-tree.js bin
+     
+    node .github/workflows/print-tree.js bin
     - uses: Azure/functions-action@v1
       with:
         app-name: DTMergeBot
