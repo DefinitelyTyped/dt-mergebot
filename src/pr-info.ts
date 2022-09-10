@@ -136,7 +136,7 @@ export interface PrInfo {
      */
     readonly tooManyFiles: boolean;
     /*
-     * True for PRs with over 5k line chanbges (top ~3%)
+     * True for PRs with over 5k line changes (top ~3%)
      */
     readonly hugeChange: boolean;
 
