@@ -54,6 +54,11 @@
       "__typename": "Label"
     },
     {
+      "id": "LA_kwDOAFz6BM7QXorW",
+      "name": "Blocked upstream",
+      "__typename": "Label"
+    },
+    {
       "id": "MDU6TGFiZWwyMTU0ODE2NTQ5",
       "name": "Check Config",
       "__typename": "Label"
@@ -121,6 +126,11 @@
     {
       "id": "MDU6TGFiZWwyNDk1OTc2ODI5",
       "name": "Edits Owners",
+      "__typename": "Label"
+    },
+    {
+      "id": "LA_kwDOAFz6BM71Jg4R",
+      "name": "github_actions",
       "__typename": "Label"
     },
     {
@@ -256,6 +266,11 @@
     {
       "id": "MDU6TGFiZWwyOTUzOTk2NDAx",
       "name": "The CI is blocked",
+      "__typename": "Label"
+    },
+    {
+      "id": "LA_kwDOAFz6BM8AAAABEGgY4Q",
+      "name": "Too Many Files",
       "__typename": "Label"
     },
     {

@@ -4,6 +4,8 @@ import { PR, PRVariables, PR_repository_pullRequest_files_nodes } from "./schema
 import { PRFiles, PRFilesVariables } from "./schema/PRFiles";
 import { noNullish } from "../util/util";
 
+export const TOO_MANY_FILES = 500;
+
 // Note: If you want to work on this in local a copy of GraphiQL:
 // - Download the electron app: https://github.com/skevy/graphiql-app/releases
 // - Then set the headers:
@@ -185,7 +187,7 @@ export async function getPRInfo(prNumber: number) {
     return info;
 }
 
-export async function getPRInfoFirst(prNumber: number) {
+async function getPRInfoFirst(prNumber: number) {
     // The query can return a mergeable value of `UNKNOWN`, and then it takes a
     // while to get the actual value while GH refreshes the state (verified
     // with GH that this is expected).  So implement a simple retry thing to
@@ -240,7 +242,7 @@ async function getPRInfoRest(prNumber: number, endCursor: string | null,
         const newFiles = result.data.repository?.pullRequest?.files;
         if (!newFiles) return;
         files.push(...noNullish(newFiles.nodes));
-        if (!newFiles.pageInfo.hasNextPage) return;
+        if (files.length >= TOO_MANY_FILES || !newFiles.pageInfo.hasNextPage) return;
         endCursor = newFiles.pageInfo.endCursor;
     }
 }

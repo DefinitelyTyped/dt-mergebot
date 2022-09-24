@@ -7,6 +7,7 @@ import { PR_repository_pullRequest,
 import { getMonthlyDownloadCount } from "./util/npm";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
 import { noNullish, someLast, sameUser, authorNotBot, max, abbrOid } from "./util/util";
+import { TOO_MANY_FILES } from "./queries/pr-query";
 import * as comment from "./util/comment";
 import * as urls from "./urls";
 import * as HeaderParser from "@definitelytyped/header-parser";
@@ -209,13 +210,14 @@ export async function deriveStateForPR(
     // that case `files.totalCount` would be 3k so it'd fit the count but `changedFiles` would
     // be correct; so to be safe: check it, and warn if there are many files (or zero)
     const tooManyFiles = !fileCount // should never happen, make it look fishy if it does
-        || fileCount !== prInfo.files?.nodes?.length // didn't get all files somehow
-        || fileCount > 500; // suspiciously many files
+        || fileCount > TOO_MANY_FILES // suspiciously many files
+        || fileCount !== prInfo.files?.nodes?.length; // didn't get all files (probably too many)
     const hugeChange = prInfo.additions + prInfo.deletions > 5000;
 
+    const paths = noNullish(prInfo.files?.nodes).map(f => f.path).sort();
+    if (paths.length > TOO_MANY_FILES) paths.length = TOO_MANY_FILES; // redundant, but just in case
     const pkgInfoEtc = await getPackageInfosEtc(
-        noNullish(prInfo.files?.nodes).map(f => f.path).sort(),
-        prInfo.headRefOid, baseId,
+        paths, prInfo.headRefOid, baseId,
         fetchFile, async name => await getDownloads(name, lastPushDate));
     if (pkgInfoEtc instanceof Error) return botError(pkgInfoEtc.message);
     const { pkgInfo, popularityLevel } = pkgInfoEtc;

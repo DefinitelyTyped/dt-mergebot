@@ -63,7 +63,7 @@ const show = (name: string, value: unknown) => {
 
 const start = async function () {
     console.log(`Getting open PRs.`);
-    const { prs: prs, cardIDs } = await getAllOpenPRsAndCardIDs();
+    const { prs, cardIDs } = await getAllOpenPRsAndCardIDs();
     //
     for (const pr of prs) {
         if (!shouldRunOn(pr)) continue;
