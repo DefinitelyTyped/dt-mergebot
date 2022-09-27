@@ -252,6 +252,7 @@ export function process(prInfo: BotResult,
     label("Too Many Owners", info.tooManyOwners);
     label("Check Config", info.checkConfig);
     label("Untested Change", info.isUntested);
+    label("Too Many Files", info.tooManyFiles);
     label("Huge Change", info.hugeChange);
     if (info.staleness?.state === "nearly" || info.staleness?.state === "done") label(info.staleness.kind);
 

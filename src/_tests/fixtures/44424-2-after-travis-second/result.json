@@ -2,7 +2,8 @@
   "projectColumn": "Waiting for Code Reviews",
   "labels": [
     "Possibly Edits Infrastructure",
-    "Author is Owner"
+    "Author is Owner",
+    "Too Many Files"
   ],
   "responseComments": [
     {
