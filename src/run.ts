@@ -138,6 +138,6 @@ const start = async function () {
 };
 
 start().catch(function (error) {
-  process.exitCode = 1;
-  console.error(error);
+    process.exitCode = 1;
+    console.error(error);
 });
