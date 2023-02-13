@@ -1,12 +1,7 @@
 name: Daily Open PR Sync
 
-# For testing
-# on: push
-
-# For prod
 on:
-  schedule:
-    - cron: "37 */6 * * *"
+  workflow_dispatch: ~
 
 jobs:
   build:
