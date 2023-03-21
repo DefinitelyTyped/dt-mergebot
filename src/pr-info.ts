@@ -389,7 +389,6 @@ configSuspicious["tslint.json"] = makeChecker(
 configSuspicious["tsconfig.json"] = makeChecker(
     {
         compilerOptions: {
-            module: "commonjs",
             lib: ["es6"],
             noImplicitAny: true,
             noImplicitThis: true,
