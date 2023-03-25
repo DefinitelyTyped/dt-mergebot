@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.6",
-    "@definitelytyped/header-parser": "^0.0.64",
+    "@definitelytyped/header-parser": "^0.0.150",
     "@octokit/webhooks": "^9.5.1",
     "dayjs": "^1.10.3",
     "fast-json-patch": "^3.0.0-1",
