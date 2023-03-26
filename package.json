@@ -37,7 +37,7 @@
     "@types/node-fetch": "^2.5.7",
     "@types/prettyjson": "^0.0.29",
     "@typescript-eslint/eslint-plugin": "^4.9.0",
-    "@typescript-eslint/parser": "^4.9.0",
+    "@typescript-eslint/parser": "^5.54.0",
     "apollo": "^2.33.1",
     "eslint": "^7.14.0",
     "eslint-plugin-unicorn": "^32.0.1",
