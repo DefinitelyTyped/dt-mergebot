@@ -137,4 +137,7 @@ const start = async function () {
     console.log("Done");
 };
 
-start();
+start().catch(function (error) {
+    process.exitCode = 1;
+    console.error(error);
+});
