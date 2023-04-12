@@ -60,7 +60,7 @@ export const SuggestTesting = deletedWhenNotPresent("suggest-testing", tag =>
 export const PingReviewers = (names: readonly string[], reviewLink: string) => ({
     tag: "pinging-reviewers",
     status: txt`
-        |🔔 ${names.map(n => `@${n}`).join(" ")} — please [review this PR](${reviewLink}) in the
+        |🔔 Pinging owners — please [review this PR](${reviewLink}) in the
          next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`**
          in the GitHub UI so I know what's going on.`
 });
@@ -90,7 +90,7 @@ export const PingReviewersTooMany = (names: readonly string[]) => ({
 export const PingStaleReviewer = (reviewedAbbrOid: string, reviewers: string[]) => ({
     tag: `stale-ping-${sha256(reviewers.join("-")).substr(0, 6)}-${reviewedAbbrOid}`,
     status: txt`
-        |@${reviewers.join(", @")} Thank you for reviewing this PR! The author has pushed new
+        |**${reviewers.join(", ")}** Thank you for reviewing this PR! The author has pushed new
          commits since your last review. Could you take another look and submit a fresh review?`
 });
 
@@ -106,8 +106,7 @@ export const OfferSelfMerge = deletedWhenNotPresent("merge-offer", tag =>
             |> Ready to merge
             |
             |and I'll merge this PR almost instantly. Thanks for helping out! :heart:
-            |${otherOwners.length === 0 ? "" : `
-            |(${otherOwners.map(o => "@" + o).join(", ")}: you can do this too.)`}`}));
+            |${otherOwners.length === 0 ? "" : `(Any owner can do this too.)`}`}));
 
 export const WaitUntilMergeIsOK = (user: string, abbrOid: string, uri: string, mainCommentID: number | undefined) => ({
     // at most one reminder per update
@@ -128,7 +127,7 @@ export const RemindPeopleTheyCanUnblockPR = (user: string, approvalUsers: string
     status: txt`
         |:hourglass_flowing_sand: Hi @${user},
         |
-        |It's been a few days since this PR was approved by ${approvalUsers.join(", ")} and we're waiting for
+        |It's been a few days since this PR was approved and we're waiting for
          ${ciPassing ? `a DT maintainer to give a review`
                      : `you to fix the test failures and then for a maintainer approval`}.
         |
