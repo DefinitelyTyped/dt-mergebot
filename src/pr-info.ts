@@ -377,7 +377,12 @@ configSuspicious["package.json"] = makeChecker(
     { private: true },
     urls.packageJson,
     { ignore: data => {
+        delete data.name;
+        delete data.version;
+        delete data.projects;
+        delete data.contributors;
         delete data.dependencies;
+        delete data.devDependencies;
         delete data.types;
         delete data.typesVersions;
     } }
@@ -527,14 +532,18 @@ function downloadsToPopularityLevel(monthlyDownloads: number): PopularityLevel {
 }
 
 export async function getOwnersOfPackage(packageName: string, oid: string, fetchFile: typeof defaultFetchFile): Promise<string[] | null | Error> {
-    const indexDts = `${oid}:types/${packageName}/index.d.ts`;
-    const indexDtsContent = await fetchFile(indexDts, 10240); // grab at most 10k
-    if (indexDtsContent === undefined) return null;
-    let parsed: HeaderParser.Header;
+    const packageJson = `${oid}:types/${packageName}/package.json`;
+    const packageJsonContent = await fetchFile(packageJson, 10240); // grab at most 10k
+    if (packageJsonContent === undefined) return null;
+    let packageJsonObj;
     try {
-        parsed = HeaderParser.parseHeaderOrFail(indexDtsContent);
+        packageJsonObj = JSON.parse(packageJsonContent);
     } catch (e) {
-        if (e instanceof Error) return new Error(`error parsing owners: ${e.message}`);
+        if (e instanceof Error) return new Error(`error parsing owners from package.json: ${e.message}`);
     }
-    return noNullish(parsed!.contributors.map(c => c.githubUsername));
+    const parsed = HeaderParser.validatePackageJson(packageName, packageJsonObj, [])
+    if (Array.isArray(parsed)) {
+        return new Error(`error parsing owners from package.json: ${parsed.join("\n")}`);
+    }
+    return noNullish(parsed.contributors.map(c => c.githubUsername));
 }
