@@ -1,7 +1,13 @@
+/*
+ * @jest-environment ./src/_tests/testEnvironment
+ */
 /// <reference types="jest" />
-import {canHandleRequest, extractNPMReference} from "../discussions-trigger";
+import {canHandleRequest, extractNPMReference} from "../discussions";
 
+// polyfill TextEncoder/TextDecoder for jest
+Object.assign(global, { TextEncoder, TextDecoder });
 describe(canHandleRequest, () => {
+Object.assign(global, { TextEncoder, TextDecoder });
     const eventActions = [
         ["discussion", "created", true],
         ["discussion", "edited", true],
@@ -15,6 +21,7 @@ describe(canHandleRequest, () => {
 });
 
 describe(extractNPMReference, () => {
+Object.assign(global, { TextEncoder, TextDecoder });
     const eventActions = [
         ["[node] my thingy", "node"],
         ["OK [react]", "react"],

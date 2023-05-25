@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
-        "outDir": "bin",
+        "outDir": "dist",
         "strict": true,
         "module": "commonjs",
-        "target": "es6",
+        "target": "es2018",
         "lib": ["esnext"],
         "types": ["node"],
         "sourceMap": true,
@@ -13,6 +13,7 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
         "noUncheckedIndexedAccess": true,
+        "rootDir": ".",
         "skipLibCheck": true
     }
 }
