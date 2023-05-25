@@ -4,10 +4,8 @@ import { print } from "graphql";
 import * as schema from "@octokit/graphql-schema/schema";
 
 // get the values directly from the apollo config
-// TODO: This has to be ../../apollo.config.js when run from dist (as in production) and ../apollo.config.json when run from src (as in test)
-// tbh the real fix is to test on the dist version
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const apolloCfg = require("../../apollo.config.js").client.service;
+const apolloCfg = require("../apollo.config.js").client.service;
 
 const uri = apolloCfg.url;
 const headers = {

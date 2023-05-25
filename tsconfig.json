@@ -13,7 +13,6 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
         "noUncheckedIndexedAccess": true,
-        "rootDir": ".",
         "skipLibCheck": true
     }
 }

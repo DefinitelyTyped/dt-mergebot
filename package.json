@@ -4,7 +4,7 @@
   "description": "The bot that manages DefinitelyTyped PRs.",
   "author": "DT Maintainers",
   "homepage": "https://github.com/DefinitelyTyped/dt-mergebot#readme",
-  "main": "dist/src/functions/*.js",
+  "main": "dist/functions/*.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/DefinitelyTyped/dt-mergebot.git"
