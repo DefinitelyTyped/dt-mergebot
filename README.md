@@ -6,6 +6,11 @@ This is the bot which controls the workflow of Definitely Typed PRs.
 * __Dashboard:__ [Azure](https://ms.portal.azure.com/#@72f988bf-86f1-41af-91ab-2d7cd011db47/resource/subscriptions/57bfeeed-c34a-4ffd-a06b-ccff27ac91b8/resourceGroups/dtmergebot/providers/Microsoft.Web/sites/DTMergeBot) — [Logs](https://ms.portal.azure.com/#blade/WebsitesExtension/FunctionsIFrameBlade/id/%2Fsubscriptions%2F57bfeeed-c34a-4ffd-a06b-ccff27ac91b8%2FresourceGroups%2Fdtmergebot%2Fproviders%2FMicrosoft.Web%2Fsites%2FDTMergeBot) — [GH Actions](https://github.com/DefinitelyTyped/dt-mergebot/actions) — [GH Webhook](https://github.com/DefinitelyTyped/DefinitelyTyped/settings/hooks/193097250)
 
 TODO: Update the links for dtmergebot2
+Also:
+- [ ] change package entry point to dist/x not dist/src/x (get rid of rootDir), and fix weirdness in graphql-client
+- [ ] revert launch.json changes
+- [ ] remove _tests/convert.js
+- [ ] change secret, set up deploy on push again (maybe based on existing script??)
 
 It is both a series of command line scripts which you can use to test different states, and an Azure Function App which handles incoming webhooks from the DefinitelyTyped repo.
 

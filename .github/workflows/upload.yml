@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
-        node-version: "14.x"
+        node-version: "18.x"
     - name: "run npm"
       run: |
         npm install
@@ -28,7 +28,7 @@ jobs:
       uses: Azure/functions-action@v1
       id: fa
       with:
-        app-name: DTMergeBot
+        app-name: DTMergeBot2
         slot-name: 'production'
         package: '.'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
