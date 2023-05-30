@@ -1,49 +1,39 @@
-import { HttpRequest, Context } from "@azure/functions";
+import { app, InvocationContext } from "@azure/functions";
 import fetch from "node-fetch";
-import { gql } from "@apollo/client/core";
-import { Discussion, DiscussionWebhook } from "./types/discussions";
-import { createMutation, client } from "./graphql-client";
-import { reply } from "./util/reply";
-import { httpLog, shouldRunRequest } from "./util/verify";
-import { txt } from "./util/util";
-import { getOwnersOfPackage } from "./pr-info";
-import { fetchFile } from "./util/fetchFile";
+import { gql, MutationOptions } from "@apollo/client/core";
+import type { Discussion, DiscussionWebhook } from "../types/discussions";
+import { canHandleRequest, extractNPMReference } from "../discussions";
+import { createMutation, client } from "../graphql-client";
+import { reply } from "../util/reply";
+import { httpLog, shouldRunRequest } from "../util/verify";
+import { txt } from "../util/util";
+import { getOwnersOfPackage } from "../pr-info";
+import { fetchFile } from "../util/fetchFile";
 
-export async function run(context: Context, req: HttpRequest) {
-    httpLog(context, req);
+app.http(
+    "Discussions-Trigger", {
+        methods: ["GET", "POST"],
+        handler: async (req, context) => {
+            const body = await req.json() as DiscussionWebhook;
+            httpLog(context, req.headers, body);
 
-    if (!(await shouldRunRequest(context, req, canHandleRequest))) {
-        return reply(context, 204, "Can't handle this request");
-    }
+            if (!(await shouldRunRequest(context, req.headers, body, canHandleRequest))) {
+                return reply(context, 200, "Can't handle this request");
+            }
 
-    const { body, headers } = req;
-    return handleTrigger({ event: headers["x-github-event"]!, action: body.action, body }, context);
-}
+            return handleTrigger({ event: req.headers.get("x-github-event")!, action: body.action, body }, context);
+        }
+    });
 
-export const canHandleRequest = (event: string, action: string) => {
-    const name = "discussion";
-    const actions = ["created", "edited"];
-    return event == name && actions.includes(action);
-};
-
-const handleTrigger = (info: { event: string; action: string; body: DiscussionWebhook }, context: Context) => {
+const handleTrigger = (info: { event: string; action: string; body: DiscussionWebhook }, context: InvocationContext) => {
     const categoryID = info.body.discussion.category.slug;
     if (categoryID === "issues-with-a-types-package") {
         return pingAuthorsAndSetUpDiscussion(info.body.discussion);
     } else if (categoryID === "request-a-new-types-package" && info.action === "created") {
         return updateDiscordWithRequest(info.body.discussion);
     }
-    return reply(context, 204, "Can't handle this specific request");
+    return reply(context, 200, "Can't handle this specific request");
 };
-
-export function extractNPMReference(discussion: { title: string }) {
-    const title = discussion.title;
-    if (title.includes("[") && title.includes("]")) {
-        const full = title.split("[")[1]!.split("]")[0];
-        return full!.replace("@types/", "");
-    }
-    return undefined;
-}
 
 const couldNotFindMessage = txt`
   |Hi, we could not find a reference to the types you are talking about in this discussion. 
@@ -95,6 +85,7 @@ async function pingAuthorsAndSetUpDiscussion(discussion: Discussion) {
         }
         await addLabel(discussion, "Pkg: " + aboutNPMRef, `Discussions related to ${aboutNPMRef}`);
     }
+    return { status: 200, body: "OK" };
 }
 
 async function updateDiscordWithRequest(discussion: Discussion) {
@@ -104,6 +95,7 @@ async function updateDiscordWithRequest(discussion: Discussion) {
     // https://birdie0.github.io/discord-webhooks-guide/discord_webhook.html
     const webhook = {  content: `New DT Module requested:`, embeds: [ { title: discussion.title, url: discussion.html_url } ] };
     await fetch(discordWebhookAddress, { method: "POST", body: JSON.stringify(webhook), headers: { "content-type": "application/json" } });
+    return { status: 200, body: "OK" };
 }
 
 
@@ -125,8 +117,8 @@ async function addLabel(discussion: Discussion, labelName: string, description?:
     } else {
         const color = "eeeeee";
         const responseSubquery = "label { id }";
-        const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: existingLabel.repoID, color, description }, responseSubquery)) as any;
-        labelID = newLabel.data.label.id;
+        const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: existingLabel.repoID, color, description }, responseSubquery) as unknown as MutationOptions<{ createLabel: { label: { id: string } } }, { input: { name: string, repositoryId: any, color: string, description:string | undefined } }>);
+        labelID = newLabel.data!.createLabel.label.id;
     }
     await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [labelID] }));
 }

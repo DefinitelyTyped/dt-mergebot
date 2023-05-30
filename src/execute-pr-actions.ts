@@ -33,7 +33,7 @@ export async function executePrActions(actions: Actions, pr: PR_repository_pullR
     if (!dry) {
         // Perform mutations one at a time
         for (const mutation of mutations)
-            await client.mutate(mutation as MutationOptions<void, typeof mutations[number]["variables"]>);
+            await client.mutate(mutation as MutationOptions<void, { input: schema.AddCommentInput }>);
         for (const restCall of restCalls)
             await doRestCall(restCall);
     }

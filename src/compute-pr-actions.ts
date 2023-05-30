@@ -181,7 +181,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
                 "Popular": "owner",
                 "Critical": "maintainer",
             } as const)[info.popularityLevel];
-        return who === "maintainer" && blessed && !noOtherOwners ? "owner"
+        return who === "maintainer" && blessed ? "owner"
             : who === "owner" && noOtherOwners ? "maintainer"
             : who;
     }
