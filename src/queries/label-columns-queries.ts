@@ -36,7 +36,7 @@ async function getLabels() {
     }
 }
 
-const GetProjectColumns: TypedDocumentNode<GetProjectColumns, never> = gql`
+const GetProjectColumns: TypedDocumentNode<GetProjectColumns, unknown> = gql`
 query GetProjectColumns {
   repository(name:"DefinitelyTyped", owner:"DefinitelyTyped") {
     id

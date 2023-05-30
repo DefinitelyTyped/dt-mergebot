@@ -37,8 +37,24 @@ const args = yargs(process.argv.slice(2))
     }))
     .help("h").alias("h", "help")
     .strict()
-    .argv;
-
+    .argv as {
+        // Ignore the possibility that argv could be a promise
+        [x: string]: unknown;
+        dry: boolean;
+        cleanup: boolean;
+        format: string | undefined;
+        "show-raw": boolean | undefined;
+        showRaw: boolean | undefined;
+        "show-basic": boolean | undefined;
+        showBasic: boolean | undefined;
+        "show-extended": boolean | undefined;
+        showExtended: boolean | undefined;
+        "show-actions": boolean | undefined;
+        showActions: boolean | undefined;
+        "show-mutations": boolean | undefined;
+        showMutations: boolean | undefined;
+        _: ((n: number) => boolean)[] & (string | number)[];
+    };
 const shouldRunOn: (n: number) => boolean =
     args._.length === 0 ? _n => true : n => args._.some(p => p(n));
 

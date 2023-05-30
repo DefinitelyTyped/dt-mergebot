@@ -1,25 +1,19 @@
-import { getPRInfo } from "./queries/pr-query";
-
-// Allow all others to access this, we can
-// tighten this down to the TS URLs if the route is abused
+import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
+import { getPRInfo } from "../queries/pr-query";
 const headers = {
     "Content-Type": "text/json",
     "Access-Control-Allow-Methods": "GET",
     "Access-Control-Allow-Origin": "*",
 };
+const notFound = (reason: string) => ({
+    headers,
+    status: 404,
+    body: reason
+});
+export async function httpTrigger(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+    context.log(`This time it was "${request.url}"`);
 
-const httpTrigger: import("@azure/functions").AzureFunction = async function (context) {
-    if (!context.req) throw new Error("No request in context");
-
-    const notFound = (reason: string) => {
-        context.res = {
-            headers,
-            status: 404,
-            body: reason
-        };
-    };
-
-    const prNumber = Number(context.req.query.number);
+    const prNumber = Number(request.query.get("number"));
     if (!prNumber || isNaN(prNumber))  return notFound("No PR number");
 
     const info = await getPRInfo(prNumber);
@@ -32,9 +26,13 @@ const httpTrigger: import("@azure/functions").AzureFunction = async function (co
 
     // Extract the JSON from the comment
     const jsonText = welcomeComment.body.replace(/^[^]*```json\n([^]*)\n```[^]*$/, "$1");
-
     const response = { title: prInfo.title, ...JSON.parse(jsonText) };
-    context.res = { status: 200, headers, body: response };
-};
-
-export default httpTrigger;
+    return { status: 200, body: JSON.stringify(response) };
+}
+// Allow all others to access this, we can
+// tighten this down to the TS URLs if the route is abused
+app.http("Playground-Info", {
+    methods: ["GET", "POST"],
+    authLevel: "anonymous",
+    handler: httpTrigger
+});
