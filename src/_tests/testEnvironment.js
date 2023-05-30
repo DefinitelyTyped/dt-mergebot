@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const NodeEnvironment = require("jest-environment-node");
-module.exports = class extends NodeEnvironment {
+const jestEnvNode = require("jest-environment-node");
+module.exports = class extends jestEnvNode.TestEnvironment {
     constructor(config) {
         super(config);
         this.global.AbortSignal = AbortSignal;
