@@ -9,11 +9,11 @@ const notFound = (reason: string) => ({
     headers,
     status: 404,
     body: reason
-})
+});
 export async function httpTrigger(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`This time it was "${request.url}"`);
 
-    const prNumber = Number(request.query.get('number'));
+    const prNumber = Number(request.query.get("number"));
     if (!prNumber || isNaN(prNumber))  return notFound("No PR number");
 
     const info = await getPRInfo(prNumber);
@@ -28,11 +28,11 @@ export async function httpTrigger(request: HttpRequest, context: InvocationConte
     const jsonText = welcomeComment.body.replace(/^[^]*```json\n([^]*)\n```[^]*$/, "$1");
     const response = { title: prInfo.title, ...JSON.parse(jsonText) };
     return { status: 200, body: JSON.stringify(response) };
-};
+}
 // Allow all others to access this, we can
 // tighten this down to the TS URLs if the route is abused
-app.http('Playground-Info', {
-    methods: ['GET', 'POST'],
-    authLevel: 'anonymous',
+app.http("Playground-Info", {
+    methods: ["GET", "POST"],
+    authLevel: "anonymous",
     handler: httpTrigger
 });

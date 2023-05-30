@@ -7,12 +7,11 @@ import { executePrActions } from "../execute-pr-actions";
 import { mergeCodeOwnersOnGreen } from "../side-effects/merge-codeowner-prs";
 import { runQueryToGetPRMetadataForSHA1 } from "../queries/SHA1-to-PR-query";
 import { app, HttpRequest, InvocationContext } from "@azure/functions";
-import { createEventHandler, EmitterWebhookEvent } from "@octokit/webhooks";
 import { reply } from "../util/reply";
 import { httpLog, shouldRunRequest } from "../util/verify";
 import type { CheckSuiteEvent, IssueCommentEvent, ProjectCardEvent, PullRequestEvent, PullRequestReviewEvent } from "@octokit/webhooks-types";
 
-app.http('PR-Trigger', {methods: ["GET", "POST"], authLevel: 'anonymous', handler: httpTrigger})
+app.http("PR-Trigger", {methods: ["GET", "POST"], authLevel: "anonymous", handler: httpTrigger});
 const eventNames = [
     "check_suite.completed",
     "issue_comment.created",
@@ -40,7 +39,7 @@ class IgnoredBecause {
 }
 
 async function httpTrigger(req: HttpRequest, context: InvocationContext) {
-    const body = await req.json() as any
+    const body = await req.json() as any;
     httpLog(context, req.headers, body);
     const evName = req.headers.get("x-github-event"), evAction = body.action;
 
@@ -60,7 +59,7 @@ async function httpTrigger(req: HttpRequest, context: InvocationContext) {
         }
     }
     if (eventNames.includes(`${evName}.${evAction}` as any)) {
-        return handleTrigger(context, { name: evName as PrEvent["name"], payload: body })
+        return handleTrigger(context, { name: evName as PrEvent["name"], payload: body });
     }
     else {
         return reply(context, 200, "Can't handle this request");

@@ -2,7 +2,7 @@ import { app, InvocationContext } from "@azure/functions";
 import fetch from "node-fetch";
 import { gql, MutationOptions } from "@apollo/client/core";
 import type { Discussion, DiscussionWebhook } from "../types/discussions";
-import { canHandleRequest, extractNPMReference } from '../discussions';
+import { canHandleRequest, extractNPMReference } from "../discussions";
 import { createMutation, client } from "../graphql-client";
 import { reply } from "../util/reply";
 import { httpLog, shouldRunRequest } from "../util/verify";
@@ -11,10 +11,10 @@ import { getOwnersOfPackage } from "../pr-info";
 import { fetchFile } from "../util/fetchFile";
 
 app.http(
-    'Discussions-Trigger', {
+    "Discussions-Trigger", {
         methods: ["GET", "POST"],
         handler: async (req, context) => {
-            const body = await req.json() as DiscussionWebhook
+            const body = await req.json() as DiscussionWebhook;
             httpLog(context, req.headers, body);
 
             if (!(await shouldRunRequest(context, req.headers, body, canHandleRequest))) {
@@ -23,7 +23,7 @@ app.http(
 
             return handleTrigger({ event: req.headers.get("x-github-event")!, action: body.action, body }, context);
         }
-    })
+    });
 
 const handleTrigger = (info: { event: string; action: string; body: DiscussionWebhook }, context: InvocationContext) => {
     const categoryID = info.body.discussion.category.slug;
@@ -117,7 +117,7 @@ async function addLabel(discussion: Discussion, labelName: string, description?:
     } else {
         const color = "eeeeee";
         const responseSubquery = "label { id }";
-        const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: existingLabel.repoID, color, description }, responseSubquery) as unknown as MutationOptions<{ createLabel: { label: { id: string } } }, { input: { name: string, repositoryId: any, color: string, description:string | undefined } }>)
+        const newLabel = await client.mutate(createMutation("createLabel" as any, { name: labelName, repositoryId: existingLabel.repoID, color, description }, responseSubquery) as unknown as MutationOptions<{ createLabel: { label: { id: string } } }, { input: { name: string, repositoryId: any, color: string, description:string | undefined } }>);
         labelID = newLabel.data!.createLabel.label.id;
     }
     await client.mutate(createMutation<any>("addLabelsToLabelable" as any, { labelableId: discussion.node_id, labelIds: [labelID] }));

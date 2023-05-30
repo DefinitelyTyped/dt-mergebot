@@ -1,4 +1,5 @@
-const NodeEnvironment = require('jest-environment-node');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const NodeEnvironment = require("jest-environment-node");
 module.exports = class extends NodeEnvironment {
     constructor(config) {
         super(config);
@@ -6,4 +7,4 @@ module.exports = class extends NodeEnvironment {
         this.global.Event = Event;
         this.global.EventTarget = EventTarget;
     }
-}
+};
