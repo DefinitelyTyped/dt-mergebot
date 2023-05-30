@@ -23,7 +23,7 @@ jobs:
         npm prune --production
     - name: "sanity listings"
       run: |
-        node .github/workflows/print-tree.js bin
+        node .github/workflows/print-tree.js dist
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
       id: fa
