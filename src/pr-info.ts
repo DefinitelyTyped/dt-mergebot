@@ -541,7 +541,7 @@ export async function getOwnersOfPackage(packageName: string, oid: string, fetch
     } catch (e) {
         if (e instanceof Error) return new Error(`error parsing owners from package.json: ${e.message}`);
     }
-    const parsed = HeaderParser.validatePackageJson(packageName, packageJsonObj, [])
+    const parsed = HeaderParser.validatePackageJson(packageName, packageJsonObj, []);
     if (Array.isArray(parsed)) {
         return new Error(`error parsing owners from package.json: ${parsed.join("\n")}`);
     }
