@@ -16,6 +16,6 @@ jobs:
       - run: npm run build
 
       # Go through all open PRs and run the bot over them
-      - run: node ./bin/run.js
+      - run: node ./dist/run.js
         env:
           BOT_AUTH_TOKEN: ${{ secrets.BOT_AUTH_TOKEN }}
