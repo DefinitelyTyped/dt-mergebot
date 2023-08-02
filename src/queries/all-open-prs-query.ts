@@ -9,6 +9,7 @@ query GetAllOpenPRsAndCardIDs($endCursor: String) {
     id
     pullRequests(states: OPEN, orderBy: { field: UPDATED_AT, direction: DESC }, first: 100, after: $endCursor) {
       nodes {
+        branch
         number
         projectCards(first: 100) { nodes { id } }
       }
@@ -18,7 +19,7 @@ query GetAllOpenPRsAndCardIDs($endCursor: String) {
 }`;
 
 export async function getAllOpenPRsAndCardIDs() {
-    const prs: number[] = [];
+    const prs: { branch: string; number: number }[] = [];
     const cardIDs: string[] = [];
     let endCursor: string | undefined | null;
     while (true) {
@@ -29,7 +30,7 @@ export async function getAllOpenPRsAndCardIDs() {
         });
         const pullRequests = result.data.repository?.pullRequests;
         const nodes = noNullish(pullRequests?.nodes);
-        prs.push(...nodes.map(pr => pr.number));
+        prs.push(...nodes);
         for (const pr of nodes) {
             cardIDs.push(...noNullish(pr.projectCards.nodes).map(card => card.id));
         }

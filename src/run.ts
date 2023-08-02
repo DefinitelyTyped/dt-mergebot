@@ -9,6 +9,7 @@ import { deriveStateForPR, BotResult } from "./pr-info";
 import { executePrActions } from "./execute-pr-actions";
 import { getProjectBoardCards } from "./queries/projectboard-cards";
 import { runQueryToGetPRForCardId } from "./queries/card-id-to-pr-query";
+import { dispatchFormatAndCommit } from "./formatting";
 import { createMutation, client } from "./graphql-client";
 import { render } from "prettyjson";
 import { inspect } from "util";
@@ -83,10 +84,10 @@ const start = async function () {
     //
     const failures = [];
     for (const pr of prs) {
-        if (!shouldRunOn(pr)) continue;
+        if (!shouldRunOn(pr.number)) continue;
         console.log(`Processing #${pr} (${prs.indexOf(pr) + 1} of ${prs.length})...`);
         // Generate the info for the PR from scratch
-        const info = await getPRInfo(pr);
+        const info = await getPRInfo(pr.number);
         if (args["show-raw"]) show("Raw Query Result", info);
         const prInfo = info.data.repository?.pullRequest;
         // If it didn't work, bail early
@@ -108,6 +109,16 @@ const start = async function () {
         if (state.type === "error") console.error(`  Error: ${state.message}`);
         // Show other messages too
         if ("message" in state) console.log(`  ... ${state.message}`);
+        // PRs that need to be formatted will do so and be processed at a later time
+        if (state.type === "info" && state.needsFormatting) {
+            try {
+                await dispatchFormatAndCommit(pr.branch);
+                console.log(`  Skipping ${pr.number} because it needed to be reformatted`);
+                continue;
+            } catch (e) {
+                console.warn(`  Could not run formatting job for ${pr}: ${e}`);
+            }
+        }
         // Convert the info to a set of actions for the bot
         const actions = computeActions(state,
             args["show-extended"] ? i => show("Extended Info", i) : undefined);

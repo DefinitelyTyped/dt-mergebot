@@ -234,6 +234,10 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_node
 export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_checkRuns_nodes {
   __typename: "CheckRun";
   /**
+   * A string representing the check summary
+   */
+  summary: string | null;
+  /**
    * A string representing the check run
    */
   title: string | null;

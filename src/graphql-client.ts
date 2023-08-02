@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import { ApolloClient, gql, HttpLink, InMemoryCache, MutationOptions, TypedDocumentNode } from "@apollo/client/core";
 import { print } from "graphql";
 import * as schema from "@octokit/graphql-schema/schema";
+import { getAuthToken } from "./auth";
 
 // get the values directly from the apollo config
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -29,14 +30,4 @@ export function createMutation<T>(name: keyof schema.Mutation, input: T, subquer
                 }` as TypedDocumentNode<void, { input: T }>),
     };
     return { mutation, variables: { input } };
-}
-
-function getAuthToken() {
-    if (process.env.JEST_WORKER_ID) return "FAKE_TOKEN";
-
-    const result = process.env["BOT_AUTH_TOKEN"] || process.env["AUTH_TOKEN"] || process.env["DT_BOT_AUTH_TOKEN"];
-    if (typeof result !== "string") {
-        throw new Error("Set either BOT_AUTH_TOKEN or AUTH_TOKEN to a valid auth token");
-    }
-    return result.trim();
 }

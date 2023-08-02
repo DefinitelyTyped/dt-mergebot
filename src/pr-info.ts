@@ -1,6 +1,6 @@
 import { ColumnName, PopularityLevel } from "./basic";
 import { PR_repository_pullRequest,
-         PR_repository_pullRequest_commits_nodes_commit_checkSuites,
+         PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes,
          PR_repository_pullRequest_timelineItems,
          PR_repository_pullRequest_comments_nodes,
 } from "./queries/schema/PR";
@@ -130,6 +130,11 @@ export interface PrInfo {
     readonly mergeRequestDate?: Date;
     readonly mergeRequestUser?: string;
 
+    /**
+     * Whether the format-check workflow's dprint-check job had a summary indicating files were unformatted.
+     */
+    readonly needsFormatting: boolean;
+
     readonly isFirstContribution: boolean;
 
     /*
@@ -231,6 +236,8 @@ export async function deriveStateForPR(
                                          max([createdDate, reopenedDate, lastPushDate]));
     const lastActivityDate = max([createdDate, lastPushDate, lastCommentDate, blessing?.date, reopenedDate, latestReview]);
     const mainBotCommentID = getMainCommentID(comments);
+    const ghActionsChecks = headCommit.checkSuites?.nodes?.filter(check => check?.app?.name.includes("GitHub Actions"));
+
     return {
         type: "info",
         now,
@@ -241,6 +248,7 @@ export async function deriveStateForPR(
         lastPushDate, lastActivityDate,
         maintainerBlessed: blessing?.column,
         mergeOfferDate, mergeRequestDate: mergeRequest?.date, mergeRequestUser: mergeRequest?.user,
+        needsFormatting: getNeedsFormatting(ghActionsChecks),
         hasMergeConflict: prInfo.mergeable === "CONFLICTING",
         isFirstContribution,
         tooManyFiles,
@@ -249,7 +257,7 @@ export async function deriveStateForPR(
         pkgInfo,
         reviews,
         mainBotCommentID,
-        ...getCIResult(headCommit.checkSuites),
+        ...getCIResult(ghActionsChecks),
     };
 
     function botError(message: string): BotError {
@@ -494,9 +502,12 @@ function getReviews(prInfo: PR_repository_pullRequest) {
     return reviews;
 }
 
-function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit_checkSuites | null): { ciResult: CIResult, ciUrl?: string, reRunCheckSuiteIDs?: number[] } {
-    const ghActionsChecks = checkSuites?.nodes?.filter(check => check?.app?.name.includes("GitHub Actions"));
+function getNeedsFormatting(ghActionsChecks: (PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes | null)[] | undefined): boolean {
+    return !!ghActionsChecks?.find(check => check?.checkRuns?.nodes?.[0]?.title === "dprint-check")
+        ?.checkRuns?.nodes?.some(node => node?.summary?.trim()?.includes("not formatted file"));
+}
 
+function getCIResult(ghActionsChecks: (PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes | null)[] | undefined): { ciResult: CIResult, ciUrl?: string, reRunCheckSuiteIDs?: number[] } {
     // Freakin' crypto miners ruined GitHub Actions, and now we need to manually confirm new folks can run CI
     const actionRequiredIDs = noNullish(ghActionsChecks?.map(check =>
         check?.conclusion === "ACTION_REQUIRED" ? check.databaseId : null));

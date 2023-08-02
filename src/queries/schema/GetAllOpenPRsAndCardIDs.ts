@@ -23,6 +23,10 @@ export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_nodes_projectCa
 export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_nodes {
   __typename: "PullRequest";
   /**
+   * Identifies the pull request branch.
+   */
+  branch: string;
+  /**
    * Identifies the pull request number.
    */
   number: number;

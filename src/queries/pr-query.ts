@@ -102,6 +102,7 @@ query PR($prNumber: Int!) {
                   url
                   checkRuns(last: 1) {
                     nodes {
+                      summary
                       title
                     }
                   }
