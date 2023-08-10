@@ -13,6 +13,10 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: "18.x"
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_RBAC_CREDENTIALS }}
     - name: "run npm"
       run: |
         npm install
@@ -31,4 +35,3 @@ jobs:
         app-name: DTMergeBot2
         slot-name: 'production'
         package: '.'
-        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
