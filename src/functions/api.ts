@@ -3,7 +3,8 @@ import { getPRInfo } from "../queries/pr-query";
 const headers = {
     "Content-Type": "text/json",
     "Access-Control-Allow-Methods": "GET",
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": "https://www.typescriptlang.org",
+    "Vary": "Origin"
 };
 const notFound = (reason: string) => ({
     headers,
@@ -27,7 +28,7 @@ export async function httpTrigger(request: HttpRequest, context: InvocationConte
     // Extract the JSON from the comment
     const jsonText = welcomeComment.body.replace(/^[^]*```json\n([^]*)\n```[^]*$/, "$1");
     const response = { title: prInfo.title, ...JSON.parse(jsonText) };
-    return { status: 200, body: JSON.stringify(response) };
+    return { headers, status: 200, body: JSON.stringify(response) };
 }
 // Allow all others to access this, we can
 // tighten this down to the TS URLs if the route is abused
