@@ -94,7 +94,7 @@ const start = async function () {
             console.error(`  No PR with this number exists, (${JSON.stringify(info)})`);
             continue;
         }
-        let state: BotResult | undefined
+        let state: BotResult | undefined;
         try {
             state = await deriveStateForPR(prInfo);
         }
