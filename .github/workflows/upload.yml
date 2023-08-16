@@ -12,7 +12,11 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
-        node-version: "14.x"
+        node-version: "18.x"
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_RBAC_CREDENTIALS }}
     - name: "run npm"
       run: |
         npm install
@@ -23,8 +27,11 @@ jobs:
         npm prune --production
     - name: "sanity listings"
       run: |
-        node .github/workflows/print-tree.js bin
-    - uses: Azure/functions-action@v1
+        node .github/workflows/print-tree.js dist
+    - name: 'Run Azure Functions Action'
+      uses: Azure/functions-action@v1
+      id: fa
       with:
-        app-name: DTMergeBot
-        publish-profile: ${{ secrets.SCM_CREDENTIALS }}
+        app-name: DTMergeBot2
+        slot-name: 'production'
+        package: '.'

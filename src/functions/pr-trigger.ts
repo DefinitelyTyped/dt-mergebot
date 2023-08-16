@@ -1,16 +1,17 @@
 // GH webhook entry point
 
-import { getPRInfo } from "./queries/pr-query";
-import { deriveStateForPR } from "./pr-info";
-import { process as computeActions } from "./compute-pr-actions";
-import { executePrActions } from "./execute-pr-actions";
-import { mergeCodeOwnersOnGreen } from "./side-effects/merge-codeowner-prs";
-import { runQueryToGetPRMetadataForSHA1 } from "./queries/SHA1-to-PR-query";
-import { HttpRequest, Context } from "@azure/functions";
-import { createEventHandler, EmitterWebhookEvent } from "@octokit/webhooks";
-import { reply } from "./util/reply";
-import { httpLog, shouldRunRequest } from "./util/verify";
+import { getPRInfo } from "../queries/pr-query";
+import { deriveStateForPR } from "../pr-info";
+import { process as computeActions } from "../compute-pr-actions";
+import { executePrActions } from "../execute-pr-actions";
+import { mergeCodeOwnersOnGreen } from "../side-effects/merge-codeowner-prs";
+import { runQueryToGetPRMetadataForSHA1 } from "../queries/SHA1-to-PR-query";
+import { app, HttpRequest, InvocationContext } from "@azure/functions";
+import { reply } from "../util/reply";
+import { httpLog, shouldRunRequest } from "../util/verify";
+import type { CheckSuiteEvent, IssueCommentEvent, ProjectCardEvent, PullRequestEvent, PullRequestReviewEvent } from "@octokit/webhooks-types";
 
+app.http("PR-Trigger", {methods: ["GET", "POST"], authLevel: "anonymous", handler: httpTrigger});
 const eventNames = [
     "check_suite.completed",
     "issue_comment.created",
@@ -26,21 +27,24 @@ const eventNames = [
     "pull_request_review.dismissed",
     "pull_request_review.submitted",
 ] as const;
-
-// see https://github.com/octokit/webhooks.js/issues/491, and get rid of this when fixed
-const eventNamesSillyCopy = [...eventNames];
+type PrEvent =
+    | { name: "check_suite", payload: CheckSuiteEvent; }
+    | { name: "issue_comment", payload: IssueCommentEvent; }
+    | { name: "project_card", payload: ProjectCardEvent; }
+    | { name: "pull_request", payload: PullRequestEvent; }
+    | { name: "pull_request_review", payload: PullRequestReviewEvent; }
 
 class IgnoredBecause {
     constructor(public reason: string) { }
 }
 
-export async function httpTrigger(context: Context, req: HttpRequest) {
-    httpLog(context, req);
-    const { headers, body } = req, githubId = headers["x-github-delivery"];
-    const evName = headers["x-github-event"], evAction = body.action;
+async function httpTrigger(req: HttpRequest, context: InvocationContext) {
+    const body = await req.json() as any;
+    httpLog(context, req.headers, body);
+    const evName = req.headers.get("x-github-event"), evAction = body.action;
 
-    if (!(await shouldRunRequest(context, req))) {
-        return reply(context, 204, "Can't handle this request");
+    if (!(await shouldRunRequest(context, req.headers, body))) {
+        return reply(context, 200, "Can't handle this request");
     }
 
     if (evName === "check_run" && evAction === "completed") {
@@ -54,17 +58,19 @@ export async function httpTrigger(context: Context, req: HttpRequest) {
             }
         }
     }
-
-    const eventHandler = createEventHandler({ log: context.log });
-    eventHandler.on(eventNamesSillyCopy, handleTrigger(context));
-    return eventHandler.receive({ id: githubId, name: evName, payload: body } as EmitterWebhookEvent);
+    if (eventNames.includes(`${evName}.${evAction}` as any)) {
+        return handleTrigger(context, { name: evName as PrEvent["name"], payload: body });
+    }
+    else {
+        return reply(context, 200, "Can't handle this request");
+    }
 }
 
-const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<typeof eventNames[number]>) => {
+const handleTrigger = async (context: InvocationContext, event: PrEvent) => {
     const fullName = event.name + "." + event.payload.action;
     context.log(`Handling event: ${fullName}`);
     if (event.payload.sender.login === "typescript-bot" && fullName !== "check_suite.completed")
-        return reply(context, 204, "Skipped webhook because it was triggered by typescript-bot");
+        return reply(context, 200, "Skipped webhook because it was triggered by typescript-bot");
 
     // Allow the bot to run side-effects which are not the 'core' function
     // of the review cycle, but are related to keeping DT running smoothly
@@ -73,11 +79,11 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
 
     const pr: { number: number, title?: string } | IgnoredBecause = await prFromEvent(event);
     if (pr instanceof IgnoredBecause)
-        return reply(context, 204, `Ignored: ${pr.reason}`);
+        return reply(context, 200, `Ignored: ${pr.reason}`);
 
     // wait 30s to process a trigger; if a new trigger comes in for the same PR, it supersedes the old one
     if (await debounce(30000, pr.number))
-        return reply(context, 204, `Skipped webhook, superseded by a newer one for ${pr.number}`);
+        return reply(context, 200, `Skipped webhook, superseded by a newer one for ${pr.number}`);
 
     context.log(`Getting info for PR ${pr.number} - ${pr.title || "(title not fetched)"}`);
     const info = await getPRInfo(pr.number);
@@ -86,7 +92,7 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
     // If it didn't work, bail early
     if (!prInfo) {
         if (event.name === "issue_comment")
-            return reply(context, 204, `NOOPing due to ${pr.number} not being a PR`);
+            return reply(context, 200, `NOOPing due to ${pr.number} not being a PR`);
         else
             return reply(context, 422, `No PR with this number exists, (${JSON.stringify(info)})`);
     }
@@ -100,15 +106,15 @@ const handleTrigger = (context: Context) => async (event: EmitterWebhookEvent<ty
 
     // We are responding real late in the process, so it might show
     // as a timeout in GH a few times (e.g. after GH/DT/NPM lookups)
-    context.res = {
+    return {
         status: 200,
-        body: actions
+        body: JSON.stringify(actions)
     };
 };
 
-const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>) => {
+const prFromEvent = async (event: PrEvent) => {
     switch (event.name) {
-        case "check_suite": return await prFromCheckSuiteEvent(event);
+        case "check_suite": return await prFromCheckSuiteEvent(event.payload);
         case "issue_comment": return event.payload.issue;
         // "Parse" project_card.content_url according to repository.pulls_url
         case "project_card": {
@@ -122,8 +128,8 @@ const prFromEvent = async (event: EmitterWebhookEvent<typeof eventNames[number]>
     }
 };
 
-const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">) => {
-    // There is an `event.payload.check_suite.pull_requests` but it looks like
+const prFromCheckSuiteEvent = async (payload: CheckSuiteEvent) => {
+    // There is an `payload.check_suite.pull_requests` but it looks like
     // it's only populated for PRs in the other direction: going from DT to
     // forks (mostly by a pull bot).  See also `IgnoredBecause` below.
     //
@@ -131,15 +137,15 @@ const prFromCheckSuiteEvent = async (event: EmitterWebhookEvent<"check_suite">) 
     // TLDR: it's not in the API, so do a search (used on Peril for >3 years)
     // (there is an `associatedPullRequests` on a commit object, but that
     // doesn't work for commits on forks)
-    const owner = event.payload.repository.owner.login;
-    const repo = event.payload.repository.name;
-    const sha = event.payload.check_suite.head_sha;
+    const owner = payload.repository.owner.login;
+    const repo = payload.repository.name;
+    const sha = payload.check_suite.head_sha;
     const pr = await runQueryToGetPRMetadataForSHA1(owner, repo, sha);
     if (pr && !pr.closed) return pr;
     // no such PR, and we got related reverse PRs => just ignore it
-    if (event.payload.check_suite.pull_requests.length > 0)
+    if (payload.check_suite.pull_requests.length > 0)
         return new IgnoredBecause(`No PRs for sha and ${
-          event.payload.check_suite.pull_requests.length} reverse PRs (${sha})`);
+          payload.check_suite.pull_requests.length} reverse PRs (${sha})`);
     throw new Error(`PR Number not found: no ${!pr ? "PR" : "open PR"} for sha in status (${sha})`);
 };
 

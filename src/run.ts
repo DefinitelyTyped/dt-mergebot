@@ -5,7 +5,7 @@ import * as yargs from "yargs";
 import { process as computeActions } from "./compute-pr-actions";
 import { getAllOpenPRsAndCardIDs } from "./queries/all-open-prs-query";
 import { getPRInfo } from "./queries/pr-query";
-import { deriveStateForPR } from "./pr-info";
+import { deriveStateForPR, BotResult } from "./pr-info";
 import { executePrActions } from "./execute-pr-actions";
 import { getProjectBoardCards } from "./queries/projectboard-cards";
 import { runQueryToGetPRForCardId } from "./queries/card-id-to-pr-query";
@@ -37,8 +37,24 @@ const args = yargs(process.argv.slice(2))
     }))
     .help("h").alias("h", "help")
     .strict()
-    .argv;
-
+    .argv as {
+        // Ignore the possibility that argv could be a promise
+        [x: string]: unknown;
+        dry: boolean;
+        cleanup: boolean;
+        format: string | undefined;
+        "show-raw": boolean | undefined;
+        showRaw: boolean | undefined;
+        "show-basic": boolean | undefined;
+        showBasic: boolean | undefined;
+        "show-extended": boolean | undefined;
+        showExtended: boolean | undefined;
+        "show-actions": boolean | undefined;
+        showActions: boolean | undefined;
+        "show-mutations": boolean | undefined;
+        showMutations: boolean | undefined;
+        _: ((n: number) => boolean)[] & (string | number)[];
+    };
 const shouldRunOn: (n: number) => boolean =
     args._.length === 0 ? _n => true : n => args._.some(p => p(n));
 
@@ -65,6 +81,7 @@ const start = async function () {
     console.log(`Getting open PRs.`);
     const { prs, cardIDs } = await getAllOpenPRsAndCardIDs();
     //
+    const failures = [];
     for (const pr of prs) {
         if (!shouldRunOn(pr)) continue;
         console.log(`Processing #${pr} (${prs.indexOf(pr) + 1} of ${prs.length})...`);
@@ -77,7 +94,15 @@ const start = async function () {
             console.error(`  No PR with this number exists, (${JSON.stringify(info)})`);
             continue;
         }
-        const state = await deriveStateForPR(prInfo);
+        let state: BotResult | undefined;
+        try {
+            state = await deriveStateForPR(prInfo);
+        }
+        catch (e) {
+            console.error(`  Error: ${e}`);
+            failures.push([e, pr]);
+            continue;
+        }
         if (args["show-basic"]) show("Basic PR Info", state);
         // Show errors in log but keep processing to show in a comment too
         if (state.type === "error") console.error(`  Error: ${state.message}`);
@@ -134,7 +159,16 @@ const start = async function () {
                                : "#" + info.number);
         }
     }
-    console.log("Done");
+    if (failures.length) {
+        console.error(`\n\nThe following PRs failed:`);
+        for (const [e, pr] of failures) {
+            console.error(`  #${pr}: ${e}`);
+        }
+        throw failures[0]![0];
+    }
+    else {
+        console.log("Done");
+    }
 };
 
 start().catch(function (error) {
