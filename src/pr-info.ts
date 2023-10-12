@@ -373,20 +373,7 @@ configSuspicious["OTHER_FILES.txt"] = makeChecker(
     urls.otherFilesTxt,
     { parse: text => text.split(/\r?\n/) }
 );
-configSuspicious["package.json"] = makeChecker(
-    { private: true },
-    urls.packageJson,
-    { ignore: data => {
-        delete data.name;
-        delete data.version;
-        delete data.projects;
-        delete data.contributors;
-        delete data.dependencies;
-        delete data.devDependencies;
-        delete data.types;
-        delete data.typesVersions;
-    } }
-);
+configSuspicious["package.json"] = () => undefined;
 configSuspicious["tslint.json"] = makeChecker(
     { extends: "@definitelytyped/dtslint/dt.json" },
     urls.linterJson
@@ -545,5 +532,5 @@ export async function getOwnersOfPackage(packageName: string, oid: string, fetch
     if (Array.isArray(parsed)) {
         return new Error(`error parsing owners from package.json: ${parsed.join("\n")}`);
     }
-    return noNullish(parsed.contributors.map(c => c.githubUsername));
+    return noNullish(parsed.contributors.map(c => 'githubUsername' in c ? c.githubUsername : undefined));
 }
