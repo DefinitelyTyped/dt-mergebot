@@ -532,5 +532,5 @@ export async function getOwnersOfPackage(packageName: string, oid: string, fetch
     if (Array.isArray(parsed)) {
         return new Error(`error parsing owners from package.json: ${parsed.join("\n")}`);
     }
-    return noNullish(parsed.contributors.map(c => 'githubUsername' in c ? c.githubUsername : undefined));
+    return noNullish(parsed.owners.map(c => 'githubUsername' in c ? c.githubUsername : undefined));
 }
