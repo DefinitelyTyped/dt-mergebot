@@ -1,10 +1,12 @@
 [
   {
-    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
-        "id": "MDEyOklzc3VlQ29tbWVudDY5OTY3NDc5MQ==",
-        "body": "@jablko Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `woocommerce__woocommerce-rest-api` — [on npm](https://www.npmjs.com/package/@woocommerce/woocommerce-rest-api), [on unpkg](https://unpkg.com/browse/@woocommerce/woocommerce-rest-api@latest/)\n\n## Code Reviews\n\nBecause you edited one package and there were no type definition changes, I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=48236&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners, DT maintainers or others\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n## Inactive\n\nThis PR has been inactive for 5 days.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "labelIds": [
+          "MDU6TGFiZWwyMTk3MzU2OTA1"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDkzNjEyMTI3"
       }
     }
   },
@@ -13,7 +15,9 @@
     "variables": {
       "input": {
         "labelIds": [
+          "MDU6TGFiZWw1ODYxNzcwNjM=",
           "MDU6TGFiZWwxNjA4NTUyNDEw",
+          "MDU6TGFiZWw2OTcwMTg5NzI=",
           "MDU6TGFiZWwyMTU0ODE2NTQ5"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDkzNjEyMTI3"
@@ -25,27 +29,24 @@
     "variables": {
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkNDYyMzUxMDY=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI1"
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI2"
       }
     }
   },
   {
-    "mutation": "mutation ($input: MergePullRequestInput!) {\n  mergePullRequest(input: $input) {\n    __typename\n  }\n}\n",
+    "mutation": "mutation ($input: DeleteIssueCommentInput!) {\n  deleteIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
-        "commitHeadline": "🤖 Merge PR #48236 [woocommerce__woocommerce-rest-api] Unmangle scoped package names by @jablko",
-        "expectedHeadOid": "b4d71f672f0f204a514002348ebc2025d18866ca",
-        "mergeMethod": "SQUASH",
-        "pullRequestId": "MDExOlB1bGxSZXF1ZXN0NDkzNjEyMTI3"
+        "id": "MDEyOklzc3VlQ29tbWVudDcwMTA1ODc1Nw=="
       }
     }
   },
   {
-    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
-        "id": "MDEyOklzc3VlQ29tbWVudDcwMTA1ODc1Nw==",
-        "body": "@jablko: Everything looks good here. I am ready to merge this PR (at b4d71f6) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@climba03003: you can do this too.)\n<!--typescript_bot_merge-offer-->"
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NDkzNjEyMTI3",
+        "body": "@jablko — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners from package.json: woocommerce__woocommerce-rest-api's package.json should not include property contributors woocommerce__woocommerce-rest-api's package.json has bad \"version\": 1.0.99999 must end with \".9999\" woocommerce__woocommerce-rest-api's package.json has bad \"owners\": must be an array of type Array<{ name: string, url: string, githubUsername: string}>.\n<!--typescript_bot_had-error-->"
       }
     }
   }

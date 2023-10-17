@@ -1,19 +1,10 @@
 [
   {
-    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "id": "MDEyOklzc3VlQ29tbWVudDYyMDQxNTE4Mw==",
-        "body": "@ErikMartensson Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `intercom-client` — [on npm](https://www.npmjs.com/package/intercom-client), [on unpkg](https://unpkg.com/browse/intercom-client@latest/)\n  - owner-approval: @malithrw\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed by a DT maintainer.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=44267&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Only a DT maintainer can approve changes [without tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package)\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
-      }
-    }
-  },
-  {
     "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWw5MDUzMzQwOTU="
+          "MDU6TGFiZWwyMTk3MzU2OTA1"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDA5NTQyNDky"
       }
@@ -24,7 +15,8 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWw1ODYxNzcwNjM="
+          "MDU6TGFiZWw1ODYxNzcwNjM=",
+          "MDU6TGFiZWwyMTU0NzUwNDcz"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDA5NTQyNDky"
       }
@@ -35,7 +27,7 @@
     "variables": {
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkMzcxNDUyODg=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI2"
       }
     }
   },
@@ -44,7 +36,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDA5NTQyNDky",
-        "body": "Hey @ErikMartensson,\n\n:unamused: Your PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Please consider [adding tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package) to cover the change you're making. Including tests allows this PR to be merged by yourself and the owners of this module.\n\n***This can potentially save days of time for you!***\n<!--typescript_bot_suggest-testing-->"
+        "body": "@ErikMartensson — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners from package.json: intercom-client's package.json should not include property contributors intercom-client's package.json has bad \"version\": 2.11.99999 must end with \".9999\" intercom-client's package.json has bad \"owners\": must be an array of type Array<{ name: string, url: string, githubUsername: string}>.\n<!--typescript_bot_had-error-->"
       }
     }
   }

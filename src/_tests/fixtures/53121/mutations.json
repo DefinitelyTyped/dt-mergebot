@@ -1,10 +1,41 @@
 [
   {
-    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
-        "id": "MDEyOklzc3VlQ29tbWVudDg0NDg5OTYzOQ==",
-        "body": "@nitroin Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `mathjs` — [on npm](https://www.npmjs.com/package/mathjs), [on unpkg](https://unpkg.com/browse/mathjs@latest/)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=53121&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Most recent commit is approved by type definition owners or DT maintainers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "labelIds": [
+          "MDU6TGFiZWwyMTk3MzU2OTA1"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NjQ4NjIzMjYy"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWw2ODQzMjE1NzY="
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NjQ4NjIzMjYy"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "cardId": "MDExOlByb2plY3RDYXJkNjE0ODYyMDY=",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI2"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NjQ4NjIzMjYy",
+        "body": "@nitroin — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners from package.json: mathjs's package.json should not include property contributors mathjs's package.json has bad \"version\": 9.3.99999 must end with \".9999\" mathjs's package.json has bad \"owners\": must be an array of type Array<{ name: string, url: string, githubUsername: string}>.\n<!--typescript_bot_had-error-->"
       }
     }
   }
