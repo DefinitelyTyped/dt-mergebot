@@ -1,12 +1,22 @@
 {
-  "projectColumn": "Other",
+  "projectColumn": "Needs Maintainer Action",
   "labels": [
-    "Mergebot Error"
+    "Popular package",
+    "Other Approved",
+    "No Other Owners"
   ],
   "responseComments": [
     {
-      "tag": "had-error",
-      "status": "@reubenrybnik — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners from package.json: underscore's package.json should not include property contributors underscore's package.json has bad \"version\": 1.10.99999 must end with \".9999\" underscore's package.json has bad \"owners\": must be an array of type Array<{ name: string, url: string, githubUsername: string}>."
+      "tag": "welcome",
+      "status": "@reubenrybnik Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `underscore` — [on npm](https://www.npmjs.com/package/underscore), [on unpkg](https://unpkg.com/browse/underscore@latest/)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=46120&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Most recent commit is approved by a DT maintainer\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+    },
+    {
+      "tag": "pinging-reviewers-others",
+      "status": "🔔 @reubenrybnik — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46120/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)"
+    },
+    {
+      "tag": "wait-for-merge-offer-5ef8fe2",
+      "status": ":passport_control: Hi @reubenrybnik,\n\nI can't [accept a pull request](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-make-a-pull-request) until all of the checks in the \"Status\" section of [this comment](#issuecomment-???) are green. I will let you know once that happens.\n\nThanks, and happy typing!"
     }
   ],
   "shouldClose": false,

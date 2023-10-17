@@ -1,10 +1,20 @@
 [
   {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDY2MDg0NjQ2NA==",
+        "body": "@jordanoverbye Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `apollo-upload-client` — [on npm](https://www.npmjs.com/package/apollo-upload-client), [on unpkg](https://unpkg.com/browse/apollo-upload-client@latest/)\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=46191&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ❌ Continuous integration tests have failed\n * 🕐 A DT maintainer can merge changes when there are no other reviewers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWwyMTk3MzU2OTA1"
+          "MDU6TGFiZWwyMTU0ODU3ODAw",
+          "MDU6TGFiZWwyMTU0NzUwNDcz"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDUzMTM0NTI0"
       }
@@ -15,19 +25,9 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWwyMDk2NzQzNjAw",
           "MDU6TGFiZWwyMTU0ODE2NTQ5"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDUzMTM0NTI0"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "cardId": "MDExOlByb2plY3RDYXJkNDIxNjU2MzU=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI2"
       }
     }
   },
@@ -36,7 +36,25 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDUzMTM0NTI0",
-        "body": "@jordanoverbye — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners from package.json: apollo-upload-client's package.json should not include property contributors apollo-upload-client's package.json has bad \"version\": 8.1.99999 must end with \".9999\" apollo-upload-client's package.json has bad \"owners\": must be an array of type Array<{ name: string, url: string, githubUsername: string}>.\n<!--typescript_bot_had-error-->"
+        "body": "Hey @jordanoverbye,\n\n:unamused: Your PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Please consider [adding tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package) to cover the change you're making. Including tests allows this PR to be merged by yourself and the owners of this module.\n\n***This can potentially save days of time for you!***\n<!--typescript_bot_suggest-testing-->"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NDUzMTM0NTI0",
+        "body": "🔔 @jordanoverbye — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46191/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)\n<!--typescript_bot_pinging-reviewers-others-->"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDY2MDg0NzI3MQ==",
+        "body": "@jordanoverbye The CI build failed! Please [review the logs for more information](https://github.com/DefinitelyTyped/DefinitelyTyped/commit/3cc81dbde57a1b0eda6f69f539fa49b8d420adff/checks?check_suite_id=938074936).\n\nOnce you've pushed the fixes, the build will automatically re-run. Thanks!\n\n**Note: builds which are failing do not end up on the list of PRs for the DT maintainers to review.**\n<!--typescript_bot_gh-actions-complaint-3cc81db-->"
       }
     }
   }

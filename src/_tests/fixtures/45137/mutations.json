@@ -1,10 +1,20 @@
 [
   {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYzNTc1NDY1Mw==",
+        "body": "@lirbank Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `mongodb` — [on npm](https://www.npmjs.com/package/mongodb), [on unpkg](https://unpkg.com/browse/mongodb@latest/)\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=45137&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 A DT maintainer can merge changes when there are no other reviewers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWwyMTk3MzU2OTA1"
+          "MDU6TGFiZWw1ODYxNzcwNjM=",
+          "MDU6TGFiZWwyMTU0ODU3ODAw"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDI0ODgwNjA2"
       }
@@ -16,9 +26,7 @@
       "input": {
         "labelIds": [
           "MDU6TGFiZWw5MDUzMzQwOTU=",
-          "MDU6TGFiZWw2ODQzMjE1NzY=",
-          "MDU6TGFiZWw3OTg3Mzc0Nzg=",
-          "MDU6TGFiZWwyMTU0NzUwNDcz"
+          "MDU6TGFiZWw3OTg3Mzc0Nzg="
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDI0ODgwNjA2"
       }
@@ -29,7 +37,7 @@
     "variables": {
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkMzkxMjQ5MDU=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTI2"
+        "columnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
       }
     }
   },
@@ -38,7 +46,16 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDI0ODgwNjA2",
-        "body": "@lirbank — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners from package.json: mongodb's package.json should not include property contributors mongodb's package.json has bad \"version\": 3.5.99999 must end with \".9999\" mongodb's package.json has bad \"owners\": must be an array of type Array<{ name: string, url: string, githubUsername: string}>.\n<!--typescript_bot_had-error-->"
+        "body": "Hey @lirbank,\n\n:unamused: Your PR doesn't modify any tests, so it's hard to know what's being fixed, and your changes might regress in the future. Please consider [adding tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package) to cover the change you're making. Including tests allows this PR to be merged by yourself and the owners of this module.\n\n***This can potentially save days of time for you!***\n<!--typescript_bot_suggest-testing-->"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NDI0ODgwNjA2",
+        "body": "🔔 @lirbank — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/45137/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)\n<!--typescript_bot_pinging-reviewers-others-->"
       }
     }
   }

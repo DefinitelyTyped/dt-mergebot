@@ -16,7 +16,6 @@
   "dependencies": {
     "@apollo/client": "latest",
     "@azure/functions": "^4.0.0-alpha.1",
-    "@definitelytyped/header-parser": "^0.0.179",
     "@octokit/webhooks": "^9.5.1",
     "dayjs": "^1.10.3",
     "fast-json-patch": "^3.0.0-1",

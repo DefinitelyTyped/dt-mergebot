@@ -1,10 +1,20 @@
 [
   {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "IC_kwDOAFz6BM495gup",
+        "body": "@github-actions Thank you for submitting this PR!From one bot to another, beep bloop boople bloop.\n\n***This is a live comment which I will keep updated.***\n\n## 9 packages in this PR\n\n* `bootstrap.v3.datetimepicker` — [on npm](https://www.npmjs.com/package/bootstrap.v3.datetimepicker), [on unpkg](https://unpkg.com/browse/bootstrap.v3.datetimepicker@latest/)\n* `mithril-global` — [on npm](https://www.npmjs.com/package/mithril-global), [on unpkg](https://unpkg.com/browse/mithril-global@latest/)\n* `mithril` — [on npm](https://www.npmjs.com/package/mithril), [on unpkg](https://unpkg.com/browse/mithril@latest/)\n* `ospec` — [on npm](https://www.npmjs.com/package/ospec), [on unpkg](https://unpkg.com/browse/ospec@latest/)\n* `react-grid-layout` — [on npm](https://www.npmjs.com/package/react-grid-layout), [on unpkg](https://unpkg.com/browse/react-grid-layout@latest/)\n* `react-native-fbsdk` — [on npm](https://www.npmjs.com/package/react-native-fbsdk), [on unpkg](https://unpkg.com/browse/react-native-fbsdk@latest/)\n* `react-virtualized` — [on npm](https://www.npmjs.com/package/react-virtualized), [on unpkg](https://unpkg.com/browse/react-virtualized@latest/)\n* `ssh2-sftp-client` — [on npm](https://www.npmjs.com/package/ssh2-sftp-client), [on unpkg](https://unpkg.com/browse/ssh2-sftp-client@latest/)\n* `styled-components` — [on npm](https://www.npmjs.com/package/styled-components), [on unpkg](https://unpkg.com/browse/styled-components@latest/)\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=58764&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ❓ Continuous integration tests have gone missing\n * 🕐 A DT maintainer needs to approve changes which affect more than one package\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWwyMTk3MzU2OTA1"
+          "MDU6TGFiZWw1ODYxNzcwNjM=",
+          "MDU6TGFiZWwyMTU0ODU3ODAw"
         ],
         "labelableId": "PR_kwDOAFz6BM4yvxmj"
       }
@@ -16,29 +26,18 @@
       "input": {
         "labelIds": [
           "MDU6TGFiZWwyNDk1OTc2ODI5",
-          "MDU6TGFiZWwyMDk2NzQ1NzQx",
-          "MDU6TGFiZWwxNjA4NjM0NDg0",
-          "MDU6TGFiZWwxNjA4MjEwODMz",
-          "MDU6TGFiZWwyMTU0NzUwNDcz"
+          "MDU6TGFiZWwyMDk2NzQ1NzQx"
         ],
         "labelableId": "PR_kwDOAFz6BM4yvxmj"
       }
     }
   },
   {
-    "mutation": "mutation ($input: DeleteIssueCommentInput!) {\n  deleteIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
-        "id": "IC_kwDOAFz6BM495gu5"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "subjectId": "PR_kwDOAFz6BM4yvxmj",
-        "body": "@github-actions — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners from package.json: bootstrap.v3.datetimepicker's package.json should not include property contributors bootstrap.v3.datetimepicker's package.json has bad \"version\": 4.17.99999 must end with \".9999\" bootstrap.v3.datetimepicker's package.json has bad \"owners\": must be an array of type Array<{ name: string, url: string, githubUsername: string}>.\n<!--typescript_bot_had-error-->"
+        "cardId": "PRC_lALOAFz6BM4AORWwzgSgr8E",
+        "columnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
       }
     }
   }

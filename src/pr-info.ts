@@ -10,7 +10,6 @@ import { noNullish, someLast, sameUser, authorNotBot, max, abbrOid } from "./uti
 import { TOO_MANY_FILES } from "./queries/pr-query";
 import * as comment from "./util/comment";
 import * as urls from "./urls";
-import * as HeaderParser from "@definitelytyped/header-parser";
 import * as jsonDiff from "fast-json-patch";
 
 const CriticalPopularityThreshold = 5_000_000;
@@ -528,9 +527,5 @@ export async function getOwnersOfPackage(packageName: string, oid: string, fetch
     } catch (e) {
         if (e instanceof Error) return new Error(`error parsing owners from package.json: ${e.message}`);
     }
-    const parsed = HeaderParser.validatePackageJson(packageName, packageJsonObj, []);
-    if (Array.isArray(parsed)) {
-        return new Error(`error parsing owners from package.json: ${parsed.join("\n")}`);
-    }
-    return noNullish(parsed.owners.map(c => 'githubUsername' in c ? c.githubUsername : undefined));
+    return noNullish(packageJsonObj.owners?.map((c: any) => 'githubUsername' in c ? c.githubUsername : undefined));
 }

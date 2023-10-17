@@ -1,15 +1,25 @@
 {
-  "projectColumn": "Other",
+  "projectColumn": "Recently Merged",
   "labels": [
-    "Mergebot Error"
+    "Other Approved",
+    "No Other Owners",
+    "Self Merge"
   ],
   "responseComments": [
     {
-      "tag": "had-error",
-      "status": "@jablko — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners from package.json: woocommerce__woocommerce-rest-api's package.json should not include property contributors woocommerce__woocommerce-rest-api's package.json has bad \"version\": 1.0.99999 must end with \".9999\" woocommerce__woocommerce-rest-api's package.json has bad \"owners\": must be an array of type Array<{ name: string, url: string, githubUsername: string}>."
+      "tag": "welcome",
+      "status": "@jablko Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `woocommerce__woocommerce-rest-api` — [on npm](https://www.npmjs.com/package/@woocommerce/woocommerce-rest-api), [on unpkg](https://unpkg.com/browse/@woocommerce/woocommerce-rest-api@latest/)\n\n## Code Reviews\n\nBecause you edited one package and there were no type definition changes, I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=48236&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners, DT maintainers or others\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n## Inactive\n\nThis PR has been inactive for 5 days.\n\n----------------------\n... diagnostics scrubbed ..."
+    },
+    {
+      "tag": "pinging-reviewers-others",
+      "status": "🔔 @jablko — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/48236/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)"
+    },
+    {
+      "tag": "merge-offer",
+      "status": "@jablko: Everything looks good here. I am ready to merge this PR (at b4d71f6) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n"
     }
   ],
   "shouldClose": false,
-  "shouldMerge": false,
+  "shouldMerge": true,
   "shouldUpdateLabels": true
 }

@@ -1,6 +1,44 @@
 {
-  "type": "error",
+  "type": "info",
   "now": "2020-07-06T08:47:17.001Z",
-  "message": "error parsing owners from package.json: webpack's package.json should not include property contributors\nwebpack's package.json has bad \"version\": 4.41.99999 must end with \".9999\"\nwebpack's package.json has bad \"owners\": must be an array of type Array<{ name: string, url: string, githubUsername: string}>.",
-  "author": "spamshaker"
+  "pr_number": 45627,
+  "author": "spamshaker",
+  "headCommitOid": "15facc177c957646a1ace95abe5e71326007c721",
+  "mergeBaseOid": "master",
+  "lastPushDate": "2020-06-21T09:33:06.000Z",
+  "lastActivityDate": "2020-07-06T08:36:06.000Z",
+  "maintainerBlessed": "Waiting for Code Reviews",
+  "mergeOfferDate": "2020-04-30T01:31:41.000Z",
+  "mergeRequestDate": "2020-07-06T08:36:06.000Z",
+  "mergeRequestUser": "spamshaker",
+  "hasMergeConflict": false,
+  "isFirstContribution": false,
+  "tooManyFiles": false,
+  "hugeChange": false,
+  "popularityLevel": "Critical",
+  "pkgInfo": [
+    {
+      "name": "webpack",
+      "kind": "edit",
+      "files": [
+        {
+          "path": "types/webpack/index.d.ts",
+          "kind": "definition"
+        }
+      ],
+      "owners": [],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
+    }
+  ],
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "ofhouse",
+      "date": "2020-07-03T17:33:39.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "ciResult": "pass"
 }
