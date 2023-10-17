@@ -42,13 +42,8 @@
           "kind": "package-meta-ok"
         }
       ],
-      "owners": [
-        "dawnmist",
-        "erbridge"
-      ],
-      "addedOwners": [
-        "peterblazejewicz"
-      ],
+      "owners": [],
+      "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

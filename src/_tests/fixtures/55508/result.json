@@ -1,8 +1,9 @@
 {
-  "projectColumn": "Needs Maintainer Review",
+  "projectColumn": "Needs Maintainer Action",
   "labels": [
     "Popular package",
-    "Owner Approved",
+    "Other Approved",
+    "No Other Owners",
     "Untested Change"
   ],
   "responseComments": [
@@ -12,11 +13,11 @@
     },
     {
       "tag": "welcome",
-      "status": "@avi12 Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `chrome` — [on npm](https://www.npmjs.com/package/chrome), [on unpkg](https://unpkg.com/browse/chrome@latest/)\n  - owner-approval: @userTim, @nicolas377\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed by a DT maintainer.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=55508&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Only a DT maintainer can approve changes [without tests](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-test-editing-an-existing-package)\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+      "status": "@avi12 Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `chrome` — [on npm](https://www.npmjs.com/package/chrome), [on unpkg](https://unpkg.com/browse/chrome@latest/)\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=55508&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 A DT maintainer can merge changes when there are no other reviewers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
     },
     {
-      "tag": "wait-for-merge-offer-7288ad2",
-      "status": ":hourglass_flowing_sand: Hi @avi12,\n\nIt's been a few days since this PR was approved by userTim, nicolas377 and we're waiting for a DT maintainer to give a review.\n\nIf you would like to short-circuit this wait, you can edit some of the [test files](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-my-package-teststs) in the package which verify how the `.d.ts` files work. This would allow the PR to be merged by you or the DT module owners after a re-review."
+      "tag": "pinging-reviewers-others",
+      "status": "🔔 @avi12 — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/55508/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)"
     }
   ],
   "shouldClose": false,

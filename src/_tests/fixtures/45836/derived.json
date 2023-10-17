@@ -29,15 +29,8 @@
           "kind": "test"
         }
       ],
-      "owners": [
-        "bradleyayers",
-        "davidka",
-        "timjb",
-        "patsimm"
-      ],
-      "addedOwners": [
-        "mmorearty"
-      ],
+      "owners": [],
+      "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     },
@@ -50,13 +43,7 @@
           "kind": "definition"
         }
       ],
-      "owners": [
-        "bradleyayers",
-        "davidka",
-        "timjb",
-        "patsimm",
-        "mmorearty"
-      ],
+      "owners": [],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

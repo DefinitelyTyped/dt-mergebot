@@ -22,42 +22,9 @@
           "kind": "definition"
         }
       ],
-      "owners": [
-        "CaselIT",
-        "alanmarcell",
-        "dante-101",
-        "mcortesi",
-        "EnricoPicci",
-        "AJCStriker",
-        "julien-c",
-        "daprahamian",
-        "denys-bushulyak",
-        "BastienAr",
-        "sindbach",
-        "geraldinelemeur",
-        "various89",
-        "angela-1",
-        "lirbank",
-        "hector7",
-        "floric",
-        "erikc5000",
-        "Manc",
-        "jloveridge",
-        "ranguna",
-        "HosseinAgha",
-        "albertossilva",
-        "peterblazejewicz",
-        "LinusU",
-        "taxilian",
-        "xamgore",
-        "avaly",
-        "HitkoDev",
-        "jtassin"
-      ],
+      "owners": [],
       "addedOwners": [],
-      "deletedOwners": [
-        "lirbank"
-      ],
+      "deletedOwners": [],
       "popularityLevel": "Popular"
     }
   ],

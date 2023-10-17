@@ -27,12 +27,7 @@
           "kind": "definition"
         }
       ],
-      "owners": [
-        "Maxim-Mazurok",
-        "google-api-typings-generator",
-        "namoscato",
-        "declanvong"
-      ],
+      "owners": [],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

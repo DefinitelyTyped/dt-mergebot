@@ -10,7 +10,6 @@ import { noNullish, someLast, sameUser, authorNotBot, max, abbrOid } from "./uti
 import { TOO_MANY_FILES } from "./queries/pr-query";
 import * as comment from "./util/comment";
 import * as urls from "./urls";
-import * as HeaderParser from "@definitelytyped/header-parser";
 import * as jsonDiff from "fast-json-patch";
 
 const CriticalPopularityThreshold = 5_000_000;
@@ -373,15 +372,7 @@ configSuspicious["OTHER_FILES.txt"] = makeChecker(
     urls.otherFilesTxt,
     { parse: text => text.split(/\r?\n/) }
 );
-configSuspicious["package.json"] = makeChecker(
-    { private: true },
-    urls.packageJson,
-    { ignore: data => {
-        delete data.dependencies;
-        delete data.types;
-        delete data.typesVersions;
-    } }
-);
+configSuspicious["package.json"] = () => undefined;
 configSuspicious["tslint.json"] = makeChecker(
     { extends: "@definitelytyped/dtslint/dt.json" },
     urls.linterJson
@@ -527,14 +518,14 @@ function downloadsToPopularityLevel(monthlyDownloads: number): PopularityLevel {
 }
 
 export async function getOwnersOfPackage(packageName: string, oid: string, fetchFile: typeof defaultFetchFile): Promise<string[] | null | Error> {
-    const indexDts = `${oid}:types/${packageName}/index.d.ts`;
-    const indexDtsContent = await fetchFile(indexDts, 10240); // grab at most 10k
-    if (indexDtsContent === undefined) return null;
-    let parsed: HeaderParser.Header;
+    const packageJson = `${oid}:types/${packageName}/package.json`;
+    const packageJsonContent = await fetchFile(packageJson, 10240); // grab at most 10k
+    if (packageJsonContent === undefined) return null;
+    let packageJsonObj;
     try {
-        parsed = HeaderParser.parseHeaderOrFail(indexDtsContent);
+        packageJsonObj = JSON.parse(packageJsonContent);
     } catch (e) {
-        if (e instanceof Error) return new Error(`error parsing owners: ${e.message}`);
+        if (e instanceof Error) return new Error(`error parsing owners from package.json: ${e.message}`);
     }
-    return noNullish(parsed!.contributors.map(c => c.githubUsername));
+    return noNullish(packageJsonObj.owners?.map((c: any) => c?.githubUsername));
 }

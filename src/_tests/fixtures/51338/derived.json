@@ -27,15 +27,7 @@
           "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-tsconfigjson) and not moving towards it (check: `compilerOptions.esModuleInterop`)"
         }
       ],
-      "owners": [
-        "DavidCai1993",
-        "jkeylu",
-        "brikou",
-        "harryparkdotio",
-        "chatoo2412",
-        "tellnes",
-        "pkuczynski"
-      ],
+      "owners": [],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"

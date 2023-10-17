@@ -9,6 +9,17 @@
     }
   },
   {
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWwyMTU0ODU3ODAw"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDkzNjEyMTI3"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
@@ -41,11 +52,20 @@
     }
   },
   {
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NDkzNjEyMTI3",
+        "body": "🔔 @jablko — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/48236/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)\n<!--typescript_bot_pinging-reviewers-others-->"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDcwMTA1ODc1Nw==",
-        "body": "@jablko: Everything looks good here. I am ready to merge this PR (at b4d71f6) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@climba03003: you can do this too.)\n<!--typescript_bot_merge-offer-->"
+        "body": "@jablko: Everything looks good here. I am ready to merge this PR (at b4d71f6) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n<!--typescript_bot_merge-offer-->"
       }
     }
   }

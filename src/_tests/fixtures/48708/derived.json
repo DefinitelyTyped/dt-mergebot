@@ -30,31 +30,7 @@
           "kind": "test"
         }
       ],
-      "owners": [
-        "leonard-thieu",
-        "borisyankov",
-        "choffmeister",
-        "Steve-Fenton",
-        "Diullei",
-        "tasoili",
-        "jasons-novaleaf",
-        "seanski",
-        "Guuz",
-        "ksummerlin",
-        "basarat",
-        "nwolverson",
-        "derekcicerone",
-        "AndrewGaspar",
-        "seikichi",
-        "benjaminjackman",
-        "s093294",
-        "JoshStrobl",
-        "johnnyreilly",
-        "DickvdBrink",
-        "King2500",
-        "terrymun",
-        "martin-badin"
-      ],
+      "owners": [],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"

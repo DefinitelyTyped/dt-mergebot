@@ -26,32 +26,8 @@
           "kind": "definition"
         }
       ],
-      "owners": [
-        "tkqubo",
-        "bumbleblym",
-        "bcherny",
-        "tommytroylin",
-        "mohsen1",
-        "jcreamer898",
-        "alan-agius4",
-        "dennispg",
-        "christophehurpeau",
-        "ZSkycat",
-        "johnnyreilly",
-        "rwaskiewicz",
-        "kuehlein",
-        "grgur",
-        "rubenspgcavalcante",
-        "andersk",
-        "ofhouse",
-        "danielthank",
-        "sasurau4",
-        "dionshihk",
-        "peterblazejewicz"
-      ],
-      "addedOwners": [
-        "spamshaker"
-      ],
+      "owners": [],
+      "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"
     }

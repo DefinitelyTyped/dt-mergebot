@@ -4,7 +4,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDcyMzQ5MzkyNw==",
-        "body": "@Methuselah96 Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `d3-array` — [on npm](https://www.npmjs.com/package/d3-array), [on unpkg](https://unpkg.com/browse/d3-array@latest/) (author is owner)\n  - owner-approval: @Ledragon\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=49417&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners, DT maintainers or others\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@Methuselah96 Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `d3-array` — [on npm](https://www.npmjs.com/package/d3-array), [on unpkg](https://unpkg.com/browse/d3-array@latest/)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=49417&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners, DT maintainers or others\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },
@@ -13,7 +13,7 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWw5MDUzMzQwOTU="
+          "MDU6TGFiZWwyMTU0ODU3ODAw"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NTE3MTkwNTIz"
       }
@@ -24,9 +24,9 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWw1ODYxNzcwNjM=",
           "MDU6TGFiZWwxNjA4NTUyNDEw",
-          "MDU6TGFiZWw2ODQzMjE1NzY="
+          "MDU6TGFiZWw2ODQzMjE1NzY=",
+          "MDU6TGFiZWw3OTg3Mzc0Nzg="
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NTE3MTkwNTIz"
       }
@@ -37,7 +37,16 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTE3MTkwNTIz",
-        "body": "@Methuselah96: Everything looks good here. I am ready to merge this PR (at 2b9d098) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@gustavderdrache, @borisyankov, @tomwanzek, @denisname, @ledragon: you can do this too.)\n<!--typescript_bot_merge-offer-->"
+        "body": "🔔 @Methuselah96 — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49417/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)\n<!--typescript_bot_pinging-reviewers-others-->"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0NTE3MTkwNTIz",
+        "body": "@Methuselah96: Everything looks good here. I am ready to merge this PR (at 2b9d098) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n<!--typescript_bot_merge-offer-->"
       }
     }
   }

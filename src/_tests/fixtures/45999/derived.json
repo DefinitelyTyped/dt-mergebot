@@ -27,31 +27,7 @@
           "kind": "test"
         }
       ],
-      "owners": [
-        "johnnyreilly",
-        "bbenezech",
-        "pzavolinsky",
-        "digiguru",
-        "ericanderson",
-        "DovydasNavickas",
-        "theruther4d",
-        "guilhermehubner",
-        "ferdaber",
-        "jrakotoharisoa",
-        "pascaloliv",
-        "hotell",
-        "franklixuefei",
-        "Jessidhia",
-        "saranshkataria",
-        "lukyth",
-        "eps1lon",
-        "zieka",
-        "dancerphil",
-        "dimitropoulos",
-        "disjukr",
-        "vhfmag",
-        "hellatan"
-      ],
+      "owners": [],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"

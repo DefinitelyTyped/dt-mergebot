@@ -9,11 +9,22 @@
     }
   },
   {
+    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "labelIds": [
+          "MDU6TGFiZWwyMTU0ODU3ODAw"
+        ],
+        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDcyOTQ5NjQ1"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
         "cardId": "MDExOlByb2plY3RDYXJkNDQyNTE2ODU=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIy"
+        "columnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
       }
     }
   }
