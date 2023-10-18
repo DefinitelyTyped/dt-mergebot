@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "benchmark",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/benchmark/benchmark-tests.ts",
@@ -27,7 +27,9 @@
         }
       ],
       "owners": [],
-      "addedOwners": [],
+      "addedOwners": [
+        "fishcharlie"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

@@ -4,7 +4,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYzMjgzOTQzNQ==",
-        "body": "@petr-motejlek Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `ramda` (*new!*) — [on npm](https://www.npmjs.com/package/ramda), [on unpkg](https://unpkg.com/browse/ramda@latest/)\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=44989&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Only a DT maintainer can approve changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 14 days — please try to get reviewers!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@petr-motejlek Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `ramda` — [on npm](https://www.npmjs.com/package/ramda), [on unpkg](https://unpkg.com/browse/ramda@latest/)\n  - owner-approval: @Nicholaiii\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=44989&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners or DT maintainers\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n## Inactive\n\nThis PR has been inactive for 14 days — please merge or say something if there's a problem, otherwise it will be closed!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },
@@ -13,40 +13,18 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWw2NDY3ODg4ODg=",
-          "MDU6TGFiZWw1ODYxNzcwNjM=",
-          "MDU6TGFiZWwyNDYyODA0MzE1"
+          "MDU6TGFiZWw2NDQwOTU4ODI="
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDIyMDc5Mjk3"
       }
     }
   },
   {
-    "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
-        "labelIds": [
-          "MDU6TGFiZWw5MDUzMzQwOTU=",
-          "MDU6TGFiZWw2OTcwMTg5NzI="
-        ],
-        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDIyMDc5Mjk3"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "cardId": "MDExOlByb2plY3RDYXJkMzg3NDg0NDE=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: DeleteIssueCommentInput!) {\n  deleteIssueComment(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "id": "MDEyOklzc3VlQ29tbWVudDYzMzAxODkyMw=="
+        "id": "MDEyOklzc3VlQ29tbWVudDYzMzAxODkyMw==",
+        "body": "@petr-motejlek: Everything looks good here. I am ready to merge this PR (at 9ca6086) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@TheHandsomeCoder, @donnut, @mdekrey, @sbking, @afharo, @teves-castro, @1M0reBug, @hojberg, @samsonkeung, @angeloocana, @raynerd, @moshensky, @ethanresnick, @deftomat, @blimusiek, @biern, @rayhaneh, @rgm, @drewwyatt, @jottenlips, @minitesh, @krantisinh, @pirix-gh, @brekk, @nemo108, @jituanlin, @Philippe-mills, @Saul-Mirone, @Nicholaiii: you can do this too.)\n<!--typescript_bot_merge-offer-->"
       }
     }
   },
@@ -55,16 +33,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDIyMDc5Mjk3",
-        "body": "🔔 @petr-motejlek — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44989/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)\n<!--typescript_bot_pinging-reviewers-others-->"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "subjectId": "MDExOlB1bGxSZXF1ZXN0NDIyMDc5Mjk3",
-        "body": "Re-ping @«anyone?»:\n\nThis PR has been out for over a week, yet I haven't seen any reviews.\n\nCould someone please give it some attention? Thanks!\n<!--typescript_bot_Unreviewed:nearly:2020-05-23-->"
+        "body": "Re-ping @petr-motejlek / @TheHandsomeCoder, @donnut, @mdekrey, @sbking, @afharo, @teves-castro, @1M0reBug, @hojberg, @samsonkeung, @angeloocana, @raynerd, @moshensky, @ethanresnick, @deftomat, @blimusiek, @biern, @rayhaneh, @rgm, @drewwyatt, @jottenlips, @minitesh, @krantisinh, @pirix-gh, @brekk, @nemo108, @jituanlin, @Philippe-mills, @Saul-Mirone:\n\nThis PR has been ready to merge for over a week, and I haven't seen any requests to merge it. I will close it on Jun 22nd (in three weeks) if this doesn't happen.\n\n(If there's no reason to avoid merging it, please do so.  Otherwise, if it shouldn't be merged or if it needs more time, please close it or turn it into a draft.)\n<!--typescript_bot_Unmerged:nearly:2020-05-23-->"
       }
     }
   }

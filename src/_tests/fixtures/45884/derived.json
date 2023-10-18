@@ -17,14 +17,25 @@
   "pkgInfo": [
     {
       "name": "cytoscape",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/cytoscape/index.d.ts",
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "phreed",
+        "wy193777",
+        "ypconstante",
+        "janniclas",
+        "cerberuser",
+        "gsbelarus",
+        "peterjferrarotto",
+        "spaxe",
+        "appleparan",
+        "Veckodag"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

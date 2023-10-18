@@ -15,14 +15,28 @@
   "pkgInfo": [
     {
       "name": "react-datepicker",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/react-datepicker/index.d.ts",
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "radziksh",
+        "andrewBalekha",
+        "smrq",
+        "royxue",
+        "KoalaHuman",
+        "justingrant",
+        "jakeboone02",
+        "Ky6uk",
+        "aviklai",
+        "seckie",
+        "tu4mo",
+        "kerry-g",
+        "ShiftrTechSAS"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Popular"

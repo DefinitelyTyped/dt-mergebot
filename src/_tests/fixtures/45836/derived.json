@@ -18,7 +18,7 @@
   "pkgInfo": [
     {
       "name": "prosemirror-commands",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/prosemirror-commands/index.d.ts",
@@ -29,21 +29,34 @@
           "kind": "test"
         }
       ],
-      "owners": [],
-      "addedOwners": [],
+      "owners": [
+        "bradleyayers",
+        "davidka",
+        "timjb",
+        "patsimm"
+      ],
+      "addedOwners": [
+        "mmorearty"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     },
     {
       "name": "prosemirror-keymap",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/prosemirror-keymap/index.d.ts",
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "bradleyayers",
+        "davidka",
+        "timjb",
+        "patsimm",
+        "mmorearty"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

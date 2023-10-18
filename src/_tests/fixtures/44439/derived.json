@@ -29,7 +29,7 @@
     },
     {
       "name": "detect-port",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/detect-port/detect-port-tests.ts",
@@ -40,8 +40,12 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
-      "addedOwners": [],
+      "owners": [
+        "lith-light-g"
+      ],
+      "addedOwners": [
+        "ivandevp"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

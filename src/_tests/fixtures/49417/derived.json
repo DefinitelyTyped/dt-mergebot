@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "d3-array",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/d3-array/d3-array-tests.ts",
@@ -26,7 +26,14 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "gustavderdrache",
+        "borisyankov",
+        "tomwanzek",
+        "denisname",
+        "ledragon",
+        "Methuselah96"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

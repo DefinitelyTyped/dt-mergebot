@@ -16,14 +16,18 @@
   "pkgInfo": [
     {
       "name": "react-d3-graph",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/react-d3-graph/index.d.ts",
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "hrngoode",
+        "adina-todoran",
+        "BreadAndRoses95"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

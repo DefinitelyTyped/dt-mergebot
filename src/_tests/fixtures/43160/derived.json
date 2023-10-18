@@ -15,14 +15,19 @@
   "pkgInfo": [
     {
       "name": "dagre",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/dagre/index.d.ts",
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "qinfchen",
+        "Frankrike",
+        "vilterp",
+        "rustedgrail"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

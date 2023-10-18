@@ -15,14 +15,25 @@
   "pkgInfo": [
     {
       "name": "chrome",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/chrome/index.d.ts",
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "matthewkimber",
+        "otiai10",
+        "couven92",
+        "rreverser",
+        "sreimer15",
+        "MatCarlson",
+        "ekinsol",
+        "tregagnon",
+        "echoabstract",
+        "spasma"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Popular"

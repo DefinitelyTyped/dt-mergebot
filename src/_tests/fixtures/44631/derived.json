@@ -16,7 +16,7 @@
   "pkgInfo": [
     {
       "name": "kefir",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/kefir/index.d.ts",
@@ -27,7 +27,10 @@
           "kind": "test"
         }
       ],
-      "owners": [],
+      "owners": [
+        "AyaMorisawa",
+        "HitoriSensei"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

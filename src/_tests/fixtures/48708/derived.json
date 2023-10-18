@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "jquery",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/jquery/JQuery.d.ts",
@@ -30,7 +30,31 @@
           "kind": "test"
         }
       ],
-      "owners": [],
+      "owners": [
+        "leonard-thieu",
+        "borisyankov",
+        "choffmeister",
+        "Steve-Fenton",
+        "Diullei",
+        "tasoili",
+        "jasons-novaleaf",
+        "seanski",
+        "Guuz",
+        "ksummerlin",
+        "basarat",
+        "nwolverson",
+        "derekcicerone",
+        "AndrewGaspar",
+        "seikichi",
+        "benjaminjackman",
+        "s093294",
+        "JoshStrobl",
+        "johnnyreilly",
+        "DickvdBrink",
+        "King2500",
+        "terrymun",
+        "martin-badin"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"

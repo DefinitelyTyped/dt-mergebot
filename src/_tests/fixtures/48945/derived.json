@@ -16,7 +16,7 @@
   "pkgInfo": [
     {
       "name": "gapi.client.calendar",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/gapi.client.calendar/gapi.client.calendar-tests.ts",
@@ -27,7 +27,12 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "Maxim-Mazurok",
+        "google-api-typings-generator",
+        "namoscato",
+        "declanvong"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

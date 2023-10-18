@@ -17,7 +17,7 @@
   "pkgInfo": [
     {
       "name": "underscore",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/underscore/index.d.ts",
@@ -28,7 +28,17 @@
           "kind": "test"
         }
       ],
-      "owners": [],
+      "owners": [
+        "borisyankov",
+        "jbaldwin",
+        "ccurrens",
+        "confususs",
+        "jgonggrijp",
+        "ffflorian",
+        "regevbr",
+        "peterblazejewicz",
+        "reubenrybnik"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Popular"

@@ -15,16 +15,49 @@
   "pkgInfo": [
     {
       "name": "mongodb",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/mongodb/index.d.ts",
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "CaselIT",
+        "alanmarcell",
+        "dante-101",
+        "mcortesi",
+        "EnricoPicci",
+        "AJCStriker",
+        "julien-c",
+        "daprahamian",
+        "denys-bushulyak",
+        "BastienAr",
+        "sindbach",
+        "geraldinelemeur",
+        "various89",
+        "angela-1",
+        "lirbank",
+        "hector7",
+        "floric",
+        "erikc5000",
+        "Manc",
+        "jloveridge",
+        "ranguna",
+        "HosseinAgha",
+        "albertossilva",
+        "peterblazejewicz",
+        "LinusU",
+        "taxilian",
+        "xamgore",
+        "avaly",
+        "HitkoDev",
+        "jtassin"
+      ],
       "addedOwners": [],
-      "deletedOwners": [],
+      "deletedOwners": [
+        "lirbank"
+      ],
       "popularityLevel": "Popular"
     }
   ],

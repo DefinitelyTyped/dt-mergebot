@@ -37,7 +37,10 @@
         }
       ],
       "owners": [],
-      "addedOwners": [],
+      "addedOwners": [
+        "wrumsby",
+        "peterblazejewicz"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

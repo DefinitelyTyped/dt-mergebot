@@ -16,14 +16,19 @@
   "pkgInfo": [
     {
       "name": "mailgun-js",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/mailgun-js/index.d.ts",
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "sampsonjoliver",
+        "andipaetzold",
+        "JiriBalcar",
+        "CodeLenny"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

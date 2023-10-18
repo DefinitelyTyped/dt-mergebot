@@ -4,7 +4,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYyMDI4OTg3OA==",
-        "body": "@fishcharlie Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `benchmark` (*new!*) — [on npm](https://www.npmjs.com/package/benchmark), [on unpkg](https://unpkg.com/browse/benchmark@latest/)\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=44282&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Only a DT maintainer can approve changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@fishcharlie Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `benchmark` — [on npm](https://www.npmjs.com/package/benchmark), [on unpkg](https://unpkg.com/browse/benchmark@latest/)\n  - 1 added owner: ✎@fishcharlie\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=44282&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Most recent commit is approved by type definition owners, DT maintainers or others\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },
@@ -13,29 +13,9 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWw2NDY3ODg4ODg="
+          "MDU6TGFiZWwyNDk1OTc2ODI5"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDA5ODAxMzk2"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: RemoveLabelsFromLabelableInput!) {\n  removeLabelsFromLabelable(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "labelIds": [
-          "MDU6TGFiZWwyMTU0ODU3ODAw"
-        ],
-        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDA5ODAxMzk2"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: MoveProjectCardInput!) {\n  moveProjectCard(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "cardId": "MDExOlByb2plY3RDYXJkMzcxMzAyNTE=",
-        "columnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
       }
     }
   },
@@ -44,7 +24,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDA5ODAxMzk2",
-        "body": "🔔 @fishcharlie — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44282/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)\n<!--typescript_bot_pinging-reviewers-others-->"
+        "body": "🔔 @fishcharlie — you're the only owner, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44282/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)\n<!--typescript_bot_pinging-reviewers-others-->"
       }
     }
   }

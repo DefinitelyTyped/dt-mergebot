@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "mathjs",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/mathjs/index.d.ts",
@@ -26,7 +26,15 @@
           "kind": "test"
         }
       ],
-      "owners": [],
+      "owners": [
+        "siavol",
+        "andnp",
+        "bradbesserman",
+        "pawkrol",
+        "charlee",
+        "mark-wiemer",
+        "OpportunityLiu"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Popular"

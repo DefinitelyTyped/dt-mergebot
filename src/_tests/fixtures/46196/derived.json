@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "date-arithmetic",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/date-arithmetic/date-arithmetic-tests.ts",
@@ -34,7 +34,9 @@
           "kind": "package-meta-ok"
         }
       ],
-      "owners": [],
+      "owners": [
+        "HeeL"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "openfin",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/openfin/OTHER_FILES.txt",
@@ -418,7 +418,13 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "chrisbarker",
+        "rdepena",
+        "whyn07m3",
+        "licui3936",
+        "tomer-openfin"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

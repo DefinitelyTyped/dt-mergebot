@@ -16,7 +16,7 @@
   "pkgInfo": [
     {
       "name": "express-serve-static-core",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/express-serve-static-core/express-serve-static-core-tests.ts",
@@ -27,14 +27,24 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "borisyankov",
+        "19majkel94",
+        "kacepe",
+        "micksatana",
+        "samijaber",
+        "aereal",
+        "JoseLion",
+        "dwrss",
+        "andoshin11"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"
     },
     {
       "name": "express",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/express/express-tests.ts",
@@ -45,7 +55,12 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "borisyankov",
+        "CMUH",
+        "puneetar",
+        "dfrankland"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"

@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "react-scroll",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/react-scroll/index.d.ts",
@@ -30,7 +30,10 @@
           "kind": "test"
         }
       ],
-      "owners": [],
+      "owners": [
+        "sudoplz",
+        "GiedriusGrabauskas"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Popular"

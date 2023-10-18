@@ -35,7 +35,9 @@
         }
       ],
       "owners": [],
-      "addedOwners": [],
+      "addedOwners": [
+        "dimkirt"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

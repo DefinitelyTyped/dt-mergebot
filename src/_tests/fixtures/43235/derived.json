@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "arcgis-js-api",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/arcgis-js-api/arcgis-js-api-tests.ts",
@@ -26,7 +26,10 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "Esri",
+        "bsvensson"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

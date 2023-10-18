@@ -29,7 +29,7 @@
     },
     {
       "name": "asynciterator",
-      "kind": "add",
+      "kind": "delete",
       "files": [
         {
           "path": "types/asynciterator/asynciterator-tests.ts",
@@ -48,7 +48,9 @@
           "kind": "package-meta-ok"
         }
       ],
-      "owners": [],
+      "owners": [
+        "rubensworks"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

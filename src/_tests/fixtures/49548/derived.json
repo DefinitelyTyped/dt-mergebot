@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "gulp-sourcemaps",
-      "kind": "add",
+      "kind": "edit",
       "files": [
         {
           "path": "types/gulp-sourcemaps/gulp-sourcemaps-tests.ts",
@@ -27,7 +27,10 @@
         }
       ],
       "owners": [],
-      "addedOwners": [],
+      "addedOwners": [
+        "pspeter3",
+        "concision"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }
