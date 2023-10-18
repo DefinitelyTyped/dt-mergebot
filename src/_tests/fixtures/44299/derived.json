@@ -39,7 +39,9 @@
         }
       ],
       "owners": [],
-      "addedOwners": [],
+      "addedOwners": [
+        "geopic"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

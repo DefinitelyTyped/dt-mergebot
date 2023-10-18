@@ -27,7 +27,9 @@
         }
       ],
       "owners": [],
-      "addedOwners": [],
+      "addedOwners": [
+        "fishcharlie"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

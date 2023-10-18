@@ -28,7 +28,17 @@
           "kind": "test"
         }
       ],
-      "owners": [],
+      "owners": [
+        "borisyankov",
+        "jbaldwin",
+        "ccurrens",
+        "confususs",
+        "jgonggrijp",
+        "ffflorian",
+        "regevbr",
+        "peterblazejewicz",
+        "reubenrybnik"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Popular"

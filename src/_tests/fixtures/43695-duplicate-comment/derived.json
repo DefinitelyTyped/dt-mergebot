@@ -35,7 +35,9 @@
         }
       ],
       "owners": [],
-      "addedOwners": [],
+      "addedOwners": [
+        "alexandercerutti"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

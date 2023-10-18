@@ -27,7 +27,17 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "borisyankov",
+        "19majkel94",
+        "kacepe",
+        "micksatana",
+        "samijaber",
+        "aereal",
+        "JoseLion",
+        "dwrss",
+        "andoshin11"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"
@@ -45,7 +55,12 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "borisyankov",
+        "CMUH",
+        "puneetar",
+        "dfrankland"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"

@@ -306,7 +306,9 @@
           "kind": "package-meta-ok"
         }
       ],
-      "owners": [],
+      "owners": [
+        "RReverser"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical"

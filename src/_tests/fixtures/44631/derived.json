@@ -27,7 +27,10 @@
           "kind": "test"
         }
       ],
-      "owners": [],
+      "owners": [
+        "AyaMorisawa",
+        "HitoriSensei"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

@@ -4,18 +4,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDY3NTY3Mjk3OA==",
-        "body": "@Chaldron Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `react-scroll` — [on npm](https://www.npmjs.com/package/react-scroll), [on unpkg](https://unpkg.com/browse/react-scroll@latest/)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=46879&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Most recent commit is approved by a DT maintainer\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: AddLabelsToLabelableInput!) {\n  addLabelsToLabelable(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "labelIds": [
-          "MDU6TGFiZWwyMTU0ODU3ODAw"
-        ],
-        "labelableId": "MDExOlB1bGxSZXF1ZXN0NDY5Njk3ODc4"
+        "body": "@Chaldron Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `react-scroll` — [on npm](https://www.npmjs.com/package/react-scroll), [on unpkg](https://unpkg.com/browse/react-scroll@latest/)\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=46879&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Most recent commit is approved by type definition owners or DT maintainers\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },
@@ -35,16 +24,7 @@
     "variables": {
       "input": {
         "contentId": "MDExOlB1bGxSZXF1ZXN0NDY5Njk3ODc4",
-        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW45ODY3MDA2"
-      }
-    }
-  },
-  {
-    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
-    "variables": {
-      "input": {
-        "subjectId": "MDExOlB1bGxSZXF1ZXN0NDY5Njk3ODc4",
-        "body": "🔔 @Chaldron — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46879/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)\n<!--typescript_bot_pinging-reviewers-others-->"
+        "projectColumnId": "MDEzOlByb2plY3RDb2x1bW43NTUyOTMw"
       }
     }
   }

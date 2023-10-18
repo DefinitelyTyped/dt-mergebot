@@ -48,7 +48,9 @@
           "kind": "package-meta-ok"
         }
       ],
-      "owners": [],
+      "owners": [
+        "rubensworks"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

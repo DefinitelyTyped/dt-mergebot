@@ -14,7 +14,6 @@
       "input": {
         "labelIds": [
           "MDU6TGFiZWwxNjA4NjM0NDg0",
-          "MDU6TGFiZWwyMTU0ODU3ODAw",
           "MDU6TGFiZWwyNDYyODA0MzE1"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0MzI1ODk5Njc0"
@@ -47,6 +46,15 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0MzI1ODk5Njc0",
+        "body": "🔔 @RReverser — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/38979/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "subjectId": "MDExOlB1bGxSZXF1ZXN0MzI1ODk5Njc0",
         "body": "@sandersn, @weswigham Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-764528-0e6e7f4-->"
       }
     }
@@ -56,7 +64,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0MzI1ODk5Njc0",
-        "body": "It has been more than two weeks and this PR still has no reviews.\n\nI'll bump it to the DT maintainer queue. Thank you for your patience, @ExE-Boss.\n\n(Ping @«anyone?».)\n<!--typescript_bot_Unreviewed:done-->"
+        "body": "It has been more than two weeks and this PR still has no reviews.\n\nI'll bump it to the DT maintainer queue. Thank you for your patience, @ExE-Boss.\n\n(Ping @RReverser.)\n<!--typescript_bot_Unreviewed:done-->"
       }
     }
   }

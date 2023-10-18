@@ -35,7 +35,9 @@
         }
       ],
       "owners": [],
-      "addedOwners": [],
+      "addedOwners": [
+        "metonym"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

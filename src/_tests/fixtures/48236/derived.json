@@ -29,7 +29,9 @@
           "kind": "test"
         }
       ],
-      "owners": [],
+      "owners": [
+        "climba03003"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

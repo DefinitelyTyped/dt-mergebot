@@ -22,7 +22,11 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "taoqf",
+        "pofider",
+        "newbish"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

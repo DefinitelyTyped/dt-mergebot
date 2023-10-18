@@ -10,6 +10,7 @@ import { noNullish, someLast, sameUser, authorNotBot, max, abbrOid } from "./uti
 import { TOO_MANY_FILES } from "./queries/pr-query";
 import * as comment from "./util/comment";
 import * as urls from "./urls";
+import * as OldHeaderParser from "@definitelytyped/old-header-parser";
 import * as jsonDiff from "fast-json-patch";
 
 const CriticalPopularityThreshold = 5_000_000;
@@ -520,12 +521,28 @@ function downloadsToPopularityLevel(monthlyDownloads: number): PopularityLevel {
 export async function getOwnersOfPackage(packageName: string, oid: string, fetchFile: typeof defaultFetchFile): Promise<string[] | null | Error> {
     const packageJson = `${oid}:types/${packageName}/package.json`;
     const packageJsonContent = await fetchFile(packageJson, 10240); // grab at most 10k
-    if (packageJsonContent === undefined) return null;
     let packageJsonObj;
-    try {
-        packageJsonObj = JSON.parse(packageJsonContent);
-    } catch (e) {
-        if (e instanceof Error) return new Error(`error parsing owners from package.json: ${e.message}`);
+    if (packageJsonContent !== undefined) {
+        try {
+            packageJsonObj = JSON.parse(packageJsonContent);
+        } catch (e) {
+            if (e instanceof Error) return new Error(`error parsing owners from package.json: ${e.message}`);
+        }
     }
+
+    if (!packageJsonObj || !(packageJsonObj.name && packageJsonObj.version && packageJsonObj.owners)) {
+        // If we see that we're not in a post-pnpm world, try to get the owners from the index.d.ts.
+        const indexDts = `${oid}:types/${packageName}/index.d.ts`;
+        const indexDtsContent = await fetchFile(indexDts, 10240); // grab at most 10k
+        if (indexDtsContent === undefined) return null;
+        let parsed: OldHeaderParser.Header;
+        try {
+            parsed = OldHeaderParser.parseHeaderOrFail(indexDts, indexDtsContent);
+        } catch (e) {
+            if (e instanceof Error) return new Error(`error parsing owners: ${e.message}`);
+        }
+        return noNullish(parsed!.contributors.map(c => c.githubUsername));
+    }
+
     return noNullish(packageJsonObj.owners?.map((c: any) => c?.githubUsername));
 }

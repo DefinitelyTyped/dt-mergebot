@@ -1,17 +1,17 @@
 {
   "projectColumn": "Needs Maintainer Action",
   "labels": [
-    "Edits Infrastructure",
-    "No Other Owners"
+    "Edits Owners",
+    "Edits Infrastructure"
   ],
   "responseComments": [
     {
       "tag": "welcome",
-      "status": "@ivandevp Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\nThis PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n\n## 1 package in this PR (and infra files)\n\n* `detect-port` — [on npm](https://www.npmjs.com/package/detect-port), [on unpkg](https://unpkg.com/browse/detect-port@latest/)\n* Infra files\n  - [`types/detect-port-1.1.4.tgz`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44439/files/f8b161266a38186c3d7ab715ea63f68d5ef542ed#diff-d927308abcdc03d8d50cb2414a113220f4d7b8c6733a1b0c12ea6ac94809d97a)\n\n## Code Reviews\n\nThere aren't any other owners of this package, so a DT maintainer will review it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=44439&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 A DT maintainer needs to approve changes which affect DT infrastructure ([`types/detect-port-1.1.4.tgz`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44439/files/f8b161266a38186c3d7ab715ea63f68d5ef542ed#diff-d927308abcdc03d8d50cb2414a113220f4d7b8c6733a1b0c12ea6ac94809d97a))\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+      "status": "@ivandevp Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\nThis PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n\n## 1 package in this PR (and infra files)\n\n* `detect-port` — [on npm](https://www.npmjs.com/package/detect-port), [on unpkg](https://unpkg.com/browse/detect-port@latest/)\n  - 1 added owner: ✎@ivandevp\n* Infra files\n  - [`types/detect-port-1.1.4.tgz`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44439/files/f8b161266a38186c3d7ab715ea63f68d5ef542ed#diff-d927308abcdc03d8d50cb2414a113220f4d7b8c6733a1b0c12ea6ac94809d97a)\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed by a DT maintainer.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=44439&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 A DT maintainer needs to approve changes which affect DT infrastructure ([`types/detect-port-1.1.4.tgz`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44439/files/f8b161266a38186c3d7ab715ea63f68d5ef542ed#diff-d927308abcdc03d8d50cb2414a113220f4d7b8c6733a1b0c12ea6ac94809d97a))\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
     },
     {
-      "tag": "pinging-reviewers-others",
-      "status": "🔔 @ivandevp — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44439/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)"
+      "tag": "pinging-reviewers",
+      "status": "🔔 @lith-light-g — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44439/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on."
     }
   ],
   "shouldClose": false,

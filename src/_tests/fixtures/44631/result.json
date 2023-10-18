@@ -2,8 +2,7 @@
   "projectColumn": "Needs Author Action",
   "labels": [
     "Has Merge Conflict",
-    "Maintainer Approved",
-    "No Other Owners"
+    "Maintainer Approved"
   ],
   "responseComments": [
     {

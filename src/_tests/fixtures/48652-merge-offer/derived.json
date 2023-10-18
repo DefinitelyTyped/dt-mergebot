@@ -22,7 +22,10 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "diegovilar",
+        "falsyvalues"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
@@ -40,7 +43,14 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "diegovilar",
+        "thorn0",
+        "calebstdenis",
+        "leonard-thieu",
+        "scipper",
+        "peterblazejewicz"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

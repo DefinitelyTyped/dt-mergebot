@@ -8,6 +8,8 @@
   "lastPushDate": "2022-03-31T19:26:15.000Z",
   "lastActivityDate": "2022-03-31T23:05:00.000Z",
   "mergeOfferDate": "2022-03-31T22:12:56.000Z",
+  "mergeRequestDate": "2022-03-31T22:17:03.000Z",
+  "mergeRequestUser": "davwheat",
   "hasMergeConflict": false,
   "isFirstContribution": false,
   "tooManyFiles": false,
@@ -53,7 +55,11 @@
           "kind": "package-meta-ok"
         }
       ],
-      "owners": [],
+      "owners": [
+        "coderbyheart",
+        "peterblazejewicz",
+        "davwheat"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Popular"

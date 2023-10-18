@@ -22,7 +22,9 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "katonap"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
@@ -36,9 +38,14 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "spacejack",
+        "isiahmeadows"
+      ],
       "addedOwners": [],
-      "deletedOwners": [],
+      "deletedOwners": [
+        "isiahmeadows"
+      ],
       "popularityLevel": "Well-liked by everyone"
     },
     {
@@ -50,9 +57,14 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "spacejack",
+        "isiahmeadows"
+      ],
       "addedOwners": [],
-      "deletedOwners": [],
+      "deletedOwners": [
+        "isiahmeadows"
+      ],
       "popularityLevel": "Well-liked by everyone"
     },
     {
@@ -64,9 +76,15 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "maranomynet",
+        "spacejack",
+        "isiahmeadows"
+      ],
       "addedOwners": [],
-      "deletedOwners": [],
+      "deletedOwners": [
+        "isiahmeadows"
+      ],
       "popularityLevel": "Well-liked by everyone"
     },
     {
@@ -78,9 +96,19 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "abirkholz",
+        "alitaheri",
+        "ZheyangSong",
+        "andrewhathaway",
+        "manav-m",
+        "al-fyodorov",
+        "catusmagnus"
+      ],
       "addedOwners": [],
-      "deletedOwners": [],
+      "deletedOwners": [
+        "catusmagnus"
+      ],
       "popularityLevel": "Popular"
     },
     {
@@ -92,9 +120,16 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "ifiokjr",
+        "titozzz",
+        "stuartforrest-infinity",
+        "UHKim"
+      ],
       "addedOwners": [],
-      "deletedOwners": [],
+      "deletedOwners": [
+        "UHKim"
+      ],
       "popularityLevel": "Well-liked by everyone"
     },
     {
@@ -106,9 +141,20 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "kaoDev",
+        "guntherjh",
+        "wasd171",
+        "Stevearzh",
+        "mgoszcz2",
+        "brandonhall",
+        "sbusch",
+        "azmenak"
+      ],
       "addedOwners": [],
-      "deletedOwners": [],
+      "deletedOwners": [
+        "mgoszcz2"
+      ],
       "popularityLevel": "Popular"
     },
     {
@@ -120,9 +166,23 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "igrayson",
+        "ascariandrea",
+        "kartik2406",
+        "viamuli",
+        "gbhmt",
+        "builtbylane",
+        "loru88",
+        "sgalizia",
+        "hengkx",
+        "candyapplecorn",
+        "tsop14"
+      ],
       "addedOwners": [],
-      "deletedOwners": [],
+      "deletedOwners": [
+        "sgalizia"
+      ],
       "popularityLevel": "Popular"
     },
     {
@@ -134,9 +194,21 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "Igorbek",
+        "Igmat",
+        "Jessidhia",
+        "jkillian",
+        "eps1lon",
+        "wagerfield",
+        "Lazyuki",
+        "mgoszcz2",
+        "lifeiscontent"
+      ],
       "addedOwners": [],
-      "deletedOwners": [],
+      "deletedOwners": [
+        "mgoszcz2"
+      ],
       "popularityLevel": "Critical"
     }
   ],

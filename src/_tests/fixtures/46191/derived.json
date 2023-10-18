@@ -30,8 +30,12 @@
           "kind": "package-meta-ok"
         }
       ],
-      "owners": [],
-      "addedOwners": [],
+      "owners": [
+        "Slessi"
+      ],
+      "addedOwners": [
+        "jordanoverbye"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

@@ -22,7 +22,12 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "qinfchen",
+        "Frankrike",
+        "vilterp",
+        "rustedgrail"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

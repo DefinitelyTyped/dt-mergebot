@@ -26,7 +26,13 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "jineshshah36",
+        "peping",
+        "mikhail-monchak",
+        "cdoe",
+        "malithrw"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

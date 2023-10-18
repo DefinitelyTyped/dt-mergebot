@@ -27,8 +27,16 @@
           "kind": "test"
         }
       ],
-      "owners": [],
-      "addedOwners": [],
+      "owners": [
+        "Berkays",
+        "unindented",
+        "kamontat",
+        "theweirdone",
+        "whoaa512"
+      ],
+      "addedOwners": [
+        "johnnyreilly"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Popular"
     }

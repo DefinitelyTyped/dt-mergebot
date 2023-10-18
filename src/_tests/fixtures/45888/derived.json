@@ -23,7 +23,12 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "sampsonjoliver",
+        "andipaetzold",
+        "JiriBalcar",
+        "CodeLenny"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

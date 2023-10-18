@@ -27,7 +27,10 @@
         }
       ],
       "owners": [],
-      "addedOwners": [],
+      "addedOwners": [
+        "pspeter3",
+        "concision"
+      ],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
     }

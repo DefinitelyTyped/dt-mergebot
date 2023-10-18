@@ -22,7 +22,9 @@
           "kind": "test"
         }
       ],
-      "owners": [],
+      "owners": [
+        "joeriks"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"

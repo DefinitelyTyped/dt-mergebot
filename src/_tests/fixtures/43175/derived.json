@@ -22,7 +22,18 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "matthewkimber",
+        "otiai10",
+        "couven92",
+        "rreverser",
+        "sreimer15",
+        "MatCarlson",
+        "ekinsol",
+        "tregagnon",
+        "echoabstract",
+        "spasma"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Popular"

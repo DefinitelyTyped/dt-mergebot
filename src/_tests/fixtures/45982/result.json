@@ -6,7 +6,7 @@
   "responseComments": [
     {
       "tag": "had-error",
-      "status": "@dasa — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners from package.json: Unexpected end of JSON input"
+      "status": "@dasa — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners: At 1:1 in master:types/arcgis-js-api/index.d.ts: Expected /\\/\\/ Type definitions for (non-npm package )?/"
     }
   ],
   "shouldClose": false,

@@ -1,9 +1,9 @@
 {
-  "projectColumn": "Needs Maintainer Action",
+  "projectColumn": "Waiting for Author to Merge",
   "labels": [
-    "Other Approved",
-    "No Other Owners",
-    "Untested Change"
+    "Owner Approved",
+    "Untested Change",
+    "Self Merge"
   ],
   "responseComments": [
     {
@@ -12,11 +12,11 @@
     },
     {
       "tag": "welcome",
-      "status": "@risingBirdSong Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `p5` — [on npm](https://www.npmjs.com/package/p5), [on unpkg](https://unpkg.com/browse/p5@latest/)\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=46008&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Most recent commit is approved by a DT maintainer\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ..."
+      "status": "@risingBirdSong Thank you for submitting this PR! I see this is your first time submitting to DefinitelyTyped 👋 — I'm the local bot who will help you through the process of getting things through.\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `p5` — [on npm](https://www.npmjs.com/package/p5), [on unpkg](https://unpkg.com/browse/p5@latest/)\n  - owner-approval: @Zalastax\n\n## Code Reviews\n\nThis PR can be merged once it's reviewed.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=46008&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners or DT maintainers\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ..."
     },
     {
-      "tag": "pinging-reviewers-others",
-      "status": "🔔 @risingBirdSong — there are no owners, but it would still be good if you find someone to [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/46008/files) in the next few days, otherwise a maintainer will look at it. (And if you do find someone, maybe even recruit them to be a second owner to make future changes easier...)"
+      "tag": "merge-offer",
+      "status": "@risingBirdSong: Everything looks good here. I am ready to merge this PR (at 3e19cb9) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@p5-types, @Zalastax: you can do this too.)"
     }
   ],
   "shouldClose": false,

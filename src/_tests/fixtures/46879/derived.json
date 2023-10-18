@@ -30,7 +30,10 @@
           "kind": "test"
         }
       ],
-      "owners": [],
+      "owners": [
+        "sudoplz",
+        "GiedriusGrabauskas"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Popular"

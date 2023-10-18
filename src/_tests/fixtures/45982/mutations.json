@@ -37,7 +37,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NDQ3MDM5ODI4",
-        "body": "@dasa — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners from package.json: Unexpected end of JSON input\n<!--typescript_bot_had-error-->"
+        "body": "@dasa — There was an error that prevented me from properly processing this PR:\n\n    error parsing owners: At 1:1 in master:types/arcgis-js-api/index.d.ts: Expected /\\/\\/ Type definitions for (non-npm package )?/\n<!--typescript_bot_had-error-->"
       }
     }
   }

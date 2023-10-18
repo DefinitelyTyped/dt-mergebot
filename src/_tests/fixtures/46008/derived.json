@@ -23,7 +23,10 @@
           "kind": "definition"
         }
       ],
-      "owners": [],
+      "owners": [
+        "p5-types",
+        "Zalastax"
+      ],
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Well-liked by everyone"
