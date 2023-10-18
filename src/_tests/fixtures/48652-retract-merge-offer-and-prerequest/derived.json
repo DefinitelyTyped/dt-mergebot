@@ -18,7 +18,7 @@
   "pkgInfo": [
     {
       "name": "angular-sanitize",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/angular-sanitize/index.d.ts",
@@ -32,7 +32,7 @@
     },
     {
       "name": "angular",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/angular/angular-tests.ts",

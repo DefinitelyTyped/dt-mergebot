@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "react-scroll",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/react-scroll/index.d.ts",

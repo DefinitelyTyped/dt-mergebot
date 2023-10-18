@@ -16,7 +16,7 @@
   "pkgInfo": [
     {
       "name": "react",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/react/index.d.ts",

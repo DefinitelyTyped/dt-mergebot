@@ -16,7 +16,7 @@
   "pkgInfo": [
     {
       "name": "phoenix_live_view",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/phoenix_live_view/index.d.ts",

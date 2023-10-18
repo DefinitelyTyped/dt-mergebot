@@ -16,7 +16,7 @@
   "pkgInfo": [
     {
       "name": "gapi.client.calendar",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/gapi.client.calendar/gapi.client.calendar-tests.ts",

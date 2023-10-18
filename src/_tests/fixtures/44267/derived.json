@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "intercom-client",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/intercom-client/User.d.ts",

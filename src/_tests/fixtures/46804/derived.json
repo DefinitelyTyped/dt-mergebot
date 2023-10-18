@@ -16,7 +16,7 @@
   "pkgInfo": [
     {
       "name": "react-d3-graph",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/react-d3-graph/index.d.ts",

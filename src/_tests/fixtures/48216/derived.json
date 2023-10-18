@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "apptimize__apptimize-web-sdk",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/apptimize__apptimize-web-sdk/apptimize__apptimize-web-sdk-tests.ts",

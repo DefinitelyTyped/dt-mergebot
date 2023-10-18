@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "jquery",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/jquery/JQuery.d.ts",

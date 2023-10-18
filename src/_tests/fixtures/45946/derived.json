@@ -29,7 +29,7 @@
     },
     {
       "name": "asynciterator",
-      "kind": "delete",
+      "kind": "add",
       "files": [
         {
           "path": "types/asynciterator/asynciterator-tests.ts",

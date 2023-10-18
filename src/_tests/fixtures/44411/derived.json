@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "jest-image-snapshot",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/jest-image-snapshot/index.d.ts",

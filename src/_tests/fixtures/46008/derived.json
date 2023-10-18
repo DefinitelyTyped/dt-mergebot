@@ -16,7 +16,7 @@
   "pkgInfo": [
     {
       "name": "p5",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/p5/lib/addons/p5.dom.d.ts",

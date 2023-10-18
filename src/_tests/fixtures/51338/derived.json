@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "koa",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/koa/index.d.ts",

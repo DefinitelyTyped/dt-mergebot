@@ -17,7 +17,7 @@
   "pkgInfo": [
     {
       "name": "cytoscape",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/cytoscape/index.d.ts",

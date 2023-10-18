@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "jsreport-core",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/jsreport-core/index.d.ts",

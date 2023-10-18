@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "openfin",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/openfin/OTHER_FILES.txt",

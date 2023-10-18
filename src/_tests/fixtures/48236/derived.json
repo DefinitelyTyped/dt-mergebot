@@ -18,7 +18,7 @@
   "pkgInfo": [
     {
       "name": "woocommerce__woocommerce-rest-api",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/woocommerce__woocommerce-rest-api/tsconfig.json",

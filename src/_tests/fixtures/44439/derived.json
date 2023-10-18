@@ -29,7 +29,7 @@
     },
     {
       "name": "detect-port",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/detect-port/detect-port-tests.ts",

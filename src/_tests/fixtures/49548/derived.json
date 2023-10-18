@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "gulp-sourcemaps",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/gulp-sourcemaps/gulp-sourcemaps-tests.ts",

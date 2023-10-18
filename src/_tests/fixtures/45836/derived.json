@@ -18,7 +18,7 @@
   "pkgInfo": [
     {
       "name": "prosemirror-commands",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/prosemirror-commands/index.d.ts",
@@ -36,7 +36,7 @@
     },
     {
       "name": "prosemirror-keymap",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/prosemirror-keymap/index.d.ts",

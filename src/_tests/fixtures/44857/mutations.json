@@ -4,7 +4,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYzMDQwNjQ0NA==",
-        "body": "@ExE-Boss Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `node` — [on npm](https://www.npmjs.com/package/node), [on unpkg](https://unpkg.com/browse/node@latest/)\n\n## Code Reviews\n\nBecause this is a widely-used package, a DT maintainer will need to review it before it can be merged.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=44857&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Most recent commit is approved by a DT maintainer\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 32 days — it is *still* unreviewed!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+        "body": "@ExE-Boss Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `node` (*new!*) — [on npm](https://www.npmjs.com/package/node), [on unpkg](https://unpkg.com/browse/node@latest/)\n\n## Code Reviews\n\nThis PR adds a new definition, so it needs to be reviewed by a DT maintainer before it can be merged.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=44857&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * 🕐 Only a DT maintainer can approve changes when there are new packages added\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n## Inactive\n\nThis PR has been inactive for 32 days — it is *still* unreviewed!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
       }
     }
   },
@@ -13,7 +13,7 @@
     "variables": {
       "input": {
         "labelIds": [
-          "MDU6TGFiZWwyMTU0ODU3ODAw",
+          "MDU6TGFiZWw2NDY3ODg4ODg=",
           "MDU6TGFiZWwyNDYyODA0MzE1"
         ],
         "labelableId": "MDExOlB1bGxSZXF1ZXN0NDE5NzEzNjEz"

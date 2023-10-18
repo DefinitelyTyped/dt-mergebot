@@ -30,7 +30,7 @@
     },
     {
       "name": "twemoji",
-      "kind": "delete",
+      "kind": "add",
       "files": [
         {
           "path": "types/twemoji/index.d.ts",

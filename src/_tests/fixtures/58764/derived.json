@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "bootstrap.v3.datetimepicker",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/bootstrap.v3.datetimepicker/v3/index.d.ts",
@@ -29,7 +29,7 @@
     },
     {
       "name": "mithril-global",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/mithril-global/index.d.ts",
@@ -43,7 +43,7 @@
     },
     {
       "name": "mithril",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/mithril/index.d.ts",
@@ -57,7 +57,7 @@
     },
     {
       "name": "ospec",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/ospec/index.d.ts",
@@ -71,7 +71,7 @@
     },
     {
       "name": "react-grid-layout",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/react-grid-layout/index.d.ts",
@@ -85,7 +85,7 @@
     },
     {
       "name": "react-native-fbsdk",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/react-native-fbsdk/index.d.ts",
@@ -99,7 +99,7 @@
     },
     {
       "name": "react-virtualized",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/react-virtualized/index.d.ts",
@@ -113,7 +113,7 @@
     },
     {
       "name": "ssh2-sftp-client",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/ssh2-sftp-client/index.d.ts",
@@ -127,7 +127,7 @@
     },
     {
       "name": "styled-components",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/styled-components/index.d.ts",

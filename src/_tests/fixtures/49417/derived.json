@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "d3-array",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/d3-array/d3-array-tests.ts",

@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "mailcheck",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/mailcheck/index.d.ts",

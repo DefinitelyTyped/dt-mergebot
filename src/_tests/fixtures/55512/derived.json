@@ -15,7 +15,7 @@
   "pkgInfo": [
     {
       "name": "react-datepicker",
-      "kind": "edit",
+      "kind": "add",
       "files": [
         {
           "path": "types/react-datepicker/index.d.ts",
