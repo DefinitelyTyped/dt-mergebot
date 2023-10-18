@@ -15,6 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@apollo/client": "latest",
+    "@definitelytyped/old-header-parser": "npm:@definitelytyped/header-parser@0.0.178",
     "@azure/functions": "^4.0.0-alpha.1",
     "@octokit/webhooks": "^9.5.1",
     "dayjs": "^1.10.3",
