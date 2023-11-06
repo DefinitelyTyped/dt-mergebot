@@ -374,6 +374,7 @@ configSuspicious["OTHER_FILES.txt"] = makeChecker(
     { parse: text => text.split(/\r?\n/) }
 );
 configSuspicious["package.json"] = () => undefined;
+configSuspicious[".npmignore"] = () => undefined;
 configSuspicious["tslint.json"] = makeChecker(
     { extends: "@definitelytyped/dtslint/dt.json" },
     urls.linterJson
