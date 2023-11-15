@@ -1,0 +1,52 @@
+{
+  "type": "info",
+  "now": "2022-04-25T17:33:26.473Z",
+  "pr_number": 59713,
+  "author": "jablko",
+  "headCommitOid": "ee6b96f0d20c772b6f04d7d827d4ed3594fb1977",
+  "mergeBaseOid": "7d761ba60b12dda9d54420ff9351b104a49c1355",
+  "lastPushDate": "2022-04-05T19:23:43.000Z",
+  "lastActivityDate": "2022-04-07T17:56:28.000Z",
+  "mergeOfferDate": "2022-04-07T17:55:09.000Z",
+  "hasMergeConflict": false,
+  "isFirstContribution": false,
+  "tooManyFiles": false,
+  "hugeChange": false,
+  "popularityLevel": "Well-liked by everyone",
+  "pkgInfo": [
+    {
+      "name": "eonasdan-bootstrap-datetimepicker",
+      "kind": "edit",
+      "files": [
+        {
+          "path": "types/eonasdan-bootstrap-datetimepicker/eonasdan-bootstrap-datetimepicker-tests.ts",
+          "kind": "test"
+        },
+        {
+          "path": "types/eonasdan-bootstrap-datetimepicker/index.d.ts",
+          "kind": "definition"
+        },
+        {
+          "path": "types/eonasdan-bootstrap-datetimepicker/tslint.json",
+          "kind": "package-meta-ok"
+        }
+      ],
+      "owners": [
+        "ToastHawaii"
+      ],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
+    }
+  ],
+  "reviews": [
+    {
+      "type": "approved",
+      "reviewer": "ToastHawaii",
+      "date": "2022-04-07T17:54:31.000Z",
+      "isMaintainer": false
+    }
+  ],
+  "mainBotCommentID": 1089240211,
+  "ciResult": "pass"
+}

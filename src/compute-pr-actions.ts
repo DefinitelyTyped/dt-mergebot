@@ -128,7 +128,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const needsAuthorAction = failedCI || info.hasMergeConflict || hasChangereqs;
     //      => could be dropped from the extended info and replaced with: info.staleness?.kind === "Abandoned"
     const staleness = getStaleness();
-    const reviewColumn = getReviewColumn();
+    const reviewColumn = getReviewColumn(approverKind);
     return {
         ...info, orig: info,
         authorIsOwner, editsInfra, possiblyEditsInfra, checkConfig,
@@ -142,15 +142,15 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
 
     // Staleness timeline configurations (except for texts that are all in `comments.ts`)
     function getStaleness() {
-        const ownersToPing = otherOwners.length === 0 ? ["«anyone?»"]
-            : otherOwners.filter(o => !approvedReviews.some(r => o === r.reviewer));
+        const ownersToPing = otherOwners.map(o => "@"+o).join(", ") || "«anyone?»";
         const mkStaleness = makeStaleness(info.now, info.author, ownersToPing);
         if (canBeSelfMerged) return info.mergeOfferDate && mkStaleness( // no merge offer yet: avoid the unreviewed timeline
             "Unmerged", info.mergeOfferDate, 4, 9, 30, "*REMOVE*");
         if (needsAuthorAction) return mkStaleness(
             "Abandoned", info.lastActivityDate, 6, 22, 30, "*REMOVE*");
-        if (!approved) return mkStaleness(
-            "Unreviewed", info.lastPushDate, 6, 10, 17, "Needs Maintainer Action");
+        // Don't re-ping about PRs that have reviews and are already in the maintainer queue.
+        if (approvedBy.length === 0 || approverKind !== "maintainer") return mkStaleness(
+            "Unreviewed", info.lastPushDate, 6, 10, 17, getReviewColumn("maintainer"));
         return undefined;
     }
 
@@ -192,7 +192,7 @@ function extendPrInfo(info: PrInfo): ExtendedPrInfo {
             && (approverKind === "other" || approvedBy.includes("maintainer") || approvedBy.includes(approverKind));
     }
 
-    function getReviewColumn(): ColumnName {
+    function getReviewColumn(approverKind: ApproverKind): ColumnName {
         // Get the project column for review with least access
         // E.g. let people review, but fall back to the DT maintainers based on the access rights above
         return approverKind !== "maintainer" ? "Waiting for Code Reviews"
@@ -340,7 +340,7 @@ export function process(prInfo: BotResult,
     // Has it: got no DT tests but is approved by DT modules and basically blocked by the DT maintainers - and it has been over 3 days?
     // Send a message reminding them that they can un-block themselves by adding tests.
     if (!info.hasTests && !info.hasMultiplePackages && info.approvedBy.includes("owner") && !info.editsInfra
-        && info.approverKind === "maintainer" && (info.staleness?.days ?? 0) > 3) {
+        && info.approverKind === "maintainer" && dayjs(info.now).diff(info.lastPushDate, "days") > 3) {
         post(Comments.RemindPeopleTheyCanUnblockPR(info.author, info.approvedReviews.map(r => r.reviewer),
                                                    info.ciResult === "pass", headCommitAbbrOid));
     }
@@ -351,7 +351,7 @@ export function process(prInfo: BotResult,
     return actions;
 }
 
-function makeStaleness(now: Date, author: string, ownersToPing: string[]) { // curried for convenience
+function makeStaleness(now: Date, author: string, ownersToPing: string) { // curried for convenience
     return (kind: StalenessKind, since: Date,
             freshDays: number, attnDays: number, nearDays: number,
             doneColumn: ColumnName) => {

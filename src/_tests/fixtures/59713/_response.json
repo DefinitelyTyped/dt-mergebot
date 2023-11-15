@@ -1,0 +1,457 @@
+{
+  "data": {
+    "repository": {
+      "id": "MDEwOlJlcG9zaXRvcnk2MDkzMzE2",
+      "pullRequest": {
+        "id": "PR_kwDOAFz6BM41rj-f",
+        "title": "[eonasdan-bootstrap-datetimepicker] Deconstify enums",
+        "createdAt": "2022-04-05T19:03:13Z",
+        "author": {
+          "login": "jablko",
+          "__typename": "User"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "baseRef": {
+          "name": "master",
+          "__typename": "Ref"
+        },
+        "labels": {
+          "nodes": [
+            {
+              "name": "Unmerged",
+              "__typename": "Label"
+            },
+            {
+              "name": "Self Merge",
+              "__typename": "Label"
+            },
+            {
+              "name": "Owner Approved",
+              "__typename": "Label"
+            }
+          ],
+          "__typename": "LabelConnection"
+        },
+        "isDraft": false,
+        "mergeable": "MERGEABLE",
+        "number": 59713,
+        "state": "OPEN",
+        "headRefOid": "ee6b96f0d20c772b6f04d7d827d4ed3594fb1977",
+        "changedFiles": 3,
+        "additions": 9,
+        "deletions": 12,
+        "commitIds": {
+          "nodes": [
+            {
+              "commit": {
+                "oid": "b2559df8a6f7bf6cbdd7282de6366e8734f6cdbf",
+                "parents": {
+                  "nodes": [
+                    {
+                      "oid": "7d761ba60b12dda9d54420ff9351b104a49c1355",
+                      "__typename": "Commit"
+                    }
+                  ],
+                  "__typename": "CommitConnection"
+                },
+                "__typename": "Commit"
+              },
+              "__typename": "PullRequestCommit"
+            },
+            {
+              "commit": {
+                "oid": "ee6b96f0d20c772b6f04d7d827d4ed3594fb1977",
+                "parents": {
+                  "nodes": [
+                    {
+                      "oid": "b2559df8a6f7bf6cbdd7282de6366e8734f6cdbf",
+                      "__typename": "Commit"
+                    }
+                  ],
+                  "__typename": "CommitConnection"
+                },
+                "__typename": "Commit"
+              },
+              "__typename": "PullRequestCommit"
+            }
+          ],
+          "__typename": "PullRequestCommitConnection"
+        },
+        "timelineItems": {
+          "nodes": [
+            {
+              "createdAt": "2022-04-05T19:35:59Z",
+              "__typename": "ReadyForReviewEvent"
+            },
+            {
+              "actor": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "createdAt": "2022-04-05T19:36:32Z",
+              "projectColumnName": "Waiting for Code Reviews",
+              "__typename": "MovedColumnsInProjectEvent"
+            },
+            {
+              "actor": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "createdAt": "2022-04-07T17:55:09Z",
+              "projectColumnName": "Waiting for Author to Merge",
+              "__typename": "MovedColumnsInProjectEvent"
+            }
+          ],
+          "__typename": "PullRequestTimelineItemsConnection"
+        },
+        "reviews": {
+          "nodes": [
+            {
+              "author": {
+                "login": "ToastHawaii",
+                "__typename": "User"
+              },
+              "commit": {
+                "oid": "ee6b96f0d20c772b6f04d7d827d4ed3594fb1977",
+                "__typename": "Commit"
+              },
+              "comments": {
+                "nodes": [
+                  {
+                    "author": {
+                      "login": "ToastHawaii",
+                      "__typename": "User"
+                    },
+                    "createdAt": "2022-04-06T19:03:34Z",
+                    "__typename": "PullRequestReviewComment"
+                  }
+                ],
+                "__typename": "PullRequestReviewCommentConnection"
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2022-04-06T19:03:35Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59713#pullrequestreview-933983168",
+              "__typename": "PullRequestReview"
+            },
+            {
+              "author": {
+                "login": "jablko",
+                "__typename": "User"
+              },
+              "commit": {
+                "oid": "ee6b96f0d20c772b6f04d7d827d4ed3594fb1977",
+                "__typename": "Commit"
+              },
+              "comments": {
+                "nodes": [
+                  {
+                    "author": {
+                      "login": "jablko",
+                      "__typename": "User"
+                    },
+                    "createdAt": "2022-04-07T14:32:54Z",
+                    "__typename": "PullRequestReviewComment"
+                  }
+                ],
+                "__typename": "PullRequestReviewCommentConnection"
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2022-04-07T14:32:55Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59713#pullrequestreview-935173960",
+              "__typename": "PullRequestReview"
+            },
+            {
+              "author": {
+                "login": "ToastHawaii",
+                "__typename": "User"
+              },
+              "commit": {
+                "oid": "ee6b96f0d20c772b6f04d7d827d4ed3594fb1977",
+                "__typename": "Commit"
+              },
+              "comments": {
+                "nodes": [
+                  {
+                    "author": {
+                      "login": "ToastHawaii",
+                      "__typename": "User"
+                    },
+                    "createdAt": "2022-04-07T17:48:38Z",
+                    "__typename": "PullRequestReviewComment"
+                  }
+                ],
+                "__typename": "PullRequestReviewCommentConnection"
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2022-04-07T17:48:38Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59713#pullrequestreview-935462062",
+              "__typename": "PullRequestReview"
+            },
+            {
+              "author": {
+                "login": "ToastHawaii",
+                "__typename": "User"
+              },
+              "commit": {
+                "oid": "ee6b96f0d20c772b6f04d7d827d4ed3594fb1977",
+                "__typename": "Commit"
+              },
+              "comments": {
+                "nodes": [
+                  {
+                    "author": {
+                      "login": "ToastHawaii",
+                      "__typename": "User"
+                    },
+                    "createdAt": "2022-04-07T17:53:21Z",
+                    "__typename": "PullRequestReviewComment"
+                  }
+                ],
+                "__typename": "PullRequestReviewCommentConnection"
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2022-04-07T17:53:21Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59713#pullrequestreview-935467400",
+              "__typename": "PullRequestReview"
+            },
+            {
+              "author": {
+                "login": "ToastHawaii",
+                "__typename": "User"
+              },
+              "commit": {
+                "oid": "ee6b96f0d20c772b6f04d7d827d4ed3594fb1977",
+                "__typename": "Commit"
+              },
+              "comments": {
+                "nodes": [],
+                "__typename": "PullRequestReviewCommentConnection"
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "APPROVED",
+              "submittedAt": "2022-04-07T17:54:31Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59713#pullrequestreview-935468699",
+              "__typename": "PullRequestReview"
+            },
+            {
+              "author": {
+                "login": "ToastHawaii",
+                "__typename": "User"
+              },
+              "commit": {
+                "oid": "ee6b96f0d20c772b6f04d7d827d4ed3594fb1977",
+                "__typename": "Commit"
+              },
+              "comments": {
+                "nodes": [
+                  {
+                    "author": {
+                      "login": "ToastHawaii",
+                      "__typename": "User"
+                    },
+                    "createdAt": "2022-04-07T17:56:28Z",
+                    "__typename": "PullRequestReviewComment"
+                  }
+                ],
+                "__typename": "PullRequestReviewCommentConnection"
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2022-04-07T17:56:28Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59713#pullrequestreview-935470946",
+              "__typename": "PullRequestReview"
+            }
+          ],
+          "__typename": "PullRequestReviewConnection"
+        },
+        "commits": {
+          "totalCount": 2,
+          "nodes": [
+            {
+              "commit": {
+                "checkSuites": {
+                  "nodes": [
+                    {
+                      "databaseId": 5944248407,
+                      "app": {
+                        "name": "GitHub Actions",
+                        "__typename": "App"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/ee6b96f0d20c772b6f04d7d827d4ed3594fb1977/checks?check_suite_id=5944248407",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/ee6b96f0d20c772b6f04d7d827d4ed3594fb1977/checks?check_suite_id=5944248407",
+                      "checkRuns": {
+                        "nodes": [
+                          {
+                            "title": null,
+                            "__typename": "CheckRun"
+                          }
+                        ],
+                        "__typename": "CheckRunConnection"
+                      },
+                      "__typename": "CheckSuite"
+                    },
+                    {
+                      "databaseId": 5944249940,
+                      "app": {
+                        "name": "Azure Pipelines",
+                        "__typename": "App"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/ee6b96f0d20c772b6f04d7d827d4ed3594fb1977/checks?check_suite_id=5944249940",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/ee6b96f0d20c772b6f04d7d827d4ed3594fb1977/checks?check_suite_id=5944249940",
+                      "checkRuns": {
+                        "nodes": [
+                          {
+                            "title": "Build #20220405.30 succeeded",
+                            "__typename": "CheckRun"
+                          }
+                        ],
+                        "__typename": "CheckRunConnection"
+                      },
+                      "__typename": "CheckSuite"
+                    }
+                  ],
+                  "__typename": "CheckSuiteConnection"
+                },
+                "status": null,
+                "authoredDate": "2022-04-05T19:22:47Z",
+                "committedDate": "2022-04-05T19:22:47Z",
+                "pushedDate": "2022-04-05T19:23:43Z",
+                "oid": "ee6b96f0d20c772b6f04d7d827d4ed3594fb1977",
+                "__typename": "Commit"
+              },
+              "__typename": "PullRequestCommit"
+            }
+          ],
+          "__typename": "PullRequestCommitConnection"
+        },
+        "comments": {
+          "totalCount": 4,
+          "nodes": [
+            {
+              "id": "IC_kwDOAFz6BM5A7HyT",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "databaseId": 1089240211,
+              "body": "@jablko Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `eonasdan-bootstrap-datetimepicker` — [on npm](https://www.npmjs.com/package/eonasdan-bootstrap-datetimepicker), [on unpkg](https://unpkg.com/browse/eonasdan-bootstrap-datetimepicker@latest/)\n  - owner-approval: @ToastHawaii\n\n## Code Reviews\n\nBecause you edited one package and updated the tests (👏), I can help you merge this PR once someone else signs off on it.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=59713&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ Most recent commit is approved by type definition owners, DT maintainers or others\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n## Inactive\n\nThis PR has been inactive for 17 days — please merge or say something if there's a problem, otherwise it will be closed!\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
+              "createdAt": "2022-04-05T19:36:32Z",
+              "reactions": {
+                "nodes": [],
+                "__typename": "ReactionConnection"
+              },
+              "__typename": "IssueComment"
+            },
+            {
+              "id": "IC_kwDOAFz6BM5A7Hyq",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "databaseId": 1089240234,
+              "body": "🔔 @ToastHawaii — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59713/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
+              "createdAt": "2022-04-05T19:36:33Z",
+              "reactions": {
+                "nodes": [],
+                "__typename": "ReactionConnection"
+              },
+              "__typename": "IssueComment"
+            },
+            {
+              "id": "IC_kwDOAFz6BM5BFxQs",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "databaseId": 1092031532,
+              "body": "@jablko: Everything looks good here. I am ready to merge this PR (at ee6b96f) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@ToastHawaii: you can do this too.)\n<!--typescript_bot_merge-offer-->",
+              "createdAt": "2022-04-07T17:55:09Z",
+              "reactions": {
+                "nodes": [],
+                "__typename": "ReactionConnection"
+              },
+              "__typename": "IssueComment"
+            },
+            {
+              "id": "IC_kwDOAFz6BM5BnuVN",
+              "author": {
+                "login": "typescript-bot",
+                "__typename": "User"
+              },
+              "databaseId": 1100932429,
+              "body": "Re-ping @jablko / :\n\nThis PR has been ready to merge for over a week, and I haven't seen any requests to merge it. I will close it on May 7th (in three weeks) if this doesn't happen.\n\n(If there's no reason to avoid merging it, please do so.  Otherwise, if it shouldn't be merged or if it needs more time, please close it or turn it into a draft.)\n<!--typescript_bot_Unmerged:nearly:2022-04-07-->",
+              "createdAt": "2022-04-17T18:57:23Z",
+              "reactions": {
+                "nodes": [],
+                "__typename": "ReactionConnection"
+              },
+              "__typename": "IssueComment"
+            }
+          ],
+          "__typename": "IssueCommentConnection"
+        },
+        "files": {
+          "totalCount": 3,
+          "nodes": [
+            {
+              "path": "types/eonasdan-bootstrap-datetimepicker/eonasdan-bootstrap-datetimepicker-tests.ts",
+              "additions": 1,
+              "deletions": 2,
+              "__typename": "PullRequestChangedFile"
+            },
+            {
+              "path": "types/eonasdan-bootstrap-datetimepicker/index.d.ts",
+              "additions": 8,
+              "deletions": 9,
+              "__typename": "PullRequestChangedFile"
+            },
+            {
+              "path": "types/eonasdan-bootstrap-datetimepicker/tslint.json",
+              "additions": 0,
+              "deletions": 1,
+              "__typename": "PullRequestChangedFile"
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false,
+            "endCursor": "Mw",
+            "__typename": "PageInfo"
+          },
+          "__typename": "PullRequestChangedFileConnection"
+        },
+        "projectCards": {
+          "nodes": [
+            {
+              "id": "PRC_lALOAFz6BM4AORWwzgTH7Us",
+              "project": {
+                "id": "MDc6UHJvamVjdDM3NDExMDQ=",
+                "number": 5,
+                "name": "New Pull Request Status Board",
+                "__typename": "Project"
+              },
+              "column": {
+                "id": "MDEzOlByb2plY3RDb2x1bW43NTUyOTIz",
+                "name": "Waiting for Author to Merge",
+                "__typename": "ProjectColumn"
+              },
+              "__typename": "ProjectCard"
+            }
+          ],
+          "__typename": "ProjectCardConnection"
+        },
+        "__typename": "PullRequest"
+      },
+      "__typename": "Repository"
+    }
+  },
+  "loading": false,
+  "networkStatus": 7
+}
