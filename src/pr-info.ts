@@ -368,17 +368,8 @@ const configSuspicious = <ConfigSuspicious>(async (path, newContents, oldContent
     const oldText = await oldContents();
     return checker(text, oldText);
 });
-configSuspicious["OTHER_FILES.txt"] = makeChecker(
-    [],
-    urls.otherFilesTxt,
-    { parse: text => text.split(/\r?\n/) }
-);
 configSuspicious["package.json"] = () => undefined;
 configSuspicious[".npmignore"] = () => undefined;
-configSuspicious["tslint.json"] = makeChecker(
-    { extends: "@definitelytyped/dtslint/dt.json" },
-    urls.linterJson
-);
 configSuspicious["tsconfig.json"] = makeChecker(
     {
         compilerOptions: {
