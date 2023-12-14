@@ -44,7 +44,7 @@
         {
           "path": "types/xald-parse-sdk/ts3.6/tslint.json",
           "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) (check: `rules`)"
+          "suspect": "edited"
         },
         {
           "path": "types/xald-parse-sdk/ts3.6/xald-parse-sdk-tests.ts",
@@ -57,7 +57,7 @@
         {
           "path": "types/xald-parse-sdk/tslint.json",
           "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) (check: `rules`)"
+          "suspect": "edited"
         },
         {
           "path": "types/xald-parse-sdk/xald-parse-sdk-tests.ts",

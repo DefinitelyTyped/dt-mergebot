@@ -7,9 +7,6 @@ export const testingEditedPackages = readmeLink("Test editing an existing packag
 export const testingNewPackages = readmeLink("Adding tests to a new package");
 export const definitionOwners = readmeLink("Definition Owners");
 export const workflow = readmeLink("Make a pull request");
-export const otherFilesTxt = readmeLink("`OTHER_FILES.txt`");
-export const packageJson = readmeLink("`package.json`");
-export const linterJson = readmeLink("Linter: `tslint.json`");
 export const tsconfigJson = readmeLink("`tsconfig.json`");
 export const testsTs = readmeLink("`<my-package>-tests.ts`");
 

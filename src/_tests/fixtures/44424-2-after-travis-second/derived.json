@@ -19,7 +19,8 @@
       "files": [
         {
           "path": "types/openfin/OTHER_FILES.txt",
-          "kind": "package-meta-ok"
+          "kind": "package-meta",
+          "suspect": "edited"
         },
         {
           "path": "types/openfin/_v2/api/application/application.d.ts",
@@ -171,11 +172,13 @@
         },
         {
           "path": "types/openfin/tslint.json",
-          "kind": "package-meta-ok"
+          "kind": "package-meta",
+          "suspect": "edited"
         },
         {
           "path": "types/openfin/v49/OTHER_FILES.txt",
-          "kind": "package-meta-ok"
+          "kind": "package-meta",
+          "suspect": "edited"
         },
         {
           "path": "types/openfin/v49/_v2/api/application/application.d.ts",

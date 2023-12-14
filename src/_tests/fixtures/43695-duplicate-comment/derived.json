@@ -31,7 +31,8 @@
         },
         {
           "path": "types/accedo__accedo-one/tslint.json",
-          "kind": "package-meta-ok"
+          "kind": "package-meta",
+          "suspect": "edited"
         }
       ],
       "owners": [],
