@@ -44,7 +44,7 @@
         {
           "path": "types/omise-js/tslint.json",
           "kind": "package-meta",
-          "suspect": "not [the expected form](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-linter-tslintjson) (check: `extends`, `rules`)"
+          "suspect": "edited"
         }
       ],
       "owners": [],

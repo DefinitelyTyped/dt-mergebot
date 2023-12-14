@@ -39,7 +39,8 @@
         },
         {
           "path": "types/jest-image-snapshot/v2/tslint.json",
-          "kind": "package-meta-ok"
+          "kind": "package-meta",
+          "suspect": "edited"
         }
       ],
       "owners": [

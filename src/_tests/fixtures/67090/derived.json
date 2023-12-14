@@ -83,7 +83,8 @@
         },
         {
           "path": "types/cardinal/tslint.json",
-          "kind": "package-meta-ok"
+          "kind": "package-meta",
+          "suspect": "edited"
         }
       ],
       "owners": [],
