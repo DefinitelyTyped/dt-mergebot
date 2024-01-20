@@ -60,7 +60,7 @@ export const SuggestTesting = deletedWhenNotPresent("suggest-testing", tag =>
 export const PingReviewers = (names: readonly string[], reviewLink: string) => ({
     tag: "pinging-reviewers",
     status: txt`
-        |🔔 Pinging owners — please [review this PR](${reviewLink}) in the
+        |🔔 ${names.map(n => `@${n}`).join(" ")} — please [review this PR](${reviewLink}) in the
          next few days. Be sure to explicitly select **\`Approve\`** or **\`Request Changes\`**
          in the GitHub UI so I know what's going on.`
 });
