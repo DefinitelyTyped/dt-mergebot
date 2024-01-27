@@ -40,7 +40,7 @@
     "variables": {
       "input": {
         "id": "MDEyOklzc3VlQ29tbWVudDYzMzAxODkyMw==",
-        "body": "@petr-motejlek: Everything looks good here. I am ready to merge this PR (at 9ca6086) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@TheHandsomeCoder, @donnut, @mdekrey, @sbking, @afharo, @teves-castro, @1M0reBug, @hojberg, @samsonkeung, @angeloocana, @raynerd, @moshensky, @ethanresnick, @deftomat, @blimusiek, @biern, @rayhaneh, @rgm, @drewwyatt, @jottenlips, @minitesh, @krantisinh, @pirix-gh, @brekk, @nemo108, @jituanlin, @Philippe-mills, @Saul-Mirone, @Nicholaiii: you can do this too.)\n<!--typescript_bot_merge-offer-->"
+        "body": "@petr-motejlek: Everything looks good here. I am ready to merge this PR (at 9ca6086) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n(Any owner can do this too.)\n<!--typescript_bot_merge-offer-->"
       }
     }
   },

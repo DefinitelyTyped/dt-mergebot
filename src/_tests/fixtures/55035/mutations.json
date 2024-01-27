@@ -13,7 +13,7 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NzA2NjY4NDgw",
-        "body": ":hourglass_flowing_sand: Hi @shoopapa,\n\nIt's been a few days since this PR was approved by pofider, newbish, kkikta-bcg and we're waiting for you to fix the test failures and then for a maintainer approval.\n\nIf you would like to short-circuit another wait for a maintainer, you can edit some of the [test files](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-my-package-teststs) in the package which verify how the `.d.ts` files work. This would allow the PR to be merged by you or the DT module owners after a re-review.\n<!--typescript_bot_wait-for-merge-offer-7eca0aa-->"
+        "body": ":hourglass_flowing_sand: Hi @shoopapa,\n\nIt's been a few days since this PR was approved and we're waiting for you to fix the test failures and then for a maintainer approval.\n\nIf you would like to short-circuit another wait for a maintainer, you can edit some of the [test files](https://github.com/DefinitelyTyped/DefinitelyTyped#user-content-my-package-teststs) in the package which verify how the `.d.ts` files work. This would allow the PR to be merged by you or the DT module owners after a re-review.\n<!--typescript_bot_wait-for-merge-offer-7eca0aa-->"
       }
     }
   }
