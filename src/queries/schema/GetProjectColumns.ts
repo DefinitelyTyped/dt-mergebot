@@ -9,6 +9,9 @@
 
 export interface GetProjectColumns_repository_project_columns_nodes {
   __typename: "ProjectColumn";
+  /**
+   * The Node ID of the ProjectColumn object
+   */
   id: string;
   /**
    * The project column's name.
@@ -26,6 +29,9 @@ export interface GetProjectColumns_repository_project_columns {
 
 export interface GetProjectColumns_repository_project {
   __typename: "Project";
+  /**
+   * The Node ID of the Project object
+   */
   id: string;
   /**
    * List of columns in the project
@@ -35,6 +41,9 @@ export interface GetProjectColumns_repository_project {
 
 export interface GetProjectColumns_repository {
   __typename: "Repository";
+  /**
+   * The Node ID of the Repository object
+   */
   id: string;
   /**
    * Find project by number.

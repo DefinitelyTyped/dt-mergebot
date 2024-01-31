@@ -39,7 +39,7 @@ export interface GetPRForSHA1_search {
 
 export interface GetPRForSHA1 {
   /**
-   * Perform a search across resources.
+   * Perform a search across resources, returning a maximum of 1,000 results.
    */
   search: GetPRForSHA1_search;
 }

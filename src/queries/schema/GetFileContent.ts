@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface GetFileContent_repository_object_Commit {
-  __typename: "Commit" | "Tree" | "Tag";
+  __typename: "Commit" | "Tag" | "Tree";
 }
 
 export interface GetFileContent_repository_object_Blob {
@@ -27,6 +27,9 @@ export type GetFileContent_repository_object = GetFileContent_repository_object_
 
 export interface GetFileContent_repository {
   __typename: "Repository";
+  /**
+   * The Node ID of the Repository object
+   */
   id: string;
   /**
    * A Git object in the repository
