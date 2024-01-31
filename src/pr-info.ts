@@ -506,6 +506,7 @@ function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit
         }
 
         const existingCheck = checksByWorkflowPath.get(workflowPath);
+        // createdAt is an ISO8601 string, so we can safely just compare.
         if (!existingCheck || existingCheck.createdAt < check.createdAt) {
             checksByWorkflowPath.set(workflowPath, check);
         }
