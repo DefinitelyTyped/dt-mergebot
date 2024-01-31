@@ -37,6 +37,5 @@
   ],
   "reviews": [],
   "mainBotCommentID": 1916620324,
-  "ciResult": "fail",
-  "ciUrl": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/61d76e05e8dfcd20fef3ba19b9b571e2420c8485/checks?check_suite_id=20258158562"
+  "ciResult": "pass"
 }
