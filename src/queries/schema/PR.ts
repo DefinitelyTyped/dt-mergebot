@@ -294,6 +294,10 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_node
    */
   checkRuns: PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_checkRuns | null;
   /**
+   * Identifies the date and time when the object was created.
+   */
+  createdAt: any;
+  /**
    * The workflow run associated with this check suite.
    */
   workflowRun: PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_workflowRun | null;

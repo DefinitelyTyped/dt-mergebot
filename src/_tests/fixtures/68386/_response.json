@@ -399,6 +399,7 @@
                         ],
                         "__typename": "CheckRunConnection"
                       },
+                      "createdAt": "2024-01-31T02:09:59Z",
                       "workflowRun": {
                         "file": {
                           "path": ".github/workflows/CI.yml",
@@ -427,6 +428,7 @@
                         ],
                         "__typename": "CheckRunConnection"
                       },
+                      "createdAt": "2024-01-31T02:09:59Z",
                       "workflowRun": {
                         "file": {
                           "path": ".github/workflows/lint-md.yml",
@@ -455,6 +457,7 @@
                         ],
                         "__typename": "CheckRunConnection"
                       },
+                      "createdAt": "2024-01-31T02:10:06Z",
                       "workflowRun": null,
                       "__typename": "CheckSuite"
                     }
