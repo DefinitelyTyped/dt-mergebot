@@ -105,6 +105,12 @@ query PR($prNumber: Int!) {
                       title
                     }
                   }
+                  createdAt
+                  workflowRun {
+                    file {
+                      path
+                    }
+                  }
                 }
               }
               status {

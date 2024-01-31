@@ -9,6 +9,9 @@
 
 export interface GetAllOpenPRsAndCardIDs_repository_pullRequests_nodes_projectCards_nodes {
   __typename: "ProjectCard";
+  /**
+   * The Node ID of the ProjectCard object
+   */
   id: string;
 }
 
@@ -58,6 +61,9 @@ export interface GetAllOpenPRsAndCardIDs_repository_pullRequests {
 
 export interface GetAllOpenPRsAndCardIDs_repository {
   __typename: "Repository";
+  /**
+   * The Node ID of the Repository object
+   */
   id: string;
   /**
    * A list of pull requests that have been opened in the repository.

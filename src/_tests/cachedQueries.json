@@ -154,6 +154,11 @@
       "__typename": "Label"
     },
     {
+      "id": "LA_kwDOAFz6BM8AAAABXw1nPg",
+      "name": "javascript",
+      "__typename": "Label"
+    },
+    {
       "id": "MDU6TGFiZWw1NjcxNDU5MQ==",
       "name": "Level:Advanced",
       "__typename": "Label"

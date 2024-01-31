@@ -3,6 +3,7 @@ import { PR_repository_pullRequest,
          PR_repository_pullRequest_commits_nodes_commit_checkSuites,
          PR_repository_pullRequest_timelineItems,
          PR_repository_pullRequest_comments_nodes,
+         PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes,
 } from "./queries/schema/PR";
 import { getMonthlyDownloadCount } from "./util/npm";
 import { fetchFile as defaultFetchFile } from "./util/fetchFile";
@@ -487,21 +488,50 @@ function getCIResult(checkSuites: PR_repository_pullRequest_commits_nodes_commit
     if (actionRequiredIDs.length > 0)
         return { ciResult: "action_required", reRunCheckSuiteIDs: actionRequiredIDs };
 
-    // Now that there is more than one GitHub Actions suite, we need to get the right one, but naively fall back
-    // to the first if we can't find it, mostly to prevent breaking old tests.
-    const totalStatusChecks = ghActionsChecks?.find(check => check?.checkRuns?.nodes?.[0]?.title === "test") || ghActionsChecks?.[0];
-    if (!totalStatusChecks) return { ciResult: "missing", ciUrl: undefined };
+    const latestChecks = [];
+    const checksByWorkflowPath = new Map<string, PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes>();
 
-    switch (totalStatusChecks.conclusion) {
-        case "SUCCESS":
-            return { ciResult: "pass" };
-        case "FAILURE":
-        case "SKIPPED":
-        case "TIMED_OUT":
-            return { ciResult: "fail", ciUrl: totalStatusChecks.url };
-        default:
-            return { ciResult: "unknown" };
+    // Attempt to use only the latest run for a given workflow on a given commit.
+    // This may still be wrong if we _remove_ a workflow, but it's better than always
+    // taking the first one.
+    for (const check of ghActionsChecks || []) {
+        if (!check) {
+            continue;
+        }
+
+        const workflowPath = check.workflowRun?.file?.path;
+        if (!workflowPath) {
+            latestChecks.push(check);
+            continue;
+        }
+
+        const existingCheck = checksByWorkflowPath.get(workflowPath);
+        // createdAt is an ISO8601 string, so we can safely just compare.
+        if (!existingCheck || existingCheck.createdAt < check.createdAt) {
+            checksByWorkflowPath.set(workflowPath, check);
+        }
     }
+
+    latestChecks.push(...checksByWorkflowPath.values());
+
+    if (latestChecks.length === 0) {
+        return { ciResult: "missing", ciUrl: undefined };
+    }
+
+    for (const check of latestChecks) {
+        switch (check.conclusion) {
+            case "SUCCESS":
+                continue;
+            case "FAILURE":
+            case "SKIPPED":
+            case "TIMED_OUT":
+                return { ciResult: "fail", ciUrl: check.url };
+            default:
+                return { ciResult: "unknown" };
+        }
+    }
+
+    return { ciResult: "pass" };
 }
 
 function downloadsToPopularityLevel(monthlyDownloads: number): PopularityLevel {

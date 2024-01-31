@@ -9,6 +9,9 @@
 
 export interface GetLabels_repository_labels_nodes {
   __typename: "Label";
+  /**
+   * The Node ID of the Label object
+   */
   id: string;
   /**
    * Identifies the label name.
@@ -42,6 +45,9 @@ export interface GetLabels_repository_labels {
 
 export interface GetLabels_repository {
   __typename: "Repository";
+  /**
+   * The Node ID of the Repository object
+   */
   id: string;
   /**
    * A list of labels associated with the repository.
