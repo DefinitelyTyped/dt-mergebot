@@ -399,6 +399,13 @@
                         ],
                         "__typename": "CheckRunConnection"
                       },
+                      "workflowRun": {
+                        "file": {
+                          "path": ".github/workflows/CI.yml",
+                          "__typename": "WorkflowRunFile"
+                        },
+                        "__typename": "WorkflowRun"
+                      },
                       "__typename": "CheckSuite"
                     },
                     {
@@ -419,6 +426,13 @@
                           }
                         ],
                         "__typename": "CheckRunConnection"
+                      },
+                      "workflowRun": {
+                        "file": {
+                          "path": ".github/workflows/lint-md.yml",
+                          "__typename": "WorkflowRunFile"
+                        },
+                        "__typename": "WorkflowRun"
                       },
                       "__typename": "CheckSuite"
                     },
@@ -441,6 +455,7 @@
                         ],
                         "__typename": "CheckRunConnection"
                       },
+                      "workflowRun": null,
                       "__typename": "CheckSuite"
                     }
                   ],
