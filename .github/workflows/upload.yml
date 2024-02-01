@@ -9,12 +9,12 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+    - uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
       with:
         node-version: "18.x"
     - name: 'Login via Azure CLI'
-      uses: azure/login@v1
+      uses: azure/login@cb79c773a3cfa27f31f25eb3f677781210c9ce3d # v1.6.1
       with:
         creds: ${{ secrets.AZURE_RBAC_CREDENTIALS }}
     - name: "run npm"
@@ -29,7 +29,7 @@ jobs:
       run: |
         node .github/workflows/print-tree.js dist
     - name: 'Run Azure Functions Action'
-      uses: Azure/functions-action@v1
+      uses: Azure/functions-action@238dc3c45bb1b04e5d16ff9e75cddd1d86753bd6 # v1.5.1
       id: fa
       with:
         app-name: DTMergeBot2
