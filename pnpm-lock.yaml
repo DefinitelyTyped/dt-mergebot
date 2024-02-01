@@ -13,31 +13,31 @@ dependencies:
     specifier: ^3.9.2
     version: 3.9.2(graphql@15.8.0)
   '@azure/functions':
-    specifier: ^4.0.0-alpha.1
+    specifier: ^4.2.0
     version: 4.2.0
   '@definitelytyped/old-header-parser':
     specifier: npm:@definitelytyped/header-parser@0.0.178
     version: /@definitelytyped/header-parser@0.0.178
   '@octokit/webhooks':
-    specifier: ^9.5.1
+    specifier: ^9.26.3
     version: 9.26.3
   dayjs:
-    specifier: ^1.10.3
+    specifier: ^1.11.10
     version: 1.11.10
   fast-json-patch:
-    specifier: ^3.0.0-1
+    specifier: ^3.1.1
     version: 3.1.1
   fs-extra:
-    specifier: ^9.0.1
+    specifier: ^9.1.0
     version: 9.1.0
   graphql:
     specifier: 15.8.0
     version: 15.8.0
   prettyjson:
-    specifier: ^1.2.1
+    specifier: ^1.2.5
     version: 1.2.5
   yargs:
-    specifier: ^17.0.1
+    specifier: ^17.7.2
     version: 17.7.2
 
 devDependencies:
@@ -45,7 +45,7 @@ devDependencies:
     specifier: ^3.0.2
     version: 3.0.2(cosmiconfig@9.0.0)(typescript@5.3.3)
   '@octokit/graphql-schema':
-    specifier: ^10.11.0
+    specifier: ^10.74.2
     version: 10.74.2
   '@octokit/webhooks-methods':
     specifier: ^2.0.0
@@ -54,25 +54,25 @@ devDependencies:
     specifier: ^5.8.0
     version: 5.8.0
   '@types/fs-extra':
-    specifier: ^4.0.11
+    specifier: ^4.0.15
     version: 4.0.15
   '@types/jest':
-    specifier: ^29.5.1
+    specifier: ^29.5.12
     version: 29.5.12
   '@types/node':
     specifier: ^18.19.14
     version: 18.19.14
   '@types/prettyjson':
-    specifier: ^0.0.29
-    version: 0.0.29
+    specifier: ^0.0.33
+    version: 0.0.33
   '@types/yargs':
     specifier: ^17.0.32
     version: 17.0.32
   '@typescript-eslint/eslint-plugin':
-    specifier: ^6.8.0
+    specifier: ^6.20.0
     version: 6.20.0(@typescript-eslint/parser@6.20.0)(eslint@8.56.0)(typescript@5.3.3)
   '@typescript-eslint/parser':
-    specifier: ^6.8.0
+    specifier: ^6.20.0
     version: 6.20.0(eslint@8.56.0)(typescript@5.3.3)
   apollo:
     specifier: ^2.34.0
@@ -81,22 +81,22 @@ devDependencies:
     specifier: ^4.0.5455
     version: 4.0.5455
   eslint:
-    specifier: ^8.51.0
+    specifier: ^8.56.0
     version: 8.56.0
   eslint-plugin-unicorn:
     specifier: ^48.0.1
     version: 48.0.1(eslint@8.56.0)
   jest:
-    specifier: ^29.5.0
+    specifier: ^29.7.0
     version: 29.7.0(@types/node@18.19.14)
   jest-file-snapshot:
     specifier: ^0.5.0
     version: 0.5.0
   ts-jest:
-    specifier: ^29.1.0
+    specifier: ^29.1.2
     version: 29.1.2(@babel/core@7.23.9)(jest@29.7.0)(typescript@5.3.3)
   typescript:
-    specifier: ^5.0.4
+    specifier: ^5.3.3
     version: 5.3.3
 
 packages:
@@ -1377,8 +1377,8 @@ packages:
     resolution: {integrity: sha512-O2M2x1w+m7gWLen8i5DOy6tWRnbRcsW6Pke3j3HAsJUrPb4g0MgjksIUm2aqUtCYxy7Qjr3CzjjwQBzhiGn46A==}
     dev: false
 
-  /@types/prettyjson@0.0.29:
-    resolution: {integrity: sha512-Zu4jAKE46yc6R8JrVkCBWbXhs18dUgI/JlbID4jziFgUBgEdAHxFekR5TlEnk9phHdGE80QlCznRBaxlk0rl7w==}
+  /@types/prettyjson@0.0.33:
+    resolution: {integrity: sha512-hHZMkavT9OXFq8p6pTCiaREtPxMRfy9NMp+Qa4PWH0RINQjyh0crOhoqUFA/cvIZncpjBpdvxkoe7nmVbyBJXw==}
     dev: true
 
   /@types/semver@7.5.6:
