@@ -23,7 +23,6 @@
     "@octokit/webhooks": "^9.26.3",
     "dayjs": "^1.11.10",
     "fast-json-patch": "^3.1.1",
-    "fs-extra": "^9.1.0",
     "graphql": "15.8.0",
     "prettyjson": "^1.2.5",
     "yargs": "^17.7.2"
@@ -33,7 +32,6 @@
     "@octokit/graphql-schema": "^10.74.2",
     "@octokit/webhooks-methods": "^2.0.0",
     "@octokit/webhooks-types": "^5.8.0",
-    "@types/fs-extra": "^4.0.15",
     "@types/jest": "^29.5.12",
     "@types/node": "^18.19.14",
     "@types/prettyjson": "^0.0.33",
