@@ -11,5 +11,6 @@
     "**/*.{js,ts,tsx}"
   ],
   "ignore": ["src/queries/schema/**"],
+  "ignoreDependencies": ["@types/jest"],
   "ignoreExportsUsedInFile": true
 }

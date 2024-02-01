@@ -27,7 +27,6 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@endemolshinegroup/cosmiconfig-typescript-loader": "^3.0.2",
     "@octokit/graphql-schema": "^10.74.2",
     "@octokit/webhooks-methods": "^2.0.0",
     "@octokit/webhooks-types": "^5.8.0",
