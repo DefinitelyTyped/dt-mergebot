@@ -36,14 +36,14 @@ dependencies:
 
 devDependencies:
   '@octokit/graphql-schema':
-    specifier: ^10.74.2
-    version: 10.74.2
+    specifier: ^14.53.0
+    version: 14.53.0
   '@octokit/webhooks-methods':
-    specifier: ^2.0.0
-    version: 2.0.0
+    specifier: ^4.0.0
+    version: 4.0.0
   '@octokit/webhooks-types':
-    specifier: ^5.8.0
-    version: 5.8.0
+    specifier: ^7.3.1
+    version: 7.3.1
   '@types/jest':
     specifier: ^29.5.12
     version: 29.5.12
@@ -1300,19 +1300,20 @@ packages:
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     dev: true
 
-  /@octokit/graphql-schema@10.74.2:
-    resolution: {integrity: sha512-PG6zZvFyOi4aRsfWwBji8GjJRHF6U9gUjqonVa0N6kpGae6Uhc75GDXOLX0x+/b+Kws82pug3+17tmgZ/o7HfQ==}
+  /@octokit/graphql-schema@14.53.0:
+    resolution: {integrity: sha512-rtu11LiIqIdvxm0qIPhu3bfrMGKGLcbq5uzmphsXv1qpcvSQEJq8cc+xC3DBIrbRajYgd3+3tle1QK5zh8VKtw==}
     dependencies:
       graphql: 16.8.1
       graphql-tag: 2.12.6(graphql@16.8.1)
     dev: true
 
-  /@octokit/webhooks-methods@2.0.0:
-    resolution: {integrity: sha512-35cfQ4YWlnZnmZKmIxlGPUPLtbkF8lr/A/1Sk1eC0ddLMwQN06dOuLc+dI3YLQS+T+MoNt3DIQ0NynwgKPilig==}
+  /@octokit/webhooks-methods@4.0.0:
+    resolution: {integrity: sha512-M8mwmTXp+VeolOS/kfRvsDdW+IO0qJ8kYodM/sAysk093q6ApgmBXwK1ZlUvAwXVrp/YVHp6aArj4auAxUAOFw==}
+    engines: {node: '>= 18'}
     dev: true
 
-  /@octokit/webhooks-types@5.8.0:
-    resolution: {integrity: sha512-8adktjIb76A7viIdayQSFuBEwOzwhDC+9yxZpKNHjfzrlostHCw0/N7JWpWMObfElwvJMk2fY2l1noENCk9wmw==}
+  /@octokit/webhooks-types@7.3.1:
+    resolution: {integrity: sha512-u6355ZsZnHwmxen30SrqnYb1pXieBFkYgkNzt+Ed4Ao5tupN1OErHfzwiV6hq6duGkDAYASbq7/uVJQ69PjLEg==}
     dev: true
 
   /@pkgjs/parseargs@0.11.0:
@@ -2455,7 +2456,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001582
-      electron-to-chromium: 1.4.653
+      electron-to-chromium: 1.4.654
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.22.3)
     dev: true
@@ -3007,8 +3008,8 @@ packages:
       jake: 10.8.7
     dev: true
 
-  /electron-to-chromium@1.4.653:
-    resolution: {integrity: sha512-wA2A2LQCqnEwQAvwADQq3KpMpNwgAUBnRmrFgRzHnPhbQUFArTR32Ab46f4p0MovDLcg4uqd4nCsN2hTltslpA==}
+  /electron-to-chromium@1.4.654:
+    resolution: {integrity: sha512-hjfFa+Vj4WGLRVTlCQa+IivBkpcp+boGxMQfusOC/me5Y5NfU4wX7wyw+K9p8Cw4tl0BVIZGH2n7y/jMc3w4pg==}
     dev: true
 
   /elegant-spinner@1.0.1:
