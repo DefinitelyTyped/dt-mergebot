@@ -17,14 +17,14 @@ jobs:
       uses: azure/login@cb79c773a3cfa27f31f25eb3f677781210c9ce3d # v1.6.1
       with:
         creds: ${{ secrets.AZURE_RBAC_CREDENTIALS }}
-    - name: "run npm"
+    - name: "run pnpm"
       run: |
-        npm install
-        npm run build --if-present
-        npm run test --if-present
+        pnpm install
+        pnpm run build --if-present
+        pnpm run test --if-present
     - name: "minimize dependencies"
       run: |
-        npm prune --production
+        pnpm prune --prod
     - name: "sanity listings"
       run: |
         node .github/workflows/print-tree.js dist

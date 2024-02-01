@@ -6,25 +6,25 @@
 			"command": "host start",
 			"problemMatcher": "$func-watch",
 			"isBackground": true,
-			"dependsOn": "npm build"
+			"dependsOn": "pnpm build"
 		},
 		{
 			"type": "shell",
-			"label": "npm build",
-			"command": "npm run build",
-			"dependsOn": "npm install",
+			"label": "pnpm build",
+			"command": "pnpm run build",
+			"dependsOn": "pnpm install",
 			"problemMatcher": "$tsc"
 		},
 		{
 			"type": "shell",
-			"label": "npm install",
-			"command": "npm install"
+			"label": "pnpm install",
+			"command": "pnpm install"
 		},
 		{
 			"type": "shell",
-			"label": "npm prune",
-			"command": "npm prune --production",
-			"dependsOn": "npm build",
+			"label": "pnpm prune",
+			"command": "pnpm prune --prod",
+			"dependsOn": "pnpm build",
 			"problemMatcher": []
 		}
 	]

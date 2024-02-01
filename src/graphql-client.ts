@@ -14,7 +14,7 @@ const headers = {
 };
 
 const cache = new InMemoryCache();
-const link = new HttpLink({ uri, headers, fetch });
+const link = new HttpLink({ uri, headers, fetch: fetch as unknown as typeof globalThis.fetch });
 
 export const client = new ApolloClient({ cache, link });
 
