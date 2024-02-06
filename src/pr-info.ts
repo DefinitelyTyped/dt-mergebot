@@ -13,6 +13,7 @@ import * as comment from "./util/comment";
 import * as urls from "./urls";
 import * as OldHeaderParser from "@definitelytyped/old-header-parser";
 import * as jsonDiff from "fast-json-patch";
+import { isDeepStrictEqual } from "util";
 
 const CriticalPopularityThreshold = 5_000_000;
 const NormalPopularityThreshold = 200_000;
@@ -40,6 +41,7 @@ export type PackageInfo = {
     addedOwners: string[];
     deletedOwners: string[];
     popularityLevel: PopularityLevel;
+    isSafeInfrastructureEdit?: boolean;
 };
 
 type FileKind = "test" | "definition" | "markdown" | "package-meta" | "package-meta-ok"| "infrastructure";
@@ -329,7 +331,10 @@ async function getPackageInfosEtc(
         if (name && downloads > maxDownloads) maxDownloads = downloads;
         // keep the popularity level and not the downloads since that can change often
         const popularityLevel = downloadsToPopularityLevel(downloads);
-        result.push({ name, kind, files, owners, addedOwners, deletedOwners, popularityLevel });
+        const isSafeInfrastructureEdit = name === null
+            ? kind === "edit" && files.length === 1 && files[0]?.path === "attw.json" && await isAllowedAttwEdit(headId, baseId, fetchFile)
+            : undefined;
+        result.push({ name, kind, files, owners, addedOwners, deletedOwners, popularityLevel, isSafeInfrastructureEdit });
     }
     return { pkgInfo: result, popularityLevel: downloadsToPopularityLevel(maxDownloads) };
 }
@@ -350,6 +355,19 @@ async function categorizeFile(path: string, newId: string, oldId: string,
             const suspect = await configSuspicious(path, contentGetter(newId), contentGetter(oldId));
             return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", suspect }];
         }
+    }
+}
+
+async function isAllowedAttwEdit(headId: string, baseId: string, fetchFile: typeof defaultFetchFile): Promise<boolean> {
+    try {
+        const newAttwJson = JSON.parse((await fetchFile(`${headId}:attw.json`))!);
+        const oldAttwJson = JSON.parse((await fetchFile(`${baseId}:attw.json`))!);
+        const { failingPackages: newFailing, ...newAttw } = newAttwJson;
+        const { failingPackages: oldFailing, ...oldAttw } = oldAttwJson;
+        if (!isDeepStrictEqual(newAttw, oldAttw)) return false;
+        return newFailing.length < oldFailing.length && newFailing.every((p: string) => oldFailing.includes(p));
+    } catch {
+        return false;
     }
 }
 
