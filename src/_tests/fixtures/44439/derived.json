@@ -25,7 +25,8 @@
       "owners": [],
       "addedOwners": [],
       "deletedOwners": [],
-      "popularityLevel": "Critical"
+      "popularityLevel": "Critical",
+      "isSafeInfrastructureEdit": false
     },
     {
       "name": "detect-port",
