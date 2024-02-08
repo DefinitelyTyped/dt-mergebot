@@ -2,13 +2,14 @@ import * as computeActions from "../compute-pr-actions";
 import { getPRInfo } from "../queries/pr-query";
 import { deriveStateForPR } from "../pr-info";
 import { ApolloQueryResult } from "@apollo/client/core";
-import { writeFileSync, mkdirSync, existsSync, readJsonSync } from "fs-extra";
+import { writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
 import { PR } from "../queries/schema/PR";
 import { fetchFile } from "../util/fetchFile";
 import { getMonthlyDownloadCount } from "../util/npm";
-import { scrubDiagnosticDetails } from "../util/util";
+import { readJsonSync, scrubDiagnosticDetails } from "../util/util";
 import { executePrActions } from "../execute-pr-actions";
+
 
 export default async function main(directory: string, overwriteInfo: boolean) {
     const writeJsonSync = (file: string, json: unknown) =>

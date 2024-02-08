@@ -1,5 +1,5 @@
 const process = require("process");
-const fs = require("fs-extra");
+const fs = require("fs");
 const path = require("path");
 
 const dir = process.argv[2] || ".";

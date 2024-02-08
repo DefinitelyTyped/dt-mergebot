@@ -1,11 +1,11 @@
 import { ApolloQueryResult } from "@apollo/client/core";
-import { readdirSync, readJsonSync } from "fs-extra";
+import { readdirSync } from "fs";
 import { join } from "path";
 import { toMatchFile } from "jest-file-snapshot";
 import { process } from "../compute-pr-actions";
 import { deriveStateForPR } from "../pr-info";
 import { PR } from "../queries/schema/PR";
-import { scrubDiagnosticDetails } from "../util/util";
+import { readJsonSync, scrubDiagnosticDetails } from "../util/util";
 import * as cachedQueries from "./cachedQueries.json";
 jest.mock("../util/cachedQueries", () => ({
     getProjectBoardColumns: jest.fn(() => cachedQueries.getProjectBoardColumns),
@@ -17,7 +17,7 @@ expect.extend({ toMatchFile });
 
 /* You can use the following command to add/update fixtures with an existing PR
  *
- *     BOT_AUTH_TOKEN=XYZ npm run create-fixture -- 43164
+ *     BOT_AUTH_TOKEN=XYZ pnpm run create-fixture -- 43164
  */
 
 async function testFixture(dir: string) {

@@ -1,6 +1,5 @@
 import { verify } from "@octokit/webhooks-methods";
 import type { InvocationContext } from "@azure/functions";
-import type { Headers } from "undici";
 
 export async function httpLog(context: InvocationContext, headers: Headers, body: any) {
     const githubId = headers.get("x-github-delivery");

@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { ApolloClient, gql, HttpLink, InMemoryCache, MutationOptions, TypedDocumentNode } from "@apollo/client/core";
 import { print } from "graphql";
 import * as schema from "@octokit/graphql-schema/schema";
@@ -14,7 +13,7 @@ const headers = {
 };
 
 const cache = new InMemoryCache();
-const link = new HttpLink({ uri, headers, fetch });
+const link = new HttpLink({ uri, headers, fetch: fetch as unknown as typeof globalThis.fetch });
 
 export const client = new ApolloClient({ cache, link });
 
