@@ -108,8 +108,7 @@
         },
         {
           "path": "types/marked-terminal/marked-terminal-tests.cts",
-          "kind": "package-meta",
-          "suspect": "edited"
+          "kind": "test"
         },
         {
           "path": "types/marked-terminal/marked-terminal-tests.ts",
