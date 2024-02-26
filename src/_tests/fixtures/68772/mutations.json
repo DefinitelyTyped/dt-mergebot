@@ -1,0 +1,11 @@
+[
+  {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "IC_kwDOAFz6BM51I9v-",
+        "body": "@jakebailey Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\n## 1 package in this PR\n\n* `relationship.js` — [on npm](https://www.npmjs.com/package/relationship.js), [on unpkg](https://unpkg.com/browse/relationship.js@latest/)\n  - Config files to check:\n    - [`relationship.js/dist/relationship-mode.min.d.mts`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/68772/files/3f76a3a2d73f3fe577d32ca07c73c79016707328#diff-4022014ff2d7b347660d53e41167cee333d9cdff03aed1ac76f4e83acc201cfc): edited\n    - [`relationship.js/dist/relationship.min.d.mts`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/68772/files/3f76a3a2d73f3fe577d32ca07c73c79016707328#diff-e67f141e10c4751946c0d9e25b13a45b2a98b2bc168885940ab75b51c2f8978a): edited\n\n## Code Reviews\n\nBecause this PR edits the configuration file, it can be merged once it's reviewed by a DT maintainer.\n\nYou can test the changes of this PR [in the Playground](https://www.typescriptlang.org/play/?dtPR=68772&install-plugin=playground-dt-review).\n\n## Status\n\n * ✅ No merge conflicts\n * 🕐 Continuous integration tests are still running\n * 🕐 A DT maintainer needs to approve changes which affect module config files\n\nOnce every item on this list is checked, I'll ask you for permission to merge and publish the changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->"
+      }
+    }
+  }
+]
