@@ -14,6 +14,7 @@ import * as urls from "./urls";
 import * as OldHeaderParser from "@definitelytyped/old-header-parser";
 import * as jsonDiff from "fast-json-patch";
 import { isDeepStrictEqual } from "util";
+import { isDeclarationPath } from "@definitelytyped/utils";
 
 const CriticalPopularityThreshold = 5_000_000;
 const NormalPopularityThreshold = 200_000;
@@ -341,21 +342,16 @@ async function getPackageInfosEtc(
 
 async function categorizeFile(path: string, newId: string, oldId: string,
                               fetchFile: typeof defaultFetchFile): Promise<[string|null, FileInfo]> {
-    // https://regex101.com/r/eFvtrz/1
-    const match = /^types\/(.*?)\/.*?[^\/](?:\.(d\.ts|tsx?|md))?$/.exec(path);
-    if (!match) return [null, { path, kind: "infrastructure" }];
-    const [pkg, suffix] = match.slice(1); // `suffix` can be null
+    const pkg = /^types\/(.*?)\/.*$/.exec(path)?.[1];
     if (!pkg) return [null, { path, kind: "infrastructure" }];
-    switch (suffix || "") {
-        case "d.ts": return [pkg, { path, kind: "definition" }];
-        case "ts": case "tsx": return [pkg, { path, kind: "test" }];
-        case "md": return [pkg, { path, kind: "markdown" }];
-        default: {
-            const contentGetter = (oid: string) => async () => fetchFile(`${oid}:${path}`);
-            const suspect = await configSuspicious(path, contentGetter(newId), contentGetter(oldId));
-            return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", suspect }];
-        }
-    }
+
+    if (isDeclarationPath(path)) return [pkg, { path, kind: "definition" }];
+    if (/\.[cm]?tsx?$/.test(path)) return [pkg, { path, kind: "test" }];
+    if (path.endsWith(".md")) return [pkg, { path, kind: "markdown" }];
+
+    const contentGetter = (oid: string) => async () => fetchFile(`${oid}:${path}`);
+    const suspect = await configSuspicious(path, contentGetter(newId), contentGetter(oldId));
+    return [pkg, { path, kind: suspect ? "package-meta" : "package-meta-ok", suspect }];
 }
 
 async function isAllowedAttwEdit(headId: string, baseId: string, fetchFile: typeof defaultFetchFile): Promise<boolean> {
