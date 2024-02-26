@@ -19,8 +19,7 @@
       "files": [
         {
           "path": "types/relationship.js/dist/relationship-mode.min.d.mts",
-          "kind": "package-meta",
-          "suspect": "edited"
+          "kind": "definition"
         },
         {
           "path": "types/relationship.js/dist/relationship-mode.min.d.ts",
@@ -28,8 +27,7 @@
         },
         {
           "path": "types/relationship.js/dist/relationship.min.d.mts",
-          "kind": "package-meta",
-          "suspect": "edited"
+          "kind": "definition"
         },
         {
           "path": "types/relationship.js/dist/relationship.min.d.ts",

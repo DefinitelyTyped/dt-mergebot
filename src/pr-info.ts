@@ -14,6 +14,7 @@ import * as urls from "./urls";
 import * as OldHeaderParser from "@definitelytyped/old-header-parser";
 import * as jsonDiff from "fast-json-patch";
 import { isDeepStrictEqual } from "util";
+import { isDeclarationPath } from "@definitelytyped/utils";
 
 const CriticalPopularityThreshold = 5_000_000;
 const NormalPopularityThreshold = 200_000;
@@ -346,8 +347,8 @@ async function categorizeFile(path: string, newId: string, oldId: string,
     if (!match) return [null, { path, kind: "infrastructure" }];
     const [pkg, suffix] = match.slice(1); // `suffix` can be null
     if (!pkg) return [null, { path, kind: "infrastructure" }];
+    if (isDeclarationPath(path)) return [pkg, { path, kind: "definition" }];
     switch (suffix || "") {
-        case "d.ts": return [pkg, { path, kind: "definition" }];
         case "ts": case "tsx": return [pkg, { path, kind: "test" }];
         case "md": return [pkg, { path, kind: "markdown" }];
         default: {

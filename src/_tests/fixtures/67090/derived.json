@@ -100,8 +100,7 @@
       "files": [
         {
           "path": "types/marked-terminal/index.d.cts",
-          "kind": "package-meta",
-          "suspect": "edited"
+          "kind": "definition"
         },
         {
           "path": "types/marked-terminal/index.d.ts",
