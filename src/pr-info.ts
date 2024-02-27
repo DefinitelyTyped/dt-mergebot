@@ -346,7 +346,7 @@ async function categorizeFile(path: string, newId: string, oldId: string,
     if (!pkg) return [null, { path, kind: "infrastructure" }];
 
     if (isDeclarationPath(path)) return [pkg, { path, kind: "definition" }];
-    if (/\.[cm]?tsx?$/.test(path)) return [pkg, { path, kind: "test" }];
+    if (/\.(?:[cm]?ts|tsx)$/.test(path)) return [pkg, { path, kind: "test" }];
     if (path.endsWith(".md")) return [pkg, { path, kind: "markdown" }];
 
     const contentGetter = (oid: string) => async () => fetchFile(`${oid}:${path}`);
