@@ -553,8 +553,7 @@
         },
         {
           "path": "types/node/tsconfig.dom.json",
-          "kind": "package-meta",
-          "suspect": "edited"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/node/tsconfig.json",
@@ -562,8 +561,7 @@
         },
         {
           "path": "types/node/tsconfig.non-dom.json",
-          "kind": "package-meta",
-          "suspect": "edited"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/node/v16/package.json",
@@ -967,8 +965,7 @@
         },
         {
           "path": "types/node/v16/tsconfig.dom.json",
-          "kind": "package-meta",
-          "suspect": "edited"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/node/v16/tsconfig.json",
@@ -976,8 +973,7 @@
         },
         {
           "path": "types/node/v16/tsconfig.non-dom.json",
-          "kind": "package-meta",
-          "suspect": "edited"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/node/v18/node-tests-dom.ts",
@@ -1421,8 +1417,7 @@
         },
         {
           "path": "types/node/v18/tsconfig.dom.json",
-          "kind": "package-meta",
-          "suspect": "edited"
+          "kind": "package-meta-ok"
         },
         {
           "path": "types/node/v18/tsconfig.json",
@@ -1430,8 +1425,7 @@
         },
         {
           "path": "types/node/v18/tsconfig.non-dom.json",
-          "kind": "package-meta",
-          "suspect": "edited"
+          "kind": "package-meta-ok"
         }
       ],
       "owners": [
