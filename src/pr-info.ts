@@ -372,7 +372,10 @@ interface ConfigSuspicious {
     [basename: string]: (text: string, oldText?: string) => string | undefined;
 }
 const configSuspicious = <ConfigSuspicious>(async (path, newContents, oldContents) => {
-    const basename = path.replace(/.*\//, "");
+    let basename = path.replace(/.*\//, "");
+    if (basename.startsWith("tsconfig.") && basename.endsWith(".json")) {
+        basename = "tsconfig.json";
+    }
     const checker = configSuspicious[basename];
     if (!checker) return `edited`;
     const text = await newContents();
