@@ -1,0 +1,761 @@
+{
+  "data": {
+    "repository": {
+      "__typename": "Repository",
+      "id": "MDEwOlJlcG9zaXRvcnk2MDkzMzE2",
+      "pullRequest": {
+        "__typename": "PullRequest",
+        "id": "MDExOlB1bGxSZXF1ZXN0NTIzNDM2MTQ5",
+        "title": "[README] Translate heading references",
+        "createdAt": "2020-11-18T19:58:57Z",
+        "author": {
+          "__typename": "User",
+          "login": "jablko"
+        },
+        "authorAssociation": "CONTRIBUTOR",
+        "baseRef": {
+          "__typename": "Ref",
+          "name": "master"
+        },
+        "labels": {
+          "__typename": "LabelConnection",
+          "nodes": [
+            {
+              "__typename": "Label",
+              "name": "Edits Infrastructure"
+            },
+            {
+              "__typename": "Label",
+              "name": "Edits multiple packages"
+            },
+            {
+              "__typename": "Label",
+              "name": "Maintainer Approved"
+            },
+            {
+              "__typename": "Label",
+              "name": "Multiple Languages"
+            },
+            {
+              "__typename": "Label",
+              "name": "Popular package"
+            },
+            {
+              "__typename": "Label",
+              "name": "Self Merge"
+            }
+          ]
+        },
+        "isDraft": false,
+        "mergeable": "UNKNOWN",
+        "number": 49667,
+        "state": "OPEN",
+        "headRefOid": "fe72bd3fdc8af7c6482de1819497913ba0ee1a04",
+        "timelineItems": {
+          "__typename": "PullRequestTimelineItemsConnection",
+          "nodes": [
+            {
+              "__typename": "ReadyForReviewEvent",
+              "createdAt": "2020-11-18T21:46:15Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-18T21:46:51Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-18T22:05:59Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-18T22:07:28Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-26T20:16:55Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-26T20:23:53Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-26T20:45:13Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-26T21:07:09Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-26T21:23:48Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-26T21:27:29Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2020-11-30T19:25:22Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2021-01-12T01:11:13Z"
+            },
+            {
+              "__typename": "MovedColumnsInProjectEvent",
+              "actor": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "createdAt": "2021-01-13T17:07:56Z"
+            }
+          ]
+        },
+        "reviewRequests": {
+          "__typename": "ReviewRequestConnection",
+          "nodes": [
+            {
+              "__typename": "ReviewRequest",
+              "requestedReviewer": {
+                "__typename": "User",
+                "login": "horiuchi"
+              }
+            },
+            {
+              "__typename": "ReviewRequest",
+              "requestedReviewer": {
+                "__typename": "User",
+                "login": "orta"
+              }
+            },
+            {
+              "__typename": "ReviewRequest",
+              "requestedReviewer": {
+                "__typename": "User",
+                "login": "elibarzilay"
+              }
+            },
+            {
+              "__typename": "ReviewRequest",
+              "requestedReviewer": {
+                "__typename": "User",
+                "login": "amcasey"
+              }
+            }
+          ]
+        },
+        "reviews": {
+          "__typename": "PullRequestReviewConnection",
+          "nodes": [
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "amcasey"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "fe72bd3fdc8af7c6482de1819497913ba0ee1a04"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "amcasey"
+                    },
+                    "createdAt": "2020-11-30T19:21:56Z"
+                  },
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "amcasey"
+                    },
+                    "createdAt": "2020-11-30T19:23:34Z"
+                  },
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "amcasey"
+                    },
+                    "createdAt": "2020-11-30T19:24:41Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "CHANGES_REQUESTED",
+              "submittedAt": "2020-11-30T19:24:46Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667#pullrequestreview-541219569"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "jablko"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "fe72bd3fdc8af7c6482de1819497913ba0ee1a04"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "jablko"
+                    },
+                    "createdAt": "2020-11-30T23:08:42Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-11-30T23:08:42Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667#pullrequestreview-541367145"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "jablko"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "fe72bd3fdc8af7c6482de1819497913ba0ee1a04"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "jablko"
+                    },
+                    "createdAt": "2020-11-30T23:09:05Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-11-30T23:09:06Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667#pullrequestreview-541367310"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "jablko"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "fe72bd3fdc8af7c6482de1819497913ba0ee1a04"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "jablko"
+                    },
+                    "createdAt": "2020-11-30T23:12:40Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-11-30T23:12:40Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667#pullrequestreview-541369109"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "amcasey"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "fe72bd3fdc8af7c6482de1819497913ba0ee1a04"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "amcasey"
+                    },
+                    "createdAt": "2020-12-01T00:47:41Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-12-01T00:47:41Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667#pullrequestreview-541407667"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "amcasey"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "fe72bd3fdc8af7c6482de1819497913ba0ee1a04"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": [
+                  {
+                    "__typename": "PullRequestReviewComment",
+                    "author": {
+                      "__typename": "User",
+                      "login": "amcasey"
+                    },
+                    "createdAt": "2020-12-01T00:48:35Z"
+                  }
+                ]
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-12-01T00:48:35Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667#pullrequestreview-541408013"
+            },
+            {
+              "__typename": "PullRequestReview",
+              "author": {
+                "__typename": "User",
+                "login": "amcasey"
+              },
+              "commit": {
+                "__typename": "Commit",
+                "oid": "fe72bd3fdc8af7c6482de1819497913ba0ee1a04"
+              },
+              "comments": {
+                "__typename": "PullRequestReviewCommentConnection",
+                "nodes": []
+              },
+              "authorAssociation": "CONTRIBUTOR",
+              "state": "COMMENTED",
+              "submittedAt": "2020-12-01T00:50:22Z",
+              "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667#pullrequestreview-541408694"
+            }
+          ]
+        },
+        "commits": {
+          "__typename": "PullRequestCommitConnection",
+          "totalCount": 1,
+          "nodes": [
+            {
+              "__typename": "PullRequestCommit",
+              "commit": {
+                "__typename": "Commit",
+                "checkSuites": {
+                  "__typename": "CheckSuiteConnection",
+                  "nodes": [
+                    {
+                      "__typename": "CheckSuite",
+                      "app": {
+                        "__typename": "App",
+                        "name": "GitHub Actions"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1568532958",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1568532958",
+                      "checkRuns": {
+                        "__typename": "CheckRunConnection",
+                        "nodes": [
+                          {
+                            "__typename": "CheckRun",
+                            "title": null
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "__typename": "CheckSuite",
+                      "app": {
+                        "__typename": "App",
+                        "name": "GitHub Actions"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1568532960",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1568532960",
+                      "checkRuns": {
+                        "__typename": "CheckRunConnection",
+                        "nodes": [
+                          {
+                            "__typename": "CheckRun",
+                            "title": null
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "__typename": "CheckSuite",
+                      "app": {
+                        "__typename": "App",
+                        "name": "Azure Pipelines"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1568533592",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1568533592",
+                      "checkRuns": {
+                        "__typename": "CheckRunConnection",
+                        "nodes": [
+                          {
+                            "__typename": "CheckRun",
+                            "title": "Build #77204 succeeded"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "__typename": "CheckSuite",
+                      "app": {
+                        "__typename": "App",
+                        "name": "GitHub Actions"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1810732954",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1810732954",
+                      "checkRuns": {
+                        "__typename": "CheckRunConnection",
+                        "nodes": [
+                          {
+                            "__typename": "CheckRun",
+                            "title": "build"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "__typename": "CheckSuite",
+                      "app": {
+                        "__typename": "App",
+                        "name": "GitHub Actions"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1812247747",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1812247747",
+                      "checkRuns": {
+                        "__typename": "CheckRunConnection",
+                        "nodes": [
+                          {
+                            "__typename": "CheckRun",
+                            "title": "build"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "__typename": "CheckSuite",
+                      "app": {
+                        "__typename": "App",
+                        "name": "GitHub Actions"
+                      },
+                      "conclusion": "SUCCESS",
+                      "resourcePath": "/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1812249712",
+                      "status": "COMPLETED",
+                      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped/commit/fe72bd3fdc8af7c6482de1819497913ba0ee1a04/checks?check_suite_id=1812249712",
+                      "checkRuns": {
+                        "__typename": "CheckRunConnection",
+                        "nodes": [
+                          {
+                            "__typename": "CheckRun",
+                            "title": "build"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "status": null,
+                "authoredDate": "2020-11-18T18:55:29Z",
+                "committedDate": "2020-11-26T21:21:52Z",
+                "pushedDate": "2020-11-26T21:22:11Z",
+                "oid": "fe72bd3fdc8af7c6482de1819497913ba0ee1a04"
+              }
+            }
+          ]
+        },
+        "comments": {
+          "__typename": "IssueCommentConnection",
+          "totalCount": 13,
+          "nodes": [
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDcyOTk2NzI1NQ==",
+              "author": {
+                "__typename": "User",
+                "login": "danger-public"
+              },
+              "body": "\n<!--\n  0 failure: \n  0 warning: \n  \n  1 markdown notices\n  DangerID: danger-id-Danger;\n-->\n\n\n\nInspecting the JavaScript source for this package found some properties that are not in the .d.ts files.\nThe check for missing properties isn't always right, so take this list as advice, not a requirement.\n## mongoose ([<kbd>unpkg</kbd>](https://unpkg.com/browse/mongoose@latest/))\nwas missing the following properties:\n1. modelSchemas\n1. options\n1. cast\n1. driver\n1. ObjectId\n\n<details>\n<summary>as well as these 7 other properties...</summary>\n<p>Decimal128, Mixed, Date, Number, now, CastError, SchemaTypeOptions</p>\n</details>\n\n## uikit ([<kbd>unpkg</kbd>](https://unpkg.com/browse/uikit@latest/))\nwas missing the following properties:\n1. The declaration doesn't match the JavaScript module 'uikit'. Reason:\nThe JavaScript module can be called or constructed, but the declaration module cannot.\n\nThe most common way to resolve this error is to use 'export =' syntax.\nTo learn more about 'export =' syntax, see https://www.typescriptlang.org/docs/handbook/modules.html#export--and-import--require.\n1. util\n1. data\n1. prefix\n1. options\n\n<details>\n<summary>as well as these 1 other properties...</summary>\n<p>version</p>\n</details>\n\n<p align=\"right\">\n  Generated by :no_entry_sign: <a href=\"https://danger.systems/js\">dangerJS</a> against fe72bd3fdc8af7c6482de1819497913ba0ee1a04\n</p>\n",
+              "createdAt": "2020-11-18T21:28:41Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDcyOTk3NjQwMg==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@jablko Thank you for submitting this PR!\n\n***This is a live comment which I will keep updated.***\n\nThis PR touches some part of DefinitelyTyped infrastructure, so a DT maintainer will need to review it. This is rare — did you mean to do this?\n\n## 3 packages in this PR\n\n* `dojo` [on npm](https://www.npmjs.com/package/dojo), [on unpkg](https://unpkg.com/browse/dojo@latest/)\n* `mongoose` [on npm](https://www.npmjs.com/package/mongoose), [on unpkg](https://unpkg.com/browse/mongoose@latest/)\n* `uikit` [on npm](https://www.npmjs.com/package/uikit), [on unpkg](https://unpkg.com/browse/uikit@latest/)\n\n## Code Reviews\n\nBecause this PR edits multiple packages, it can be merged once it's reviewed by a DT maintainer.\n\n## Status\n\n * ✅ No merge conflicts\n * ✅ Continuous integration tests have passed\n * ✅ A DT maintainer needs to approve changes which affect DT infrastructure ([`.github/workflows/lint-md.yml`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667/files/fe72bd3fdc8af7c6482de1819497913ba0ee1a04#diff-2fe731159a555e05e71e800603fc1b35ae4423f63d0914b1f6bd18a542b54d4b), [`README.cn.md`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667/files/fe72bd3fdc8af7c6482de1819497913ba0ee1a04#diff-97a2a8d47e133a2b24ad7bc1a2e25710f534470e28a73efb62da312a3bb19235), [`README.es.md`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667/files/fe72bd3fdc8af7c6482de1819497913ba0ee1a04#diff-42010a55cd1784b825a37c762cc91d75421f3ed4515f1047cf5506444949a0c2), [`README.ko.md`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667/files/fe72bd3fdc8af7c6482de1819497913ba0ee1a04#diff-86fa6921bcebf260d55d8a3742c1b513bd78f4ea18366db989b5a03c68c563ae), [`README.pt.md`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667/files/fe72bd3fdc8af7c6482de1819497913ba0ee1a04#diff-822bdbb1cbe31bcc1afd1ddbbd7b3191052e07c9996334e645a22694e3cc2119), [`README.ru.md`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667/files/fe72bd3fdc8af7c6482de1819497913ba0ee1a04#diff-fb460bf71153d8224708cfa7298df0409d20c207f5b252b74906895bd8e1ac42), [`package.json`](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667/files/fe72bd3fdc8af7c6482de1819497913ba0ee1a04#diff-7ae45ad102eab3b6d7e7896acd08c427a9b25b346470d7bc6507b6481575d519))\n\nAll of the items on the list are green. **To merge, you need to post a comment including the string \"Ready to merge\"** to bring in your changes.\n\n----------------------\n... diagnostics scrubbed ...\n<!--typescript_bot_welcome-->",
+              "createdAt": "2020-11-18T21:46:51Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDcyOTk3NjQxNQ==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "🔔 @vansimke @horiuchi @lukasz-zak @jendrikw @ethanresnick @vologab @jussikinnula @ondratra @alfirin @idandrd @various89 @Fazendaaa @NormanPerrin @stablio @emmanuelgautier @frontendmonster @mingchen @penumbra1 @HughKu @niuware @vladmel1234 @jloveridge @grimmer0125 @richarddd @ToucheSir @borfig @dinodeSimon @anthony-kenikh @iamchathu @lkho @tomyam1 @nephix @rlaace423 @ChazEpps @avaly @JanNemcik @cl3dson @richardsimko @ith @jeremyben @andreialecu @tHBp @1pete @giovannicandido @s0x @pcdotfan @johanns — please [review this PR](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49667/files) in the next few days. Be sure to explicitly select **`Approve`** or **`Request Changes`** in the GitHub UI so I know what's going on.\n<!--typescript_bot_pinging-reviewers-->",
+              "createdAt": "2020-11-18T21:46:53Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczMjQ5OTQ1MA==",
+              "author": {
+                "__typename": "User",
+                "login": "sheetalkamat"
+              },
+              "body": "Added @orta to review translations\r\n@elibarzilay do you think its ok to add dependency on package that this PR adds. ",
+              "createdAt": "2020-11-24T00:12:38Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczNTk5MTEzMQ==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@jablko One or more reviewers has requested changes. Please address their comments. I'll be back once they sign off or you've pushed new commits. Thank you!\n<!--typescript_bot_reviewer-complaint-fe72bd3-->",
+              "createdAt": "2020-11-30T19:25:24Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczNzQyNDg5MQ==",
+              "author": {
+                "__typename": "User",
+                "login": "elibarzilay"
+              },
+              "body": "* The added remark dependency seems ok, and I also like validating readmes, but IIUC this is a global test rather than testing just edited/added content which would be better if it's possible to do.\r\n* If @orta has something existing then I'm on the same side too of preferring it\r\n* It looks iffy to me to remove the failing MDs -- if it's not easy to fix them, maybe just edit them to make the failing links into some `FIXME` text for owners to fix?\r\n* And re the translated `README.md` headers -- that makes it sound more tempting to avoid translations in the first place (re @sheetalkamat's PR)\r\n",
+              "createdAt": "2020-12-02T18:48:59Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczODI4Nzc4NQ==",
+              "author": {
+                "__typename": "User",
+                "login": "jablko"
+              },
+              "body": "> The added remark dependency seems ok, and I also like validating readmes, but IIUC this is a global test rather than testing just edited/added content which would be better if it's possible to do.\r\n\r\nI recently revised this so it only triggers when a Markdown file is edited, and given that this excludes the majority of PRs, I'm not sure about the benefit of revising again to only check the affected files? As long as we fix the existing failures, which I think is (minorly) beneficial ...\r\n\r\n> It looks iffy to me to remove the failing MDs -- if it's not easy to fix them, maybe just edit them to make the failing links into some FIXME text for owners to fix?\r\n\r\nI think those two files should be removed regardless: They belong in the underlying package's repo (where they're found already); I think READMEs in the DT repo should mention the types (which these don't). But maybe it isn't very polite to remove them as part of this PR ... I'll open a separate PR to ask the authors if they can be removed: #49932",
+              "createdAt": "2020-12-03T20:26:57Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDczODYxMjEyMw==",
+              "author": {
+                "__typename": "User",
+                "login": "elibarzilay"
+              },
+              "body": "> But maybe it isn't very polite to remove them as part of this PR ... I'll open a separate PR to ask the authors if they can be removed: #49932\r\n\r\n(Yeah -- I don't have an opinion, I just wanted to ensure that they're aware of the removal...)\r\n",
+              "createdAt": "2020-12-04T07:13:29Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            },
+            {
+              "__typename": "IssueComment",
+              "id": "MDEyOklzc3VlQ29tbWVudDc1MTQ2NTk1Nw==",
+              "author": {
+                "__typename": "User",
+                "login": "typescript-bot"
+              },
+              "body": "@jablko I haven't seen any activity on this PR in more than three weeks, and it still has problems that prevent it from being merged. The PR will be closed in a week if the issues aren't addressed.\n<!--typescript_bot_Abandoned:nearly:2020-12-04-->",
+              "createdAt": "2020-12-27T13:08:57Z",
+              "reactions": {
+                "__typename": "ReactionConnection",
+                "nodes": []
+              }
+            }
+          ]
+        },
+        "files": {
+          "__typename": "PullRequestChangedFileConnection",
+          "totalCount": 12,
+          "nodes": [
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": ".github/workflows/lint-md.yml",
+              "additions": 11,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "README.cn.md",
+              "additions": 5,
+              "deletions": 5
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "README.es.md",
+              "additions": 3,
+              "deletions": 3
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "README.ko.md",
+              "additions": 1,
+              "deletions": 1
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "README.pt.md",
+              "additions": 1,
+              "deletions": 1
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "README.ru.md",
+              "additions": 4,
+              "deletions": 4
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "package.json",
+              "additions": 2,
+              "deletions": 0
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/dojo/README.md",
+              "additions": 2,
+              "deletions": 2
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/mongoose/README.md",
+              "additions": 1,
+              "deletions": 1
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/mongoose/v4/README.md",
+              "additions": 1,
+              "deletions": 1
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/uikit/README.md",
+              "additions": 0,
+              "deletions": 61
+            },
+            {
+              "__typename": "PullRequestChangedFile",
+              "path": "types/uikit/v2/README.md",
+              "additions": 0,
+              "deletions": 88
+            }
+          ]
+        },
+        "projectCards": {
+          "__typename": "ProjectCardConnection",
+          "nodes": []
+        }
+      }
+    }
+  },
+  "loading": false,
+  "networkStatus": 7
+}
