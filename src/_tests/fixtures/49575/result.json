@@ -15,7 +15,7 @@
     },
     {
       "tag": "stale-ping-d2e897-6400f4c",
-      "status": "@elibarzilay, @sandersn Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?"
+      "status": "**elibarzilay, sandersn** Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?"
     }
   ],
   "shouldClose": false,
