@@ -390,7 +390,7 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
         : info.author === "github-actions" ? "From one bot to another, beep bloop boople bloop." : "";
     display(`@${info.author} Thank you for submitting this PR!${specialWelcome}`,
             ``,
-            `***This is a live comment which I will keep updated.***`);
+            `***This is a live comment that I will keep updated.***`);
 
     const criticalNum = info.pkgInfo.reduce((num,pkg) => pkg.popularityLevel === "Critical" ? num+1 : num, 0);
     if (criticalNum === 0 && info.popularityLevel === "Critical") throw new Error("Internal Error: unexpected criticalNum === 0");
@@ -529,21 +529,21 @@ function createWelcomeComment(info: ExtendedPrInfo, post: (c: Comments.Comment) 
     } else if (info.editsInfra) {
         const infraFiles = info.pkgInfo.find(p => p.name === null)!.files;
         const links = infraFiles.map(reviewLink);
-        display(` * ${approved} ${RequiredApprover} needs to approve changes which affect DT infrastructure (${links.join(", ")})`);
+        display(` * ${approved} ${RequiredApprover} needs to approve changes that affect DT infrastructure (${links.join(", ")})`);
     } else if (criticalNum > 1 && info.blessingKind === "review") {
-        display(` * ${approved} ${RequiredApprover} needs to approve changes which affect more than one package`);
+        display(` * ${approved} ${RequiredApprover} needs to approve changes that affect more than one package`);
         for (const p of info.pkgInfo) {
             if (!(p.name && p.popularityLevel === "Critical")) continue;
             display(`   - ${emoji.pending(info.pendingCriticalPackages.includes(p.name))} ${p.name}`);
         }
     } else if (info.hasMultiplePackages) {
-        display(` * ${approved} ${RequiredApprover} needs to approve changes which affect more than one package`);
+        display(` * ${approved} ${RequiredApprover} needs to approve changes that affect more than one package`);
     } else if (!info.requireMaintainer || info.blessingKind === "review") {
         display(` * ${approved} Most recent commit is approved by ${requiredApprover}`);
     } else if (info.noOtherOwners) {
         display(` * ${approved} ${RequiredApprover} can merge changes when there are no other reviewers`);
     } else if (info.checkConfig) {
-        display(` * ${approved} ${RequiredApprover} needs to approve changes which affect module config files`);
+        display(` * ${approved} ${RequiredApprover} needs to approve changes that affect module config files`);
     } else {
         display(` * ${approved} Only ${requiredApprover} can approve changes [without tests](${testsLink})`);
     }

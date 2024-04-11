@@ -1,4 +1,4 @@
-This is the bot which controls the workflow of Definitely Typed PRs.
+This is the bot that controls the workflow of Definitely Typed PRs.
 
 ## Meta
 
@@ -10,7 +10,7 @@ TODO: Update these links for dtmergebot2
 It is both a series of command line scripts which you can use to test different states, and an Azure Function App which handles incoming webhooks from the DefinitelyTyped repo.
 
 This repo is deployed to Azure on every push to master.
-To ensure we can handle timeouts on older PRs, there is a [GitHub Action](https://github.com/DefinitelyTyped/dt-mergebot/actions) which runs the bot every 6 hours against [all open PRs](./src/run.ts), and has a bunch of useful flags for running manually too.
+To ensure we can handle timeouts on older PRs, there is a [GitHub Action](https://github.com/DefinitelyTyped/dt-mergebot/actions) that runs the bot every 6 hours against [all open PRs](./src/run.ts), and has a bunch of useful flags for running manually too.
 
 # Setup
 
@@ -36,7 +36,7 @@ There are three main stages once the app has a PR number:
 
 # How the bot works
 
-There is an Azure function in `PR-Trigger` which receives webhooks; this function's job is to find the PR number then it runs the above steps.
+There is an Azure function in `PR-Trigger` that receives webhooks; this function's job is to find the PR number then it runs the above steps.
 
 # Running Locally
 
@@ -93,7 +93,7 @@ npm run update-test-data
 npm test
 ```
 
-Most of the tests run against a fixtured PR, these are high level integration tests which store the PR info and then re-run the latter two phases of the app.
+Most of the tests run against a fixtured PR, these are high level integration tests that store the PR info and then re-run the latter two phases of the app.
 
 To create fixtures of a current PR:
 

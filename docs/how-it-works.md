@@ -10,13 +10,13 @@ _Disclaimer: This could be out of date, the source of truth is always [compute-p
 
 ### What type of PRs need to be reviewed by a DT maintainer
 
-- PRs which affect DT infrastructure
-- PRs which affect more than 50 Definition Owners
-- PRs which affect extremely popular packages (5m downloads per month)
-- PRs which add new packages
-- PRs which change DT types with no tests
-- PRs which change DT types and there are no other Definition Owners
-- PRs which change a DT module's infra (`tsconfig.json` etc)
+- PRs that affect DT infrastructure
+- PRs that affect more than 50 Definition Owners
+- PRs that affect extremely popular packages (5m downloads per month)
+- PRs that add new packages
+- PRs that change DT types with no tests
+- PRs that change DT types and there are no other Definition Owners
+- PRs that change a DT module's infra (`tsconfig.json` etc)
 
 PRs that are blessed (see `info.blessingKind`) as `review` are excluded
 when possible, and PRs that are blessed as `merge` can be merged without
