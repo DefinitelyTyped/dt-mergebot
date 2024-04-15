@@ -1,15 +1,14 @@
 {
   "type": "info",
-  "now": "2021-05-10T15:46:37.788Z",
-  "pr_number": 52848,
-  "author": "Runtu4378",
-  "headCommitOid": "14499debca98ea23cfc47a80a288d5bd32798cff",
-  "mergeBaseOid": "master",
-  "lastPushDate": "2021-05-10T07:57:17.000Z",
-  "lastActivityDate": "2021-05-10T15:42:52.000Z",
-  "maintainerBlessed": "Waiting for Author to Merge",
+  "now": "2024-02-06T22:16:07.932Z",
+  "pr_number": 68510,
+  "author": "andrewbranch",
+  "headCommitOid": "073ae8d3a0b71b12ba6bb5b7a1d883d8611d98cb",
+  "mergeBaseOid": "9b8dcf375c4aec95878058c610f8279c22527fa0",
+  "lastPushDate": "2024-02-06T22:15:36.000Z",
+  "lastActivityDate": "2024-02-06T22:15:36.000Z",
   "hasMergeConflict": false,
-  "isFirstContribution": true,
+  "isFirstContribution": false,
   "tooManyFiles": false,
   "hugeChange": false,
   "popularityLevel": "Well-liked by everyone",
@@ -19,7 +18,7 @@
       "kind": "edit",
       "files": [
         {
-          "path": "README.cn.md",
+          "path": "attw.json",
           "kind": "infrastructure"
         }
       ],
@@ -27,7 +26,7 @@
       "addedOwners": [],
       "deletedOwners": [],
       "popularityLevel": "Critical",
-      "isSafeInfrastructureEdit": false
+      "isSafeInfrastructureEdit": true
     }
   ],
   "reviews": [],

@@ -91,7 +91,7 @@ interface ExtendedPrInfo extends PrInfo {
 function extendPrInfo(info: PrInfo): ExtendedPrInfo {
     const isAuthor = (user: string) => sameUser(user, info.author);
     const authorIsOwner = info.pkgInfo.every(p => p.owners.some(isAuthor));
-    const editsInfra = info.pkgInfo.some(p => p.name === null);
+    const editsInfra = info.pkgInfo.some(p => p.name === null && !p.isSafeInfrastructureEdit);
     const possiblyEditsInfra = editsInfra || info.tooManyFiles;
     const checkConfig = info.pkgInfo.some(p => p.files.some(f => f.kind === "package-meta"));
     const allOwners = unique(flatten(info.pkgInfo.map(p => p.owners)));

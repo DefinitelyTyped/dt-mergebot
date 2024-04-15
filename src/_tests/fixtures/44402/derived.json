@@ -41,7 +41,8 @@
       "owners": [],
       "addedOwners": [],
       "deletedOwners": [],
-      "popularityLevel": "Critical"
+      "popularityLevel": "Critical",
+      "isSafeInfrastructureEdit": false
     }
   ],
   "reviews": [

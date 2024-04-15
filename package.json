@@ -20,6 +20,7 @@
     "@apollo/client": "^3.9.2",
     "@azure/functions": "^4.2.0",
     "@definitelytyped/old-header-parser": "npm:@definitelytyped/header-parser@0.0.178",
+    "@definitelytyped/utils": "^0.1.5",
     "dayjs": "^1.11.10",
     "fast-json-patch": "^3.1.1",
     "graphql": "15.8.0",
