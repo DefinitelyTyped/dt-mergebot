@@ -77,5 +77,5 @@
       "/dist/"
     ]
   },
-  "packageManager": "npm@8.19.4+sha256.2667a1b8300f315d223e43c307fbe946eb8b97792af399424ef67ea9cb0a72f6"
+  "packageManager": "npm@10.7.0+sha256.f443ed4364ea11ac5cf7cae7fb4731278c64dd6839093f8a46eabde0430e0fcd"
 }
