@@ -23,7 +23,7 @@
 		{
 			"type": "shell",
 			"label": "npm prune",
-			"command": "npm prune --prod",
+			"command": "npm prune --production",
 			"dependsOn": "npm build",
 			"problemMatcher": []
 		}
