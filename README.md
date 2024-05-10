@@ -20,10 +20,10 @@ git clone https://github.com/DefinitelyTyped/dt-mergebot.git
 cd dt-mergebot
 
 # Deps
-pnpm install
+npm install
 
 # Validate it works
-pnpm test
+npm test
 ```
 
 # How the app works
@@ -60,12 +60,12 @@ Then to run locally you'll need to install the [Azure Functions cli](https://doc
 
 ```sh
 # Build
-pnpm run build
+npm run build
 
 # Run the CLI to see what would happen to an existing PR
-pnpm run single-info -- [PR_NUM]
+npm run single-info -- [PR_NUM]
 # or
-pnpm run single-info-debug -- [PR_NUM]
+npm run single-info-debug -- [PR_NUM]
 ```
 
 ### If you update any queries
@@ -74,7 +74,7 @@ Run this to update the generate types:
 
 ```sh
 # Code-gen the schema
-pnpm run graphql-schema
+npm run graphql-schema
 ```
 
 ### If you change project columns or labels
@@ -83,14 +83,14 @@ Run this to update the cached values:
 
 ```sh
 # Regenerate src/_tests/cachedQueries.json
-pnpm run update-test-data
+npm run update-test-data
 ```
 
 # Tests
 
 ```sh
 # Run tests, TypeScript is transpiled at runtime
-pnpm test
+npm test
 ```
 
 Most of the tests run against a fixtured PR, these are high level integration tests which store the PR info and then re-run the latter two phases of the app.
@@ -99,16 +99,16 @@ To create fixtures of a current PR:
 
 ```sh
 # To create a fixture for PR 43161
-pnpm run create-fixture -- 43161
+npm run create-fixture -- 43161
 ```
 
 Then you can work against these fixtures offline with:
 
 ```sh
 # Watch mode for all tests
-pnpm test -- --watch
+npm test -- --watch
 # Just run fixtures for one PR
-pnpm test -- --testNamePattern 44299
+npm test -- --testNamePattern 44299
 ```
 
 Run a test with the debugger:
@@ -122,7 +122,7 @@ Then use "Attach to Process ID" to connect to that test runner
 If your changes require re-creating all fixtures:
 
 ```sh
-pnpm run update-all-fixtures
+npm run update-all-fixtures
 ```
 
 Be careful with this, because PRs may now be in a different state e.g. it's now merged and it used to be a specific

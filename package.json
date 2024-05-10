@@ -48,26 +48,23 @@
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.5"
   },
-  "pnpm": {
-    "overrides": {
-      "apollo>graphql": "15.8.0",
-      "apollo-language-server>graphql": "15.8.0"
+  "overrides": {
+    "apollo": {
+      "graphql": "15.8.0"
     },
-    "updateConfig": {
-      "ignoreDependencies": [
-        "@definitelytyped/header-parser"
-      ]
+    "apollo-language-server": {
+      "graphql": "15.8.0"
     }
   },
   "scripts": {
-    "prestart": "pnpm run build",
-    "prepublishOnly": "pnpm run build",
+    "prestart": "npm run build",
+    "prepublishOnly": "npm run build",
     "build": "tsc",
     "watch": "tsc --watch",
     "graphql-schema": "apollo client:codegen schema --target typescript --globalTypesFile=src/queries/schema/graphql-global-types.ts",
-    "create-fixture": "pnpm run build && node dist/commands/create-fixture.js",
-    "update-test-data": "pnpm run build && node dist/commands/update-test-data.js",
-    "update-all-fixtures": "pnpm run build && node dist/commands/update-all-fixtures.js",
+    "create-fixture": "npm run build && node dist/commands/create-fixture.js",
+    "update-test-data": "npm run build && node dist/commands/update-test-data.js",
+    "update-all-fixtures": "npm run build && node dist/commands/update-all-fixtures.js",
     "start": "func start",
     "deploy": "func azure functionapp publish dtmergebot2",
     "lint": "eslint --report-unused-disable-directives .",
@@ -80,5 +77,5 @@
       "/dist/"
     ]
   },
-  "packageManager": "pnpm@8.15.7+sha256.50783dd0fa303852de2dd1557cd4b9f07cb5b018154a6e76d0f40635d6cee019"
+  "packageManager": "npm@8.19.4+sha256.2667a1b8300f315d223e43c307fbe946eb8b97792af399424ef67ea9cb0a72f6"
 }

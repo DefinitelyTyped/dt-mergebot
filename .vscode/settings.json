@@ -12,5 +12,5 @@
     "azureFunctions.projectLanguage": "TypeScript",
     "azureFunctions.projectRuntime": "~3",
     "debug.internalConsoleOptions": "neverOpen",
-    "azureFunctions.preDeployTask": "pnpm prune"
+    "azureFunctions.preDeployTask": "npm prune"
 }

@@ -25,16 +25,14 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - uses: pnpm/action-setup@d882d12c64e032187b2edb46d3a0d003b7a43598 # v2.4.0
-
-      - name: 'Resolve Project Dependencies Using pnpm'
+      - name: 'Resolve Project Dependencies Using Npm'
         shell: bash
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          pnpm install
-          pnpm run --if-present build
-          pnpm run --if-present test
-          pnpm prune --prod
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+          npm prune --production
           popd
 
       - name: Zip artifact for deployment
