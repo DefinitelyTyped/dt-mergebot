@@ -1,11 +1,11 @@
 import { ApolloQueryResult } from "@apollo/client/core";
-import { readdirSync } from "fs";
+import { readdirSync, readJsonSync } from "fs-extra";
 import { join } from "path";
 import { toMatchFile } from "jest-file-snapshot";
 import { process } from "../compute-pr-actions";
 import { deriveStateForPR } from "../pr-info";
 import { PR } from "../queries/schema/PR";
-import { readJsonSync, scrubDiagnosticDetails } from "../util/util";
+import { scrubDiagnosticDetails } from "../util/util";
 import * as cachedQueries from "./cachedQueries.json";
 jest.mock("../util/cachedQueries", () => ({
     getProjectBoardColumns: jest.fn(() => cachedQueries.getProjectBoardColumns),
