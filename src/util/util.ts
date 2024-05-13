@@ -1,5 +1,4 @@
 import * as crypto from "crypto";
-import { readFileSync } from "fs";
 
 export function noNullish<T>(arr: ReadonlyArray<T | null | undefined> | null | undefined): T[] {
     if (arr == null) return [];
@@ -73,8 +72,4 @@ export function txt(strs: TemplateStringsArray, ...xs: any) {
     return (String as HACK).raw({ raw: strs }, ...xs)
         .trim().replace(/(^|\n) *([^\s])/g, (_m, pfx, sfx) =>
             sfx === "|" ? pfx : pfx ? " " + sfx : sfx);
-}
-
-export function readJsonSync(file: string) {
-    return JSON.parse(readFileSync(file, "utf8"));
 }
