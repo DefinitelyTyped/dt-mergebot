@@ -22,3 +22,9 @@ jobs:
     - run: npm install
     - run: npm run build
     - run: npm test
+    - run: npm prune --production
+    - run: |
+        export BOT_AUTH_TOKEN=secret
+        for i in dist/functions/*.js; do 
+          node $i;
+        done
