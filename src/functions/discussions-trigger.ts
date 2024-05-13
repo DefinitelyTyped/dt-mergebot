@@ -1,5 +1,4 @@
 import { app, InvocationContext } from "@azure/functions";
-import fetch from "node-fetch";
 import { gql, MutationOptions } from "@apollo/client/core";
 import type { Discussion, DiscussionWebhook } from "../types/discussions";
 import { canHandleRequest, extractNPMReference } from "../discussions";
