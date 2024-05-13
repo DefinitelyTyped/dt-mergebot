@@ -312,7 +312,7 @@ async function getPackageInfosEtc(
         const oldOwners = !name ? null : await getOwnersOfPackage(name, baseId, fetchFile);
         if (oldOwners instanceof Error) return oldOwners;
         const newOwners0 = !name ? null
-            : !paths.includes(`types/${name}/index.d.ts`) ? oldOwners
+            : !paths.includes(`types/${name}/index.d.ts`) && !paths.includes(`types/${name}/package.json`) ? oldOwners
             : await getOwnersOfPackage(name, headId, fetchFile);
         // A header error is still an add/edit whereas a missing file is
         // delete, hence newOwners0 here
