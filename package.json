@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.10.3",
-    "@azure/functions": "^4.4.0",
+    "@azure/functions": "4.0.0-alpha.10",
     "@definitelytyped/old-header-parser": "npm:@definitelytyped/header-parser@0.0.178",
     "@definitelytyped/utils": "^0.1.6",
     "dayjs": "^1.11.11",
