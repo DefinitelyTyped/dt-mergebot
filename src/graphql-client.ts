@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { ApolloClient, gql, HttpLink, InMemoryCache, MutationOptions, TypedDocumentNode } from "@apollo/client/core";
 import { print } from "graphql";
 import * as schema from "@octokit/graphql-schema/schema";
