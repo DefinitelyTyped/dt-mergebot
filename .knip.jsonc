@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/run.ts",
+    "src/commands/*.ts",
+    "src/functions/*.ts",
+    "src/scripts/*.ts",
+    "src/_tests/testEnvironment.js"
+  ],
+  "project": [
+    "**/*.{js,ts,tsx}"
+  ],
+  "ignore": ["src/queries/schema/**", "dist/**"],
+  "ignoreExportsUsedInFile": true
+}
