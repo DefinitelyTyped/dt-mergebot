@@ -1,0 +1,70 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18.x' # set this to the node version to use (supports 8.x, 10.x, 12.x)
+  RESOURCE_GROUP_NAME: dtmergebot3
+  FUNCTION_APP_NAME: dtmergebot3
+  STORAGE_ACCOUNT_NAME: dtmergebot3b1b7
+  STORAGE_CONTAINER_NAME: deployment
+  FUNCTION_ZIP_NAME: function.zip
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
+
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install and test
+        run: |
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+          npm prune --production
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: node-app
+          path: .
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: node-app
+
+      - name: Create zip
+        run: zip -r ${{ env.FUNCTION_ZIP_NAME }} .
+
+      - uses: azure/login@6b2456866fc08b011acb422a92a4aa20e2c4de32 # v2.1.0
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  
+      - name: Upload blob
+        run: az storage blob upload -f ${{ env.FUNCTION_ZIP_NAME }} --account-name ${{ env.STORAGE_ACCOUNT_NAME }} -c ${{ env.STORAGE_CONTAINER_NAME }} -n ${{ env.FUNCTION_ZIP_NAME }} --overwrite true --auth-mode login
+
+      # - name: Set package path
+      #   run: az functionapp config appsettings set -g ${{ env.RESOURCE_GROUP_NAME }} -n ${{ env.FUNCTION_APP_NAME }} --settings WEBSITE_RUN_FROM_PACKAGE="https://${{ env.STORAGE_ACCOUNT_NAME }}.blob.core.windows.net/${{ env.STORAGE_CONTAINER_NAME }}/${{ env.FUNCTION_ZIP_NAME }}"
+
+      - name: Restart app
+        run: az functionapp restart -g ${{ env.RESOURCE_GROUP_NAME }} -n ${{ env.FUNCTION_APP_NAME }}
