@@ -33,13 +33,18 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-          npm prune --production
+
+      - name: Build zip
+        run: npm run bundle
+
+      - name: Create zip
+        run: zip -r ${{ env.FUNCTION_ZIP_NAME }} dist host.json package.json
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
           name: node-app
-          path: .
+          path: ${{ env.FUNCTION_ZIP_NAME }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -54,9 +59,6 @@ jobs:
         uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
         with:
           name: node-app
-
-      - name: Create zip
-        run: zip -r ${{ env.FUNCTION_ZIP_NAME }} .
 
       - uses: azure/login@6b2456866fc08b011acb422a92a4aa20e2c4de32 # v2.1.0
         with:
