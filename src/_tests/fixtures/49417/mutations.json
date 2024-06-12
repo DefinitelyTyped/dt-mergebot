@@ -37,7 +37,16 @@
     "variables": {
       "input": {
         "subjectId": "MDExOlB1bGxSZXF1ZXN0NTE3MTkwNTIz",
-        "body": "@Methuselah96: Everything looks good here. I am ready to merge this PR (at 2b9d098) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n\n(@gustavderdrache, @borisyankov, @tomwanzek, @denisname, @ledragon: you can do this too.)\n<!--typescript_bot_merge-offer-->"
+        "body": "@Methuselah96: Everything looks good here. I am ready to merge this PR (at 2b9d098) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n(Any owner can do this too.)\n<!--typescript_bot_merge-offer-->"
+      }
+    }
+  },
+  {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDcyMzU0MzI2MQ==",
+        "body": "**tuuling** Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-98aca3-525f75c-->"
       }
     }
   }

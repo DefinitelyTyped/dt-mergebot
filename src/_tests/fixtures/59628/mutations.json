@@ -38,5 +38,14 @@
         "pullRequestId": "PR_kwDOAFz6BM41bNTc"
       }
     }
+  },
+  {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "IC_kwDOAFz6BM5AroSK",
+        "body": "@peterblazejewicz: Everything looks good here. I am ready to merge this PR (at 15c10d8) on your behalf whenever you think it's ready.\n\nIf you'd like that to happen, please post a comment saying:\n\n> Ready to merge\n\nand I'll merge this PR almost instantly. Thanks for helping out! :heart:\n(Any owner can do this too.)\n<!--typescript_bot_merge-offer-->"
+      }
+    }
   }
 ]

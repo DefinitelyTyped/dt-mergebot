@@ -31,6 +31,15 @@
     }
   },
   {
+    "mutation": "mutation ($input: UpdateIssueCommentInput!) {\n  updateIssueComment(input: $input) {\n    __typename\n  }\n}\n",
+    "variables": {
+      "input": {
+        "id": "MDEyOklzc3VlQ29tbWVudDYzMjA0Njc2Ng==",
+        "body": "**SimonSchick** Thank you for reviewing this PR! The author has pushed new commits since your last review. Could you take another look and submit a fresh review?\n<!--typescript_bot_stale-ping-37410c-b0cfd18-->"
+      }
+    }
+  },
+  {
     "mutation": "mutation ($input: AddCommentInput!) {\n  addComment(input: $input) {\n    __typename\n  }\n}\n",
     "variables": {
       "input": {
