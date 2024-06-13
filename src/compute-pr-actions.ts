@@ -5,8 +5,8 @@ import * as urls from "./urls";
 import { PrInfo, BotResult, FileInfo } from "./pr-info";
 import { ReviewInfo } from "./pr-info";
 import { noNullish, flatten, unique, sameUser, min, sha256, abbrOid, txt } from "./util/util";
-import * as dayjs from "dayjs";
-import * as advancedFormat from "dayjs/plugin/advancedFormat";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
 dayjs.extend(advancedFormat);
 
 export interface Actions {
