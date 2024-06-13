@@ -26,7 +26,7 @@ export const CIFailed = (abbrOid: string, user: string, ciUrl: string) => ({
         |
         |Once you've pushed the fixes, the build will automatically re-run. Thanks!
         |
-        |**Note: builds which are failing do not end up on the list of PRs for the DT
+        |**Note: builds that are failing do not end up on the list of PRs for the DT
          maintainers to review.**`
 });
 
@@ -135,7 +135,7 @@ export const RemindPeopleTheyCanUnblockPR = (user: string, approvalUsers: string
         |If you would like to short-circuit
          ${ciPassing ? `this wait`
                      : `another wait for a maintainer`},
-         you can edit some of the [test files](${urls.testsTs}) in the package which verify how the \`.d.ts\` files
+         you can edit some of the [test files](${urls.testsTs}) in the package that verify how the \`.d.ts\` files
          work. This would allow the PR to be merged by you or the DT module owners after a re-review.`
 });
 

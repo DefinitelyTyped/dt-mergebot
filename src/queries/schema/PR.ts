@@ -270,7 +270,7 @@ export interface PR_repository_pullRequest_commits_nodes_commit_checkSuites_node
    */
   databaseId: number | null;
   /**
-   * The GitHub App which created this check suite.
+   * The GitHub App that created this check suite.
    */
   app: PR_repository_pullRequest_commits_nodes_commit_checkSuites_nodes_app | null;
   /**

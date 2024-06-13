@@ -99,7 +99,7 @@ export interface PrInfo {
     readonly ciUrl?: string;
 
     /**
-     * An ID for a check suite which could need re-running
+     * An ID for a check suite that could need re-running
      */
     readonly reRunCheckSuiteIDs?: number[];
 

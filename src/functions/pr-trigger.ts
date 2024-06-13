@@ -72,7 +72,7 @@ const handleTrigger = async (context: InvocationContext, event: PrEvent) => {
     if (event.payload.sender.login === "typescript-bot" && fullName !== "check_suite.completed")
         return reply(context, 200, "Skipped webhook because it was triggered by typescript-bot");
 
-    // Allow the bot to run side-effects which are not the 'core' function
+    // Allow the bot to run side-effects that are not the 'core' function
     // of the review cycle, but are related to keeping DT running smoothly
     if (event.name === "check_suite")
         await mergeCodeOwnersOnGreen(event.payload);
