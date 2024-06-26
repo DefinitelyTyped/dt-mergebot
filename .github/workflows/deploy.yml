@@ -28,14 +28,19 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+
       - name: Install and test
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+          pnpm install
+          pnpm run build --if-present
+          pnpm run test --if-present
 
-      - name: Build zip
-        run: npm run bundle
+      - name: Bundle
+        run: pnpm run bundle
+
+      - name: Check bundle
+        run: node dist/functions/index.js
 
       - name: Create zip
         run: zip -r ${{ env.FUNCTION_ZIP_NAME }} dist host.json package.json
