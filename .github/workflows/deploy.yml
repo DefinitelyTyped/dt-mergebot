@@ -33,8 +33,8 @@ jobs:
       - name: Install and test
         run: |
           pnpm install
-          pnpm run build --if-present
-          pnpm run test --if-present
+          pnpm run --if-present build
+          pnpm run --if-present test
 
       - name: Bundle
         run: pnpm run bundle
