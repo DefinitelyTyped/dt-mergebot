@@ -5,7 +5,8 @@
     "src/commands/*.ts",
     "src/functions/*.ts",
     "src/scripts/*.ts",
-    "src/_tests/testEnvironment.js"
+    "src/_tests/testEnvironment.js",
+    "apollo.config.js"
   ],
   "project": [
     "**/*.{js,ts,tsx}"

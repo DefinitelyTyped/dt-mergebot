@@ -40,7 +40,7 @@ jobs:
         run: pnpm run bundle
 
       - name: Check bundle
-        run: node dist/functions/index.js
+        run: BOT_AUTH_TOKEN=secret node dist/functions/index.js
 
       - name: Create zip
         run: zip -r ${{ env.FUNCTION_ZIP_NAME }} dist host.json package.json

@@ -35,4 +35,4 @@ jobs:
     - run: pnpm run build
     - run: pnpm test
     - run: pnpm run bundle
-    - run: node dist/functions/index.js
+    - run: BOT_AUTH_TOKEN=secret node dist/functions/index.js
