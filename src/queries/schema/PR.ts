@@ -139,6 +139,36 @@ export interface PR_repository_pullRequest_timelineItems {
   nodes: (PR_repository_pullRequest_timelineItems_nodes | null)[] | null;
 }
 
+export interface PR_repository_pullRequest_reviewRequests_nodes_requestedReviewer_Team {
+  __typename: "Team";
+}
+
+export interface PR_repository_pullRequest_reviewRequests_nodes_requestedReviewer_Mannequin {
+  __typename: "Mannequin" | "User";
+  /**
+   * The username of the actor.
+   */
+  login: string;
+}
+
+export type PR_repository_pullRequest_reviewRequests_nodes_requestedReviewer = PR_repository_pullRequest_reviewRequests_nodes_requestedReviewer_Team | PR_repository_pullRequest_reviewRequests_nodes_requestedReviewer_Mannequin;
+
+export interface PR_repository_pullRequest_reviewRequests_nodes {
+  __typename: "ReviewRequest";
+  /**
+   * The reviewer that is requested.
+   */
+  requestedReviewer: PR_repository_pullRequest_reviewRequests_nodes_requestedReviewer | null;
+}
+
+export interface PR_repository_pullRequest_reviewRequests {
+  __typename: "ReviewRequestConnection";
+  /**
+   * A list of nodes.
+   */
+  nodes: (PR_repository_pullRequest_reviewRequests_nodes | null)[] | null;
+}
+
 export interface PR_repository_pullRequest_reviews_nodes_author {
   __typename: "Bot" | "EnterpriseUserAccount" | "Mannequin" | "Organization" | "User";
   /**
@@ -640,6 +670,10 @@ export interface PR_repository_pullRequest {
    * A list of events, comments, commits, etc. associated with the pull request.
    */
   timelineItems: PR_repository_pullRequest_timelineItems;
+  /**
+   * A list of review requests associated with the pull request.
+   */
+  reviewRequests: PR_repository_pullRequest_reviewRequests | null;
   /**
    * A list of reviews associated with the pull request.
    */
