@@ -1,0 +1,105 @@
+{
+  "type": "info",
+  "now": "2021-01-22T18:56:09.189Z",
+  "pr_number": 49667,
+  "author": "jablko",
+  "headCommitOid": "fe72bd3fdc8af7c6482de1819497913ba0ee1a04",
+  "lastPushDate": "2020-11-26T21:22:11.000Z",
+  "lastActivityDate": "2020-12-04T07:13:29.000Z",
+  "maintainerBlessed": false,
+  "hasMergeConflict": false,
+  "isFirstContribution": false,
+  "popularityLevel": "Well-liked by everyone",
+  "pkgInfo": [
+    {
+      "name": null,
+      "kind": "edit",
+      "files": [
+        {
+          "path": ".github/workflows/lint-md.yml",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.cn.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.es.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.ko.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.pt.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "README.ru.md",
+          "kind": "infrastructure"
+        },
+        {
+          "path": "package.json",
+          "kind": "infrastructure"
+        }
+      ],
+      "owners": [],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Critical"
+    },
+    {
+      "name": "dojo",
+      "kind": "add",
+      "files": [
+        {
+          "path": "types/dojo/README.md",
+          "kind": "markdown"
+        }
+      ],
+      "owners": [],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
+    },
+    {
+      "name": "mongoose",
+      "kind": "add",
+      "files": [
+        {
+          "path": "types/mongoose/README.md",
+          "kind": "markdown"
+        },
+        {
+          "path": "types/mongoose/v4/README.md",
+          "kind": "markdown"
+        }
+      ],
+      "owners": [],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
+    },
+    {
+      "name": "uikit",
+      "kind": "add",
+      "files": [
+        {
+          "path": "types/uikit/README.md",
+          "kind": "markdown"
+        },
+        {
+          "path": "types/uikit/v2/README.md",
+          "kind": "markdown"
+        }
+      ],
+      "owners": [],
+      "addedOwners": [],
+      "deletedOwners": [],
+      "popularityLevel": "Well-liked by everyone"
+    }
+  ],
+  "reviews": [],
+  "ciResult": "pass"
+}
